@@ -23,7 +23,7 @@
         </div>
         <div style="float: left;position: relative;width: 270px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" :readonly="readonly" @on-blur="blur" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
                 <transition name="fade">
                     <ul class="search-item-wrapper" v-show="isShowMatchDev">
                         <li class="demo-auto-complete-item" v-for="item in filterData">
@@ -39,13 +39,13 @@
             </div>
         </div>
         <div style="margin-left:10px;float: left;">
-            <i-button @click="cleanSelectedDev" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button> 
+            <i-button @click="cleanSelectedDev" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
         </div>
         <div style="margin-left:10px;float: left;">
             <date-picker type="date" style="width: 150px;" v-model="startDate" :clearable="false" :editable="false"></date-picker>
         </div>
         <div style="margin-left:10px;float: left;">
-            <i-button @click="prevDay">{{$t("reportForm.beforeDay")}}</i-button> 
+            <i-button @click="prevDay">{{$t("reportForm.beforeDay")}}</i-button>
         </div>
         <div style="margin-left:10px;float: left;">
             <i-button @click="nextDay">{{$t("reportForm.afterDay")}}</i-button>

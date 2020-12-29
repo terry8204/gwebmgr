@@ -2789,14 +2789,15 @@ var monitor = {
                     device.isSelected = false;
                     device.firstLetter = __pinyin.getFirstLetter(devicename);
                     device.pinyin = __pinyin.getPinyin(devicename);
-                    var deviceTypeName = me.getDeviceTypeName(devicetype);
-                    if (deviceTypeName) {
-                        device.deviceTypeName = deviceTypeName;
-                        device.devicetitle = deviceTypeName + "-" + devicename;
-                    } else {
-                        device.deviceTypeName = "";
-                        device.devicetitle = devicename;
-                    }
+                    // var deviceTypeName = me.getDeviceTypeName(devicetype);
+                    // if (deviceTypeName) {
+                    //     device.deviceTypeName = deviceTypeName;
+                    //     device.devicetitle = deviceTypeName + "-" + devicename;
+                    // } else {
+                    //     device.deviceTypeName = "";
+                    //     device.devicetitle = devicename;
+                    // }
+                    device.devicetitle = devicename;
                     device.allDeviceIdTitle = device.devicetitle + "-" + deviceid;
                     var functions = me.deviceTypes[devicetype].functions;
                     device.videoChannels = [];
@@ -2906,11 +2907,11 @@ var monitor = {
         },
         addDeviceExpirationReminder: function(device) {
             if (device.isfree == 3) {
-                device.devicetitle = device.deviceTypeName + '-' + device.devicename + this.$t("monitor.deviceDisabled");
+                device.devicetitle = device.devicename + this.$t("monitor.deviceDisabled");
             } else if (device.isfree == 4) {
-                device.devicetitle = device.deviceTypeName + '-' + device.devicename + this.$t("monitor.deviceExpiration");
+                device.devicetitle = device.devicename + this.$t("monitor.deviceExpiration");
             } else if (device.isfree == 5) {
-                device.devicetitle = device.deviceTypeName + '-' + device.devicename + this.$t("monitor.deviceExpired");
+                device.devicetitle = device.devicename + this.$t("monitor.deviceExpired");
             }
         },
         getAllHideCompanyTreeData: function() {
@@ -2928,7 +2929,7 @@ var monitor = {
                         if (group.expand) {
                             device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
                             if (device.isfree < 3) {
-                                device.devicetitle = device.deviceTypeName + '-' + device.devicename;
+                                device.devicetitle = device.devicename;
                             } else {
                                 me.addDeviceExpirationReminder(device);
                             }
@@ -2941,10 +2942,10 @@ var monitor = {
 
                             if (device.isfree < 3) {
                                 if (track == undefined && device.lastactivetime <= 0) {
-                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
+                                    device.devicetitle = device.devicename + me.$t("monitor.notEnabled");
                                 } else {
                                     var offlineTime = currentUTC - device.lastactivetime;
-                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                                    device.devicetitle = device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
                                 }
                             } else {
                                 me.addDeviceExpirationReminder(device);
@@ -2977,7 +2978,7 @@ var monitor = {
                         device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
                         online++;
                         if (device.isfree < 3) {
-                            device.devicetitle = device.deviceTypeName + '-' + device.devicename;
+                            device.devicetitle = device.devicename;
                         } else {
                             me.addDeviceExpirationReminder(device);
                         }
@@ -3021,10 +3022,10 @@ var monitor = {
                             if (device.isfree < 3) {
                                 var track = me.positionLastrecords[device.deviceid];
                                 if (track == undefined && device.lastactivetime <= 0) {
-                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
+                                    device.devicetitle = device.devicename + me.$t("monitor.notEnabled");
                                 } else {
                                     var offlineTime = currentUTC - device.lastactivetime;
-                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                                    device.devicetitle = device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
                                 }
                             } else {
                                 me.addDeviceExpirationReminder(device);
@@ -3060,7 +3061,7 @@ var monitor = {
 
                             device.isMoving = me.positionLastrecords[device.deviceid].moving != 0;
                             if (device.isfree < 3) {
-                                device.devicetitle = device.deviceTypeName + '-' + device.devicename;
+                                device.devicetitle = device.devicename;
                             } else {
                                 me.addDeviceExpirationReminder(device);
                             }
@@ -3073,10 +3074,10 @@ var monitor = {
 
                             if (device.isfree < 3) {
                                 if (track == undefined && device.lastactivetime <= 0) {
-                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + me.$t("monitor.notEnabled");
+                                    device.devicetitle = device.devicename + me.$t("monitor.notEnabled");
                                 } else {
                                     var offlineTime = currentUTC - device.lastactivetime;
-                                    device.devicetitle = device.deviceTypeName + '-' + device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
+                                    device.devicetitle = device.devicename + " [" + me.$t("monitor.offline") + utils.timeStampNoSecond(offlineTime) + "] ";
                                 }
                             } else {
                                 me.addDeviceExpirationReminder(device);

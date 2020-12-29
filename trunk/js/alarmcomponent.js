@@ -7,7 +7,7 @@ var waringComponent = {
             isMute: false,
             isPopup: false,
             isLargen: 0,
-            index: 1,
+            index: 4,
             waringRowIndex: null,
             componentName: 'waringMsg',
             searchValue: '',

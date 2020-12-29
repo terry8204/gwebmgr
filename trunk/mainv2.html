@@ -282,7 +282,7 @@
                     </ul>
                     <div class="device-soso">
                         <div class="search-wrapper">
-                            <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" :readonly="readonly" @on-blur="blur" @on-click="focus" @on-focus="focus" :placeholder="placeholder"></i-input>
+                            <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-click="focus" @on-focus="focus" :placeholder="placeholder"></i-input>
                             <transition name="fade">
                                 <ul class="search-item-wrapper" v-show="isShowMatchDev">
                                     <li class="demo-auto-complete-item" v-for="item in filterData">
@@ -2524,11 +2524,11 @@
 
                 <div class="msg_header">
                     <ul>
+                        <li :class="{selected:index == 4}" @click="changeComponent(4)">{{$t("alarm.emergencyAlarm")}}</li>
                         <li :class="{selected:index == 1}" @click="changeComponent(1)">{{$t("alarm.alarmMsg")}}</li>
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">{{$t("alarm.devMsg")}}</li>
                         <li :class="{selected:index == 5}" @click="changeComponent(5)">{{$t("alarm.mediaFiles")}}</li>
                         <li :class="{selected:index == 3}" @click="changeComponent(3)">{{$t("alarm.expirationInfo")}}({{overdueinfolist.length}})</li>
-                        <li :class="{selected:index == 4}" @click="changeComponent(4)">{{$t("alarm.emergencyAlarm")}}</li>
                         <li>
                             <Checkbox v-model="isMute">{{$t("alarm.voice")}}</Checkbox>
                         </li>

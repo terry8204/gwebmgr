@@ -34,11 +34,16 @@
         <div style="margin-left:10px;float: left;">
             <i-button type="primary" @click="handleChargeModal">充值</i-button>
         </div>
+        <div style="margin-left:10px;float: left;">
+            <Poptip trigger="click" title="确定要删除吗?" confirm @on-ok="handleDelete">
+                <i-button type="error">批量删除</i-button>
+            </Poptip>
+        </div>
         <div style="float: right;">
             <i-button @click="exportData" type="primary">{{$t("reportForm.exportData")}}</i-button>
         </div>
         <div style="float: right;margin-right:10px;">
-            <i-button @click="importTownerInfo" type="info">导入文件</i-button>
+            <i-button @click="importTownerInfo" type="info">{{$t("insure.importFile")}}</i-button>
         </div>
     </div>
     <div style="margin:10px;">
@@ -65,7 +70,7 @@
                 </i-col>
             </Row>
             <Row style="margin: 10px 0" v-show="type=='years'">
-                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">选择时间:</i-col>
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">添加年数:</i-col>
                 <i-col span="17" style="height: 100%;line-height:32px;">
                     <Radio-Group v-model="years">
                         <Radio label="1年"></Radio>
@@ -99,7 +104,7 @@
                 </i-col>
             </Row>
             <Row style="margin: 10px 0">
-                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">选择时间:</i-col>
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">添加年数:</i-col>
                 <i-col span="17" style="height: 100%;line-height:32px;">
                     <Radio-Group v-model="years">
                         <Radio label="1年"></Radio>
@@ -141,19 +146,20 @@
                     width: 60,
                     align: 'center'
                 }, {
-                    title: '管理账号',
+                    title: vRoot.$t('bgMgr.creater'),
                     key: 'username'
                 }, {
-                    title: '设备序号',
+                    title: vRoot.$t('alarm.devNum'),
                     key: 'deviceid'
                 }, {
-                    title: '设备名称',
+                    title: vRoot.$t('alarm.devName'),
                     key: 'devicename'
                 }, {
-                    title: '设备型号',
+                    title: vRoot.$t('user.devType'),
                     key: 'devicetype',
                 }, {
-                    title: '过期时间',
+                    title: vRoot.$t('alarm.overdueTime'),
+                    sortable: true,
                     key: 'overduedate'
                 }],
                 tableHeight: 300,
@@ -202,9 +208,17 @@
                                         overduetime: item.overduetime
                                     });
                                 });
-                                resultArray.sort(function(a, b) {
-                                    return b.overduetime - a.overduetime;
-                                });
+                                if (me.maturityType == '0') {
+                                    resultArray.sort(function(a, b) {
+                                        return b.overduetime - a.overduetime;
+                                    });
+
+                                } else {
+                                    resultArray.sort(function(a, b) {
+                                        return a.overduetime - b.overduetime;
+                                    });
+                                }
+
                                 me.tableData = resultArray;
                             } else {
                                 me.tableData = [];
@@ -218,7 +232,31 @@
                     });
                 },
                 handleDelete: function(row) {
+                    if (this.selectionArray.length == 0) {
+                        this.$Message.error("请选择要删除的设备");
+                    } else {
 
+                        var url = myUrls.deleteDevices(),
+                            me = this;
+                        var deviceids = this.selectionArray.map(function(item) {
+                            return item.deviceid
+                        });
+                        if (deviceids.length >= 100) {
+                            this.$Message.error("一次性删除不能超过100个设备");
+                            return;
+                        }
+                        utils.sendAjax(url, {
+                            deviceids: deviceids
+                        }, function(resp) {
+                            if (resp.status == 0) {
+                                me.queryChargeDeviceList();
+                                me.$Message.success("删除成功");
+                            } else {
+                                me.$Message.error("删除失败");
+                            }
+                        });
+
+                    }
 
                 },
                 onSelection: function(result) {
