@@ -59,6 +59,20 @@
             border-bottom: 1px solid #E0E0E0;
         }
         
+        @media screen and (max-height: 780px) {
+            /*当屏幕尺寸小于600px时，应用下面的CSS样式*/
+            #container div.ctrl-wraper {
+                overflow-y: auto;
+                position: absolute;
+                top: 0px;
+                left: 0;
+                width: 325px;
+                bottom: 0px;
+                border-right: 1px solid #E0E0E0;
+                border-bottom: 1px solid #E0E0E0;
+            }
+        }
+        
         div.ctrl-wraper>div {
             width: 301px;
             margin: 10px;
