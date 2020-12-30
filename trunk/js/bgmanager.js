@@ -81,7 +81,6 @@ var bgManager = {
                         { title: me.$t("bgMgr.priceList"), name: 'priceList', icon: 'logo-apple' },
                         { title: me.$t("bgMgr.memberSwitch"), name: 'bonusList', icon: 'ios-barcode' },
                         { title: me.$t("bgMgr.transferRecords"), name: 'transferRecord', icon: 'ios-paper-outline' },
-                        { title: me.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' },
                     ]
                 },
                 {
@@ -274,6 +273,9 @@ var bgManager = {
         };
         if (this.userType != 0) {
             this.navList[6].children.splice(1, 1);
+        }
+        if (this.userType < 2) {
+            this.navList[6].children.push({ title: vRoot.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' })
         }
         this.selectditem('bgNav');
     }
