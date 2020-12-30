@@ -51,10 +51,10 @@
         <Modal v-model="importModal" width="700" :title="$t('device.import')">
             <Row>
                 <i-col span="12" style="padding: 10px;">
-                    <i-input v-model.trim="deviceid" type="textarea" :placeholder="$('device.copyBatchNumber')" :autosize="{minRows: 15,maxRows: 15}"></i-input>
+                    <i-input v-model.trim="deviceid" type="textarea" :placeholder="$t('device.copyBatchNumber')" :autosize="{minRows: 15,maxRows: 15}"></i-input>
                 </i-col>
-                <i-col span="12" style="padding: 10px;">
-                    <i-input v-model.trim="errorTips" :class="fontColor" type="textarea" disabled :autosize="{minRows: 15,maxRows: 15}"></i-input>
+                <i-col span="12" style="padding: 10px;" class="my-error-tips">
+                    <i-input v-model.trim="errorTips" type="textarea" disabled :autosize="{minRows: 15,maxRows: 15}"></i-input>
                 </i-col>
             </Row>
             <div slot="footer" style="height:40px;">
@@ -838,6 +838,9 @@
                 } else {
                     vm.errorTips = "首个ID号不合法";
                     this.isOk = false;
+                    $('.my-error-tips textarea').css({
+                        color: '#e4393c'
+                    });
                 }
 
             }, 500),
@@ -947,9 +950,6 @@
             }
         },
         computed: {
-            fontColor: function() {
-                return [this.isOk ? 'succ' : 'error'];
-            },
             treeStyle: function() {
                 return {
                     'height': this.taleHeight + 'px',
@@ -971,6 +971,17 @@
             }
         },
         watch: {
+            isOk: function(isOk) {
+                if (isOk) {
+                    $('.my-error-tips textarea').css({
+                        color: '#2D8CF0'
+                    });
+                } else {
+                    $('.my-error-tips textarea').css({
+                        color: '#e4393c'
+                    });
+                }
+            },
             deviceid: function(newVal) {
                 var exec = /[0-9A-Za-z]/g.exec(newVal);
                 if (exec) {
