@@ -59,6 +59,9 @@
             </p>
             <div>
                 <i-table ref="totalTable" :columns="posiDetailColumns" :data="posiDetailData" :loading="loading" :height="posiDetailHeight"></i-table>
+                <div class="my-page" style="margin: 5px 0;">
+                    <Page :total="total" :page-size="pageSize" :current="currentIndex" @on-change="changePage"></Page>
+                </div>
             </div>
             <div slot="footer" style="text-align: center;">
                 <i-button style="width:160px;" type="primary" @click="getAllTracksAddress">{{$t("reportForm.queryAllAddress")}}</i-button>

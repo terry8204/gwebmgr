@@ -568,9 +568,19 @@ function posiReport(groupslist) {
             idx: 1,
             maxLen: 0,
             queryLoading: false,
+            currentIndex: 1,
+            total: 0,
+            pageSize: 20,
+
         },
         mixins: [treeMixin],
         methods: {
+            changePage: function(index) {
+                var offset = index * this.pageSize;
+                var start = (index - 1) * this.pageSize;
+                this.currentIndex = index;
+                this.posiDetailData = this.allPosiDetailData.slice(start, offset);
+            },
             getAllTracksAddress: function() {
                 var me = this;
                 var maxLen = this.posiDetailData.length;
@@ -650,7 +660,7 @@ function posiReport(groupslist) {
                 });
             },
             exportDetailData: function() {
-                var tableData = deepClone(this.posiDetailData);
+                var tableData = deepClone(this.allPosiDetailData);
                 var columns = deepClone(this.posiDetailColumns);
                 columns.pop();
                 this.$refs.totalTable.exportCsv({
@@ -663,7 +673,7 @@ function posiReport(groupslist) {
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.lastTableHeight = wHeight - 170;
-                this.posiDetailHeight = wHeight - 144;
+                this.posiDetailHeight = wHeight - 186;
             },
             onClickQuery: function() {
                 var me = this;
@@ -716,7 +726,9 @@ function posiReport(groupslist) {
                                     item.speed = item.speed == 0 ? item.speed : (item.speed / 1000).toFixed(2) + "h/km";
                                 }
                             });
+
                             me.lastPosiData = newCored;
+
                         } else {
 
                         }
@@ -766,19 +778,19 @@ function posiReport(groupslist) {
                                     speed: item.speed == 0 ? item.speed : (item.speed / 1000).toFixed(2) + "h/km"
                                 })
                             });
-
-                            me.posiDetailData = newArr;
+                            me.allPosiDetailData = newArr;
+                            me.posiDetailData = newArr.slice(0, me.pageSize);
                             me.total = newArr.length;
                             me.currentIndex = 1;
 
                         } else {
-                            me.tableData = [];
+                            me.allPosiDetailData = [];
                             me.posiDetailData = [];
                             me.currentIndex = 1;
                             me.total = 0;
                         }
                     } else {
-                        me.tableData = [];
+                        me.allPosiDetailData = [];
                         me.posiDetailData = [];
                         me.currentIndex = 1;
                         me.total = 0;
@@ -817,6 +829,7 @@ function posiReport(groupslist) {
             var me = this;
             this.mapType = utils.getMapType();
             this.initMap();
+            this.allPosiDetailData = [];
             if (rootuser == null) {
                 me.isSpin = true;
                 utils.queryDevicesTree(function(rootuserinfo) {
