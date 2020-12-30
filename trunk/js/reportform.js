@@ -513,8 +513,8 @@ function posiReport(groupslist) {
                 }
             ],
             posiDetailColumns: [
-                { title: '#', key: 'index', width: 70 },
-                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 150 },
+                { title: '#', key: 'index', width: 70, fixed: 'left', },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 150, fixed: 'left', },
                 { title: vRoot.$t("reportForm.lon"), key: 'fixedLon', width: 100 },
                 { title: vRoot.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
                 { title: vRoot.$t("reportForm.direction"), key: 'direction', width: 90 },
@@ -522,11 +522,12 @@ function posiReport(groupslist) {
                 { title: vRoot.$t("reportForm.date"), key: 'updatetimeStr', width: 160, sortable: true },
                 { title: vRoot.$t("reportForm.status"), key: 'strstatus', width: 180, },
                 { title: vRoot.$t("reportForm.posiType"), key: 'positype', width: 115 },
-                { title: vRoot.$t("reportForm.address"), key: 'address' },
+                { title: vRoot.$t("reportForm.address"), key: 'address', width: 600 },
                 {
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
                     width: 210,
+                    fixed: 'right',
                     render: function(h, params) {
                         return h('div', [
                             h('Button', {
@@ -576,34 +577,59 @@ function posiReport(groupslist) {
                 this.maxLen = maxLen;
                 this.queryLoading = true;
                 this.idx = 0;
+                var hasQueryedLatLon = {};
                 this.posiDetailData.forEach(function(track) {
                     var callon = track.fixedLon;
                     var callat = track.fixedLat;
                     var address = LocalCacheMgr.getAddress(callon, callat);
                     if (address == null) {
-                        (function(track) {
-                            utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
-                                if (resp && resp.address) {
-                                    track.address = resp.address;
-                                    track.disabled = true;
-                                    LocalCacheMgr.setAddress(track.callon, track.callat, track.address);
-                                }
-                                me.idx = me.idx + 1;
-                                if (me.idx >= maxLen) {
-                                    me.queryLoading = false;
-                                }
-                            }, function(e) {
-                                me.idx = me.idx + 1;
-                                if (me.idx >= maxLen) {
-                                    me.queryLoading = false;
-                                }
-                            });
-                        })(track);
+                        var key = callat + "|" + callon;
+                        if (hasQueryedLatLon[key] == null) {
+                            hasQueryedLatLon[key] = true;
+                            (function(track) {
+                                utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
+                                    if (resp && resp.address) {
+                                        track.address = resp.address;
+                                        track.disabled = true;
+                                        LocalCacheMgr.setAddress(track.callon, track.callat, track.address);
+                                    }
+                                    me.idx = me.idx + 1;
+                                    if (me.idx >= maxLen) {
+                                        me.queryLoading = false;
+                                        me.readLocalAddress();
+                                    }
+                                }, function(e) {
+                                    me.idx = me.idx + 1;
+                                    if (me.idx >= maxLen) {
+                                        me.queryLoading = false;
+                                        me.readLocalAddress();
+                                    }
+                                });
+                            })(track);
+                        } else {
+                            me.idx = me.idx + 1;
+                            if (me.idx >= maxLen) {
+                                me.queryLoading = false;
+                                me.readLocalAddress();
+                            }
+                        }
                     } else {
+                        track.address = address;
                         me.idx = me.idx + 1;
                         if (me.idx >= maxLen) {
                             me.queryLoading = false;
+                            me.readLocalAddress();
                         }
+                    }
+                });
+            },
+            readLocalAddress: function() {
+                this.posiDetailData.forEach(function(track) {
+                    var callon = track.fixedLon;
+                    var callat = track.fixedLat;
+                    var address = LocalCacheMgr.getAddress(callon, callat);
+                    if (!track.address) {
+                        track.address = address;
                     }
                 });
             },

@@ -1887,33 +1887,57 @@
                         this.queryLoading = true;
                         this.idx = 0;
                         var tracks = this.getTypeRecords();
+                        var hasQueryedLatLon = {};
                         tracks.forEach(function(track) {
                             var callon = track.callon;
                             var callat = track.callat;
                             var address = LocalCacheMgr.getAddress(track.callon, track.callat);
                             if (address == null) {
-                                (function(track) {
-                                    utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
-                                        if (resp && resp.address) {
-                                            track.address = resp.address;
-                                            LocalCacheMgr.setAddress(track.callon, track.callat, track.address);
-                                        }
-                                        me.idx = me.idx + 1;
-                                        if (me.idx >= maxLen) {
-                                            me.queryLoading = false;
-                                        }
-                                    }, function(e) {
-                                        me.idx = me.idx + 1;
-                                        if (me.idx >= maxLen) {
-                                            me.queryLoading = false;
-                                        }
-                                    });
-                                })(track);
+                                var key = callat + "|" + callon;
+                                if (hasQueryedLatLon[key] == null) {
+                                    hasQueryedLatLon[key] = true;
+                                    (function(track) {
+                                        utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
+                                            if (resp && resp.address) {
+                                                track.address = resp.address;
+                                                LocalCacheMgr.setAddress(track.callon, track.callat, track.address);
+                                            }
+                                            me.idx = me.idx + 1;
+                                            if (me.idx >= maxLen) {
+                                                me.queryLoading = false;
+                                                me.readLocalAddress(tracks);
+                                            }
+                                        }, function(e) {
+                                            me.idx = me.idx + 1;
+                                            if (me.idx >= maxLen) {
+                                                me.queryLoading = false;
+                                                me.readLocalAddress(tracks);
+                                            }
+                                        });
+                                    })(track);
+                                } else {
+                                    me.idx = me.idx + 1;
+                                    if (me.idx >= maxLen) {
+                                        me.queryLoading = false;
+                                        me.readLocalAddress(tracks);
+                                    }
+                                }
                             } else {
                                 me.idx = me.idx + 1;
                                 if (me.idx >= maxLen) {
                                     me.queryLoading = false;
+                                    me.readLocalAddress(tracks);
                                 }
+                            }
+                        });
+                    },
+                    readLocalAddress: function(tracks) {
+                        tracks.forEach(function(track) {
+                            var callon = track.callon;
+                            var callat = track.callat;
+                            var address = LocalCacheMgr.getAddress(callon, callat);
+                            if (!track.address) {
+                                track.address = address;
                             }
                         });
                     },
