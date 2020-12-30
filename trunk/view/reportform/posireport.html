@@ -1,5 +1,11 @@
 <meta charset="UTF-8">
 <div id="posi-report">
+    <div class="demo-spin-container" v-if="queryLoading">
+        <Spin fix>
+            <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+            <div>查询进度:{{idx}}/{{maxLen}}</div>
+        </Spin>
+    </div>
     <div class="demo-spin-container" v-if="isSpin">
         <Spin size="large" fix></Spin>
     </div>
@@ -44,7 +50,7 @@
             </div>
         </Row>
         <div style="margin:10px;">
-            <i-table :columns="lastPosiColumns" :height="lastTableHeight" :data="lastPosiData" :loading="loading"></i-table>
+            <i-table ref="lastTable" :columns="lastPosiColumns" :height="lastTableHeight" :data="lastPosiData" :loading="loading"></i-table>
         </div>
         <Modal v-model="trackDetailModal" fullscreen>
             <p slot="header" style="color:#f60;text-align:center">
@@ -53,6 +59,11 @@
             </p>
             <div>
                 <i-table ref="totalTable" :columns="posiDetailColumns" :data="posiDetailData" :loading="loading" :height="posiDetailHeight"></i-table>
+            </div>
+            <div slot="footer" style="text-align: center;">
+                <i-button style="width:160px;" type="primary" @click="getAllTracksAddress">{{$t("reportForm.queryAllAddress")}}</i-button>
+                <i-button style="width:160px;" @click="exportDetailData" type="primary">{{$t("reportForm.exportData")}}</i-button>
+                <i-button style="width:160px;" @click="trackDetailModal=false" type="primary">{{$t("monitor.confirm")}}</i-button>
             </div>
         </Modal>
         <transition name="fade">

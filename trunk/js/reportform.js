@@ -513,7 +513,8 @@ function posiReport(groupslist) {
                 }
             ],
             posiDetailColumns: [
-                { type: 'index', width: 60, align: 'center' },
+                { title: '#', key: 'index', width: 70 },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 150 },
                 { title: vRoot.$t("reportForm.lon"), key: 'fixedLon', width: 100 },
                 { title: vRoot.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
                 { title: vRoot.$t("reportForm.direction"), key: 'direction', width: 90 },
@@ -563,9 +564,49 @@ function posiReport(groupslist) {
             tableData: [],
             mapInstance: null,
             deviceName: '',
+            idx: 1,
+            maxLen: 0,
+            queryLoading: false,
         },
         mixins: [treeMixin],
         methods: {
+            getAllTracksAddress: function() {
+                var me = this;
+                var maxLen = this.posiDetailData.length;
+                this.maxLen = maxLen;
+                this.queryLoading = true;
+                this.idx = 0;
+                this.posiDetailData.forEach(function(track) {
+                    var callon = track.fixedLon;
+                    var callat = track.fixedLat;
+                    var address = LocalCacheMgr.getAddress(callon, callat);
+                    if (address == null) {
+                        (function(track) {
+                            utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
+                                if (resp && resp.address) {
+                                    track.address = resp.address;
+                                    track.disabled = true;
+                                    LocalCacheMgr.setAddress(track.callon, track.callat, track.address);
+                                }
+                                me.idx = me.idx + 1;
+                                if (me.idx >= maxLen) {
+                                    me.queryLoading = false;
+                                }
+                            }, function(e) {
+                                me.idx = me.idx + 1;
+                                if (me.idx >= maxLen) {
+                                    me.queryLoading = false;
+                                }
+                            });
+                        })(track);
+                    } else {
+                        me.idx = me.idx + 1;
+                        if (me.idx >= maxLen) {
+                            me.queryLoading = false;
+                        }
+                    }
+                });
+            },
             exportData: function() {
                 var tableData = deepClone(this.lastPosiData);
                 var columns = deepClone(this.lastPosiColumns);
@@ -575,8 +616,19 @@ function posiReport(groupslist) {
                     item.updatetimeStr = "\t" + item.updatetimeStr;
                     item.devicename = "\t" + item.devicename;
                 });
-                this.$refs.totalTable.exportCsv({
+                this.$refs.lastTable.exportCsv({
                     filename: isZh ? "位置报表" : "PosiReport",
+                    original: false,
+                    columns: columns,
+                    data: tableData
+                });
+            },
+            exportDetailData: function() {
+                var tableData = deepClone(this.posiDetailData);
+                var columns = deepClone(this.posiDetailColumns);
+                columns.pop();
+                this.$refs.totalTable.exportCsv({
+                    filename: isZh ? this.deviceName + " -位置详细报表" : this.deviceName + "-PosiDetailReport",
                     original: false,
                     columns: columns,
                     data: tableData
@@ -664,16 +716,17 @@ function posiReport(groupslist) {
                             var newArr = [];
                             var devicename = vstore.state.deviceInfos[deviceid].devicename;
                             resp.records.sort(function(a, b) {
-                                return a.updatetime - b.updatetime;
+                                return b.updatetime - a.updatetime;
                             });
-                            resp.records.forEach(function(item) {
+                            resp.records.forEach(function(item, idx) {
                                 var fixedLon = item.callon.toFixed(5);
                                 var fixedLat = item.callat.toFixed(5);
                                 var address = LocalCacheMgr.getAddress(fixedLon, fixedLat);
                                 newArr.push({
-                                    deviceid: item.deviceid,
+                                    index: idx + 1,
+                                    deviceid: "\t" + deviceid,
                                     devicename: devicename,
-                                    updatetimeStr: DateFormat.longToDateTimeStr(item.updatetime, timeDifference),
+                                    updatetimeStr: "\t" + DateFormat.longToDateTimeStr(item.updatetime, timeDifference),
                                     callon: item.callon,
                                     callat: item.callat,
                                     fixedLon: fixedLon,
@@ -687,7 +740,8 @@ function posiReport(groupslist) {
                                     speed: item.speed == 0 ? item.speed : (item.speed / 1000).toFixed(2) + "h/km"
                                 })
                             });
-                            me.posiDetailData = newArr.reverse();
+
+                            me.posiDetailData = newArr;
                             me.total = newArr.length;
                             me.currentIndex = 1;
 
