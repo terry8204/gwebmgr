@@ -1162,6 +1162,8 @@
                 year3: '3',
                 year4: '4',
                 year5: '5',
+                surplusJindou: '剩余金豆',
+                consumeJindou: '消耗金豆',
             }
         },
         //简体中文
@@ -2320,6 +2322,8 @@
                 year3: '3年',
                 year4: '4年',
                 year5: '5年',
+                surplusJindou: '剩余金豆',
+                consumeJindou: '消耗金豆',
             }
         }
     }

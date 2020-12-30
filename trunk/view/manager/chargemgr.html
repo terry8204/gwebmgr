@@ -87,6 +87,24 @@
                     <date-picker type="date" v-model="overdueDate" style="width: 100%"></date-picker>
                 </i-col>
             </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">{{$t('charge.surplusJindou')}}:</i-col>
+                <i-col span="12" style="height: 100%;line-height:32px;">
+                    {{bonuspoints}}
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0" v-show="type=='years'">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">{{$t('charge.consumeJindou')}}:</i-col>
+                <i-col span="12" style="height: 100%;line-height:32px;">
+                    {{jindou}} * {{parseInt(years)}} = {{ jindou * parseInt(years)}}
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0" v-show="type=='days'">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">{{$t('charge.consumeJindou')}}:</i-col>
+                <i-col span="12" style="height: 100%;line-height:32px;">
+                    0
+                </i-col>
+            </Row>
         </div>
         <div slot="footer" style="padding:6.5px 15px;">
             <i-button style="width:100%;" type="primary" @click="handlerChargeDevices">{{$t("header.submit")}}</i-button>
@@ -132,6 +150,18 @@
                     </Radio-Group>
                 </i-col>
             </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">{{$t('charge.surplusJindou')}}:</i-col>
+                <i-col span="12" style="height: 100%;line-height:32px;">
+                    {{bonuspoints}}
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">{{$t('charge.consumeJindou')}}:</i-col>
+                <i-col span="12" style="height: 100%;line-height:32px;">
+                    {{jindou}} * {{parseInt(years)}} = {{ jindou * parseInt(years)}}
+                </i-col>
+            </Row>
         </div>
         <div slot="footer" style="padding:6.5px 15px;">
             <i-button style="width:100%;" type="primary" @click="handlerChargeDevices">{{$t("header.submit")}}</i-button>
@@ -146,6 +176,7 @@
             data: {
                 isOk: false,
                 importModal: false,
+                jindou: 0,
                 deviceids: '',
                 errorTips: '',
                 isIncludeSub: false,
@@ -183,16 +214,25 @@
                     sortable: true,
                     key: 'overduedate'
                 }, {
-                    title: '续费金豆数',
-                    sortable: true,
+                    title: vRoot.$t('charge.consumeJindou'),
                     key: 'price'
                 }],
                 tableHeight: 300,
                 tableData: [],
                 loading: false,
                 maturityType: '0',
+                bonuspoints: 0,
             },
             methods: {
+                queryBonusByUsername: function() {
+                    var me = this;
+                    var url = myUrls.queryBonusByUsername();
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0) {
+                            me.bonuspoints = resp.bonuspoints
+                        }
+                    })
+                },
                 handleBatchImport: function() {
 
                     var deviceids = this.deviceids.split("\n");
@@ -297,7 +337,17 @@
 
                 },
                 onSelection: function(result) {
+                    if (result.length) {
+                        var jindou = 0;
+                        result.forEach(function(item) {
+                            jindou += item.price;
+                        })
+                        this.jindou = jindou;
+                    } else {
+                        this.jindou = 0;
+                    }
                     this.selectionArray = result;
+
                 },
                 handlerChargeDevices: function() {
                     if (this.selectionArray.length == 0) {
@@ -329,8 +379,10 @@
 
                     utils.sendAjax(url, data, function(respData) {
                         if (respData.status == 0) {
+
                             me.modal = false;
                             me.adminModal = false;
+
                             if (isZh) {
                                 me.$Message.success("充值成功:" + respData.successcount + "个");
                             } else {
@@ -521,6 +573,16 @@
                 }
             },
             watch: {
+                modal: function(newVal) {
+                    if (newVal) {
+                        this.queryBonusByUsername();
+                    }
+                },
+                adminModal: function(newVal) {
+                    if (newVal) {
+                        this.queryBonusByUsername();
+                    }
+                },
                 deviceids: function(newVal) {
                     var tips = '';
                     var devices = newVal.split('\n');
