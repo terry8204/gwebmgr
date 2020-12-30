@@ -182,6 +182,10 @@
                     title: vRoot.$t('alarm.overdueTime'),
                     sortable: true,
                     key: 'overduedate'
+                }, {
+                    title: '续费金豆数',
+                    sortable: true,
+                    key: 'price'
                 }],
                 tableHeight: 300,
                 tableData: [],
@@ -238,7 +242,8 @@
                                         devicetypeid: item.devicetype,
                                         chargestatus: item.chargestatus,
                                         overduedate: DateFormat.longToDateStr(item.overduetime, timeDifference),
-                                        overduetime: item.overduetime
+                                        overduetime: item.overduetime,
+                                        price: me.priceObj[item.devicetype].price
                                     });
                                 });
                                 if (me.maturityType == '0') {
@@ -486,7 +491,8 @@
                                     devicetypeid: item.devicetype,
                                     chargestatus: item.chargestatus,
                                     overduedate: DateFormat.longToDateStr(item.overduetime, timeDifference),
-                                    overduetime: item.overduetime
+                                    overduetime: item.overduetime,
+                                    price: me.priceObj[item.devicetype].price
                                 });
                             });
 
@@ -499,6 +505,20 @@
                         }
                     });
                 },
+                queryQuotation: function() {
+                    var me = this;
+                    var url = myUrls.queryQuotation();
+                    utils.sendAjax(url, {}, function(resp) {
+                        me.loading = false;
+                        if (resp.records) {
+                            resp.records.forEach(function(item) {
+                                me.priceObj[item.devicetypeid] = item;
+                            })
+                        }
+                    }, function() {
+                        me.loading = false;
+                    })
+                }
             },
             watch: {
                 deviceids: function(newVal) {
@@ -551,6 +571,8 @@
                     me.groupslist = usersTree;
                     me.treeData = usersTree;
                 });
+                me.queryQuotation();
+                me.priceObj = {};
                 this.sosoValue = userName;
                 this.calcTableHeight();
 

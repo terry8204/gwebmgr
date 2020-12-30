@@ -273,10 +273,10 @@ var bgManager = {
         };
         if (this.userType != 0) {
             this.navList[6].children.splice(1, 1);
-        }
+        };
         if (this.userType < 2) {
             this.navList[6].children.push({ title: vRoot.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' })
-        }
+        };
         this.selectditem('bgNav');
     }
 }
