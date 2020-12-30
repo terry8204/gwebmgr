@@ -220,7 +220,6 @@
                                     resultArray.sort(function(a, b) {
                                         return b.overduetime - a.overduetime;
                                     });
-
                                 } else {
                                     resultArray.sort(function(a, b) {
                                         return a.overduetime - b.overduetime;
@@ -445,13 +444,36 @@
                     this.fileEl.click();
                 },
                 queryDevicesByIds: function(deviceids) {
-                    console.log('deviceids', deviceids);
+                    var me = this;
                     var url = myUrls.queryDevicesByIds();
                     var data = {
                         deviceids: deviceids
                     }
-                    utils.sendAjax(url, data, function(resp) {
-                        console.log(resp);
+                    utils.sendAjax(url, data, function(respData) {
+                        if (respData.status == 0) {
+                            var resultArray = [];
+                            var deviceTypeMap = vRoot.$store.state.deviceTypes;
+                            respData.devices.forEach(function(item, index) {
+                                resultArray.push({
+                                    username: item.creater,
+                                    deviceid: item.deviceid,
+                                    devicename: item.devicename,
+                                    devicetype: deviceTypeMap[item.devicetype].typename,
+                                    devicetypeid: item.devicetype,
+                                    chargestatus: item.chargestatus,
+                                    overduedate: DateFormat.longToDateStr(item.overduetime, timeDifference),
+                                    overduetime: item.overduetime
+                                });
+                            });
+
+                            resultArray.sort(function(a, b) {
+                                return a.overduetime - b.overduetime;
+                            });
+
+                            me.tableData = resultArray;
+                        } else {
+
+                        }
                     });
                 },
                 readWorkbookFromLocalFile: function(file, callback) {
