@@ -48,7 +48,7 @@
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.networkType")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="teltype">
-                        <i-option value="1">{{$t("reportForm.maxSignal")}}32(2G)</i-option>  
+                        <i-option value="1">{{$t("reportForm.maxSignal")}}32(2G)</i-option>
                         <i-option value="2">{{$t("reportForm.maxSignal")}}64(2G)</i-option>
                         <i-option value="3">{{$t("reportForm.maxSignal")}}32(3G)</i-option>
                         <i-option value="4">{{$t("reportForm.maxSignal")}}32(4G)</i-option>
@@ -65,7 +65,7 @@
                     </i-select>
                 </i-col>
 
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.overdueTime")}} : &nbsp;</i-col>
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("bgMgr.expirenotifytime")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <date-picker type="date" v-model="overduetime" :options="dateOptions" style="width: 100%"></date-picker>
                 </i-col>
@@ -73,7 +73,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-              
+
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="loginenable">
@@ -166,7 +166,7 @@
         </div>
     </div>
     <script>
-      vueInstanse = new Vue({
+        vueInstanse = new Vue({
             el: "#batchadddevice",
             i18n: utils.getI18n(),
             data: {

@@ -686,9 +686,7 @@
                 operatingGoldenBeans: 'Points',
                 beforeJindou: 'Before Points',
                 afterJindou: 'After Points',
-                level1: '最贵加价',
-                level2: '中等加价',
-                level3: '最低加价',
+                expirenotifytime: "expirenotifytime",
             },
             customer: {
                 kehuName: "Customer name",
@@ -1848,6 +1846,7 @@
                 operatingGoldenBeans: '操作金豆数',
                 beforeJindou: '操作前金豆数',
                 afterJindou: '操作后金豆数',
+                expirenotifytime: "到期时间",
             },
             customer: {
                 kehuName: "客户名称",
