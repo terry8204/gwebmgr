@@ -385,10 +385,15 @@
 
                             if (isZh) {
                                 me.$Message.success("充值成功:" + respData.successcount + "个");
+
                             } else {
                                 me.$Message.success("Recharge success:" + respData.successcount);
                             }
-
+                            var deviceids = [];
+                            me.tableData.forEach(function(item) {
+                                deviceids.push(item.deviceid);
+                            })
+                            me.queryDevicesByIds(deviceids);
                         } else {
                             me.$Message.error(isZh ? "充值失败" : "Recharge failed");
                         }

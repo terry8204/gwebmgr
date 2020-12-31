@@ -184,35 +184,32 @@
                 <i-button type="primary" style="width: 100%" @click="submitCarIconType">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
-        <Modal v-model="chargeModal" width="400" :title="$t('bgMgr.renew')">
-            <Row>
-                <i-col span="6" offset="2" style="height: 100%;text-align:right;line-height:32px;">&nbsp;续费金豆(1年) : &nbsp;</i-col>
-                <i-col span="2" style="height: 100%;line-height:32px;">
-                    {{devicePrice}}
-                </i-col>
-                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">&nbsp;续费年数 : &nbsp;</i-col>
-                <i-col span="6">
-                    <i-select v-model="renewalYears">
-                        <i-option value="1">1年</i-option>
-                        <i-option value="2">2年</i-option>
-                        <i-option value="3">3年</i-option>
-                        <i-option value="4">4年</i-option>
-                        <i-option value="5">5年</i-option>
-                        <i-option value="6">6年</i-option>
-                        <i-option value="7">7年</i-option>
-                        <i-option value="8">8年</i-option>
-                        <i-option value="9">9年</i-option>
-                        <i-option value="10">10年</i-option>
-                    </i-select>
-                </i-col>
-            </Row>
-            <Row>
-                <i-col span="20" offset="2" style="text-align:center;line-height:32px;height:32px;color: red;font-size: 20px;font-weight: 700;">
-                    消耗金豆 : {{ devicePrice * Number(renewalYears)}}
-                </i-col>
-            </Row>
+        <Modal v-model="chargeModal" width="700" :title="$t('bgMgr.renew')">
+            <div v-if="deviceChargeRecords.length > 0">
+                <Row style="border-top:1px solid #E8EAEC;border-left:1px solid #E8EAEC;">
+                    <i-col span="2" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">序号</i-col>
+                    <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">设备序号</i-col>
+                    <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">设备类型</i-col>
+                    <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">续费年数</i-col>
+                    <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">充值日期</i-col>
+                    <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">充值前</i-col>
+                    <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">充值后</i-col>
+                </Row>
+                <Row style="border-left:1px solid #E8EAEC;" v-for="item in deviceChargeRecords" :key="item">
+                    <i-col span="2" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.index}}</i-col>
+                    <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.deviceid}}</i-col>
+                    <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.devicetypename}}</i-col>
+                    <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.chargeyears}}</i-col>
+                    <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.chargetimeStr}}</i-col>
+                    <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.preoverduetime}}</i-col>
+                    <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.postoverduetime}}</i-col>
+                </Row>
+            </div>
+            <div v-if="deviceChargeRecords.length == 0" style="border:1px solid #E8EAEC; height: 48px;line-height:48px;text-align:center;">
+                {{$t('reportForm.empty')}}
+            </div>
             <div slot="footer">
-                <i-button type="primary" style="width: 100%" @click="handleChargeDevices">{{$t('header.submit')}}</i-button>
+                <i-button style="width:100%;" type="primary" @click="chargeModal=false">{{$t("monitor.confirm")}}</i-button>
             </div>
         </Modal>
         <Modal v-model="modal" width="900" :title="$t('device.editDev')">
@@ -1158,10 +1155,40 @@
                     effecttime: '', //生效日期
                     insuremark: '', //保险备注
                 },
-                devicePrice: 0,
-                renewalYears: '1',
+                deviceChargeRecords: [],
             },
             methods: {
+                queryChargeDeviceRecords: function(deviceid) {
+                    var me = this;
+                    var url = myUrls.queryChargeDeviceRecords();
+                    var data = {
+                        deviceid: deviceid
+                    };
+                    utils.sendAjax(url, data, function(respData) {
+                        var deviceChargeRecords = [];
+                        var records = respData.records;
+                        if (records && records.length) {
+                            records.sort(function(a, b) {
+                                return b.chargetime - a.chargetime;
+                            })
+                            records.forEach(function(item, index) {
+                                deviceChargeRecords.push({
+                                    index: index + 1,
+                                    deviceid: item.deviceid,
+                                    chargetime: item.chargetime,
+                                    chargetimeStr: DateFormat.longToDateStr(item.chargetime, timeDifference),
+                                    devicetypename: item.devicetypename,
+                                    peryearpoints: item.peryearpoints,
+                                    chargeyears: item.chargeyears,
+                                    chargepoints: item.chargepoints,
+                                    preoverduetime: DateFormat.longToDateStr(item.preoverduetime, timeDifference),
+                                    postoverduetime: DateFormat.longToDateStr(item.postoverduetime, timeDifference),
+                                })
+                            })
+                        };
+                        me.deviceChargeRecords = deviceChargeRecords;
+                    })
+                },
                 downloadTemplate: function() {
                     var a = document.createElement('a');
                     a.href = myUrls.apihost + 'oiladtemplate.xlsx';

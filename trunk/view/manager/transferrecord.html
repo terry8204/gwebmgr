@@ -22,12 +22,6 @@
         <div style="margin-left:10px;float: left;">
             <i-button @click="queryTransferRecords" :loading="loading">{{$t("reportForm.query")}}</i-button>
         </div>
-        <div style="margin-left:20px;float: left;">
-            <i-input v-model.trim="exactValue"></i-input>
-        </div>
-        <div style="margin-left:10px;float: left;">
-            <i-button @click="exactQueryInsures" :loading="loading">{{$t("reportForm.exactSearch")}}</i-button>
-        </div>
         <div style="float: right;">
             <i-button @click="exportData" type="primary">{{$t("reportForm.exportData")}}</i-button>
         </div>
@@ -41,15 +35,52 @@
     <div style="padding: 0 10px 10px 10px;">
         {{$t("reportForm.total")}} <span v-text="total"></span>
     </div>
+    <Modal v-model="modal" width="760" v-cloak>
+        <p slot="header" style="color:#2D8CF0;text-align:center">
+            {{$t("charge.deviceList")}}
+        </p>
+        <div style="height: 401px;overflow-y: auto;position: relative;background-color: #fff;" v-if="loadingDevList">
+            <Spin fix>
+                <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+                <div>Loading</div>
+            </Spin>
+        </div>
+        <div style="height: 401px;overflow-y: auto;" v-else>
+            <Row style="border-top:1px solid #E8EAEC;border-left:1px solid #E8EAEC;">
+                <i-col span="2" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">序号</i-col>
+                <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">设备序号</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">设备类型</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">金豆数</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">续费年数</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">总金豆数</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">充值前</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">充值后</i-col>
+            </Row>
+            <Row style="border-left:1px solid #E8EAEC;" v-for="item in deviceids" :key="item">
+                <i-col span="2" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.index}}</i-col>
+                <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.deviceid}}</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.devicetypename}}</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.peryearpoints}}</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.chargeyears}}</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.chargepoints}}</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.preoverduetime}}</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.postoverduetime}}</i-col>
+            </Row>
+        </div>
+        <div slot="footer" style="padding:6.5px 15px;">
+            <i-button style="width:100%;" type="primary" @click="modal=false">{{$t("monitor.confirm")}}</i-button>
+        </div>
+    </Modal>
     <script>
         vueInstanse = new Vue({
             el: '#transfer-records',
             i18n: utils.getI18n(),
             data: {
                 total: 0,
-                exactValue: '',
                 dayNumberType: 0,
                 clearable: false,
+                loadingDevList: false,
+                modal: false,
                 dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
                 columns: [{
                     type: 'index',
@@ -67,30 +98,81 @@
                     key: 'createtimeStr',
                     width: 150,
                 }, {
-                    title: isZh ? "转出账号" : "fromusername",
-                    key: 'fromusername',
-                }, {
-                    title: isZh ? "转入账号" : "tousername",
-                    key: 'tousername',
+                    title: isZh ? "对方账号" : "otherusername",
+                    key: 'otherusername',
                 }, {
                     title: vRoot.$t("bgMgr.operatingGoldenBeans"),
                     key: 'points',
                 }, {
                     title: vRoot.$t("bgMgr.beforeJindou"),
-                    key: 'fromsrcpoints',
+                    key: 'prepoints',
                 }, {
                     title: vRoot.$t("bgMgr.afterJindou"),
-                    key: 'fromdestpoints',
+                    key: 'postpoints',
                 }, {
                     title: vRoot.$t("customer.remark"),
                     key: 'remark',
+                }, {
+                    title: vRoot.$t("charge.deviceList"),
+                    width: 88,
+                    render: function(h, params) {
+                        var devicechargeuuid = params.row.devicechargeuuid;
+                        return h(
+                            'Button', {
+                                on: {
+                                    click: function() {
+                                        vueInstanse.queryChargeDevices(devicechargeuuid);
+                                    }
+                                },
+                                props: {
+                                    size: 'small',
+                                    type: 'primary'
+                                }
+                            },
+                            vRoot.$t("charge.see")
+                        )
+                    },
                 }],
                 tableHeight: 300,
                 tableData: [],
                 loading: false,
                 bonuspoints: 0,
+                deviceids: [],
             },
             methods: {
+                queryChargeDevices: function(devicechargeuuid) {
+                    this.loadingDevList = true;
+                    var me = this;
+                    var url = myUrls.queryChargeDevices();
+                    var data = {
+                        devicechargeuuid: devicechargeuuid
+                    };
+                    utils.sendAjax(url, data, function(respData) {
+                        var deviceids = [];
+                        var records = respData.records;
+                        if (records && records.length) {
+                            records.forEach(function(item, index) {
+                                deviceids.push({
+                                    index: index + 1,
+                                    deviceid: item.deviceid,
+                                    devicetypename: item.devicetypename,
+                                    peryearpoints: item.peryearpoints,
+                                    chargeyears: item.chargeyears,
+                                    chargepoints: item.chargepoints,
+                                    preoverduetime: DateFormat.longToDateStr(item.preoverduetime, timeDifference),
+                                    postoverduetime: DateFormat.longToDateStr(item.postoverduetime, timeDifference),
+                                })
+                            })
+                        };
+                        me.deviceids = deviceids;
+                        setTimeout(function() {
+                            me.loadingDevList = false;
+                        }, 100)
+                    }, function() {
+                        me.loadingDevList = false;
+                    })
+                    this.modal = true;
+                },
                 rowClassName(row, index) {
                     if (row.assigntype === 0) {
                         return 'table-info-row';
@@ -133,24 +215,13 @@
                                 item.assigntypeStr = item.assigntype === 0 ? vRoot.$t("bgMgr.switchIn") : vRoot.$t("bgMgr.switchOut");
                                 item.eventtypeStr = item.eventtype === 0 ? vRoot.$t("bgMgr.transfer") : vRoot.$t("bgMgr.renew");
                                 item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, timeDifference);
+                                item.detailuuid = item.detailuuid ? item.detailuuid : "";
                             });
                             me.total = total;
                             me.records = records;
                             me.tableData = records;
                         }
                     });
-                },
-                exactQueryInsures: function() {
-                    var exactValue = this.exactValue;
-                    if (exactValue) {
-                        var tableData = [];
-                        this.records.forEach(function(item) {
-                            if (item.tousername.indexOf(exactValue) != -1) {
-                                tableData.push(item);
-                            }
-                        });
-                        this.tableData = tableData;
-                    }
                 },
                 exportData: function() {
                     // alert(11);
@@ -173,13 +244,6 @@
                             me.bonuspoints = resp.bonuspoints
                         }
                     })
-                }
-            },
-            watch: {
-                exactValue: function(newVal) {
-                    if (newVal == "") {
-                        this.tableData = this.records;
-                    }
                 }
             },
             mounted: function() {

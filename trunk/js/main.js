@@ -175,8 +175,8 @@ Vue.component('table-dropdown', {
                     break;
                 case 'charge':
                     editObject = this.params.row;
-                    vueInstanse.devicePrice = vueInstanse.devicePriceObj[editObject.devicetype];
                     vueInstanse.chargeModal = true;
+                    vueInstanse.queryChargeDeviceRecords(editObject.deviceid);
                     break;
             }
         }

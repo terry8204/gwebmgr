@@ -678,7 +678,7 @@
                 switchIn: 'Switch in',
                 switchOut: 'Switch out',
                 transfer: 'Assign',
-                renew: 'Charge',
+                renew: 'ChargeRecord',
                 event: 'Event',
                 type: 'type',
                 operationTime: 'Oper time',
@@ -1165,6 +1165,8 @@
                 year5: '5',
                 surplusJindou: '剩余金豆',
                 consumeJindou: '消耗金豆',
+                deviceList: "设备列表",
+                see: "See",
             }
         },
         //简体中文
@@ -1838,7 +1840,7 @@
                 switchIn: '转入',
                 switchOut: '转出',
                 transfer: '划拨',
-                renew: '续费',
+                renew: '续费记录',
                 event: '事件',
                 type: '类型',
                 operationTime: '操作时间',
@@ -1846,9 +1848,6 @@
                 operatingGoldenBeans: '操作金豆数',
                 beforeJindou: '操作前金豆数',
                 afterJindou: '操作后金豆数',
-                level1: '最贵加价',
-                level2: '中等加价',
-                level3: '最低加价',
             },
             customer: {
                 kehuName: "客户名称",
@@ -2326,6 +2325,8 @@
                 year5: '5年',
                 surplusJindou: '剩余金豆',
                 consumeJindou: '消耗金豆',
+                deviceList: "设备列表",
+                see: "查看",
             }
         }
     }

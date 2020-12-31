@@ -2449,6 +2449,7 @@ var monitor = {
 
 
             globalDeviceId = deviceid;
+            reportDeviceId = deviceid;
             var groups = utils.allSubgroups[device.creater];
             if (groups) {
                 this.currentDevCreateUserGroupList = groups;

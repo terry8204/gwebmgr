@@ -111,8 +111,6 @@ var treeMixin = {
                         isFound = true;
                     }
                     if (isFound == false && item.children && item.children.length > 0) {
-                        // item.expand = true;
-                        // childTemp.push(item);
                         var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
                         if (rs && rs.length > 0) {
                             copyItem = deepClone(item);
@@ -332,7 +330,7 @@ var reportMixin = {
                 group.devices.forEach(function(device) {
                     if (device.deviceid === deviceid) {
                         isReturn = true;
-                        title = device.title;
+                        title = device.devicename + '-' + device.deviceid;
                         return false;
                     }
                 });
