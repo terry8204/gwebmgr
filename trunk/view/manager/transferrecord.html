@@ -67,7 +67,10 @@
                     key: 'createtimeStr',
                     width: 150,
                 }, {
-                    title: vRoot.$t("bgMgr.operationAccount"),
+                    title: isZh ? "转出账号" : "fromusername",
+                    key: 'fromusername',
+                }, {
+                    title: isZh ? "转入账号" : "tousername",
                     key: 'tousername',
                 }, {
                     title: vRoot.$t("bgMgr.operatingGoldenBeans"),
