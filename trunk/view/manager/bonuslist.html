@@ -12,6 +12,8 @@
         <div class="my-total" style="padding-left: 10px;">
             <span>{{$t("bgMgr.userTotal")}} : {{tableData.length}}</span>
             <span>{{$t("bgMgr.totalGoldenBeans")}} : {{bonuspoints}}</span>
+            <span>用户金豆数 : {{userbonuspoints}}</span>
+            <span>总金豆数 : {{totalbonuspoints}}</span>
         </div>
         <div style="padding: 0 10px;">
             <i-table border :columns="columns" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
@@ -98,6 +100,7 @@
                 level: '1',
                 bonuspoint: 0,
                 bonuspoints: 0,
+                userbonuspoints: 0,
                 tableData: [],
             },
             methods: {
@@ -160,15 +163,25 @@
                 queryBonusList: function() {
                     var me = this;
                     var url = myUrls.queryBonusList();
+                    var userbonuspoints = 0;
                     utils.sendAjax(url, {}, function(resp) {
                         me.loading = false;
                         if (resp.records) {
                             me.tableData = resp.records;
                             me.records = resp.records;
+                            me.records.forEach(function(item) {
+                                userbonuspoints += item.bonuspoints;
+                            });
+                            me.userbonuspoints = userbonuspoints;
                         }
                     }, function() {
                         me.loading = false;
                     })
+                }
+            },
+            computed: {
+                totalbonuspoints: function() {
+                    return this.userbonuspoints + this.bonuspoints;
                 }
             },
             watch: {
