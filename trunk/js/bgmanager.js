@@ -277,6 +277,9 @@ var bgManager = {
         if (this.userType < 2) {
             this.navList[6].children.push({ title: vRoot.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' })
         };
+        if (this.userType > 1) {
+            this.navList.splice(6, 1);
+        };
         this.selectditem('bgNav');
     }
 }
