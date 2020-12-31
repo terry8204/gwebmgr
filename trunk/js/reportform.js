@@ -119,7 +119,6 @@ var treeMixin = {
                             isFound = true;
                         }
                     }
-
                     if (isFound == true) {
                         limitcount++;
                         childTemp.push(copyItem);

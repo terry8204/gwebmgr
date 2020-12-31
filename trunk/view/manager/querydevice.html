@@ -184,7 +184,7 @@
                 <i-button type="primary" style="width: 100%" @click="submitCarIconType">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
-        <Modal v-model="chargeModal" width="700" :title="$t('bgMgr.renew')">
+        <Modal v-model="chargeModal" width="700" :title="$t('bgMgr.renew')" :mask-closable="false">
             <div v-if="deviceChargeRecords.length > 0">
                 <Row style="border-top:1px solid #E8EAEC;border-left:1px solid #E8EAEC;">
                     <i-col span="2" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">序号</i-col>

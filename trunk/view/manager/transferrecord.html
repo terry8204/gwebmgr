@@ -35,7 +35,7 @@
     <div style="padding: 0 10px 10px 10px;">
         {{$t("reportForm.total")}} <span v-text="total"></span>
     </div>
-    <Modal v-model="modal" width="760" v-cloak>
+    <Modal v-model="modal" width="760" v-cloak :mask-closable="false">
         <p slot="header" style="color:#2D8CF0;text-align:center">
             {{$t("charge.deviceList")}}
         </p>
