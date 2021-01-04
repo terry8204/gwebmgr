@@ -2822,7 +2822,6 @@ var monitor = {
                             })
                         }
                         device.isVedio = true;
-                        console.log('device', device)
                     } else {
                         device.isVedio = false;
                     }
@@ -3434,7 +3433,6 @@ var monitor = {
                 var groups = resp.groups;
                 communicate.$emit("monitorlist", groups);
                 me.groups = me.filterGroups(groups);
-                console.log(me.groups);
                 // me.videoGroup = me.getVideoGroup(groups);
                 me.groups.sort(function(a, b) {
                     return a.groupname.localeCompare(b.groupname);

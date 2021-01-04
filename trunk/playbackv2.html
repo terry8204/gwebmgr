@@ -1110,6 +1110,7 @@
                         this.year = date.getFullYear();
                         this.month = date.getMonth() + 1;
                         this.date = date.getDate();
+                        this.datesArr = this.getDatesArr();
                     },
                     getTheMonthFirstDayWeek() {
                         return new Date(this.year, this.month - 1, 1).getDay();
@@ -2152,7 +2153,7 @@
                             this.distanceTool.disable();
                         }
                     },
-                    month() {
+                    month: function() {
                         if (this.month > 12) {
                             this.year++;
                             this.month = 1;
@@ -2160,6 +2161,7 @@
                             this.year--;
                             this.month = 12;
                         }
+
                         this.datesArr = this.getDatesArr();
                     },
                     playSpeed: function(newVal) {
