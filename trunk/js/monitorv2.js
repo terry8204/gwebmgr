@@ -2705,18 +2705,29 @@ var monitor = {
                     me.editDevModal = false;
                     me.$Message.success(me.$t("message.changeSucc"));
                     me.deviceInfos[data.deviceid].simnum = sendData.simnum;
-                    me.deviceInfos[data.deviceid].remark = data.remark;
+                    me.deviceInfos[data.deviceid].remark = sendData.remark;
                     me.deviceInfos[data.deviceid].expirenotifytime = data.expirenotifytime;
                     var record = me.getSingleDeviceInfo(data.deviceid);
                     if (record) {
                         me.positionLastrecords[data.deviceid].devicename = sendData.devicename;
-                        me.map.onClickDevice(data.deviceid);
-                        me.map.updateMarkerLabel(data.deviceid);
+
+                        me.updateMarkerLabel(record, sendData);
                     };
                 } else if ((resp.status == -1)) {
                     me.$Message.error(me.$t("message.changeFail"))
                 }
             })
+        },
+        updateMarkerLabel: function(track, deviceInfo) {
+            console.log(track);
+            var deviceid = deviceInfo.deviceid;
+            var devicename = deviceInfo.devicename;
+            if (this.isShowLabel) {
+                var marker = this.mapAllMarkers[deviceid];
+                marker.setProperties({
+                    'name': devicename
+                });
+            }
         },
         editDevice: function(deviceid) {
             var deviceInfo = this.deviceInfos[deviceid];
@@ -2733,6 +2744,7 @@ var monitor = {
             this.editDevData.deviceid = deviceid;
             this.editDevData.remark = deviceInfo.remark;
             this.editDevData.disabled = disabled;
+            this.editDevData.expirenotifytime = deviceInfo.expirenotifytime;
             this.expirenotifytime = DateFormat.longToDateTimeStr(deviceInfo.expirenotifytime, 0);
             this.editDevModal = true;
         },
@@ -2809,9 +2821,14 @@ var monitor = {
                                 name: 'CH' + index
                             })
                         }
+                        device.isVedio = true;
+                        console.log('device', device)
+                    } else {
+                        device.isVedio = false;
                     }
 
                 });
+
                 group.devCount = devCount;
                 group.devices.sort(function(a, b) {
                     return a.devicetitle.localeCompare(b.devicetitle);
@@ -3417,6 +3434,7 @@ var monitor = {
                 var groups = resp.groups;
                 communicate.$emit("monitorlist", groups);
                 me.groups = me.filterGroups(groups);
+                console.log(me.groups);
                 // me.videoGroup = me.getVideoGroup(groups);
                 me.groups.sort(function(a, b) {
                     return a.groupname.localeCompare(b.groupname);
@@ -3838,6 +3856,11 @@ var monitor = {
                 var marker = this.mapAllMarkers[key];
                 var track = this.positionLastrecords[key];
                 marker.setSymbol(this.getMarkerSymbol(track, newVal));
+                if (newVal) {
+                    marker.setProperties({
+                        name: track.devicename
+                    })
+                }
             }
         }
     },

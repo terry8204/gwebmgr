@@ -153,7 +153,13 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="6" :offset="3">
+                <i-col span="20" :offset="4">
+                    <Alert type="warning">{{$t("device.addNewDeviceTip")}}</Alert>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
+                <i-col span="6" :offset="4">
                     <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
                 </i-col>
                 <i-col span="6" :offset="1">

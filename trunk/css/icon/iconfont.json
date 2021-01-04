@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "7983631",
+      "name": "摄像头",
+      "font_class": "xingzhuang",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "736200",
+      "name": "爱心",
+      "font_class": "icon4",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "9402962",
+      "name": "爱心",
+      "font_class": "changyongicon-",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
       "icon_id": "1183015",
       "name": "午夜",
       "font_class": "wuye",

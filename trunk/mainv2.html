@@ -311,7 +311,7 @@
                                 <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" :data-id="device.deviceid" style="padding-left:15px">
                                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                         <div class="video-device-cls" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)" @dblclick="dblClickDeviceVideo(device)">
-                                            <span><i class='icon iconfont icon-car'></i></span>
+                                            <span style="width:18px;"><i class='icon iconfont' :class="{'icon-xingzhuang':device.isVedio,'icon-car':!device.isVedio}"></i></span>
                                             <span v-html="device.devicetitle" class="video-device-title-cls"></span>   
                                             <span  @mouseover="handleMousemove($event)" style="width:32px;" v-if="device.isSelected">
                                                 <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
@@ -375,7 +375,7 @@
                     <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isOnline">
                         <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                             <div class="video-device-cls" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)" @dblclick="dblClickDeviceVideo(device)">
-                                <span><i class='icon iconfont icon-car'></i></span>
+                                <span style="width:18px;"><i class='icon iconfont' :class="{'icon-xingzhuang':device.isVedio,'icon-car':!device.isVedio}"></i></span>
                         <span v-html="device.devicetitle" class="video-device-title-cls"></span>
                         <span @mouseover="handleMousemove($event)" style="width:32px;" v-if="device.isSelected">
                                     <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
@@ -438,7 +438,7 @@
                             <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isOffline">
                                 <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                     <div class="video-device-cls" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)" @dblclick="dblClickDeviceVideo(device)">
-                                        <span><i class='icon iconfont icon-car'></i></span>
+                                        <span style="width:18px;"><i class='icon iconfont' :class="{'icon-xingzhuang':device.isVedio,'icon-car':!device.isVedio}"></i></span>
                         <span v-html="device.devicetitle" class="video-device-title-cls"></span>
                         <span @mouseover="handleMousemove($event)" style="width:32px;" v-if="device.isSelected">
                                             <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
@@ -503,7 +503,7 @@
                 <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isStared">
                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                         <div class="video-device-cls" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)" @dblclick="dblClickDeviceVideo(device)">
-                            <span><i class='icon iconfont icon-car'></i></span>
+                            <span style="width:18px;"><i class='icon iconfont' :class="{'icon-xingzhuang':device.isVedio,'icon-car':!device.isVedio}"></i></span>
                         <span v-html="device.devicetitle" class="video-device-title-cls"></span>
                         <span @mouseover="handleMousemove($event)" style="width:32px;" v-if="device.isSelected">
                                 <Dropdown trigger="click" transfer :placement="placement" @on-click="handleClickMore" style="width:100%;">
@@ -572,8 +572,8 @@
                                 <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" :data-id="device.deviceid" style="padding-left:15px">
                                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                         <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)">
-                                            <Icon type="md-person"/> 
-                                            <span v-html="device.devicetitle" style="font-size:12px;"></span>
+                                            <span><i class='icon iconfont' :class="{'icon-xingzhuang':device.isVedio,'icon-car':!device.isVedio}"></i></span>
+                        <span v-html="device.devicetitle" style="font-size:12px;"></span>
                 </div>
                 <ul class="device-controller" v-if="device.isSelected">
                     <li @click="editDevice(device.deviceid)">
@@ -648,7 +648,7 @@
                                     <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isOnline">
                                         <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                             <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)">
-                                                <Icon type="md-person"/> 
+                                                <span><i class='icon iconfont' :class="{'icon-xingzhuang':device.isVedio,'icon-car':!device.isVedio}"></i></span>
                                                 <span v-html="device.devicetitle" style="font-size:12px;"></span> 
                                             </div>
                                             <ul class="device-controller" v-if="device.isSelected">
@@ -711,7 +711,7 @@
                                     <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isStared">
                                         <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                                             <div style="padding:3px 5px;cursor: pointer;" :style="{color: device.isOnline ? (device.isMoving ? '#33DAD0' :'#F69679') : '#B1BBC2'}" @click="selectedDev(device)">
-                                                <Icon type="md-person"/> 
+                                                <span><i class='icon iconfont' :class="{'icon-xingzhuang':device.isVedio,'icon-car':!device.isVedio}"></i></span>
                                                 <span v-html="device.devicetitle" style="font-size:12px;"></span> 
                                             </div>
                                             <ul class="device-controller" v-if="device.isSelected">
@@ -774,7 +774,7 @@
                 <div v-for="(device , index) in group.devices" :key="device.deviceid" :id="device.deviceid" style="padding-left:15px" v-if="device.isOffline">
                     <div :class="{'active-dev-offline':device.isSelected}" style="margin:3px 0;" :ref="device.deviceid">
                         <div style="padding:3px 5px;cursor: pointer;" :style="{color:'#B1BBC2'}" @click="selectedDev(device)">
-                            <Icon type="md-person"/> 
+                            <span><i class='icon iconfont' :class="{'icon-xingzhuang':device.isVedio,'icon-car':!device.isVedio}"></i></span>
                             <span v-html="device.devicetitle" style="font-size:12px;"></span> 
                         </div>
                         <ul class="device-controller" v-if="device.isSelected">

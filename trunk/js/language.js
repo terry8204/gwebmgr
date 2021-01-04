@@ -895,6 +895,7 @@
                 scale: 'Scale',
                 timeZone: 'Time zone',
                 automatic: 'Auto',
+                addNewDeviceTip: 'new device has 10 days experience period, contact the superior for renewal.'
             },
             insure: {
                 templateDownload: 'Template download',
@@ -2056,6 +2057,7 @@
                 scale: '模拟量刻度',
                 timeZone: '时区',
                 automatic: '自动',
+                addNewDeviceTip: '新添加的设备有10天体验期，到期请联系上级续费。'
             },
             insure: {
                 templateDownload: '模版下载',
