@@ -3464,7 +3464,8 @@ var monitor = {
         createMarker(track) {
             var isBMap = this.mapType == 'bMap';
             var pointArr = isBMap ? [track.b_lon, track.b_lat] : [track.g_lon, track.g_lat];
-            var deviceName = this.deviceInfos[track.deviceid].devicename;
+            var deviceInfo = this.deviceInfos[track.deviceid];
+            var deviceName = deviceInfo ? deviceInfo.devicename : track.deviceid;
             return new maptalks.Marker(
                 pointArr, {
                     'properties': {
@@ -3473,7 +3474,6 @@ var monitor = {
                     'symbol': this.getMarkerSymbol(track, this.isShowLabel),
                 }
             );
-
         },
         getMarkerSymbol: function(track, isShowLabel) {
             if (isShowLabel) {

@@ -1431,7 +1431,7 @@
                     },
                     getMonthDays: function(date) {
                         var year = date.getFullYear();
-                        var month = date.getMonth() + 1;
+                        var month = date.getMonth();
                         var d = new Date(year, month, 0);
                         return d.getDate();
                     },
