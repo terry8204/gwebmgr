@@ -2701,12 +2701,15 @@ var monitor = {
                 if (resp.status == 0) {
                     me.editDeviceInfo.title = sendData.devicename;
                     me.editDeviceInfo.simnum = sendData.simnum;
+                    me.editDevData.expirenotifytime = sendData.expirenotifytime;
+                    me.expirenotifytime = sendData.expirenotifytime;
                     utils.changeGroupsDevName(sendData, me.groups);
                     me.editDevModal = false;
                     me.$Message.success(me.$t("message.changeSucc"));
                     me.deviceInfos[data.deviceid].simnum = sendData.simnum;
                     me.deviceInfos[data.deviceid].remark = sendData.remark;
                     me.deviceInfos[data.deviceid].expirenotifytime = data.expirenotifytime;
+
                     var record = me.getSingleDeviceInfo(data.deviceid);
                     if (record) {
                         me.positionLastrecords[data.deviceid].devicename = sendData.devicename;
