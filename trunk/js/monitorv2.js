@@ -2800,9 +2800,6 @@ var monitor = {
                     var devicename = device.devicename;
                     var devicetype = device.devicetype;
                     var deviceid = device.deviceid;
-                    if (!device.icon) {
-                        device.icon = 0;
-                    }
                     carIconTypes[deviceid] = device.icon;
                     device.isSelected = false;
                     device.firstLetter = __pinyin.getFirstLetter(devicename);
@@ -3515,6 +3512,9 @@ var monitor = {
         },
         getCarMarkerImgSrc: function(track) {
             var deviceid = track.deviceid;
+            if (carIconTypes[deviceid] == undefined) {
+                console.log(deviceid);
+            }
             var iconType = carIconTypes[deviceid] !== undefined ? carIconTypes[deviceid] : 0;
             var imagekey = "";
             imagekey = track.online + "-" + track.moving + "-" + iconType;
