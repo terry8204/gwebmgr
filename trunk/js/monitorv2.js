@@ -2722,7 +2722,6 @@ var monitor = {
             })
         },
         updateMarkerLabel: function(track, deviceInfo) {
-            console.log(track);
             var deviceid = deviceInfo.deviceid;
             var devicename = deviceInfo.devicename;
             if (this.isShowLabel) {
@@ -2801,6 +2800,9 @@ var monitor = {
                     var devicename = device.devicename;
                     var devicetype = device.devicetype;
                     var deviceid = device.deviceid;
+                    if (!device.icon) {
+                        device.icon = 0;
+                    }
                     carIconTypes[deviceid] = device.icon;
                     device.isSelected = false;
                     device.firstLetter = __pinyin.getFirstLetter(devicename);
@@ -3513,12 +3515,12 @@ var monitor = {
         },
         getCarMarkerImgSrc: function(track) {
             var deviceid = track.deviceid;
+            var iconType = carIconTypes[deviceid] !== undefined ? carIconTypes[deviceid] : 0;
             var imagekey = "";
-            imagekey = track.online + "-" + track.moving + "-" + carIconTypes[deviceid];
+            imagekey = track.online + "-" + track.moving + "-" + iconType;
             var cacheIcon = gMapIconList[imagekey];
             if (!cacheIcon) {
                 var imgPath = '';
-
                 if (utils.isLocalhost()) {
                     imgPath = myUrls.viewhost + 'images/carstate'
                 } else {
@@ -3526,13 +3528,13 @@ var monitor = {
                 }
                 if (track.online) {
                     if (track.moving == 0) {
-                        imgPath += '/' + carIconTypes[deviceid] + '_red_0.png'
+                        imgPath += '/' + iconType + '_red_0.png'
                     } else {
-                        imgPath += '/' + carIconTypes[deviceid] + '_green_0.png'
+                        imgPath += '/' + iconType + '_green_0.png'
                     }
 
                 } else {
-                    imgPath += '/' + carIconTypes[deviceid] + '_gray_0.png'
+                    imgPath += '/' + iconType + '_gray_0.png'
                 }
 
                 cacheIcon = imgPath;
