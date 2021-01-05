@@ -2702,7 +2702,7 @@ var monitor = {
                     me.editDeviceInfo.title = sendData.devicename;
                     me.editDeviceInfo.simnum = sendData.simnum;
                     me.editDevData.expirenotifytime = sendData.expirenotifytime;
-                    me.expirenotifytime = sendData.expirenotifytime;
+                    me.expirenotifytime = new Date(sendData.expirenotifytime);
                     utils.changeGroupsDevName(sendData, me.groups);
                     me.editDevModal = false;
                     me.$Message.success(me.$t("message.changeSucc"));
