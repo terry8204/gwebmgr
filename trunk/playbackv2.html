@@ -59,7 +59,7 @@
             border-bottom: 1px solid #E0E0E0;
         }
         
-        @media screen and (max-height: 780px) {
+        @media screen and (max-height: 830px) {
             /*当屏幕尺寸小于600px时，应用下面的CSS样式*/
             #container div.ctrl-wraper {
                 overflow-y: auto;
@@ -418,9 +418,17 @@
                 </div>
                 <div>
                     <Row>
-                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("main.selectTime")}} : &nbsp;</i-col>
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("main.startTime")}} : &nbsp;</i-col>
                         <i-col span="19" style="height: 100%;line-height:32px;">
-                            <Time-Picker type="timerange" v-model="timeValue" style="width: 100%"></Time-Picker>
+                            <Date-Picker type="datetime" v-model="startTimeValue" style="width: 100%">
+                            </Date-Picker>
+                        </i-col>
+                    </Row>
+                    <Row style="margin-top: 10px;">
+                        <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("main.endTime")}} : &nbsp;</i-col>
+                        <i-col span="19" style="height: 100%;line-height:32px;">
+                            <Date-Picker type="datetime" v-model="endTimeValue" style="width: 100%">
+                            </Date-Picker>
                         </i-col>
                     </Row>
                 </div>
@@ -512,7 +520,6 @@
                     </Row>
                 </div>
                 <div style="position: absolute; right:20px;top:20px;">
-
                     <div>
                         <selected-map @select-map="onSelectMap" @switch-traffic="onSwitchTraffic"></selected-map>
                     </div>
@@ -692,6 +699,8 @@
 
                     selectDate: "Select Date",
                     selectTime: "Select Time",
+                    startTime: "Start Time",
+                    endTime: "End Time",
                     trackType: "Track Type",
                     prevDay: "Prev Day",
                     nextDay: "Next Day",
@@ -748,6 +757,8 @@
 
                     selectDate: "选择日期",
                     selectTime: "选择时间",
+                    startTime: "开始时间",
+                    endTime: "结束时间",
                     trackType: "轨迹精度",
                     prevDay: "上一天",
                     nextDay: "下一天",
@@ -899,6 +910,7 @@
                     trackid: '',
                     trackStringify: "",
 
+
                     queryLoading: false,
                     idx: 0,
                     isPlaying: false,
@@ -920,6 +932,8 @@
                     weekList: isZh ? ["日", "一", "二", "三", "四", "五", "六"] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
                     datesArr: [],
                     timeValue: ['00:00:00', '23:59:59'],
+                    startTimeValue: DateFormat.format(new Date(), 'yyyy-MM-dd') + " 00:00:00",
+                    endTimeValue: DateFormat.format(new Date(), 'yyyy-MM-dd') + " 23:59:59",
                     tabActive: 'chart',
                     columns: [{
                         title: isZh ? '序号' : 'index',
@@ -1090,6 +1104,9 @@
                     onClickDate(item) {
                         if (!item.isTheMonth) return;
                         this.date = item.day;
+                        var dateStr = this.year + '-' + this.month + '-' + this.date;
+                        this.startTimeValue = new Date(dateStr + " 00:00:00");
+                        this.endTimeValue = new Date(dateStr + " 23:59:59");
                         this.queryTracks();
                     },
                     prevMonth() {
@@ -1457,13 +1474,11 @@
                             if (records) {
                                 records.forEach(function(item) {
                                     if (item) {
-                                        // console.log("item",item,typeof item.totaldistance);
                                         if (item.totaldistance == 0) {
                                             me.mileageMonthRecord[item.day] = '0.0';
                                         } else {
                                             me.mileageMonthRecord[item.day] = (item.totaldistance / 1000).toFixed(1);
                                         }
-
                                     }
                                 })
                             }
@@ -1477,11 +1492,16 @@
                             if (item.isTheMonth) {
                                 var day = item.day;
                                 var key = item.dateStr;
+                                var dateArr = key.split('-');
+                                var month = dateArr[1];
                                 if (day < 10) {
-                                    var dateArr = key.split('-');
                                     dateArr[2] = '0' + day;
-                                    key = dateArr.join('-');
+
                                 }
+                                if (month < 10) {
+                                    dateArr[1] = '0' + month;
+                                }
+                                key = dateArr.join('-');
                                 var mileage = this.mileageMonthRecord[key];
                                 item.mileage = mileage;
                             }
@@ -1507,8 +1527,8 @@
                             deviceid: this.deviceid,
                             lbs: 1,
                             timeorder: 0,
-                            begintime: this.dateStr + ' ' + this.timeValue[0],
-                            endtime: this.dateStr + ' ' + this.timeValue[1],
+                            begintime: DateFormat.longToDateTimeStr(this.startTimeValue, timeDifference),
+                            endtime: DateFormat.longToDateTimeStr(this.endTimeValue, timeDifference),
                         };
                         utils.sendAjax(url, data, function(resp) {
                             me.loading = false;
