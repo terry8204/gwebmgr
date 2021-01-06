@@ -59,7 +59,7 @@
             border-bottom: 1px solid #E0E0E0;
         }
         
-        @media screen and (max-height: 804px) {
+        @media screen and (max-height: 770px) {
             /*当屏幕尺寸小于600px时，应用下面的CSS样式*/
             #container div.ctrl-wraper {
                 overflow-y: auto;
@@ -75,7 +75,7 @@
         
         div.ctrl-wraper>div {
             width: 301px;
-            margin: 10px;
+            margin: 5px 10px;
         }
         
         div.ctrl-wraper .device {
@@ -101,7 +101,7 @@
         
         div.calendar {
             width: 301px;
-            margin: 10px 10px 0 10px;
+            margin: 5px 10px 0 10px;
         }
         
         div.calendar-header {
@@ -424,7 +424,7 @@
                             </Date-Picker>
                         </i-col>
                     </Row>
-                    <Row style="margin-top: 10px;">
+                    <Row style="margin-top: 5px;">
                         <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("main.endTime")}} : &nbsp;</i-col>
                         <i-col span="19" style="height: 100%;line-height:32px;">
                             <Date-Picker type="datetime" v-model="endTimeValue" style="width: 100%">
@@ -435,8 +435,8 @@
                 <div>
                     <div>
                         <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("main.trackType")}} : &nbsp;</i-col>
-                            <i-col span="19" style="height: 100%;line-height:32px;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:28px;">{{$t("main.trackType")}} : &nbsp;</i-col>
+                            <i-col span="19" style="height: 100%;line-height:28px;">
                                 <Radio-Group v-model="trackType">
                                     <Radio label="exact" style="width:71.34px;">
                                         <span>GPS</span>
@@ -450,8 +450,8 @@
                     </div>
                     <div>
                         <Row>
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("main.showLine")}} : &nbsp;</i-col>
-                            <i-col span="19" style="height: 100%;line-height:32px;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:28px;">{{$t("main.showLine")}} : &nbsp;</i-col>
+                            <i-col span="19" style="height: 100%;line-height:28px;">
                                 <Radio-Group v-model="isShowAllLine">
                                     <Radio label="yes" style="width:71.34px;">
                                         <span>{{$t("main.yes")}}</span>
