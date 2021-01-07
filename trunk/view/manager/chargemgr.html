@@ -13,6 +13,7 @@
         </div>
         <div style="margin-left:10px;float: left;line-height: 32px;position: relative;width: 90px;">
             <i-select v-model="maturityType">
+                <i-option value="2">{{$t("charge.all")}}</i-option>
                 <i-option value="0">{{$t("charge.expired")}}</i-option>
                 <i-option value="1">{{$t("charge.unexpired")}}</i-option>
             </i-select>
@@ -220,7 +221,7 @@
                 tableHeight: 300,
                 tableData: [],
                 loading: false,
-                maturityType: '0',
+                maturityType: '2',
                 bonuspoints: 0,
             },
             methods: {
@@ -261,6 +262,8 @@
                     var overduedays = this.dayNumbers;
                     if (this.maturityType == '0') {
                         overduedays = -overduedays;
+                    } else if (this.maturityType == '2') {
+                        overduedays = 0;
                     };
                     var data = {
                         username: this.createrToUser, // 需要查询的账号

@@ -1144,6 +1144,7 @@
                 downloadTips5: 'The end time cannot be greater than the end time of the file',
             },
             charge: {
+                all: 'All',
                 expired: 'Expired',
                 unexpired: 'Unexpired',
                 days: 'Days',
@@ -2306,6 +2307,7 @@
                 downloadTips5: '结束时间不能大于文件结束时间',
             },
             charge: {
+                all: '全部',
                 expired: '已过期',
                 unexpired: '未过期',
                 days: '天数',
