@@ -35,7 +35,7 @@
     <div style="padding: 0 10px 10px 10px;">
         {{$t("reportForm.total")}} <span v-text="total"></span>
     </div>
-    <Modal v-model="modal" width="760" v-cloak :mask-closable="false">
+    <Modal v-model="modal" width="860" v-cloak :mask-closable="false">
         <p slot="header" style="color:#2D8CF0;text-align:center">
             {{$t("charge.deviceList")}}
         </p>
@@ -47,22 +47,24 @@
         </div>
         <div style="height: 401px;overflow-y: auto;" v-else>
             <Row style="border-top:1px solid #E8EAEC;border-left:1px solid #E8EAEC;">
-                <i-col span="2" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">序号</i-col>
-                <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">设备序号</i-col>
+                <i-col span="1" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">序号</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">设备序号</i-col>
                 <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">设备类型</i-col>
-                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">金豆数</i-col>
+                <i-col span="2" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">金豆数</i-col>
                 <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">续费年数</i-col>
                 <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">总金豆数</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">充值时间</i-col>
                 <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">充值前</i-col>
                 <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">充值后</i-col>
             </Row>
             <Row style="border-left:1px solid #E8EAEC;" v-for="item in deviceids" :key="item">
-                <i-col span="2" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.index}}</i-col>
-                <i-col span="4" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.deviceid}}</i-col>
+                <i-col span="1" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.index}}</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.deviceid}}</i-col>
                 <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.devicetypename}}</i-col>
-                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.peryearpoints}}</i-col>
+                <i-col span="2" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.peryearpoints}}</i-col>
                 <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.chargeyears}}</i-col>
                 <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.chargepoints}}</i-col>
+                <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.chargetime}}</i-col>
                 <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.preoverduetime}}</i-col>
                 <i-col span="3" style="height: 100%;line-height:24px;text-align:center;border-bottom:1px solid #E8EAEC;border-right:1px solid #E8EAEC;">{{item.postoverduetime}}</i-col>
             </Row>
@@ -160,6 +162,7 @@
                                     chargeyears: item.chargeyears,
                                     chargepoints: item.chargepoints,
                                     preoverduetime: DateFormat.longToDateStr(item.preoverduetime, timeDifference),
+                                    chargetime: DateFormat.longToDateStr(item.chargetime, timeDifference),
                                     postoverduetime: DateFormat.longToDateStr(item.postoverduetime, timeDifference),
                                 })
                             })

@@ -211,6 +211,35 @@
                     title: vRoot.$t('user.devType'),
                     key: 'devicetype',
                 }, {
+                    title: vRoot.$t('charge.useState'),
+                    key: 'isfree',
+                    render: function(h, params) {
+                        var isfree = params.row.isfree;
+                        var str = '';
+                        switch (isfree) {
+                            case 1:
+                                str = vRoot.$t("charge.normalUse")
+                                break;
+                            case 2:
+                                str = vRoot.$t("charge.experiencing")
+                                break;
+                            case 3:
+                                str = vRoot.$t("charge.deviceDisabled")
+                                break;
+                            case 4:
+                                str = vRoot.$t("charge.deviceExpiration")
+                                break;
+                            case 5:
+                                str = vRoot.$t("charge.deviceExpired")
+                                break;
+                        }
+                        return h('span', {}, str)
+                    },
+                }, {
+                    title: vRoot.$t('alarm.createTime'),
+                    sortable: true,
+                    key: 'createtimeStr'
+                }, {
                     title: vRoot.$t('alarm.overdueTime'),
                     sortable: true,
                     key: 'overduedate'
@@ -285,7 +314,9 @@
                                         devicetypeid: item.devicetype,
                                         chargestatus: item.chargestatus,
                                         overduedate: DateFormat.longToDateStr(item.overduetime, timeDifference),
+                                        createtimeStr: DateFormat.longToDateStr(item.createtime, timeDifference),
                                         overduetime: item.overduetime,
+                                        isfree: item.isfree,
                                         price: me.priceObj[item.devicetype].price
                                     });
                                 });
