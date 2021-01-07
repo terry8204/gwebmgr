@@ -608,7 +608,7 @@ var utils = {
         };
 
         var status = track.status; //status&0x04 代表定位有效
-        if (status & 0x04 != 0x04) {
+        if ((status & 0x04) != 0x04) {
             posiType += " <span style='color:#515A6E; display: inline-block;height:18px;padding:0 2px; background:#FFF9E6;border:1px solid #FFD77A;border-radius: 3px;'>无效定位<span>"
         }
 
