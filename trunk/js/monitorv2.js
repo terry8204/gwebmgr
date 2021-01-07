@@ -2207,12 +2207,12 @@ var monitor = {
                         group.devices.forEach(function(device, index) {
                             var isOnline = me.getIsOnline(device.deviceid, currentTime);
                             device.isOnline = isOnline;
-                            if (isOnline && index < 10) {
+                            if (isOnline && cloneGroup.devices.length < 10) {
                                 cloneGroup.devices.push(device);
                             }
                         })
                         if (cloneGroup.devices.length > 0) {
-                            filterData.push(group);
+                            filterData.push(cloneGroup);
                         }
                     } else if (me.selectedState == "offline") {
 
@@ -2220,12 +2220,12 @@ var monitor = {
                         group.devices.forEach(function(device, index) {
                             var isOnline = me.getIsOnline(device.deviceid, currentTime);
                             device.isOnline = isOnline;
-                            if (!isOnline && index < 10) {
+                            if (!isOnline && cloneGroup.devices.length < 10) {
                                 cloneGroup.devices.push(device);
                             }
                         })
                         if (cloneGroup.devices.length > 0) {
-                            filterData.push(group);
+                            filterData.push(cloneGroup);
                         }
                     };
                 } else {
