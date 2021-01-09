@@ -851,6 +851,9 @@ var myUrls = {
     queryChargeDeviceRecords: function() {
         return this.apihosts + 'webapi?action=querychargedevicerecords&token=' + token;
     },
+    queryDirectDevicesForDatav: function() {
+        return this.apihosts + 'webapi?action=querydirectdevicesfordatav&token=' + token;
+    },
 }
 
 

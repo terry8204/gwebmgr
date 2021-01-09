@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧看板</title>
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,
+        body,
+        #container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #container .ivu-layout-header {
+            padding: 0px;
+            height: 60px;
+        }
+        
+        .padding-10 {
+            padding: 10px;
+        }
+        
+        .full {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .app-header {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-image: url(./images/header_bg.jpg);
+            background-size: cover;
+            color: #fff;
+        }
+        
+        .app-header .ivu-menu-dark {
+            background: transparent;
+        }
+        
+        .logo {
+            height: 100%;
+            float: left;
+            margin-left: 20px;
+            overflow: hidden;
+        }
+        
+        .layout-nav {
+            float: left;
+        }
+        
+        .logo img {
+            border: 0;
+        }
+        
+        #container .ivu-card-body {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <Layout class="full">
+            <i-header>
+                <div class="full app-header">
+                    <div class="logo">
+                        <img :src="mainLogo" width="50px" height="50px" style="margin-top:5px" />
+                    </div>
+                    <div class="layout-nav">
+                        <i-menu mode="horizontal" theme="dark" active-name="1">
+                            <div class="layout-nav">
+                                <Menu-Item name="1">
+                                    <Icon type="ios-navigate"></Icon>
+                                    新增设备
+                                </Menu-Item>
+                                <Menu-Item name="2">
+                                    <Icon type="ios-keypad"></Icon>
+                                    在线设备
+                                </Menu-Item>
+                            </div>
+                        </i-menu>
+                    </div>
+                </div>
+            </i-header>
+            <i-Content :style="{padding: '0 10px'}">
+                <Row style="height: 50%;">
+                    <i-col span="12" class="padding-10" style="height: 100%;">
+                        <Card class="full">
+                            <div id="daily-installation" class="full"></div>
+                        </Card>
+                    </i-col>
+                    <i-col span="12" class="padding-10" style="height: 100%;">
+                        <Card class="full">
+                            <div id="month-installation" class="full"></div>
+                        </Card>
+                    </i-col>
+                </Row>
+                <Row style="height: 50%;">
+                    <i-col span="12" class="padding-10" style="height: 100%;">
+                        <Card class="full">
+                            <router-view></router-view>
+                        </Card>
+                    </i-col>
+                    <i-col span="12" class="padding-10" style="height: 100%;">
+                        1212
+                    </i-col>
+                </Row>
+            </i-Content>
+        </Layout>
+    </div>
+
+    <script type="text/x-template" id="new-add-template">
+        <div>
+            <h1>new-add-template</h1>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="online-template">
+        <div>
+            <h1>online-template</h1>
+        </div>
+    </script>
+
+    <script src="dist/vue.min.js"></script>
+    <script src="dist/vue-router.min.js"></script>
+    <script src="dist/vuex.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/vue-i18n.min.js"></script>
+    <script src="./js/echarts.min.js"></script>
+    <script src="./js/gps51-jquery.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/language.js"></script>
+    <script src="./js/dateformat.js"></script>
+    <script src="./js/util.js"></script>
+    <script>
+        var token = utils.getParameterByName('token');
+
+        var router = new VueRouter({
+            routes: [{
+                path: '/',
+                component: {
+                    template: document.getElementById('new-add-template')
+                }
+            }, {
+                path: '/online',
+                component: {
+                    template: document.getElementById('online-template')
+                }
+            }]
+        });
+
+
+        var store = new Vuex.Store({
+            state: {},
+            actions: {},
+            mutations: {},
+            getters: {},
+        });
+
+
+        var vRoot = new Vue({
+            el: "#container",
+            store: store,
+            router: router,
+            data: {
+                mainLogo: 'custom/' + mainLogo,
+                days: 30, //默认7天
+            },
+            methods: {
+                getDailyInstallationOption: function(titleText, xAxisDate, seriesData) {
+                    return {
+                        title: {
+                            text: titleText
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        // legend: {
+                        //     data: ['新增设备']
+                        // },
+                        grid: {
+                            top: '8%',
+                            left: '4%',
+                            right: '4%',
+                            bottom: '4%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: xAxisDate
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            name: '新增设备',
+                            type: 'line',
+                            stack: '总量',
+                            data: seriesData
+                        }]
+                    };
+                },
+                getNewInstallationConut: function(isDay, groupList, dates) {
+                    function getTheMonthDays(date) {
+                        var year = date.getFullYear();
+                        var month = date.getMonth();
+                        year = month == 12 ? year + 1 : year;
+                        month = month == 12 ? 1 : month;
+                        return new Date(new Date(year, month, 1) - 1).getDate();
+                    };
+                    var counts = [];
+                    dates.forEach(function(dateStr) {
+                        if (isDay) {
+                            var startTime = new Date(dateStr).getTime();
+                            var endTime = startTime + (24 * 3600 * 1000 - 1);
+                        } else {
+                            var date = new Date(dateStr + "-01");
+                            var startTime = date.getTime();
+                            var lastDay = getTheMonthDays(date);
+                            var endTime = new Date(dateStr + "-" + lastDay).getTime() + (24 * 3600 * 1000 - 1);
+                        }
+                        var count = 0;
+                        groupList.forEach(function(group) {
+                            group.devices.forEach(function(device) {
+                                var firstloctime = device.firstloctime;
+                                if (firstloctime > 0) {
+                                    if (startTime <= firstloctime && firstloctime <= endTime) {
+                                        count++;
+                                    }
+                                }
+                            })
+                        });
+                        counts.push(count);
+                    });
+                    return counts;
+                },
+                queryDirectDevicesForDatav: function() {
+                    var me = this;
+                    var url = myUrls.queryDirectDevicesForDatav();
+                    var data = {
+                        username: this.userName
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.records && resp.records.length) {
+
+                            me.groupList = resp.records;
+
+                            var dates = me.getLatestDate();
+                            var seriesData = me.getNewInstallationConut(true, me.groupList, dates);
+                            me.dailyInstallationChart.setOption(me.getDailyInstallationOption('日新增设备', dates, seriesData))
+
+                            var months = me.getLatestMonth();
+                            var monthSeriesData = me.getNewInstallationConut(false, me.groupList, months);
+                            me.monthInstallationChart.setOption(me.getDailyInstallationOption('月新增设备', me.getLatestMonth(), monthSeriesData));
+
+                        }
+
+                    })
+                },
+                getLatestDate: function() {
+                    var dates = [];
+                    var firstDate = DateFormat.format(new Date(Date.now() - (this.days - 1) * 24 * 3600 * 1000), 'yyyy-MM-dd');
+                    for (var i = 0; i < this.days; i++) {
+                        var date = DateFormat.addDay(new Date(firstDate), i);
+                        var dateStr = DateFormat.format(date, 'yyyy-MM-dd');
+                        dates.push(dateStr);
+                    }
+                    return dates;
+                },
+                getLatestMonth: function() {
+                    var datelist = []
+                    for (var i = 0; i < 12; i++) {
+                        var date = new Date();
+                        date.setMonth(date.getMonth() - i);
+                        var befD = date.getFullYear() + "-" + (date.getMonth() + 1);
+                        datelist.push(befD);
+                    }
+                    return datelist.reverse();
+                },
+                init: function() {
+                    this.groupList = [];
+                    this.userName = utils.getParameterByName('username');
+                    this.queryDirectDevicesForDatav();
+                    //每日新增
+                    this.dailyInstallationChart = echarts.init(document.getElementById('daily-installation'));
+                    this.dailyInstallationChart.setOption(this.getDailyInstallationOption('日新增设备', this.getLatestDate(), []));
+                    //每月新增
+                    this.monthInstallationChart = echarts.init(document.getElementById('month-installation'));
+                    this.monthInstallationChart.setOption(this.getDailyInstallationOption('月新增设备', this.getLatestMonth(), []));
+
+                }
+            },
+            mounted: function() {
+                this.init();
+            }
+        })
+    </script>
+</body>
+
+</html>

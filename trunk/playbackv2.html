@@ -725,6 +725,7 @@
                     totalOil: 'Total oil',
                     oil1: "oil1",
                     oil2: "oil2",
+                    status: "status",
                     oil: "oil",
                     speed: 'Speed',
                     mileage: 'Mileage',
@@ -783,6 +784,7 @@
                     totalOil: '总油液',
                     oil1: "油液1",
                     oil2: "油液2",
+                    status: "状态码",
                     oil: "油液",
                     speed: '速度',
                     mileage: '里程',
@@ -1203,6 +1205,7 @@
                         this.oil = [];
                         this.oil1 = [];
                         this.oil2 = [];
+                        this.devStates = [];
                         this.charts = echarts.init(document.getElementById('charts'));
                         this.charts.setOption(this.getChartsOption());
                         this.charts.getZr().on('click', function(params) {
@@ -1245,6 +1248,7 @@
                         var usoil1 = this.$t('main.oil1');
                         var usoil2 = this.$t('main.oil2');
                         var cotgasus = this.$t('main.oil');
+                        var status = this.$t('main.status');
                         var option = {
                             backgroundColor: '#F9F9F9',
                             title: {
@@ -1396,6 +1400,13 @@
                                     symbol: 'none',
                                     color: '#FF4500',
                                     data: this.oil2
+                                }, {
+                                    //show:'false',
+                                    name: status,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    color: '#000',
+                                    data: this.devStates
                                 },
                             ]
                         };
@@ -1411,6 +1422,7 @@
                         var oil = []; //速度
                         var oil1 = []; //速度
                         var oil2 = []; //速度
+                        var devStates = [];
                         this.disMin = 0;
                         var totalDistanceMin = 0;
                         records.forEach(function(item, index) {
@@ -1429,6 +1441,7 @@
                             item.ad1 = ad1 / 100;
                             oil1.push(item.ad0);
                             oil2.push(item.ad1);
+                            devStates.push(item.strstatus);
                             oil.push(item.ad0 + item.ad1);
                             recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
                             veo.push((item.speed / 1000).toFixed(2));
@@ -1441,6 +1454,7 @@
                         this.oil = oil;
                         this.oil1 = oil1;
                         this.oil2 = oil2;
+                        this.devStates = devStates;
                         this.recorderspeed = recorderspeed;
 
                         this.charts.setOption(this.getChartsOption());

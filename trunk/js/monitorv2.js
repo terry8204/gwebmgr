@@ -2924,6 +2924,9 @@ var monitor = {
         echartsMapPage: function() {
             window.open('datav.html?token=' + token);
         },
+        smartKanbanPage: function() {
+            window.open('smartkanban.html?token=' + token + '&username=' + userName);
+        },
         addDeviceExpirationReminder: function(device) {
             if (device.isfree == 3) {
                 device.devicetitle = device.devicename + this.$t("monitor.deviceDisabled");
