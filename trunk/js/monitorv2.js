@@ -1842,7 +1842,7 @@ var monitor = {
                 } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                     that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
-                    resp.overdueDateStr = DateFormat.longToDateStr(resp.overduetime, timeDifference);
+                    resp.overdueDateStr = DateFormat.longToDateStr(resp.expirenotifytime, timeDifference);
                     that.deviceBaseInfo = resp;
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                     that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
