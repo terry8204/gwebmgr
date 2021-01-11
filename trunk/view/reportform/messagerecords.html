@@ -61,9 +61,12 @@
         <div style="margin-left:10px;float: left;">
             <i-button @click="filterTypeDesc">{{$t("reportForm.filter")}}</i-button>
         </div>
+        <div style="margin-left:20px;float: right;">
+            <i-button @click="exportData" icon="ios-search" type="primary">{{$t("reportForm.exportData")}}</i-button>
+        </div>
     </div>
     <div style="margin:10px;">
-        <i-table :columns="columns" :height="tableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
+        <i-table ref="table" :columns="columns" :height="tableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
     </div>
     <div style="padding-left:10px;">
         <Page :total="total" show-total @on-change="onChange" :page-size="20" :current="currentIndex" />

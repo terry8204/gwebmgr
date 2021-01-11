@@ -2853,6 +2853,20 @@ function messageRecords(groupslist) {
             filterStr: '',
         },
         methods: {
+            exportData: function() {
+                var columns = [
+                    { title: vRoot.$t("reportForm.trackid"), key: 'trackid', fixed: 'left', width: 80 },
+                    { title: vRoot.$t("reportForm.updatetimeStr"), key: 'updatetimeStr', width: 160 },
+                    { title: vRoot.$t("reportForm.packetdescr"), key: 'packetdescr', width: 160 },
+                ];
+
+                this.$refs.table.exportCsv({
+                    filename: this.queryDeviceId + (isZh ? '-报文' : '-Records'),
+                    original: false,
+                    columns: columns,
+                    data: this.data
+                });
+            },
             onRowClick: function(row) {
                 var me = this;
                 this.isShowCard = true;
@@ -2936,7 +2950,7 @@ function messageRecords(groupslist) {
                             var type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
                             record.messagetype = type;
                             record.reportmodeStr = getReportModeStr(record.reportmode);
-                            record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                            record.updatetimeStr = '\t' + DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                         });
                         resp.records.sort(function(a, b) {
                             return b.updatetime - a.updatetime;
