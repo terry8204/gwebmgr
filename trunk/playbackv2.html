@@ -734,6 +734,13 @@
                     slow: 'slow',
                     middle: 'middle',
                     fast: 'fast',
+
+                },
+                reportForm: {
+                    d: "day",
+                    h: "h",
+                    m: "m",
+                    s: "s",
                 }
 
             },
@@ -793,6 +800,12 @@
                     slow: '慢',
                     middle: '中',
                     fast: '快',
+                },
+                reportForm: {
+                    d: "天",
+                    h: "小时",
+                    m: "分",
+                    s: "秒",
                 }
             }
         };
@@ -1561,12 +1574,64 @@
                             }
                         });
                     },
+                    getParkingMarkers: function(tracks) {
+                        var me = this;
+                        var rarkingMarkers = [];
+                        var fiveMinutes = 60 * 5 * 1000;
+                        tracks.forEach(function(item) {
+                            var rarkingTime = item.endtime - item.starttime;
+                            var marker = null;
+                            if (rarkingTime > fiveMinutes * 12) {
+                                marker = me.createMarker(item, false, './images/stop_red_32.png', 0);
+                            } else if (rarkingTime > fiveMinutes * 6) {
+                                marker = me.createMarker(item, false, './images/stop_yellow_32.png', 0);
+                            } else if (rarkingTime > fiveMinutes) {
+                                marker = me.createMarker(item, false, './images/stop_green_32.png', 0);
+                            }
+                            if (marker != null) {
+                                var callon = item.callon;
+                                var callat = item.callat;
+                                var address = LocalCacheMgr.getAddress(callon, callat);
+                                if (address == null) {
+
+                                    utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                        address = resp.address;
+                                        if (resp.status > 9900) {
+                                            console.log('getJiuHuAddressSyn token失效,请重新登录')
+                                        } else if (resp.status == 0 && address) {
+                                            LocalCacheMgr.setAddress(callon, callat, address);
+                                        } else {
+                                            console.log('getJiuHuAddressSyn 查询地址失败')
+                                        }
+                                    });
+                                }
+
+                                marker.on('click', function() {
+                                    var sContent = me.getInfoWindowContent(item);
+                                    marker.setInfoWindow({
+                                        'content': sContent,
+                                        'width': 330,
+                                        'autoOpenOn': 'click', //set to null if not to open when clicking on marker
+                                        'autoCloseOn': false, //set to null if not to open when clicking on marker
+                                        'animation': false,
+                                        'autoPan': false,
+                                        'animationDuration': 0,
+                                    });
+                                    marker.openInfoWindow();
+                                }, false);
+                                rarkingMarkers.push(marker);
+                            }
+                        });
+                        return rarkingMarkers;
+                    },
                     initMapView: function() {
 
                         // 清除之前的图层
                         if (this.markerLayer !== null) {
                             this.map.removeLayer(this.markerLayer);
                         }
+
+                        this.map.removeLayer('parkingMarkers');
 
                         // 得到当前类型轨迹
                         var tracks = this.getTypeRecords();
@@ -1577,13 +1642,19 @@
 
                         // 创建地图上所有marker    
                         this.carMarker = this.createMarker(tracks[this.currentMarkerIndex], true, './images/carstate/0_green_0.png', 15);
-                        this.startMarker = this.createMarker(tracks[0], false, './images/icon_st.png', 0);
-                        this.endMarker = this.createMarker(tracks[tracks.length - 1], false, './images/icon_en.png', 0);
+                        this.startMarker = this.createMarker(tracks[0], false, './images/map/marker_qidian.png', 0);
+                        this.endMarker = this.createMarker(tracks[tracks.length - 1], false, './images/map/marker_zhongdian.png', 0);
 
                         // 创建marker图层并添加到地图    
                         this.markerLayer = new maptalks.VectorLayer('marker', [this.startMarker, this.endMarker, this.carMarker]);
                         this.markerLayer.setZIndex(999)
                         this.markerLayer.addTo(this.map);
+
+                        //得到停留的Markers 并添加到地图   
+                        var parkingMarker = this.getParkingMarkers(tracks);
+                        var parkingVectorLayer = new maptalks.VectorLayer('parkingMarkers', parkingMarker);
+                        parkingVectorLayer.setZIndex(999)
+                        parkingVectorLayer.addTo(this.map);
 
 
                         var sContent = this.getInfoWindowContent(tracks[0]);
@@ -2026,6 +2097,7 @@
                         var posiType = utils.getPosiType(info);
                         var color = '#515A6E';
                         var strstatus = null;
+                        var parkingTime = info.endtime - info.starttime;
                         currentTrack = info;
                         if (info.radius > 0) {
                             var radiuDesc = null;
@@ -2061,6 +2133,7 @@
                             '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + (info.totaldistance == 0 ? 0 : info.totaldistance) + 'km</p>' +
                             '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(info.updatetime, timeDifference) + '</p>' +
                             '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
+                            (parkingTime > 60 * 1000 * 5 ? '<p> ' + (isZh ? '停留时间' : 'Parking time') + ': ' + utils.timeStamp(parkingTime) + '</p>' : '') +
                             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + address + '</p>' +
                             '<p>' +
                             '<span style="margin-right:5px;" class="ivu-btn ivu-btn-default ivu-btn-small" onclick="queryTrackDetail(' + deviceid + ')">' + (isZh ? '详细信息' : 'Detailed info') + '</span>' +
@@ -2068,6 +2141,15 @@
                             '</p>' +
                             '</div>';
                         return sContent;
+                    },
+                    getRarkingWindowContent: function(info) {
+                        // var address = this.getAddress(info);
+                        var sContent = '<div>' +
+                            '<p> ' + (isZh ? '开始时间' : 'Start time') + ': ' + DateFormat.longToDateTimeStr(info.starttime, timeDifference) + '</p>' +
+                            '<p> ' + (isZh ? '结束时间' : 'End time') + ': ' + DateFormat.longToDateTimeStr(info.endtime, timeDifference) + '</p>' +
+                            '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + 'address' + '</p>' +
+                            '</div>';
+                        return sContent
                     },
                     addDistanceTool: function() {
                         this.distanceTool = new maptalks.DistanceTool({
