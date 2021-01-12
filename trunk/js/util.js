@@ -1240,7 +1240,6 @@ var utils = {
         });
     },
     pointInPolygon: function(lat, lon, polylatList, polylonList) {
-
         var polySides = polylatList.length;
         var i, j = polySides - 1;
         var oddNodes = false;
@@ -1498,7 +1497,13 @@ function refreshPostion(deviceid) {
 
 // 设置围栏
 function setFence(deviceid) {
-    var url = myUrls.viewhosts + 'setfencemulti.html?deviceid=' + deviceid + '&token=' + token;
+    var track = vRoot.$children[1].positionLastrecords[deviceid];
+    var b_lat = track.b_lat;
+    var b_lon = track.b_lon;
+    var course = track.course;
+    var devicename = track.devicename;
+    var iconType = carIconTypes[deviceid] !== undefined ? carIconTypes[deviceid] : 0;
+    var url = myUrls.viewhosts + 'setfencemulti.html?deviceid=' + deviceid + '&token=' + token + '&lat=' + b_lat + '&lon=' + b_lon + '&icontype=' + iconType + '&course=' + course + '&devicename=' + devicename;
     window.open(url);
 }
 

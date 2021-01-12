@@ -469,9 +469,15 @@
         <div id="controller">
             <div class="controller-inner">
                 <Row style="padding:0 0 10px 0">
+                    <i-col :span="8">
+                        设备名称 ：{{devicename}}
+                    </i-col>
+                    <i-col :span="8">
+                        设备序号 ：{{deviceid}}
+                    </i-col>
+                </Row>
+                <Row style="padding:0 0 10px 0">
                     <i-col :span="6" style="text-align:center;">
-
-
                         <i-button style="width:100px;" @click="drawCircular" icon="md-add">{{ isZh ? '圆' : 'Circle'}}</i-button>
                     </i-col>
                     <i-col :span="6" style="text-align:center;">
@@ -622,6 +628,11 @@
 
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
+        var lat = utils.getParameterByName("lat");
+        var lon = utils.getParameterByName("lon");
+        var icontype = utils.getParameterByName("icontype");
+        var course = utils.getParameterByName("course");
+        var devicename = utils.getParameterByName("devicename");
         var map = null;
         var vRoot = null;
         var rowData = null;
@@ -716,6 +727,8 @@
                 el: "#container",
                 data: {
                     isZh: isZh,
+                    devicename: devicename,
+                    deviceid: deviceid,
                     tipTitle: isZh ? "多边形提示" : "Polygon tips",
                     tipContent: isZh ? '点击多边形按钮,单击画图,双击结束' : 'Click the polygon button, click draw, double-click to finish',
                     isEidt: false,
@@ -815,6 +828,7 @@
                                                             vRoot.tableData.splice(index, 1);
                                                             vRoot.$Message.success(isZh ? "删除成功" : 'Deletion succeeded');
                                                             vRoot.map.clearOverlays();
+                                                            vRoot.map.addOverlay(vRoot.currentCarMarker)
                                                         } else {
                                                             vRoot.$Message.success(isZh ? "删除失败" : 'Deletion failed');
                                                         }
@@ -895,6 +909,7 @@
                             if (self.type !== 2) return;
                             drawingManager.close();
                             self.map.clearOverlays();
+                            self.map.addOverlay(self.currentCarMarker)
                         });
 
                         drawingManager = new BMapLib.DrawingManager(this.map, {
@@ -913,8 +928,31 @@
                         //添加鼠标绘制工具监听事件，用于获取绘制结果  
                         drawingManager.addEventListener('polygoncomplete', this.overlaycomplete);
 
+
+                        var point = new BMap.Point(lon, lat);
+                        this.currentCarMarker = new BMap.Marker(point, {
+                            icon: new BMap.Icon(this.getIconImg(icontype), new BMap.Size(32, 32)),
+                            rotation: course
+                        });
+
+                        this.map.addOverlay(this.currentCarMarker);
+
                         map = this.map;
 
+                    },
+                    getIconImg: function(icontype) {
+
+                        var imgPath = '';
+
+                        if (utils.isLocalhost()) {
+                            imgPath = myUrls.viewhost + 'images/carstate'
+                        } else {
+                            imgPath = '../images/carstate'
+                        }
+
+                        imgPath += '/' + icontype + '_green_0.png'
+
+                        return imgPath;
                     },
                     overlaycomplete: function(overlay) {
                         var path = overlay.getPath(),
@@ -957,6 +995,7 @@
                     },
                     claerPolygon: function() {
                         this.map.clearOverlays();
+                        this.map.addOverlay(this.currentCarMarker)
                         this.drawingManager.close();
                         startDrawPolygon(BMAP_DRAWING_POLYGON);
                     },
@@ -1028,6 +1067,7 @@
                                                 me.$Message.success(isZh ? "添加成功" : "Added successfully");
                                             }
                                             me.map.clearOverlays();
+                                            me.map.addOverlay(me.currentCarMarker)
                                             me.redrawAreaAndViewPortCenter(points3Str);
                                             me.getFenceInfo();
                                         } else {
@@ -1075,6 +1115,7 @@
                         this.areaAddress = [];
                         drawingManager.close();
                         this.map.clearOverlays();
+                        this.map.addOverlay(this.currentCarMarker)
                     },
                     handleClickRow: function(row, index) {
                         rowData = row;
@@ -1082,6 +1123,7 @@
                             me = this;
                         this.$refs.selection.selectAll(false);
                         this.map.clearOverlays();
+                        this.map.addOverlay(this.currentCarMarker);
                         this.isEidt = true;
                         drawingManager.close();
                         switch (type) {
@@ -1130,6 +1172,7 @@
                         this.isCircular = false;
                         this.isPolygon = false;
                         this.map.clearOverlays();
+                        this.map.addOverlay(this.currentCarMarker)
                         drawingManager.close();
                         var me = this;
                         if (selection.length) {
@@ -1198,6 +1241,7 @@
                     drawCircular: function() {
                         drawingManager.close();
                         this.map.clearOverlays();
+                        this.map.addOverlay(this.currentCarMarker)
                         this.isEidt = false;
                         this.getMapCenterPoint();
                         this.isCircular = true;
@@ -1234,6 +1278,7 @@
                         utils.sendAjax(url, data, function(resp) {
                             if (resp.status === 0) {
                                 me.map.clearOverlays();
+                                me.map.addOverlay(me.currentCarMarker)
                                 me.getFenceInfo();
                                 me.isCircular = false;
                                 if (me.isEidt) {
@@ -1253,6 +1298,7 @@
                     drawPolygon: function() {
                         this.type = 2;
                         this.map.clearOverlays();
+                        this.map.addOverlay(this.currentCarMarker)
                         this.isCircular = false;
                         this.modal = false;
                         this.isPolygon = true;

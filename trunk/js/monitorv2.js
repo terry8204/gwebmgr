@@ -1532,10 +1532,12 @@ var monitor = {
                 adcode = this.areaAddress[2];
             }
             var isincludesub = 0;
+            me.arealoading = true;
             $.ajax({
                 url: myUrls.queryGeoJson(adcode, isincludesub),
                 async: true,
                 success: function(json) {
+                    me.arealoading = false;
                     var coordinates = me.getAllCoordinates(json);
 
                     if (me.polygonLayer) {
@@ -1543,18 +1545,27 @@ var monitor = {
                     }
                     var polygons = [];
                     var pointList = [];
+                    var totalPoints = [];
                     coordinates.forEach(function(item) {
                         polygons.push(me.getPolygon([item]));
+                        var points = [];
                         item.forEach(function(point) {
-                            pointList.push({
+                            var point = {
                                 x: point[0],
                                 y: point[1]
-                            })
+                            }
+                            pointList.push(point)
+                            points.push(point)
                         });
+                        totalPoints.push(points);
                     })
                     me.polygonLayer = new maptalks.VectorLayer('polygon', polygons);
                     me.polygonLayer.addTo(me.map);
                     me.fitExtent(pointList);
+                    me.calcAreaBaiduMarkerStatus(totalPoints);
+                },
+                error() {
+                    me.arealoading = false;
                 }
             });
         },
@@ -1587,31 +1598,39 @@ var monitor = {
                 this.map.removeLayer(this.polygonLayer);
             }
         },
-        calcAreaBaiduMarkerStatus: function(bdpoints) {
-            var polylatList = [],
-                polylonList = [];
-            bdpoints.forEach(function(item) {
-                polylatList.push(item.lat);
-                polylonList.push(item.lng);
-            });
+        calcAreaBaiduMarkerStatus: function(totalpoints) {
+            var me = this;
+            var isBMap = this.mapType == 'bMap';
+            var currentUTC = DateFormat.getCurrentUTC();
             var areaMovingCount = 0,
                 areaOfflineCount = 0,
                 areaStaticCount = 0;
-            var currentUTC = DateFormat.getCurrentUTC();
-            for (var key in this.positionLastrecords) {
-                var track = this.positionLastrecords[key];
-                if (utils.pointInPolygon(track.b_lat, track.b_lon, polylatList, polylonList)) {
-                    if (this.getIsOnline(track.deviceid, currentUTC)) {
-                        if (track.moving == 0) {
-                            areaStaticCount++;
+            totalpoints.forEach(function(points) {
+                var polylatList = [],
+                    polylonList = [];
+                points.forEach(function(item) {
+                    polylatList.push(item.y);
+                    polylonList.push(item.x);
+                });
+                for (var key in me.positionLastrecords) {
+                    var track = me.positionLastrecords[key];
+                    var lat = isBMap ? track.b_lat : track.g_lat;
+                    var lon = isBMap ? track.b_lon : track.g_lon;
+
+                    if (utils.pointInPolygon(lat, lon, polylatList, polylonList)) {
+                        if (me.getIsOnline(track.deviceid, currentUTC)) {
+                            if (track.moving == 0) {
+                                areaStaticCount++;
+                            } else {
+                                areaMovingCount++;
+                            }
                         } else {
-                            areaMovingCount++;
+                            areaOfflineCount++;
                         }
-                    } else {
-                        areaOfflineCount++;
                     }
                 }
-            }
+            })
+
             this.areaMovingCount = areaMovingCount;
             this.areaOfflineCount = areaOfflineCount;
             this.areaStaticCount = areaStaticCount;
