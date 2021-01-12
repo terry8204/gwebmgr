@@ -1523,8 +1523,14 @@ var monitor = {
         },
         handleQueryArea: function() {
             var me = this;
-
-            var adcode = this.areaAddress[2];
+            var adcode = '';
+            if (this.areaAddress.length == 1) {
+                adcode = this.areaAddress[0];
+            } else if (this.areaAddress.length == 2) {
+                adcode = this.areaAddress[1];
+            } else if (this.areaAddress.length == 3) {
+                adcode = this.areaAddress[2];
+            }
             var isincludesub = 0;
             $.ajax({
                 url: myUrls.queryGeoJson(adcode, isincludesub),
@@ -3515,9 +3521,6 @@ var monitor = {
         },
         getCarMarkerImgSrc: function(track) {
             var deviceid = track.deviceid;
-            if (carIconTypes[deviceid] == undefined) {
-                console.log(deviceid);
-            }
             var iconType = carIconTypes[deviceid] !== undefined ? carIconTypes[deviceid] : 0;
             var imagekey = "";
             imagekey = track.online + "-" + track.moving + "-" + iconType;

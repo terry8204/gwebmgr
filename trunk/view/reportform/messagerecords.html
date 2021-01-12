@@ -21,7 +21,7 @@
         <div style="float: left;">
             <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
         </div>
-        <div style="float: left;position: relative;width: 270px;">
+        <div style="float: left;position: relative;width: 240px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
                 <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
                 <transition name="fade">
@@ -42,7 +42,7 @@
             <i-button @click="cleanSelectedDev" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
         </div>
         <div style="margin-left:10px;float: left;">
-            <date-picker type="date" style="width: 150px;" v-model="startDate" :clearable="false" :editable="false"></date-picker>
+            <date-picker type="date" style="width: 120px;" v-model="startDate" :clearable="false" :editable="false"></date-picker>
         </div>
         <div style="margin-left:10px;float: left;">
             <i-button @click="prevDay">{{$t("reportForm.beforeDay")}}</i-button>
@@ -54,7 +54,7 @@
             <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="margin-left:10px;float: left;">
-            <i-input style="width:150px;" v-model.trim="filterStr" :placeholder="$t('reportForm.filter')">
+            <i-input style="width:120px;" v-model.trim="filterStr" :placeholder="$t('reportForm.filter')">
                 <Icon type="ios-search" slot="suffix" />
             </i-input>
         </div>

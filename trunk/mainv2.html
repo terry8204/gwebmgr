@@ -40,34 +40,6 @@
         <!-- <video-player></video-player> -->
     </div>
 
-    <script type="text/template" id="drawer-template">
-        <div v-transfer-dom :data-transfer="transfer">
-            <transition name="fade">
-                <div :class="maskClasses" :style="maskStyle" v-show="visible" v-if="mask" @click="handleMask"></div>
-            </transition>
-            <div :class="wrapClasses" @click="handleWrapClick">
-                <transition :name="'move-' + placement">
-                    <div :class="classes" :style="mainStyles" v-show="visible">
-                        <div :class="contentClasses" ref="content">
-                            <a class="ivu-drawer-close" v-if="closable" @click="close">
-                                <slot name="close">
-                                    <Icon type="ios-close"></Icon>
-                                </slot>
-                            </a>
-                            <div :class="[prefixCls + '-header']" v-if="showHead">
-                                <slot name="header">
-                                    <div :class="[prefixCls + '-header-inner']">{{ title }}</div>
-                                </slot>
-                            </div>
-                            <div :class="[prefixCls + '-body']" :style="styles">
-                                <slot></slot>
-                            </div>
-                        </div>
-                    </div>
-                </transition>
-            </div>
-        </div>
-    </script>
 
     <!-- 头部模版 -->
     <script type="text/x-template" id="header-template">
@@ -855,7 +827,7 @@
                                         <div slot="content" style="width:300px;padding:5px 0;">
                                             <div>
                                                 <div>
-                                                    <Cascader :data="provinceList" v-model="areaAddress"></Cascader>
+                                                    <Cascader :data="provinceList" v-model="areaAddress" change-on-select filterable></Cascader>
                                                 </div>
                                                 <div style="padding-top:10px;">
                                                     <Row>

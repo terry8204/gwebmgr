@@ -552,7 +552,7 @@
                         {{isZh ? '选择区域' : 'Select area'}}:
                     </i-col>
                     <i-col :span="16">
-                        <Cascader :data="provinceList" v-model="areaAddress"></Cascader>
+                        <Cascader :data="provinceList" v-model="areaAddress" change-on-select filterable></Cascader>
                     </i-col>
                 </Row>
                 <Row style="padding: 10px">
@@ -598,34 +598,7 @@
             </div>
         </Drawer>
     </div>
-    <script type="text/template" id="drawer-template">
-        <div v-transfer-dom :data-transfer="transfer">
-            <transition name="fade">
-                <div :class="maskClasses" :style="maskStyle" v-show="visible" v-if="mask" @click="handleMask"></div>
-            </transition>
-            <div :class="wrapClasses" @click="handleWrapClick">
-                <transition :name="'move-' + placement">
-                    <div :class="classes" :style="mainStyles" v-show="visible">
-                        <div :class="contentClasses" ref="content">
-                            <a class="ivu-drawer-close" v-if="closable" @click="close">
-                                <slot name="close">
-                                    <Icon type="ios-close"></Icon>
-                                </slot>
-                            </a>
-                            <div :class="[prefixCls + '-header']" v-if="showHead">
-                                <slot name="header">
-                                    <div :class="[prefixCls + '-header-inner']">{{ title }}</div>
-                                </slot>
-                            </div>
-                            <div :class="[prefixCls + '-body']" :style="styles">
-                                <slot></slot>
-                            </div>
-                        </div>
-                    </div>
-                </transition>
-            </div>
-        </div>
-    </script>
+
     <script src="js/polyfill.min.js"></script>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
@@ -1308,7 +1281,6 @@
                     },
                     redrawAreaAndViewPortCenter: function(pointsStr) {
                         var bdpoints = this.wgs84tobd09Points(pointsStr);
-                        console.log(bdpoints);
                         var polygon = new BMap.Polygon(bdpoints, styleOptions);
                         this.map.addOverlay(polygon);
                         this.setViewPortCenter(bdpoints);
