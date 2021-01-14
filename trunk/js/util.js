@@ -578,18 +578,51 @@ var utils = {
         }
         return tempStr;
     },
+    getLoadStatus: function(track) {
+        var loadstatus = track.loadstatus;
+        var weight = track.weight;
+        var statusStr = '';
+        switch (loadstatus) {
+            case 0x00:
+                statusStr = isZh ? '空车' : '';
+                break;
+            case 0x01:
+                statusStr = isZh ? '半载' : '';
+                break;
+            case 0x02:
+                statusStr = isZh ? '超载' : '';
+                break;
+            case 0x03:
+                statusStr = isZh ? '满载' : '';
+                break;
+            case 0x04:
+                statusStr = isZh ? '装载' : '';
+                break;
+            case 0x05:
+                statusStr = isZh ? '卸载' : '';
+                break;
+        }
+
+        return (weight / 10) + 'Kg(' + statusStr + ')';
+    },
     getWindowContent: function(track, b_address) {
         var strstatus = '';
         var posiType = this.getPosiType(track);
         if (isZh) {
             var stralarm = track.stralarm;
             strstatus = track.strstatus ? track.strstatus : '';
+            if (track.loadstatus >= 0) {
+                strstatus += this.getLoadStatus(track);
+            }
             if (stralarm) {
                 strstatus += '<span style="color:red;">' + stralarm + '</span>';
             }
         } else {
             var stralarmen = track.stralarmen;
             strstatus = track.strstatusen ? track.strstatusen : '';
+            if (track.loadstatus >= 0) {
+                strstatus += this.getLoadStatus(track);
+            }
             if (stralarm) {
                 strstatus += '<span style="color:red;">' + stralarmen + '</span>';
             }

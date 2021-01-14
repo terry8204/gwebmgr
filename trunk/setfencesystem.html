@@ -901,7 +901,10 @@
 
                     },
                     openClassModal: function() {
+                        this.isPolygon = false;
+                        this.isCircular = false;
                         this.addClassModal = true;
+                        this.drawTool.disable();
                     },
                     handleAddType: function() {
                         if (this.typeName) {
@@ -1280,7 +1283,6 @@
                         }
                     },
                     mapType: function(newVal, oldVal) {
-
                         var geometries = this.polygonLayer.getGeometries();
                         geometries.forEach(function(geometrie) {
                             var points = geometrie.getCoordinates();
