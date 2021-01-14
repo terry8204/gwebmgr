@@ -102,6 +102,7 @@
             left: 470px;
             border: 1px solid #A4D4F5;
             background-color: #ffffff;
+            border-radius: 5px;
         }
         
         .ivu-drawer {
@@ -604,8 +605,8 @@
             <div class="controller-inner">
                 <Row style="padding:0 0 10px 0">
                     <i-col :span="24">
-                        <span>设备名称 ：{{devicename}}</span> &nbsp;&nbsp;&nbsp;
-                        <span>设备序号 ：{{deviceid}}</span>
+                        <span>设备名称:{{devicename}}</span> &nbsp;&nbsp;&nbsp;
+                        <span>设备序号:{{deviceid}}</span>
                     </i-col>
                 </Row>
                 <Row style="padding:0 0 10px 0">
@@ -781,7 +782,12 @@
         var mapType = utils.getMapType();
         var globalSelection = [];
 
-
+        var symbol = {
+            'lineColor': '#e4393c',
+            'lineWidth': 2,
+            'polygonFill': 'rgb(135,196,240)',
+            'polygonOpacity': 0
+        };
         //实例化鼠标绘制工具  
 
 
@@ -1305,7 +1311,8 @@
                         var layer = this.polygonLayer = new maptalks.VectorLayer('vector').addTo(this.map);
 
                         var drawTool = this.drawTool = new maptalks.DrawTool({
-                            mode: 'Point'
+                            mode: 'Point',
+                            symbol: symbol,
                         }).addTo(this.map).disable();
 
 
@@ -1435,12 +1442,7 @@
                             draggable: false,
                             dragShadow: false, // display a shadow during dragging
                             drawOnAxis: null, // force dragging stick on a axis, can be: x, y
-                            symbol: {
-                                'lineColor': '#e4393c',
-                                'lineWidth': 2,
-                                'polygonFill': 'rgb(135,196,240)',
-                                'polygonOpacity': 0
-                            }
+                            symbol: symbol
                         });
                     },
                     getAllCoordinates: function(json) {
@@ -1475,6 +1477,15 @@
                         })
                         return outCoordinates;
                     },
+                    isHasAdcode: function(adcode) {
+                        var isHas = false;
+                        this.tableData.forEach(function(item) {
+                            if (item.type == 3 && item.adcode3 == adcode) {
+                                isHas = true;
+                            }
+                        })
+                        return isHas;
+                    },
                     handleSubmitArea: function() {
                         if (this.areaAddress.length) {
                             var me = this;
@@ -1489,7 +1500,14 @@
                                 adcode = this.areaAddress[2];
                             }
                             var isincludesub = 0;
+
+                            if (this.isHasAdcode(adcode)) {
+                                this.$Message.error(isZh ? '该区域围栏已经存在' : 'The area fence already exists');
+                                return;
+                            }
+
                             me.arealoading = true;
+                            this.polygonLayer.clear();
                             $.ajax({
                                 url: myUrls.queryGeoJson(adcode, isincludesub),
                                 async: true,
@@ -1615,12 +1633,7 @@
                                         }
                                         points.push(point);
                                         new maptalks.Circle(point, element.radius1, {
-                                            symbol: {
-                                                lineColor: '#34495e',
-                                                lineWidth: 2,
-                                                polygonFill: '#ffffff',
-                                                polygonOpacity: 0.4
-                                            }
+                                            symbol: symbol
                                         }).addTo(this.polygonLayer);
 
                                         break;
@@ -1635,12 +1648,7 @@
                                         }
                                         points = points.concat(lon_lat_s);
                                         new maptalks.Polygon(lon_lat_s, {
-                                            symbol: {
-                                                'lineColor': '#34495e',
-                                                'lineWidth': 2,
-                                                'polygonFill': 'rgb(135,196,240)',
-                                                'polygonOpacity': 0.6
-                                            }
+                                            symbol: symbol
                                         }).addTo(this.polygonLayer);
                                         break;
                                     case 3:
@@ -1680,12 +1688,7 @@
                                                         }
                                                         points.push(point);
                                                         new maptalks.Circle(point, record.radius1, {
-                                                            symbol: {
-                                                                lineColor: '#34495e',
-                                                                lineWidth: 2,
-                                                                polygonFill: '#ffffff',
-                                                                polygonOpacity: 0.4
-                                                            }
+                                                            symbol: symbol
                                                         }).addTo(me.polygonLayer);
                                                         break;
                                                     case 2:
@@ -1697,12 +1700,7 @@
                                                         }
                                                         points = points.concat(lon_lat_s);
                                                         new maptalks.Polygon(lon_lat_s, {
-                                                            symbol: {
-                                                                'lineColor': '#34495e',
-                                                                'lineWidth': 2,
-                                                                'polygonFill': 'rgb(135,196,240)',
-                                                                'polygonOpacity': 0.6
-                                                            }
+                                                            symbol: symbol
                                                         }).addTo(me.polygonLayer);
                                                         break;
                                                 }
@@ -1718,52 +1716,6 @@
                                 this.setViewPortCenter(points);
                             }
 
-                        }
-                    },
-                    drawAllOverlays: function(row) {
-                        var type = row.type,
-                            me = this;
-                        switch (type) {
-                            case 1:
-                                var lon_lat = [];
-                                if (isBMap) {
-                                    lon_lat = wgs84tobd09(element.lon1, element.lat1);
-                                } else {
-                                    lon_lat = wgs84togcj02(element.lon1, element.lat1);
-                                }
-
-                                break;
-                            case 2:
-                                var points = JSON.parse(row.points2);
-                                new maptalks.Polygon(points, {
-                                    symbol: {
-                                        'lineColor': '#34495e',
-                                        'lineWidth': 2,
-                                        'polygonFill': 'rgb(135,196,240)',
-                                        'polygonOpacity': 0.6
-                                    }
-                                }).addTo(this.polygonLayer);
-
-                                break;
-                            case 3:
-                                var adcode = element.adcode3;
-                                var isincludesub = 0;
-                                $.ajax({
-                                    url: myUrls.queryGeoJson(adcode, isincludesub),
-                                    async: true,
-                                    success: function(json) {
-                                        var coordinates = me.getAllCoordinates(json);
-                                        var polygons = [];
-                                        var pointList = [];
-                                        coordinates.forEach(function(item) {
-                                            var polygon = me.getPolygon([item]);
-                                            me.polygonLayer.addGeometry(polygon);
-                                        })
-                                    },
-                                    error() {}
-                                });
-                                // this.redrawArea(row.points3);
-                                break;
                         }
                     },
                     drawCircular: function() {

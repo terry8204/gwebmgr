@@ -96,6 +96,7 @@
             left: 410px;
             border: 1px solid #A4D4F5;
             background-color: #ffffff;
+            border-radius: 5px;
         }
         
         .search-box {
@@ -394,7 +395,12 @@
         var mapType = utils.getMapType();
         var points1List = [];
         var points2List = [];
-
+        var symbol = {
+            'lineColor': '#e4393c',
+            'lineWidth': 2,
+            'polygonFill': 'rgb(135,196,240)',
+            'polygonOpacity': 0
+        };
 
 
 
@@ -844,7 +850,8 @@
                         var layer = this.polygonLayer = new maptalks.VectorLayer('vector').addTo(this.map);
 
                         var drawTool = this.drawTool = new maptalks.DrawTool({
-                            mode: 'Point'
+                            mode: 'Point',
+                            symbol: symbol
                         }).addTo(this.map).disable();
 
 
@@ -1163,12 +1170,7 @@
                                         }
                                         points.push(point);
                                         new maptalks.Circle(point, element.radius1, {
-                                            symbol: {
-                                                lineColor: '#34495e',
-                                                lineWidth: 2,
-                                                polygonFill: '#ffffff',
-                                                polygonOpacity: 0.4
-                                            }
+                                            symbol: symbol
                                         }).addTo(me.polygonLayer);
                                         break;
                                     case 2:
@@ -1180,12 +1182,7 @@
                                         }
                                         points = points.concat(lon_lat_s);
                                         new maptalks.Polygon(lon_lat_s, {
-                                            symbol: {
-                                                'lineColor': '#34495e',
-                                                'lineWidth': 2,
-                                                'polygonFill': 'rgb(135,196,240)',
-                                                'polygonOpacity': 0.6
-                                            }
+                                            symbol: symbol
                                         }).addTo(me.polygonLayer);
                                         break;
                                 }
@@ -1278,6 +1275,8 @@
                     addPolygonModal: function(val) {
                         if (!val) {
                             this.polygonLayer.clear();
+                            this.isCircular = false;
+                            this.isPolygon = false;
                         }
                     },
                     mapType: function(newVal, oldVal) {
