@@ -224,6 +224,14 @@ var deviceLastPositionProto = {
                         "srcad1": {
                             "type": "sint32",
                             "id": 49
+                        },
+                        "loadstatus": {
+                            "type": "sint32",
+                            "id": 50
+                        },
+                        "weight": {
+                            "type": "sint64",
+                            "id": 51
                         }
                     }
                 }
