@@ -8,6 +8,7 @@
     <link rel="shortcut icon" href="./favicon.ico" />
     <title>系统围栏</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
+    <link rel="stylesheet" href="./maptalks/maptalks.css">
     <style>
         html,
         body,
@@ -15,6 +16,7 @@
             width: 100%;
             height: 100%;
             position: relative;
+            overflow: hidden;
         }
         
         #bmap {
@@ -66,10 +68,31 @@
             transform: scaleY(0)
         }
         
+        .el-zoom-in-top-enter-active,
+        .el-zoom-in-top-leave-active {
+            transition: transform .3s cubic-bezier(.23, 1, .32, 1) .1s, opacity .3s cubic-bezier(.23, 1, .32, 1) .1s
+        }
+        
+        .el-zoom-in-top-enter-active,
+        .el-zoom-in-top-leave-active {
+            opacity: 1;
+            -ms-transform: scaleY(1);
+            transform: scaleY(1);
+            -ms-transform-origin: center top;
+            transform-origin: center top
+        }
+        
+        .el-zoom-in-top-enter,
+        .el-zoom-in-top-leave-active {
+            opacity: 0;
+            -ms-transform: scaleY(0);
+            transform: scaleY(0)
+        }
+        
         #container .area-ctrl {
             position: absolute;
             width: 400px;
-            bottom: 10px;
+            top: 10px;
             left: 410px;
             border: 1px solid #A4D4F5;
             background-color: #ffffff;
@@ -87,6 +110,7 @@
             bottom: 0;
             top: 82px;
             overflow-y: auto;
+            overflow-x: hidden;
         }
         
         #container .ivu-icon {
@@ -104,6 +128,117 @@
         
         .selectTreeClass {
             background: #DEE1E6;
+        }
+        
+        div.selected-map-wrap {
+            height: 32px;
+            width: 90px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+        
+        div.selected-map-inner {
+            line-height: 30px;
+            border: 1px solid #AEBAC5;
+            height: 32px;
+            position: relative;
+            padding: 0 11px;
+        }
+        
+        div.selected-map-list {
+            position: absolute;
+            top: 32px;
+            left: 0px;
+            right: 0px;
+            background-color: #fff;
+            border-left: 1px solid #AEBAC5;
+            border-right: 1px solid #AEBAC5;
+            border-bottom: 1px solid #AEBAC5;
+            z-index: 99;
+        }
+        
+        div.selected-map-list>div {
+            padding: 0 11px;
+            height: 30px;
+            line-height: 30px;
+        }
+        
+        div.selected-map-list>div:hover {
+            background-color: #FCF0C0;
+        }
+        
+        div.selected-map-list>div.actived {
+            background-color: #FCF0C0;
+        }
+        
+        div.map-selector-popup {
+            position: absolute;
+            right: 90px;
+            padding: 5px 0px 5px 5px;
+            box-shadow: 0 0 5px 0 rgb(0 0 0 / 10%);
+            background-color: #fff;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+        }
+        
+        .MapSelector_item_193IR {
+            height: 50px;
+            width: 50px;
+            border: 1px solid;
+            cursor: pointer;
+            position: relative;
+            margin-right: 5px;
+        }
+        
+        .satellite-map {
+            background: url(./images/model-satel.png) no-repeat;
+            background-position: 50%;
+        }
+        
+        .normal-map {
+            background: url(./images/model-map.png) no-repeat;
+            background-position: 50%;
+        }
+        
+        .map_icon_traffic_off {
+            background: url(data:image/png;base64,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) no-repeat;
+            background-position: center 3px;
+        }
+        
+        .map_icon_traffic_on {
+            background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAbCAIAAADganh7AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAKTWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVN3WJP3Fj7f92UPVkLY8LGXbIEAIiOsCMgQWaIQkgBhhBASQMWFiApWFBURnEhVxILVCkidiOKgKLhnQYqIWotVXDjuH9yntX167+3t+9f7vOec5/zOec8PgBESJpHmomoAOVKFPDrYH49PSMTJvYACFUjgBCAQ5svCZwXFAADwA3l4fnSwP/wBr28AAgBw1S4kEsfh/4O6UCZXACCRAOAiEucLAZBSAMguVMgUAMgYALBTs2QKAJQAAGx5fEIiAKoNAOz0ST4FANipk9wXANiiHKkIAI0BAJkoRyQCQLsAYFWBUiwCwMIAoKxAIi4EwK4BgFm2MkcCgL0FAHaOWJAPQGAAgJlCLMwAIDgCAEMeE80DIEwDoDDSv+CpX3CFuEgBAMDLlc2XS9IzFLiV0Bp38vDg4iHiwmyxQmEXKRBmCeQinJebIxNI5wNMzgwAABr50cH+OD+Q5+bk4eZm52zv9MWi/mvwbyI+IfHf/ryMAgQAEE7P79pf5eXWA3DHAbB1v2upWwDaVgBo3/ldM9sJoFoK0Hr5i3k4/EAenqFQyDwdHAoLC+0lYqG9MOOLPv8z4W/gi372/EAe/tt68ABxmkCZrcCjg/1xYW52rlKO58sEQjFu9+cj/seFf/2OKdHiNLFcLBWK8ViJuFAiTcd5uVKRRCHJleIS6X8y8R+W/QmTdw0ArIZPwE62B7XLbMB+7gECiw5Y0nYAQH7zLYwaC5EAEGc0Mnn3AACTv/mPQCsBAM2XpOMAALzoGFyolBdMxggAAESggSqwQQcMwRSswA6cwR28wBcCYQZEQAwkwDwQQgbkgBwKoRiWQRlUwDrYBLWwAxqgEZrhELTBMTgN5+ASXIHrcBcGYBiewhi8hgkEQcgIE2EhOogRYo7YIs4IF5mOBCJhSDSSgKQg6YgUUSLFyHKkAqlCapFdSCPyLXIUOY1cQPqQ28ggMor8irxHMZSBslED1AJ1QLmoHxqKxqBz0XQ0D12AlqJr0Rq0Hj2AtqKn0UvodXQAfYqOY4DRMQ5mjNlhXIyHRWCJWBomxxZj5Vg1Vo81Yx1YN3YVG8CeYe8IJAKLgBPsCF6EEMJsgpCQR1hMWEOoJewjtBK6CFcJg4Qxwicik6hPtCV6EvnEeGI6sZBYRqwm7iEeIZ4lXicOE1+TSCQOyZLkTgohJZAySQtJa0jbSC2kU6Q+0hBpnEwm65Btyd7kCLKArCCXkbeQD5BPkvvJw+S3FDrFiOJMCaIkUqSUEko1ZT/lBKWfMkKZoKpRzame1AiqiDqfWkltoHZQL1OHqRM0dZolzZsWQ8ukLaPV0JppZ2n3aC/pdLoJ3YMeRZfQl9Jr6Afp5+mD9HcMDYYNg8dIYigZaxl7GacYtxkvmUymBdOXmchUMNcyG5lnmA+Yb1VYKvYqfBWRyhKVOpVWlX6V56pUVXNVP9V5qgtUq1UPq15WfaZGVbNQ46kJ1Bar1akdVbupNq7OUndSj1DPUV+jvl/9gvpjDbKGhUaghkijVGO3xhmNIRbGMmXxWELWclYD6yxrmE1iW7L57Ex2Bfsbdi97TFNDc6pmrGaRZp3mcc0BDsax4PA52ZxKziHODc57LQMtPy2x1mqtZq1+rTfaetq+2mLtcu0W7eva73VwnUCdLJ31Om0693UJuja6UbqFutt1z+o+02PreekJ9cr1Dund0Uf1bfSj9Rfq79bv0R83MDQINpAZbDE4Y/DMkGPoa5hpuNHwhOGoEctoupHEaKPRSaMnuCbuh2fjNXgXPmasbxxirDTeZdxrPGFiaTLbpMSkxeS+Kc2Ua5pmutG003TMzMgs3KzYrMnsjjnVnGueYb7ZvNv8jYWlRZzFSos2i8eW2pZ8ywWWTZb3rJhWPlZ5VvVW16xJ1lzrLOtt1ldsUBtXmwybOpvLtqitm63Edptt3xTiFI8p0in1U27aMez87ArsmuwG7Tn2YfYl9m32zx3MHBId1jt0O3xydHXMdmxwvOuk4TTDqcSpw+lXZxtnoXOd8zUXpkuQyxKXdpcXU22niqdun3rLleUa7rrStdP1o5u7m9yt2W3U3cw9xX2r+00umxvJXcM970H08PdY4nHM452nm6fC85DnL152Xlle+70eT7OcJp7WMG3I28Rb4L3Le2A6Pj1l+s7pAz7GPgKfep+Hvqa+It89viN+1n6Zfgf8nvs7+sv9j/i/4XnyFvFOBWABwQHlAb2BGoGzA2sDHwSZBKUHNQWNBbsGLww+FUIMCQ1ZH3KTb8AX8hv5YzPcZyya0RXKCJ0VWhv6MMwmTB7WEY6GzwjfEH5vpvlM6cy2CIjgR2yIuB9pGZkX+X0UKSoyqi7qUbRTdHF09yzWrORZ+2e9jvGPqYy5O9tqtnJ2Z6xqbFJsY+ybuIC4qriBeIf4RfGXEnQTJAntieTE2MQ9ieNzAudsmjOc5JpUlnRjruXcorkX5unOy553PFk1WZB8OIWYEpeyP+WDIEJQLxhP5aduTR0T8oSbhU9FvqKNolGxt7hKPJLmnVaV9jjdO31D+miGT0Z1xjMJT1IreZEZkrkj801WRNberM/ZcdktOZSclJyjUg1plrQr1zC3KLdPZisrkw3keeZtyhuTh8r35CP5c/PbFWyFTNGjtFKuUA4WTC+oK3hbGFt4uEi9SFrUM99m/ur5IwuCFny9kLBQuLCz2Lh4WfHgIr9FuxYji1MXdy4xXVK6ZHhp8NJ9y2jLspb9UOJYUlXyannc8o5Sg9KlpUMrglc0lamUycturvRauWMVYZVkVe9ql9VbVn8qF5VfrHCsqK74sEa45uJXTl/VfPV5bdra3kq3yu3rSOuk626s91m/r0q9akHV0IbwDa0b8Y3lG19tSt50oXpq9Y7NtM3KzQM1YTXtW8y2rNvyoTaj9nqdf13LVv2tq7e+2Sba1r/dd3vzDoMdFTve75TsvLUreFdrvUV99W7S7oLdjxpiG7q/5n7duEd3T8Wej3ulewf2Re/ranRvbNyvv7+yCW1SNo0eSDpw5ZuAb9qb7Zp3tXBaKg7CQeXBJ9+mfHvjUOihzsPcw83fmX+39QjrSHkr0jq/dawto22gPaG97+iMo50dXh1Hvrf/fu8x42N1xzWPV56gnSg98fnkgpPjp2Snnp1OPz3Umdx590z8mWtdUV29Z0PPnj8XdO5Mt1/3yfPe549d8Lxw9CL3Ytslt0utPa49R35w/eFIr1tv62X3y+1XPK509E3rO9Hv03/6asDVc9f41y5dn3m978bsG7duJt0cuCW69fh29u0XdwruTNxdeo94r/y+2v3qB/oP6n+0/rFlwG3g+GDAYM/DWQ/vDgmHnv6U/9OH4dJHzEfVI0YjjY+dHx8bDRq98mTOk+GnsqcTz8p+Vv9563Or59/94vtLz1j82PAL+YvPv655qfNy76uprzrHI8cfvM55PfGm/K3O233vuO+638e9H5ko/ED+UPPR+mPHp9BP9z7nfP78L/eE8/sl0p8zAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAKUSURBVHjazJbPTxNBFMe/A/uD3bYb2oUUWnDBQmNoEYsh/DIeSIzoxRDPXoxHY0xM/CM8cfDMn6AHE+ViIkbAaiwxFGIiiEAoIbqRdGFhd7vUQ5vtQBdsBRPfaXfmzXfnvfd5M0vy+TzO2mrwD4w5eVrTdt/Mf9N0w7ByhIBnGa/Aj1w87/F6TlhFjgtf1/XnMwuGmXOd5TlmbCgmimIVoh8XV+a/bwEnp5t0twX7utorzWl69ZCiyHPRUCAaCog8R3nl06tbVeSU3n5HSD4HU5qZAtAyNLQG31JGLXdzEZ18n3aGRvtjzrPAs63IKU/HiW0D8Kc+4P7DDM/phul8fzK5UFo7EC+Fz7HuW272S1JytqAIgNi2NP0uLEuuzo5IUfRSe9Pp8expCx4SDQTqI83+cr/NX9ls/+ABwxZjra3NDl/ZULPlnpFmvyz7jxaqUwkrTY2fl9ZBiDO4Z1irBwx58Mg3/RaANjC4Bk43NIorIvuEno5WjgLDndOJl7P0ax3HtjRIADKqVioRAODuzcGq27Rg+6blYHQGvV8wn8hfCDcA+LLxU9ONSkWP4xRAbyTEyvqc9QxAIn7dUuXUcobuk3JOGQcx03I5O7wCL8rWxP5jGzkAafv1HfmJb5N33W+lnHaG5E+5yYIiABu5lPWqq7XxVJxWbjSnNTSnI4mo7BNoTr9m1MvMKIMig7Vgetkbi+s/jnA6koh2KmH36nM81xeL0CM7e8auyt5rGE+aLwD0sNcsVdT0bdrnyJJjkSKk1BRzyxnPBtcVvgVgcVOlFQkV059F40qQPvl3981DGBUlEVeCZ3xH3R7urhPqqhMt2PZ2dmp+ZccwTcsmBBzDeAX+akypr5f+5jb9734mfg8Ak+sBN7I5HBUAAAAASUVORK5CYII=) no-repeat;
+            background-position: center 3px;
+        }
+        
+        .map_icon_xiansu_off {
+            background: url(data:image/png;base64,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) no-repeat;
+            background-position: center 4px;
+        }
+        
+        .map_icon_xiansu_on {
+            background: url(data:image/png;base64,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) no-repeat;
+            background-position: center 4px;
+        }
+        
+        .map_selector_icon_text {
+            position: absolute;
+            bottom: 1px;
+            left: 1px;
+            right: 1px;
+            height: 18px;
+            line-height: 18px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .no_selected_icon {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .selected_icon {
+            background-color: rgba(64, 150, 209, 0.9);
+            color: rgb(255, 255, 255);
         }
     </style>
 </head>
@@ -138,48 +273,22 @@
             </div>
         </div>
         <div id="bmap"></div>
-
-        <transition name="el-zoom-in-bottom">
+        <div style="position: absolute; right:10px;top:10px;">
+            <div>
+                <selected-map @select-map="onSelectMap" @switch-traffic="onSwitchTraffic"></selected-map>
+            </div>
+        </div>
+        <transition name="el-zoom-in-top">
             <div class="area-ctrl" v-show="isCircular">
                 <Row>
                     <i-col :span="24" style="padding:10px;text-align:center;">
                         <h3>{{isEidt?'编辑':'添加'}}圆 - 半径:{{radius}}米</h3>
                     </i-col>
                 </Row>
-                <Row>
-                    <i-col :span="4" style="text-align:center;line-height:36px;">200米</i-col>
-                    <i-col :span="16">
-                        <Slider v-model="radius" :step="10" :min="min" :max="max" @on-change="changeValue"></Slider>
-                    </i-col>
-                    <i-col :span="4" style="text-align:center;line-height:36px;">100公里</i-col>
-                </Row>
-                <Row style="padding: 10px">
-                    <i-col :span="6" style="text-align:center;line-height:32px;">
-                        围栏名称:
-                    </i-col>
-                    <i-col :span="16">
-                        <i-input v-model.trim="geoName"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="padding: 10px">
-                    <i-col :span="6" style="text-align:center;line-height:32px;">
-                        选择类型:
-                    </i-col>
-                    <i-col :span="16">
-                        <i-select v-model="classId" style="width: 100%;">
-                            <i-option :value="item.value" v-for="item in selectTypeList" :key="item.categoryid">{{item.label}}</i-option>
-                        </i-select>
-                    </i-col>
-                </Row>
-                <Row>
-                    <i-col :span="24" style="padding:10px;text-align:center;">
-                        <i-button style="width:200px;" @click="handleSaveCircular">保存</i-button>
-                    </i-col>
-                </Row>
             </div>
         </transition>
 
-        <transition name="el-zoom-in-bottom">
+        <transition name="el-zoom-in-top">
             <div class="area-ctrl" v-show="isPolygon">
                 <Row>
                     <i-col :span="24" style="padding:10px;text-align:center;">
@@ -189,11 +298,6 @@
                 <Row>
                     <i-col :span="22" offset="2" style="padding:10px 0 10px 0;">
                         1 、 把鼠标移到 地图上单击开始绘制，双击结束绘制
-                    </i-col>
-                </Row>
-                <Row>
-                    <i-col :span="22" offset="2" style="padding:10px 0 20px 0;">
-                        2 、 右键取消绘画
                     </i-col>
                 </Row>
             </div>
@@ -213,7 +317,7 @@
             </div>
         </Modal>
 
-        <Modal v-model="addPolygonModal" width="400" title="添加多边形">
+        <Modal v-model="addPolygonModal" width="400" title="添加围栏" :mask-closable="false">
             <Row style="padding: 10px">
                 <i-col :span="6" style="text-align:center;line-height:32px;">
                     围栏名称:
@@ -236,46 +340,62 @@
                 <i-button style="width:80%;" @click="handleAddPolygon">确定</i-button>
             </div>
         </Modal>
-
     </div>
+
+
+    <script type="text/x-template" id="selected-map-template">
+        <div class="selected-map-wrap" v-click-outside.capture="onClickOutside">
+            <div class="selected-map-inner" @click="isShowMapList=true">
+                {{mapTypeStr}}
+                <Icon type="ios-arrow-down" />
+            </div>
+            <div class="selected-map-list" v-show="isShowMapList">
+                <div v-for="(item,index) in mapSelectorList" :data-index="index" :class="{actived:mapType==item.value}" :key="index" @click="selectedMap">{{item.label}}</div>
+            </div>
+            <div class="map-selector-popup" v-show="isShowMapList" :style="mapSelectorPopupSty">
+                <div v-if="false" class="MapSelector_item_193IR" :class="{'map_icon_xiansu_off':!isShowXianSu,'map_icon_xiansu_on':isShowXianSu}" style="width:35px" @click="isShowXianSu=!isShowXianSu">
+                    <div class="map_selector_icon_text no_selected_icon">限速</div>
+                </div>
+                <div class="MapSelector_item_193IR" :class="{'map_icon_traffic_off':!isShowTraffic,'map_icon_traffic_on':isShowTraffic}" style="width:35px" @click="isShowTraffic=!isShowTraffic">
+                    <div class="map_selector_icon_text no_selected_icon">路况</div>
+                </div>
+                <div class="MapSelector_item_193IR normal-map" @click="isSatelliteMap=false">
+                    <div class="map_selector_icon_text" :class="{'selected_icon':!isSatelliteMap,'no_selected_icon':isSatelliteMap}">地图</div>
+                </div>
+                <div class="MapSelector_item_193IR satellite-map" @click="isSatelliteMap=true">
+                    <div class="map_selector_icon_text" :class="{'selected_icon':isSatelliteMap,'no_selected_icon':!isSatelliteMap}">卫星</div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+
+    <script src="js/polyfill.min.js"></script>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
+    <script src="js/zh-CN.js"></script>
+    <script src="js/en-US.js"></script>
     <script src="js/gps51-jquery.js"></script>
     <script src="js/config.js"></script>
-    <script src="js/hashmap.js"></script>
-    <script src="js/localcachemgr.js"></script>
+    <script src="js/v-click-outside-x.js"></script>
     <script src="js/transformlatlon.js"></script>
     <script src="js/dateformat.js"></script>
-    <script src="js/gps51-jquery.js"></script>
-    <script src="js/js.cookie.min.js"></script>
     <script src="js/util.js"></script>
-    <script src="https://api.map.baidu.com/api?v=3.0&ak=e7SC5rvmn2FsRNE4R1ygg44n"></script>
-    <script type="text/javascript" src="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
-    <link rel="stylesheet" href="https://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
+    <script src="./maptalks/maptalks.min.js"></script>
+
     <script>
+        var isZh = utils.locale === 'zh';
+        iview.lang(isZh ? 'zh-CN' : 'en-US');
         var token = utils.getParameterByName("token");
         var map = null;
         var vRoot = null;
         var rowData = null;
-        var polygonIns = null;
         var isMove = true;
-        var styleOptions = {
-            strokeColor: "red", //边线颜色。  
-            fillColor: "red", //填充颜色。当参数为空时，圆形将没有填充效果。  
-            strokeWeight: 3, //边线的宽度，以像素为单位。  
-            strokeOpacity: 0.8, //边线透明度，取值范围0 - 1。  
-            fillOpacity: 0.6, //填充的透明度，取值范围0 - 1。  
-            strokeStyle: 'solid' //边线的样式，solid或dashed。  
-        }
-
-        //实例化鼠标绘制工具  
-        var drawingManager = null;
+        var mapType = utils.getMapType();
+        var points1List = [];
+        var points2List = [];
 
 
-        function startDrawPolygon(type) {
-            drawingManager.open();
-            drawingManager.setDrawingMode(type);
-        }
 
 
         function treeItemRender(h, params) {
@@ -358,42 +478,22 @@
                         },
                         on: {
                             click: function(e) {
-                                $(".show").removeClass("selectTreeClass");
-                                $(e.target).addClass("selectTreeClass");
-                                vRoot.cancelSelected();
-                                rowData = data;
-                                if (data.children) return;
-                                vRoot.isEidt = true;
-                                vRoot.map.clearOverlays();
-                                drawingManager.close();
-                                switch (data.type) {
-                                    case 1:
-                                        var lon_lan = wgs84tobd09(data.lon1, data.lat1);
-                                        var markerPoint = new BMap.Point(lon_lan[0], lon_lan[1]);
-                                        vRoot.map.setCenter(markerPoint);
-                                        vRoot.setMapZoom(data.radius1);
-                                        isMove = false;
-                                        setTimeout(function() {
-                                            isMove = true;
-                                            var marker = new BMap.Marker(markerPoint);
-                                            var circular = new BMap.Circle(markerPoint, data.radius1, styleOptions);
-                                            vRoot.map.addOverlay(marker);
-                                            vRoot.map.addOverlay(circular);
-                                            vRoot.mapCenterPoint = markerPoint;
-                                            vRoot.markerIns = marker;
-                                            vRoot.circularIns = circular;
-                                            vRoot.isCircular = true;
-                                            vRoot.isPolygon = false;
-                                            vRoot.geoName = data.name;
-                                            vRoot.classId = data.categoryid;
-                                            vRoot.radius = data.radius1;
-                                        }, 1000);
-                                        break;
-                                    case 2:
-                                        vRoot.isCircular = false;
-                                        vRoot.redrawPolygon(data);
-                                        break;
-                                }
+                                // $(".show").removeClass("selectTreeClass");
+                                // $(e.target).addClass("selectTreeClass");
+                                // vRoot.cancelSelected();
+                                // rowData = data;
+                                // if (data.children) return;
+                                // vRoot.isEidt = true;
+
+                                // switch (data.type) {
+                                //     case 1:
+
+                                //         break;
+                                //     case 2:
+                                //         vRoot.isCircular = false;
+                                //         // vRoot.redrawPolygon(data);
+                                //         break;
+                                // }
                             }
 
                         }
@@ -432,6 +532,109 @@
             ]);
         }
         (function() {
+
+
+            Vue.component('selected-map', {
+                data: function() {
+                    return {
+                        isShowMapList: false, //是否显示选择框
+                        isSatelliteMap: false, //是否卫星地图
+                        isShowXianSu: false,
+                        isShowTraffic: false,
+                        mapSelectorList: [{
+                            label: isZh ? "百度地图" : "BaiduMap",
+                            value: "bMap"
+                        }, {
+                            label: isZh ? "谷歌地图" : "GoogleMap",
+                            value: "gMap"
+                        }, {
+                            label: isZh ? "高德地图" : "AlibabaMap",
+                            value: "aMap"
+                        }, ],
+                        currentMapIndex: 0,
+                        mapType: mapType
+                    }
+                },
+                methods: {
+                    onClickOutside: function() {
+                        this.isShowMapList = false;
+                    },
+                    selectedMap: function(e) {
+                        var index = Number(e.target.dataset.index);
+                        var item = this.mapSelectorList[index];
+                        this.mapType = item.value;
+                        mapType = item.value;
+                        this.$emit('select-map', {
+                            mapType: item.value,
+                            xiansu: this.isShowXianSu,
+                            traffic: this.isShowTraffic,
+                            satelliteMap: this.isSatelliteMap
+                        });
+                        this.currentMapIndex = index;
+                    },
+                    getCurrentMapIndex: function() {
+                        var index = 0;
+                        for (var i = 0; i < this.mapSelectorList.length; i++) {
+                            var item = this.mapSelectorList[i];
+                            if (item.value == this.mapType) {
+                                index = i;
+                                break;
+                            }
+                        }
+                        return index;
+                    }
+                },
+                computed: {
+                    mapTypeStr: function() {
+                        var mapTypeStr = '';
+                        for (var i = 0; i < this.mapSelectorList.length; i++) {
+                            var item = this.mapSelectorList[i];
+                            if (item.value == this.mapType) {
+                                mapTypeStr = item.label;
+                                break;
+                            }
+                        }
+                        return mapTypeStr;
+                    },
+                    mapSelectorPopupSty: function() {
+                        var top = 31;
+                        var currentMapIndex = this.currentMapIndex;
+                        var maxCurrentIndex = this.mapSelectorList.length - 1;
+
+                        top = top * (currentMapIndex + 1);
+
+                        if (currentMapIndex == maxCurrentIndex) {
+                            top -= 31;
+                        }
+
+                        return {
+                            top: top + 'px'
+                        }
+                    }
+                },
+                watch: {
+                    isSatelliteMap: function() {
+                        this.$emit('select-map', {
+                            mapType: this.mapType,
+                            xiansu: this.isShowXianSu,
+                            traffic: this.isShowTraffic,
+                            satelliteMap: this.isSatelliteMap
+                        });
+                    },
+                    isShowXianSu: function(newVal) {
+                        this.$emit('switch-xiansu', newVal);
+                    },
+                    isShowTraffic: function(newVal) {
+                        this.$emit('switch-traffic', newVal);
+                    },
+                },
+                mounted: function() {
+                    this.currentMapIndex = this.getCurrentMapIndex();
+                },
+                template: document.getElementById('selected-map-template').innerHTML
+            })
+
+
             vRoot = new Vue({
                 el: "#container",
                 data: {
@@ -445,8 +648,6 @@
                     addPolygonModal: false,
                     isCircular: false,
                     isPolygon: false,
-                    markerIns: null,
-                    circularIns: null,
                     radius: 2000,
                     min: 200,
                     max: 100000,
@@ -454,98 +655,243 @@
                     type: null, // 1 是圈 2是多边形 3是行政区域'
                     mapCenterPoint: null,
                     treeData: [],
-                    originalData: []
+                    originalData: [],
+                    mapType: mapType,
                 },
                 methods: {
+                    onSelectMap: function(item) {
+                        this.mapType = item.mapType;
+                        this.setMapType(item);
+                    },
+                    onSwitchTraffic: function(traffic) {
+                        var isBMap = this.mapType == 'bMap';
+                        if (traffic) {
+                            if (isBMap) {
+                                this.baiduTrafficLayer.show();
+                            } else {
+                                this.googleTrafficLayer.show();
+                            }
+                        } else {
+                            if (isBMap) {
+                                this.baiduTrafficLayer.hide();
+                            } else {
+                                this.googleTrafficLayer.hide();
+                            }
+                        }
+                    },
+                    setMapType: function(mapInfo) {
+                        this.map.removeLayer('baiduText');
+                        this.map.removeLayer('aliText');
+                        var me = this;
+                        var newMapType = mapInfo.mapType;
+                        var satelliteMap = mapInfo.satelliteMap;
+
+                        var traffic = mapInfo.traffic;
+                        if (newMapType == 'bMap') {
+                            me.map.setSpatialReference({
+                                projection: 'baidu'
+                            });
+                            var baseOption = satelliteMap ? baiduSatelliteBaseOption : baiduNormaBaseOption;
+                            var layer = new maptalks.TileLayer('base', baseOption)
+                            me.map.setBaseLayer(layer);
+                            if (satelliteMap) {
+                                var textlayer = new maptalks.TileLayer('baiduText', baiduTextBaseOption)
+                                me.map.addLayer(textlayer);
+                            }
+
+                        } else if (newMapType == 'gMap') {
+                            var baseOption = satelliteMap ? googleSatelliteBaseOption : googleNormaBaseOption;
+                            var layer = new maptalks.TileLayer('base', baseOption)
+                            me.map.setSpatialReference({})
+                            me.map.setBaseLayer(layer);
+                        } else if (newMapType == 'aMap') {
+                            var baseOption = satelliteMap ? aliSatelliteBaseOption : aliNormaBaseOption;
+                            var layer = new maptalks.TileLayer('base', baseOption)
+                            me.map.setSpatialReference({})
+                            me.map.setBaseLayer(layer);
+                            if (satelliteMap) {
+                                var textlayer = new maptalks.TileLayer('aliText', aliTextBaseOption)
+                                me.map.addLayer(textlayer);
+                            }
+
+                        }
+
+                        me.addTrafficLayer(traffic);
+                    },
+                    addTrafficLayer: function(traffic) {
+
+                        if (this.baiduTrafficLayer == null) {
+                            this.baiduTrafficLayer = new maptalks.TileLayer("baidutraffic", {
+
+                                urlTemplate: function(x, y, z) {
+                                    var domain = '';
+                                    if (this.options && this.options['subdomains']) {
+                                        var subdomains = this.options['subdomains'];
+                                        if (isArrayHasData(subdomains)) {
+                                            var length = subdomains.length;
+                                            var s = (x + y) % length;
+                                            if (s < 0) {
+                                                s = 0;
+                                            }
+                                            domain = subdomains[s];
+                                        }
+                                    }
+                                    var data = {
+                                        'x': x,
+                                        'y': y,
+                                        'z': z,
+                                        'domain': domain,
+                                        'time': Date.now()
+                                    };
+                                    var URL_PATTERN = /\{ *([\w_]+) *\}/g;
+                                    return baiduTrafficUrlTemplate.replace(URL_PATTERN, function(str, key) {
+                                        var value = data[key];
+
+                                        if (value === undefined) {
+                                            throw new Error('No value provided for variable ' + str);
+
+                                        } else if (typeof value === 'function') {
+                                            value = value(data);
+                                        }
+                                        return value;
+                                    });
+                                }
+                            });
+                            this.map.addLayer(this.baiduTrafficLayer);
+                            this.baiduTrafficLayer.hide();
+                        }
+
+                        if (this.googleTrafficLayer == null) {
+                            this.googleTrafficLayer = new maptalks.TileLayer("googletraffic", {
+                                urlTemplate: function(x, y, z) {
+
+                                    y = Math.pow(2, z) - 1 - y;
+                                    var domain = '';
+                                    if (this.options && this.options['subdomains']) {
+                                        var subdomains = this.options['subdomains'];
+                                        if (isArrayHasData(subdomains)) {
+                                            var length = subdomains.length;
+                                            var s = (x + y) % length;
+                                            if (s < 0) {
+                                                s = 0;
+                                            }
+                                            domain = subdomains[s];
+                                        }
+                                    }
+                                    var data = {
+                                        'x': x,
+                                        'y': y,
+                                        'z': z,
+                                        'domain': domain,
+                                        'time': Date.now()
+                                    };
+                                    var URL_PATTERN = /\{ *([\w_]+) *\}/g;
+                                    return googleTrafficUrlTemplate.replace(URL_PATTERN, function(str, key) {
+                                        var value = data[key];
+
+                                        if (value === undefined) {
+                                            throw new Error('No value provided for variable ' + str);
+
+                                        } else if (typeof value === 'function') {
+                                            value = value(data);
+                                        }
+                                        return value;
+                                    });
+                                }
+                            });
+                            this.map.addLayer(this.googleTrafficLayer);
+                            this.googleTrafficLayer.hide();
+                        }
+
+                        this.onSwitchTraffic(traffic);
+
+                    },
                     initMap: function() {
-                        var self = this;
-                        var point = null;
-                        this.map = new BMap.Map("bmap", {
+                        var me = this;
+
+                        me.lastMapType = this.mapType;
+
+                        this.map = new maptalks.Map('bmap', {
+                            center: [106, 36.11],
+                            zoom: 5,
                             minZoom: 4,
-                            maxZoom: 20
-                        });
-                        this.map.enableScrollWheelZoom();
-                        this.map.enableAutoResize();
-                        this.map.enableDoubleClickZoom();
-                        this.map.centerAndZoom(new BMap.Point(108.0017245, 35.926895), 5)
-                        this.map.addControl(new BMap.CityListControl({
-                            anchor: BMAP_ANCHOR_TOP_LEFT,
-                            offset: new BMap.Size(10, 20),
-                            // 切换城市之间事件
-                            // onChangeBefore: function(){
-                            //    alert('before');
-                            // },
-                            // 切换城市之后事件
-                            // onChangeAfter:function(){
-
-                            // }
-                        }));
-
-
-                        this.map.addEventListener("moveend", function(e) {
-                            if (!self.isCircular && isMove) return;
-                            self.getMapCenterPoint();
-                            self.markerIns && self.markerIns.setPosition(self.mapCenterPoint);
-                            self.circularIns && self.circularIns.setCenter(self.mapCenterPoint);
-                        }, false);
-
-                        this.map.addEventListener("zoomend", function(e) {
-                            if (!self.isCircular && isMove) return;
-                            self.getMapCenterPoint();
-                            self.markerIns && self.markerIns.setPosition(self.mapCenterPoint);
-                            self.circularIns && self.circularIns.setCenter(self.mapCenterPoint);
-                        }, false);
-
-
-                        this.map.addEventListener("rightclick", function(e) {
-                            if (self.type !== 2) return;
-                            drawingManager.close();
-                            self.map.clearOverlays();
+                            maxZoom: 19,
+                            scaleControl: true,
+                            dragRotate: false,
+                            dragPitch: false,
                         });
 
-                        drawingManager = new BMapLib.DrawingManager(this.map, {
-                            isOpen: false, //是否开启绘制模式  
-                            enableDrawingTool: false, //是否显示工具栏  
-                            drawingToolOptions: {
-                                anchor: BMAP_ANCHOR_TOP_RIGHT, //位置  
-                                offset: new BMap.Size(5, 5), //偏离值  
+                        this.setMapType({
+                            mapType: this.mapType,
+                            traffic: false,
+                            xiansu: false,
+                            satelliteMap: false
+                        });
+
+
+                        var customPosition = new maptalks.control.Zoom({
+                            'position': {
+                                'bottom': '10',
+                                'right': '10'
                             },
-                            circleOptions: styleOptions, //圆的样式  
-                            polylineOptions: styleOptions, //线的样式  
-                            polygonOptions: styleOptions, //多边形的样式  
-                            rectangleOptions: styleOptions //矩形的样式  
+                            'slider': false,
+                            'zoomLevel': false
+                        });
+                        this.map.addControl(customPosition);
+
+
+
+                        var layer = this.polygonLayer = new maptalks.VectorLayer('vector').addTo(this.map);
+
+                        var drawTool = this.drawTool = new maptalks.DrawTool({
+                            mode: 'Point'
+                        }).addTo(this.map).disable();
+
+
+                        this.drawTool.on('mousemove', function(param) {
+                            if (me.isCircular) {
+                                me.radius = param.geometry.getRadius().toFixed(2);
+                            }
+                        })
+
+                        this.drawTool.on('drawend', function(param) {
+                            var geometry = param.geometry;
+                            var isBMap = me.mapType == 'bMap';
+                            layer.addGeometry(param.geometry);
+                            drawTool.disable();
+                            me.addPolygonModal = true;
+                            if (me.isCircular) {
+                                var point = geometry.getCoordinates();
+                                var lon_lat = [];
+                                if (isBMap) {
+                                    lon_lat = bd09towgs84(point.x, point.y);
+                                } else {
+                                    lon_lat = gcj02towgs84(point.x, point.y);
+                                }
+                                points1List = lon_lat;
+                            } else {
+                                var points = geometry.getCoordinates()[0];
+                                var lon_lat_s = [];
+                                if (isBMap) {
+                                    lon_lat_s = bdPointsToWgs84s(points);
+                                } else {
+                                    lon_lat_s = googlePointsToWgs84s(points);
+                                }
+
+                                points2List = lon_lat_s;
+                            }
                         });
 
-                        //添加鼠标绘制工具监听事件，用于获取绘制结果  
-                        drawingManager.addEventListener('polygoncomplete', this.overlaycomplete);
+                    },
+                    setViewPortCenter: function(pointList) {
+                        if (pointList.length == 1) {
+                            this.map.setCenterAndZoom(pointList[0], 12)
+                        } else if (pointList.length > 1) {
+                            var polygon = new maptalks.Polygon(pointList);
+                            this.map.fitExtent(polygon.getExtent(), 0);
+                            polygon = null;
+                        }
 
-                        map = this.map;
-
-                    },
-                    overlaycomplete: function(overlay) {
-                        polygonIns = overlay;
-                        this.addPolygonModal = true;
-                    },
-                    redrawPolygon: function(row) {
-                        var bdpoints = this.wgs84tobd09Points(row.points2);
-                        var polygon = new BMap.Polygon(bdpoints, styleOptions);
-                        this.map.addOverlay(polygon);
-                        this.setViewPortCenter(bdpoints);
-                    },
-                    wgs84tobd09Points: function(pointsStr) {
-                        var points = JSON.parse(pointsStr);
-                        var bdpoints = [];
-                        points.forEach(function(item) {
-                            var lon_lat = wgs84tobd09(Number(item.lon), Number(item.lat));
-                            bdpoints.push(new BMap.Point(lon_lat[0], lon_lat[1]))
-                        });
-                        return bdpoints;
-                    },
-                    setViewPortCenter: function(lines) {
-                        var view = this.map.getViewport(eval(lines));
-                        var mapZoom = view.zoom;
-                        var centerPoint = view.center;
-                        this.map.centerAndZoom(centerPoint, mapZoom);
                     },
                     openClassModal: function() {
                         this.addClassModal = true;
@@ -565,7 +911,7 @@
                                     record.render = treeItemRender;
                                     me.originalData.push(record);
                                     me.treeData = me.originalData;
-                                    me.$Message.error("添加成功");
+                                    me.$Message.success("添加成功");
                                     me.addClassModal = false;
                                     me.typeName = '';
                                 } else {
@@ -603,13 +949,8 @@
                         }
 
                     }, 500),
-                    changeValue: function(e) {
-                        this.circularIns.setRadius(e);
-                    },
                     claerPolygon: function() {
-                        this.map.clearOverlays();
-                        this.drawingManager.close();
-                        startDrawPolygon(BMAP_DRAWING_POLYGON);
+
                     },
                     deleteTreeItem: function(data) {
                         var url = myUrls.delGeoSystemCategory(),
@@ -620,6 +961,7 @@
                             console.log('resp', resp)
                             if (resp.status === 0) {
                                 var index = null;
+                                me.cancelSelected();
                                 me.originalData.forEach(function(item, idx) {
                                     if (item.categoryid === data.categoryid) {
                                         index = idx;
@@ -641,6 +983,7 @@
                         }, function(resp) {
                             console.log('resp', resp)
                             if (resp.status === 0) {
+                                me.cancelSelected();
                                 me.originalData.forEach(function(item, idx) {
                                     if (item.categoryid === data.categoryid) {
                                         var i = null;
@@ -707,30 +1050,26 @@
                         this.map.setZoom(zoom);
                     },
                     drawCircular: function() {
-                        drawingManager.close();
+                        this.drawTool.enable();
                         this.cancelSelected();
-                        this.map.clearOverlays();
                         this.isEidt = false;
-                        this.getMapCenterPoint();
                         this.isCircular = true;
                         this.isPolygon = false;
                         this.type = 1;
+                        this.radius = 0;
                         this.geoName = "";
-                        this.markerIns = new BMap.Marker(this.mapCenterPoint);
-                        // this.markerIns .enableDragging();
-                        this.map.addOverlay(this.markerIns);
-                        this.circularIns = new BMap.Circle(this.mapCenterPoint, this.radius, styleOptions);
-                        this.map.addOverlay(this.circularIns);
+                        this.drawTool.setMode('Circle').enable();
+
                     },
                     drawPolygon: function() {
                         this.type = 2;
-                        this.map.clearOverlays();
                         this.isCircular = false;
                         this.isPolygon = true;
                         this.isEidt = false;
                         this.geoName = "";
                         this.cancelSelected();
-                        startDrawPolygon(BMAP_DRAWING_POLYGON);
+                        this.drawTool.setMode('Polygon').enable();
+
                     },
                     handleAddPolygon: function() {
                         if (this.selectTypeList.length === 0) {
@@ -745,53 +1084,37 @@
                             me.$Message.success("请选择类型")
                             return;
                         }
-                        var path = polygonIns.getPath();
-                        var mapPath = function(item) {
-                            var lon_lat = bd09towgs84(item.lng, item.lat);
-                            wgs84Path.push({
-                                lon: lon_lat[0].toFixed(6),
-                                lat: lon_lat[1].toFixed(6)
+                        if (this.isCircular) {
+                            this.handleSaveCircular();
+                        } else {
+                            var data = {
+                                categoryid: this.classId,
+                                points2: JSON.stringify(points2List),
+                                type: 2,
+                                name: this.geoName,
+                            };
+                            var url = myUrls.addGeoSystemRecord(),
+                                me = this;
+                            utils.sendAjax(url, data, function(resp) {
+                                if (resp.status === 0 && resp.record) {
+                                    me.originalData.forEach(function(item) {
+                                        if (data.categoryid === item.categoryid) {
+                                            resp.record.title = resp.record.name;
+                                            resp.record.categoryid = data.categoryid;
+                                            resp.record.render = treeChilrenRender;
+                                            item.children.push(resp.record);
+                                        }
+                                    })
+                                    me.$Message.success("添加成功");
+                                    me.isPolygon = false;
+                                    me.addPolygonModal = false;
+                                } else {
+                                    me.$Message.error("添加失败");
+                                }
                             });
-                        };
-                        var wgs84Path = [];
-                        path.forEach(mapPath);
-                        if (this.geoName == "") {
-                            this.$Message.error("请填写围栏名称");
-                            return;
                         }
-                        var data = {
-                            categoryid: this.classId,
-                            points2: JSON.stringify(wgs84Path),
-                            type: 2,
-                            name: this.geoName,
-                        };
-                        var url = myUrls.addGeoSystemRecord(),
-                            me = this;
-                        utils.sendAjax(url, data, function(resp) {
-                            if (resp.status === 0 && resp.record) {
-                                me.originalData.forEach(function(item) {
-                                    if (data.categoryid === item.categoryid) {
-                                        resp.record.title = resp.record.name;
-                                        resp.record.categoryid = data.categoryid;
-                                        resp.record.render = treeChilrenRender;
-                                        item.children.push(resp.record);
-                                    }
-                                })
-                                me.$Message.error("添加成功");
-                                me.map.removeOverlay(polygonIns);
-                                polygonIns = null;
-                                me.isPolygon = false;
-                                me.addPolygonModal = false;
-                            } else {
-                                me.$Message.error("添加失败");
-                            }
-                        });
 
-                        console.log('data', data);
-                    },
-                    getMapCenterPoint: function() {
-                        var pt = this.map.getCenter();
-                        this.mapCenterPoint = pt;
+
                     },
                     filterOriginalData: function(categorys) {
                         var originalData = [];
@@ -820,27 +1143,59 @@
                     onCheckChange: function(selecteds) {
                         this.isCircular = false;
                         this.isPolygon = false;
-                        this.map.clearOverlays();
-                        var points = [],
-                            me = this;
-                        selecteds.forEach(function(select) {
-                            if (!select.children) {
-                                switch (select.type) {
+                        this.polygonLayer.clear();
+                        var points = [];
+                        var me = this;
+                        var isBMap = me.mapType == 'bMap';
+                        selecteds.forEach(function(element) {
+                            if (!element.children) {
+                                switch (element.type) {
                                     case 1:
-                                        var lon_lan = wgs84tobd09(select.lon1, select.lat1);
-                                        var point = new BMap.Point(lon_lan[0], lon_lan[1]);
+                                        if (isBMap) {
+                                            var lon_lat = wgs84tobd09(element.lon1, element.lat1);
+                                        } else {
+                                            var lon_lat = wgs84togcj02(element.lon1, element.lat1);
+                                        }
+
+                                        var point = {
+                                            x: lon_lat[0],
+                                            y: lon_lat[1]
+                                        }
                                         points.push(point);
+                                        new maptalks.Circle(point, element.radius1, {
+                                            symbol: {
+                                                lineColor: '#34495e',
+                                                lineWidth: 2,
+                                                polygonFill: '#ffffff',
+                                                polygonOpacity: 0.4
+                                            }
+                                        }).addTo(me.polygonLayer);
                                         break;
                                     case 2:
-                                        points = points.concat(me.wgs84tobd09Points(select.points2))
+                                        var lon_lat_s = [];
+                                        if (isBMap) {
+                                            lon_lat_s = wgs84sToBdPoints(JSON.parse(element.points2));
+                                        } else {
+                                            lon_lat_s = wgs84sToGooglePoints(JSON.parse(element.points2));
+                                        }
+                                        points = points.concat(lon_lat_s);
+                                        new maptalks.Polygon(lon_lat_s, {
+                                            symbol: {
+                                                'lineColor': '#34495e',
+                                                'lineWidth': 2,
+                                                'polygonFill': 'rgb(135,196,240)',
+                                                'polygonOpacity': 0.6
+                                            }
+                                        }).addTo(me.polygonLayer);
                                         break;
                                 }
-                                me.drawAllOverlays(select);
+
                             }
                         });
                         this.setViewPortCenter(points);
                     },
                     cancelSelected: function() {
+                        this.polygonLayer.clear();
                         this.originalData.forEach(function(item) {
                             item.checked = false;
                             item.children.forEach(function(record) {
@@ -854,102 +1209,29 @@
                             });
                         });
                     },
-                    drawAllOverlays: function(row) {
-                        var type = row.type,
-                            me = this;
-                        switch (type) {
-                            case 1:
-                                var lon_lan = wgs84tobd09(row.lon1, row.lat1);
-                                var markerPoint = new BMap.Point(lon_lan[0], lon_lan[1]);
-                                var marker = new BMap.Marker(markerPoint);
-                                var circular = new BMap.Circle(markerPoint, row.radius1, styleOptions);
-                                this.map.addOverlay(marker);
-                                this.map.addOverlay(circular);
-                                break;
-                            case 2:
-                                var bdpoints = this.wgs84tobd09Points(row.points2);
-                                var polygon = new BMap.Polygon(bdpoints, styleOptions);
-                                this.map.addOverlay(polygon);
-                                break;
-                        }
-                    },
                     handleSaveCircular: function() {
-                        var url = null,
-                            data = null,
-                            me = this;
-                        var lng_lat = bd09towgs84(this.mapCenterPoint.lng, this.mapCenterPoint.lat);
-                        if (this.selectTypeList.length === 0) {
-                            this.$Message.error("请先添加类型");
-                            return;
-                        }
-                        if (this.geoName == "") {
-                            this.$Message.error("请填写围栏名称");
-                            return;
-                        }
-                        if (!this.classId) {
-                            me.$Message.success("请选择类型")
-                            return;
-                        }
-                        if (this.isEidt) {
-                            url = myUrls.editGeoSystemRecord();
-                            data = deepClone(rowData);
-                            data.lat1 = lng_lat[1];
-                            data.lon1 = lng_lat[0];
-                            data.radius1 = this.radius;
-                            data.name = this.geoName;
-                            data.categoryid = this.classId;
-                        } else {
-                            url = myUrls.addGeoSystemRecord();
-                            data = {
-                                categoryid: this.classId,
-                                type: 1,
-                                lat1: lng_lat[1],
-                                lon1: lng_lat[0],
-                                radius1: this.radius,
-                                name: this.geoName
-                            };
-                        }
-
+                        var me = this;
+                        var url = myUrls.addGeoSystemRecord();
+                        var data = {
+                            categoryid: this.classId,
+                            type: 1,
+                            lat1: points1List[1],
+                            lon1: points1List[0],
+                            radius1: Number(parseInt(this.radius)),
+                            name: this.geoName
+                        };
                         utils.sendAjax(url, data, function(resp) {
                             if (resp.status === 0) {
-                                if (me.isEidt) {
-                                    var originalData = [],
-                                        treeData = [];
-                                    me.originalData.forEach(function(item) {
-                                        if (data.categoryid === item.categoryid) {
-                                            var children = [];
-                                            item.children.forEach(function(record) {
-                                                if (record.geosystemrecordid == data.geosystemrecordid) {
-                                                    data.title = me.geoName
-                                                    children.push(data);
-                                                } else {
-                                                    children.push(record);
-                                                }
-                                            });
-                                            item.children = children;
-                                        }
-                                        originalData.push(item);
-                                    });
+                                me.originalData.forEach(function(item) {
+                                    if (data.categoryid === item.categoryid) {
+                                        resp.record.title = resp.record.name;
+                                        resp.record.categoryid = data.categoryid;
+                                        resp.record.render = treeChilrenRender;
+                                        item.children.push(resp.record);
+                                    }
+                                })
+                                if (me.originalData !== me.treeData) {
                                     me.treeData.forEach(function(item) {
-                                        if (data.categoryid === item.categoryid) {
-                                            var children = [];
-                                            item.children.forEach(function(record) {
-                                                if (record.geosystemrecordid == data.geosystemrecordid) {
-                                                    data.title = me.geoName
-                                                    children.push(data);
-                                                } else {
-                                                    children.push(record);
-                                                }
-                                            });
-                                            item.children = children;
-                                        }
-                                        treeData.push(item);
-                                    });
-                                    me.treeData = treeData;
-                                    me.originalData = originalData;
-                                    me.$Message.success("编辑成功");
-                                } else {
-                                    me.originalData.forEach(function(item) {
                                         if (data.categoryid === item.categoryid) {
                                             resp.record.title = resp.record.name;
                                             resp.record.categoryid = data.categoryid;
@@ -957,25 +1239,11 @@
                                             item.children.push(resp.record);
                                         }
                                     })
-                                    if (me.originalData !== me.treeData) {
-                                        me.treeData.forEach(function(item) {
-                                            if (data.categoryid === item.categoryid) {
-                                                resp.record.title = resp.record.name;
-                                                resp.record.categoryid = data.categoryid;
-                                                resp.record.render = treeChilrenRender;
-                                                item.children.push(resp.record);
-                                            }
-                                        })
-                                    }
-
-
-
-                                    me.$Message.success("添加成功");
-
                                 }
-
+                                me.$Message.success("添加成功");
+                                me.addPolygonModal = false;
                             } else {
-                                me.isEidt ? me.$Message.error("编辑失败") : me.$Message.error("添加失败");
+                                me.$Message.error("添加失败");
                             }
                         });
                     },
@@ -1007,6 +1275,89 @@
                     searchValue: function(newValue) {
                         this.searchChange(this, newValue);
                     },
+                    addPolygonModal: function(val) {
+                        if (!val) {
+                            this.polygonLayer.clear();
+                        }
+                    },
+                    mapType: function(newVal, oldVal) {
+
+                        var geometries = this.polygonLayer.getGeometries();
+                        geometries.forEach(function(geometrie) {
+                            var points = geometrie.getCoordinates();
+                            if (points instanceof Array) {
+                                var newPoint = [];
+                                points.forEach(function(items) {
+                                    var newItems = [];
+                                    items.forEach(function(point) {
+                                        var newPoint = null;
+                                        if (newVal == 'bMap') {
+                                            var lon_lat = gcj02tobd09(point.x, point.y);
+                                            newPoint = {
+                                                x: lon_lat[0],
+                                                y: lon_lat[1]
+                                            };
+                                        } else if (newVal == 'gMap') {
+                                            if (oldVal == 'aMap') {
+                                                newPoint = point;
+                                            } else {
+                                                var lon_lat = bd09togcj02(point.x, point.y);
+                                                var newPoint = {
+                                                    x: lon_lat[0],
+                                                    y: lon_lat[1]
+                                                };
+                                            }
+                                        } else if (newVal == 'aMap') {
+                                            if (oldVal == 'gMap') {
+                                                newPoint = point;
+                                            } else {
+                                                var lon_lat = bd09togcj02(point.x, point.y);
+                                                newPoint = {
+                                                    x: lon_lat[0],
+                                                    y: lon_lat[1]
+                                                };
+                                            }
+                                        }
+
+                                        newItems.push(newPoint);
+                                    })
+                                    newPoint.push(newItems);
+                                });
+                                geometrie.setCoordinates(newPoint);
+                            } else {
+                                var newPoint = null;
+                                if (newVal == 'bMap') {
+                                    var lon_lat = gcj02tobd09(points.x, points.y);
+                                    newPoint = {
+                                        x: lon_lat[0],
+                                        y: lon_lat[1]
+                                    };
+                                } else if (newVal == 'gMap') {
+                                    if (oldVal == 'aMap') {
+                                        newPoint = points;
+                                    } else {
+                                        var lon_lat = bd09togcj02(points.x, points.y);
+                                        newPoint = {
+                                            x: lon_lat[0],
+                                            y: lon_lat[1]
+                                        };
+                                    }
+                                } else if (newVal == 'aMap') {
+                                    if (oldVal == 'gMap') {
+                                        newPoint = points;
+                                    } else {
+                                        var lon_lat = bd09togcj02(points.x, points.y);
+                                        newPoint = {
+                                            x: lon_lat[0],
+                                            y: lon_lat[1]
+                                        };
+                                    }
+                                }
+
+                                geometrie.setCoordinates(newPoint);
+                            }
+                        })
+                    }
                 },
                 mounted: function() {
                     this.initMap();

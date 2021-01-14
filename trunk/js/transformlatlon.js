@@ -133,7 +133,60 @@
     }
 
     win.gcj02tobd09 = gcj02tobd09;
+    win.bd09togcj02 = bd09togcj02;
     win.wgs84tobd09 = wgs84tobd09;
     win.bd09towgs84 = bd09towgs84;
     win.wgs84togcj02 = wgs84togcj02;
+    win.gcj02towgs84 = gcj02towgs84;
+
+    win.bdPointsToWgs84s = function(points) {
+        var results = [];
+        points.forEach(function(item) {
+            var lon_lat = bd09towgs84(item.x, item.y);
+            results.push({
+                x: lon_lat[0],
+                y: lon_lat[1],
+            })
+        });
+        return results;
+    };
+
+    win.googlePointsToWgs84s = function(points) {
+        var results = [];
+        points.forEach(function(item) {
+            var lon_lat = gcj02towgs84(item.x, item.y);
+            results.push({
+                x: lon_lat[0],
+                y: lon_lat[1],
+            })
+        });
+        return results;
+    };
+
+    win.wgs84sToBdPoints = function(points) {
+        var results = [];
+        points.forEach(function(item) {
+            var lon_lat = wgs84tobd09(item.x, item.y);
+            results.push({
+                x: lon_lat[0],
+                y: lon_lat[1],
+            })
+        });
+        return results;
+    };
+
+
+
+    win.wgs84sToGooglePoints = function(points) {
+        var results = [];
+        points.forEach(function(item) {
+            var lon_lat = wgs84togcj02(item.x, item.y);
+            results.push({
+                x: lon_lat[0],
+                y: lon_lat[1],
+            })
+        });
+        return results;
+    };
+
 })(this);

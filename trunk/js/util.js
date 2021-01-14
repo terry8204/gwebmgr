@@ -188,10 +188,11 @@ var utils = {
     },
     getCurrentMapCoordinate: function(isBMap, point) {
         if (isBMap) {
-            var lng_lat = gcj02tobd09(point[0], point[1]);
+            var lng_lat = wgs84tobd09(point[0], point[1]);
             return [lng_lat[0], lng_lat[1]];
         } else {
-            return point;
+            var lng_lat = wgs84togcj02(point[0], point[1]);
+            return [lng_lat[0], lng_lat[1]];
         }
     },
 
@@ -809,6 +810,8 @@ var utils = {
             minZoom: 4,
             maxZoom: 19,
             scaleControl: true,
+            dragRotate: false,
+            dragPitch: false,
         });
 
         var newMapType = this.getMapType();
@@ -1264,9 +1267,7 @@ var timeDifference = DateFormat.getOffset();
 try {
     //自定义 vue指令
     vClickOutside.install(Vue);
-} catch (error) {
-
-}
+} catch (error) {}
 
 function findTheDevice(deviceid) {
     var deviceObj = null;
@@ -1498,12 +1499,12 @@ function refreshPostion(deviceid) {
 // 设置围栏
 function setFence(deviceid) {
     var track = vRoot.$children[1].positionLastrecords[deviceid];
-    var b_lat = track.b_lat;
-    var b_lon = track.b_lon;
+    var callat = track.callat;
+    var callon = track.callon;
     var course = track.course;
     var devicename = track.devicename;
     var iconType = carIconTypes[deviceid] !== undefined ? carIconTypes[deviceid] : 0;
-    var url = myUrls.viewhosts + 'setfencemulti.html?deviceid=' + deviceid + '&token=' + token + '&lat=' + b_lat + '&lon=' + b_lon + '&icontype=' + iconType + '&course=' + course + '&devicename=' + devicename;
+    var url = myUrls.viewhosts + 'setfencemulti.html?deviceid=' + deviceid + '&token=' + token + '&lat=' + callat + '&lon=' + callon + '&icontype=' + iconType + '&course=' + course + '&devicename=' + devicename;
     window.open(url);
 }
 

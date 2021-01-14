@@ -1362,6 +1362,8 @@ var monitor = {
                 minZoom: 4,
                 maxZoom: 19,
                 scaleControl: true,
+                dragRotate: false,
+                dragPitch: false,
             });
 
             this.setMapType({
