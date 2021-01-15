@@ -1421,8 +1421,8 @@
                                     var oildetectors = item.oildetectors;
                                     var oil1 = oildetectors[0];
                                     var oil2 = oildetectors[1];
-                                    item.oil1 = me.getTankShape(oil1.appearance) + '/' + oil1.capacity + '/' + oil1.detectorLength;
-                                    item.oil2 = me.getTankShape(oil2.appearance) + '/' + oil2.capacity + '/' + oil2.detectorLength;
+                                    item.oil1 = me.getTankShape(oil1.appearance);
+                                    item.oil2 = me.getTankShape(oil2.appearance);
                                 });
                                 me.templateData = records;
                             } else {
@@ -1431,8 +1431,8 @@
                                     var oildetectors = item.oildetectors;
                                     var oil1 = oildetectors[0];
                                     var oil2 = oildetectors[1];
-                                    item.oil1 = me.getTankShape(oil1.appearance) + '/' + oil1.capacity + '/' + oil1.detectorLength;
-                                    item.oil2 = me.getTankShape(oil2.appearance) + '/' + oil2.capacity + '/' + oil2.detectorLength;
+                                    item.oil1 = me.getTankShape(oil1.appearance);
+                                    item.oil2 = me.getTankShape(oil2.appearance);
                                     if (item.templatename.indexOf(me.matchingTemp) != -1 || item.brand.indexOf(me.matchingTemp) != -1 || item.model.indexOf(me.matchingTemp) != -1) {
                                         filters.push(item);
                                     }
