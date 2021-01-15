@@ -743,7 +743,7 @@
                 <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
                 <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveTemplateInfo">{{$t("device.addTemplate")}}</i-button>
                 <Checkbox v-show="tabsActive == 'template'" v-model="allTemp">{{$t("device.allTemplate")}}</Checkbox>
-                <i-input v-show="tabsActive == 'template'" v-model.trim="matchingTemp" style="width:100px" placeholder="$t('device.filterTemplate')"></i-input>
+                <i-input v-show="tabsActive == 'template'" v-model.trim="matchingTemp" style="width:100px" :placeholder="$t('device.filterTemplate')"></i-input>
                 <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">{{$t("device.queryTemplate")}}</i-button>
             </div>
         </Modal>
