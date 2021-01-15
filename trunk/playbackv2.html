@@ -376,6 +376,10 @@
             background-color: rgba(64, 150, 209, 0.9);
             color: rgb(255, 255, 255);
         }
+        
+        div.maptalks-attribution {
+            display: none;
+        }
     </style>
 </head>
 
@@ -1281,8 +1285,9 @@
                             },
                             tooltip: {
                                 trigger: 'axis',
-                                formatter: function(v) {
-
+                                formatter: function(v, a) {
+                                    console.log('v', v);
+                                    console.log('a', a);
                                     var data = vRoot.$t('main.time') + ': ' + v[0].name + '<br/>';
                                     for (i in v) {
                                         if (v[i].seriesName && v[i].seriesName != vRoot.$t('main.time')) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';

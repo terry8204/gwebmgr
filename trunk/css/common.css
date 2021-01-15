@@ -64,6 +64,10 @@ li {
     animation: ani-demo-spin 1s linear infinite;
 }
 
+div.maptalks-attribution {
+    display: none;
+}
+
 
 /* iview  模态框垂直水平居中 */
 
