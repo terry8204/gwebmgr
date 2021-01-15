@@ -854,6 +854,9 @@ var myUrls = {
     queryDirectDevicesForDatav: function() {
         return this.apihosts + 'webapi?action=querydirectdevicesfordatav&token=' + token;
     },
+    queryWeightCalibration: function() {
+        return this.apihosts + 'webapi?action=queryweightcalibration&token=' + token;
+    },
 }
 
 

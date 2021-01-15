@@ -156,6 +156,9 @@ Vue.component('table-dropdown', {
                 case 'oil':
                     vueInstanse.onClickCalibration(this.params);
                     break;
+                case 'weight':
+                    vueInstanse.onClickWeight(this.params);
+                    break;
                 case 'io':
                     vueInstanse.onClickIoSetting(this.params);
                     break;

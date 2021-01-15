@@ -2,6 +2,7 @@
 <div id="querydev">
     <input type="file" id="file1" style="display: none;" />
     <input type="file" id="file2" style="display: none;" />
+    <input type="file" id="file3" style="display: none;" />
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.queryDev")}}</h3>
         <ul>
@@ -786,6 +787,55 @@
                 <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">{{$t("device.queryTemplate")}}</i-button>
             </div>
         </Modal>
+        <Modal v-model="weightModal" width="650">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="ios-create-outline"></Icon>
+                <span>{{$t("device.weightMarking")}}</span>
+            </p>
+            <div>
+                <Row style="margin: 10px 0;">
+                    <i-col span="4" style="line-height: 32px;text-align: center;">
+                        传感器类型 :
+                    </i-col>
+                    <i-col span="5">
+                        <i-select v-model="sensorType" style="width:100%;">
+                            <i-option value="0">一路称重传感器</i-option>
+                            <i-option value="1">二路称重传感器</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0;">
+                    <i-col span="4" style="line-height: 32px;text-align: center;">
+                        AD值:
+                    </i-col>
+                    <i-col span="5">
+                        <input-number :max="65535" :min="0" v-model.trim.number="advalue" style="width:100%"></input-number>
+                    </i-col>
+                    <i-col span="4" offset="1" style="line-height: 32px;text-align: center;">
+                        载重值(kg):
+                    </i-col>
+                    <i-col span="5">
+                        <input-number :max="1500" :min="0" v-model.trim.number="weight" style="width:100%"></input-number>
+                    </i-col>
+                    <i-col span="1" style="line-height: 32px;">
+                        L
+                    </i-col>
+                    <i-col span="2">
+                        <i-button type="primary" @click="addWeightData">{{$t("user.add")}}</i-button>
+                    </i-col>
+                </Row>
+                <i-table border :columns="weightColumns" ref="weightTable" :data="weightData" height="200"></i-table>
+                <div style="margin: 10px 0 0 0;text-align: right;">
+                    <i-button type="primary" @click="importWeightData">{{$t("device.import")}}</i-button>
+                    <i-button type="info" @click="exportDevice1">{{$t("reportForm.exportData")}}</i-button>
+                    <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
+                </div>
+            </div>
+            <div slot="footer" style="text-align: center;">
+                <i-button style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
+                <i-button style="width: 100px" type="primary" @click="queryWeightCalibration">{{$t("reportForm.query")}}</i-button>
+            </div>
+        </Modal>
     </div>
     <script>
         vueInstanse = new Vue({
@@ -855,6 +905,8 @@
                 threshold2: 5,
 
                 oilModal: false, //石油 
+                weightModal: false, //石油 
+                sensorType: '0', //载重
                 tankShape1: '0', //油箱形状
                 tankVolume1: 0, //油箱容积
                 sensorLength1: 0, //传感器长度
@@ -932,6 +984,36 @@
                         }, vRoot.$t('monitor.delete'))
                     },
                 }],
+                weightColumns: [{
+                    type: 'index',
+                    width: 50
+                }, {
+                    key: 'advalue',
+                    title: 'AD值',
+                }, {
+                    key: 'weight',
+                    title: '载重值(kg)',
+                }, {
+                    title: vRoot.$t('alarm.action'),
+                    width: 100,
+                    render: function(h, params) {
+                        var index = params.index;
+                        return h('Button', {
+                            props: {
+                                type: 'error',
+                                size: 'small'
+                            },
+                            on: {
+                                click: function() {
+                                    vueInstanse.weightData.splice(index, 1);
+                                }
+                            }
+                        }, vRoot.$t('monitor.delete'))
+                    },
+                }],
+                advalue: '',
+                weight: '',
+                weightData: [],
                 columns: [{
                         title: vRoot.$t("alarm.devName"),
                         key: 'devicenamekey',
@@ -1205,9 +1287,34 @@
                     editObject = params.row;
                     this.queryOilInfo(params.row.deviceid);
                 },
+                onClickWeight: function(params) {
+                    this.weightModal = true;
+                    editObject = params.row;
+                    this.queryWeightCalibration();
+                },
                 onClickIoSetting: function(params) {
                     editObject = params.row;
                     this.queryIoConfig(editObject.deviceid);
+                },
+                queryWeightCalibration: function() {
+                    var me = this;
+                    var url = myUrls.queryWeightCalibration();
+                    var data = {
+                        deviceid: editObject.deviceid,
+                        weightindex: Number(this.sensorType)
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log('resp', resp);
+                        if (resp.markers) {
+                            if (resp.markers.length) {
+                                me.weightData = resp.markers;
+                            } else {
+                                me.$Message.error('没有数据')
+                            }
+                        } else {
+                            me.$Message.error('查询失败')
+                        }
+                    });
                 },
                 queryCarMasterInfo: function(params) {
                     utils.queryDeviceex(params.row.deviceid, function(resp) {
@@ -1450,6 +1557,16 @@
                         });
                     } else {
                         this.tabsActive = 'templateInfo';
+                    }
+                },
+                addWeightData: function() {
+                    if (this.advalue && this.weight) {
+                        this.weightData.push({
+                            advalue: this.advalue,
+                            weight: this.weight,
+                        })
+                    } else {
+                        this.$Message.error('请添写有效值');
                     }
                 },
                 addTaggingRowData1: function() {
@@ -2040,7 +2157,7 @@
                         callback();
                     })
                 },
-                readWorkbookFromLocalFile1: function(file, callback) {
+                readWorkbookFromLocalFile: function(file, callback) {
                     var reader = new FileReader();
                     reader.onload = function(e) {
                         var data = e.target.result;
@@ -2075,19 +2192,7 @@
                         this.$Message.error(vRoot.$t('message.useTemplateTips'));
                     }
                 },
-                readWorkbookFromLocalFile2: function(file, callback) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        var data = e.target.result;
-                        var workbook = XLSX.read(data, {
-                            type: 'binary'
-                        });
-                        if (callback) callback(workbook);
-                    };
-                    reader.readAsBinaryString(file);
-                },
                 parserExcelData2: function(excelData) {
-
                     try {
                         var indexY = 2;
                         var tableData = [];
@@ -2110,6 +2215,35 @@
                     } catch (error) {
                         this.$Message.error(vRoot.$t('message.useTemplateTips'));
                     }
+                },
+                parserExcelData3: function(excelData) {
+                    try {
+                        var indexY = 2;
+                        var tableData = [];
+                        while (true) {
+                            var vinnoKey = this.excelX[0] + indexY; //设备ID
+                            var policynoKey = this.excelX[1] + indexY; //防盗号
+
+                            if (excelData[vinnoKey] == undefined) {
+                                break;
+                            }
+
+                            tableData.push({
+                                advalue: excelData[vinnoKey] ? excelData[vinnoKey].v : '',
+                                weight: excelData[policynoKey] ? excelData[policynoKey].v : '',
+                            })
+
+                            indexY++;
+                        }
+                        this.weightData = tableData;
+                    } catch (error) {
+                        this.$Message.error(vRoot.$t('message.useTemplateTips'));
+                    }
+                },
+                importWeightData: function() {
+                    this.fileEl1.files.length = 0;
+                    this.fileEl1.value = "";
+                    this.fileEl1.click();
                 },
                 importTownerInfo1: function() {
                     this.fileEl1.files.length = 0;
@@ -2195,21 +2329,34 @@
                     //     return;
                     // }
                     var file = e.target.files[0]
-                    me.readWorkbookFromLocalFile1(file, function(workbook) {
+                    me.readWorkbookFromLocalFile(file, function(workbook) {
                         me.parserExcelData1(workbook.Sheets['测量标定']);
                     });
                 };
                 this.excelX = ['A', 'B', 'C'];
+
                 this.fileEl2 = document.getElementById('file2');
                 this.fileEl2.onchange = function(e) {
                     var idx = e.srcElement.value.lastIndexOf('.');
                     var houzhui = e.srcElement.value.slice(idx);
 
                     var file = e.target.files[0]
-                    me.readWorkbookFromLocalFile2(file, function(workbook) {
+                    me.readWorkbookFromLocalFile(file, function(workbook) {
                         me.parserExcelData2(workbook.Sheets['测量标定']);
                     });
                 };
+
+                this.fileEl3 = document.getElementById('file3');
+                this.fileEl3.onchange = function(e) {
+                    var idx = e.srcElement.value.lastIndexOf('.');
+                    var houzhui = e.srcElement.value.slice(idx);
+
+                    var file = e.target.files[0]
+                    me.readWorkbookFromLocalFile(file, function(workbook) {
+                        me.parserExcelData3(workbook.Sheets['载重标定']);
+                    });
+                };
+
                 window.onresize = function() {
                     me.calcTableHeight();
                 }
