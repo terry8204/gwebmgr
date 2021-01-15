@@ -450,26 +450,6 @@
                                 </i-select>
                             </i-col>
                             <i-col span="4" style="line-height: 32px;text-align: center;">
-                                {{$t("device.tankVolume")}}:
-                            </i-col>
-                            <i-col span="5">
-                                <input-number :max="1500" :min="1" v-model.trim.number="tankVolume1" style="width:100%"></input-number>
-                            </i-col>
-                            <i-col span="3" style="line-height: 32px;">
-                                L
-                            </i-col>
-                        </Row>
-                        <Row style="margin: 10px 0;">
-                            <i-col span="4" style="line-height: 32px;text-align: center;">
-                                {{$t("device.sensorLength")}}:
-                            </i-col>
-                            <i-col span="5">
-                                <input-number :max="1500" :min="1" v-model.trim.number="sensorLength1" style="width:100%"></input-number>
-                            </i-col>
-                            <i-col span="1" style="line-height: 32px;">
-                                cm
-                            </i-col>
-                            <i-col span="4" style="line-height: 32px;text-align: center;">
                                 {{$t("device.maxAnalogQuantity")}}:
                             </i-col>
                             <i-col span="5">
@@ -610,26 +590,6 @@
                                     <i-option value="3">{{$t("device.transverseCylinder")}}</i-option>
                                     <i-option value="4">{{$t("device.irregular")}}</i-option>
                                 </i-select>
-                            </i-col>
-                            <i-col span="4" style="line-height: 32px;text-align: center;">
-                                {{$t("device.tankVolume")}}:
-                            </i-col>
-                            <i-col span="5">
-                                <input-number :max="1500" :min="1" v-model.trim.number="tankVolume2" style="width:100%"></input-number>
-                            </i-col>
-                            <i-col span="1" style="line-height: 32px;">
-                                L
-                            </i-col>
-                        </Row>
-                        <Row style="margin: 10px 0;">
-                            <i-col span="4" style="line-height: 32px;text-align: center;">
-                                {{$t("device.sensorLength")}}:
-                            </i-col>
-                            <i-col span="5">
-                                <input-number :max="1500" :min="1" v-model.trim.number="sensorLength2" style="width:100%"></input-number>
-                            </i-col>
-                            <i-col span="1" style="line-height: 32px;">
-                                cm
                             </i-col>
                             <i-col span="4" style="line-height: 32px;text-align: center;">
                                 {{$t("device.maxAnalogQuantity")}} :
@@ -827,8 +787,8 @@
                 <i-table border :columns="weightColumns" ref="weightTable" :data="weightData" height="200"></i-table>
                 <div style="margin: 10px 0 0 0;text-align: right;">
                     <i-button type="primary" @click="importWeightData">{{$t("device.import")}}</i-button>
-                    <i-button type="info" @click="exportDevice1">{{$t("reportForm.exportData")}}</i-button>
-                    <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
+                    <i-button type="info" @click="exportWeightData">{{$t("reportForm.exportData")}}</i-button>
+                    <i-button type="info" @click="downloadWeightTemplate">{{$t('insure.templateDownload')}}</i-button>
                 </div>
             </div>
             <div slot="footer" style="text-align: center;">
@@ -908,8 +868,6 @@
                 weightModal: false, //石油 
                 sensorType: '0', //载重
                 tankShape1: '0', //油箱形状
-                tankVolume1: 0, //油箱容积
-                sensorLength1: 0, //传感器长度
                 maxAdValue1: 65535,
                 length1: 0,
                 width1: 0,
@@ -920,8 +878,6 @@
                 taggingData1: [],
                 //
                 tankShape2: '0', //油箱形状
-                tankVolume2: 0, //油箱容积
-                sensorLength2: 0, //传感器长度
                 maxAdValue2: 65535,
                 length2: 0,
                 width2: 0,
@@ -1146,8 +1102,6 @@
                                             oildetectors.forEach(function(item, index) {
                                                 if (index == 0) {
                                                     vueInstanse.tankShape1 = String(item.appearance);
-                                                    vueInstanse.tankVolume1 = item.capacity;
-                                                    vueInstanse.sensorLength1 = item.detectorLength
                                                     vueInstanse.diameter1 = item.diameter;
                                                     vueInstanse.height1 = item.height;
                                                     vueInstanse.length1 = item.length;
@@ -1157,8 +1111,6 @@
                                                     vueInstanse.threshold1 = item.threshold;
                                                 } else if (index == 1) {
                                                     vueInstanse.tankShape2 = String(item.appearance);
-                                                    vueInstanse.tankVolume2 = item.capacity;
-                                                    vueInstanse.sensorLength2 = item.detectorLength
                                                     vueInstanse.diameter2 = item.diameter;
                                                     vueInstanse.height2 = item.height;
                                                     vueInstanse.length2 = item.length;
@@ -1275,6 +1227,12 @@
                     var a = document.createElement('a');
                     a.href = myUrls.apihost + 'oiladtemplate.xlsx';
                     a.download = 'oiladtemplate.xlsx';
+                    a.click();
+                },
+                downloadWeightTemplate: function() {
+                    var a = document.createElement('a');
+                    a.href = myUrls.apihost + 'weightemplate.xlsx';
+                    a.download = 'weightemplate.xlsx';
                     a.click();
                 },
                 querySpeedSetting: function(params) {
@@ -1515,8 +1473,6 @@
                         }
                         var oilDetector1 = {
                             appearance: Number(this.tankShape1),
-                            capacity: this.tankVolume1,
-                            detectorLength: this.sensorLength1,
                             maxAdValue: this.maxAdValue1,
                             length: this.length1,
                             width: this.width1,
@@ -1527,8 +1483,6 @@
                         };
                         var oilDetector2 = {
                             appearance: Number(this.tankShape2),
-                            capacity: this.tankVolume2,
-                            detectorLength: this.sensorLength2,
                             maxAdValue: this.maxAdValue2,
                             length: this.length2,
                             width: this.width2,
@@ -1851,8 +1805,6 @@
                             oildetectors.forEach(function(item, index) {
                                 if (index == 0) {
                                     me.tankShape1 = String(item.appearance);
-                                    me.tankVolume1 = item.capacity;
-                                    me.sensorLength1 = item.detectorLength
                                     me.diameter1 = item.diameter;
                                     me.height1 = item.height;
                                     me.length1 = item.length;
@@ -1862,8 +1814,6 @@
                                     me.threshold1 = item.threshold;
                                 } else if (index == 1) {
                                     me.tankShape2 = String(item.appearance);
-                                    me.tankVolume2 = item.capacity;
-                                    me.sensorLength2 = item.detectorLength
                                     me.diameter2 = item.diameter;
                                     me.height2 = item.height;
                                     me.length2 = item.length;
@@ -1881,8 +1831,6 @@
                 saveOilDetectors: function() {
                     var oilDetector1 = {
                         appearance: Number(this.tankShape1),
-                        capacity: this.tankVolume1,
-                        detectorLength: this.sensorLength1,
                         maxAdValue: this.maxAdValue1,
                         length: this.length1,
                         width: this.width1,
@@ -1893,8 +1841,6 @@
                     };
                     var oilDetector2 = {
                         appearance: Number(this.tankShape2),
-                        capacity: this.tankVolume2,
-                        detectorLength: this.sensorLength2,
                         maxAdValue: this.maxAdValue2,
                         length: this.length2,
                         width: this.width2,
@@ -2241,9 +2187,9 @@
                     }
                 },
                 importWeightData: function() {
-                    this.fileEl1.files.length = 0;
-                    this.fileEl1.value = "";
-                    this.fileEl1.click();
+                    this.fileEl3.files.length = 0;
+                    this.fileEl3.value = "";
+                    this.fileEl3.click();
                 },
                 importTownerInfo1: function() {
                     this.fileEl1.files.length = 0;
@@ -2263,6 +2209,17 @@
                         filename: vRoot.$t('device.calibration'),
                         columns: taggingColumns1,
                         data: this.taggingData1,
+                        quoted: true,
+                    });
+                },
+                exportWeightData: function() {
+                    var weightColumns = deepClone(this.weightColumns);
+                    weightColumns.pop();
+                    weightColumns.shift();
+                    this.$refs.weightTable.exportCsv({
+                        filename: vRoot.$t('device.weightMarking') + '-' + editObject.deviceid + '-' + this.sensorType,
+                        columns: weightColumns,
+                        data: this.weightData,
                         quoted: true,
                     });
                 },
