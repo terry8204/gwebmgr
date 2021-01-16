@@ -15,30 +15,35 @@
                 <i-button @click="handleClear" type="primary" style="width: 200px;">{{$t('monitor.confirm')}}</i-button>
             </i-Col>
         </Row>
-       
+
     </div>
-   <script>
-       vueInstanse = new Vue({
-            el:'#set-mileage',
+    <script>
+        vueInstanse = new Vue({
+            el: '#set-mileage',
             i18n: utils.getI18n(),
-            data:{
-                deviceid:'',
-                mileage:'',
+            data: {
+                deviceid: '',
+                mileage: '',
             },
-            methods:{
-                handleClear:function(){
-                    if(this.deviceid.trim() == ''){
+            methods: {
+                handleClear: function() {
+                    if (this.deviceid.trim() == '') {
                         this.$Message.error(this.$t('login.inputDeviceNumber'));
                         return;
                     };
-                    var me = this,url = myUrls.fixTotalDistance() ,mileage = Number(this.mileage);
-                    if( isNaN(mileage)  ){
-                        this.$Message.error(me.$t('bgMgr.pleaseInputNumber')); 
-                        return ;
+                    var me = this,
+                        url = myUrls.fixTotalDistance(),
+                        mileage = Number(this.mileage);
+                    if (isNaN(mileage)) {
+                        this.$Message.error(me.$t('bgMgr.pleaseInputNumber'));
+                        return;
                     }
-                    utils.sendAjax(url, { deviceid: this.deviceid, totaldistance: mileage  }, function(resp) {
+                    utils.sendAjax(url, {
+                        deviceid: this.deviceid,
+                        totaldistance: mileage
+                    }, function(resp) {
                         if (resp.status === 0) {
-                            me.$Message.success( me.$t('monitor.setupSucc'));
+                            me.$Message.success(me.$t('monitor.setupSucc'));
                         } else {
                             me.$Message.error(me.$t('monitor.setupFail') + " ：" + resp.cause);
                         }
@@ -46,5 +51,5 @@
                 }
             }
         })
-   </script>
+    </script>
 </div>

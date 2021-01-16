@@ -37,15 +37,38 @@
             </i-col>
         </Row>
         <Row>
-            <i-col span="24" style="text-align: center;border: 1px solid #DCDEE2;padding: 5px;">
-                <i-button @click="handleBatchTransfer" style="margin: 0 10px;">{{$t("bgMgr.batchTransfer")}}</i-button>
-                <i-button @click="importModal=true" style="margin: 0 10px;">{{$t("bgMgr.exportDevice")}}</i-button>
-                <i-button @click="showBatchModal(1)" style="margin: 0 10px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
-                <i-button @click="showBatchModal(2)" style="margin: 0 10px;">{{$t("bgMgr.batchEditDueDate")}}</i-button>
-                <i-button @click="showBatchModal(3)" style="margin: 0 10px;">{{$t("bgMgr.batchResetPwd")}}</i-button>
-                <i-button @click="showBatchModal(4)" style="margin: 0 10px;" v-if="userName == 'admin'">{{$t("bgMgr.batchEditDevType")}}</i-button>
-                <i-button @click="showBatchModal(5)" style="margin: 0 10px;">{{$t("bgMgr.batchIssueCmd")}}</i-button>
-                <i-button v-if="userType<2" @click="showBatchModal(6)" style="margin: 0 10px;">{{$t('bgMgr.batchEditDevMileageRatio')}}</i-button>
+            <i-col span="24" style="border: 1px solid #DCDEE2;padding: 5px;">
+                <div style="display: flex;justify-content: center;">
+                    <i-button @click="handleBatchTransfer" style="margin:0 5px;">{{$t("bgMgr.batchTransfer")}}</i-button>
+                    <i-button @click="importModal=true" style="margin:0 5px;">{{$t("bgMgr.exportDevice")}}</i-button>
+                    <i-button @click="showBatchModal(1)" style="margin:0 5px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
+                    <i-button @click="showBatchModal(2)" style="margin:0 5px;">{{$t("bgMgr.batchEditDueDate")}}</i-button>
+                    <i-button @click="showBatchModal(3)" style="margin:0 5px;">{{$t("bgMgr.batchResetPwd")}}</i-button>
+                    <i-button @click="showBatchModal(4)" v-if="userName == 'admin'" style="margin:0 5px;">{{$t("bgMgr.batchEditDevType")}}</i-button>
+                    <i-button @click="showBatchModal(5)" style="margin:0 5px;">{{$t("bgMgr.batchIssueCmd")}}</i-button>
+                    <i-button v-if="userType<2" @click="showBatchModal(6)" style="margin:0 5px;">{{$t('bgMgr.batchEditDevMileageRatio')}}</i-button>
+                    <Poptip v-if="userType<2" trigger="click" :title="$t('bgMgr.setMileage')">
+                        <i-button style="margin:0 5px;"> {{$t("bgMgr.setMileage")}} </i-button>
+                        <div slot="content" style="width:200px;padding:5px 0;">
+                            <Row>
+                                <i-Col span="22">
+                                    <input-number v-model.number="mileage" :min="0" style="width: 100%;"></input-number>
+                                </i-Col>
+                                <i-Col span="2" style="line-height: 32px;">
+                                    km
+                                </i-Col>
+                            </Row>
+                            <Row style="margin-top: 10px;">
+                                <i-Col span="24">
+                                    <i-button @click="setMileage" type="primary" style="width: 100%;">{{$t('monitor.confirm')}}</i-button>
+                                </i-Col>
+                            </Row>
+                        </div>
+                    </Poptip>
+                    <Poptip v-if="userType<2" trigger="click" confirm title="确定清除记录吗?" @on-ok="clearRecord">
+                        <i-button style="margin:0 5px;"> {{$t("bgMgr.clearRecord")}} </i-button>
+                    </Poptip>
+                </div>
             </i-col>
         </Row>
         <Modal v-model="importModal" width="700" :title="$t('device.import')">
@@ -186,6 +209,7 @@
             batchModal: false,
             idLength: 11,
             isOk: false,
+            mileage: 0,
             forwardurl: "",
             newPassword: '',
             forwardtype: '0',
@@ -299,6 +323,56 @@
                 this.batchModal = true;
                 this.forwardurl = '';
                 this.newPassword = '';
+            },
+            clearRecord: function() {
+                if (this.tableData.length == 0) {
+                    this.$Message.error(vRoot.$t('reportForm.selectDevTip'));
+                    return;
+                };
+                var me = this;
+                var url = myUrls.cleanHistoryData();
+                this.tableData.forEach(function(item) {
+                    (function(item) {
+                        var deviceid = item.deviceid;
+                        var data = {
+                            deviceid: deviceid
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            console.log(resp);
+                            if (resp.status == 0) {
+                                item.resultType = 0;
+                            } else {
+                                item.resultType = 1;
+                            }
+                        });
+                    })(item);
+                });
+            },
+            setMileage: function() {
+                if (this.tableData.length == 0) {
+                    this.$Message.error(vRoot.$t('reportForm.selectDevTip'));
+                    return;
+                };
+                var me = this,
+                    url = myUrls.fixTotalDistance(),
+                    mileage = Number(this.mileage);
+                this.tableData.forEach(function(item) {
+                    (function(item) {
+                        var deviceid = item.deviceid;
+                        var data = {
+                            deviceid: deviceid,
+                            mileage: mileage
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            console.log(resp);
+                            if (resp.status == 0) {
+                                item.resultType = 0;
+                            } else {
+                                item.resultType = 1;
+                            }
+                        });
+                    })(item);
+                });
             },
             handleBatchEdit: function() {
                 if (this.tableData.length == 0) {

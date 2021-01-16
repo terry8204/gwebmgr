@@ -3,39 +3,40 @@
         <Row>
             <i-Col span="24">
                 <i-input v-model="deviceid" :placeholder="$t('login.inputDeviceNumber')" style="width: 200px;"></i-input>
-
                 <i-button @click="handleClear" type="primary">{{$t("reportForm.clean")}}</i-button>
             </i-Col>
         </Row>
-            <Modal v-model="deleteRecordsModal">
-                <p slot="header" style="color:#f60;text-align:center">
-                    <Icon type="ios-information-circle"></Icon>
-                    <span>{{$t("bgMgr.delectRecord")}}</span>  
-                </p>
-                <p style="text-align:center;">{{$t("bgMgr.deletedVoice")}} : {{deleteRecordsObject.removedmediacount}}</p>
-                <p style="text-align:center;">{{$t("bgMgr.deletedMessages")}} : {{deleteRecordsObject.removedmsgcount}}</p>
-                <p style="text-align:center;">{{$t("bgMgr.deletedAlarms")}} : {{deleteRecordsObject.removedalarmcount}}</p>
-                <p style="text-align:center;">{{$t("bgMgr.deletedTracks")}} : {{deleteRecordsObject.removedtrackcount}}</p>
-            </Modal>
+        <Modal v-model="deleteRecordsModal">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="ios-information-circle"></Icon>
+                <span>{{$t("bgMgr.delectRecord")}}</span>
+            </p>
+            <p style="text-align:center;">{{$t("bgMgr.deletedVoice")}} : {{deleteRecordsObject.removedmediacount}}</p>
+            <p style="text-align:center;">{{$t("bgMgr.deletedMessages")}} : {{deleteRecordsObject.removedmsgcount}}</p>
+            <p style="text-align:center;">{{$t("bgMgr.deletedAlarms")}} : {{deleteRecordsObject.removedalarmcount}}</p>
+            <p style="text-align:center;">{{$t("bgMgr.deletedTracks")}} : {{deleteRecordsObject.removedtrackcount}}</p>
+        </Modal>
     </div>
-   <script>
-       vueInstanse = new Vue({
-            el:'#clear-records',
+    <script>
+        vueInstanse = new Vue({
+            el: '#clear-records',
             i18n: utils.getI18n(),
-            data:{
-                deviceid:'',
-                deleteRecordsModal:false,
-                deleteRecordsObject:{},
+            data: {
+                deviceid: '',
+                deleteRecordsModal: false,
+                deleteRecordsObject: {},
             },
-            methods:{
-                handleClear:function(){
-                    if(this.deviceid.trim() == ''){
+            methods: {
+                handleClear: function() {
+                    if (this.deviceid.trim() == '') {
                         this.$Message.error(this.$t('login.inputDeviceNumber'));
                         return;
                     };
                     var url = myUrls.cleanHistoryData(),
                         me = this;
-                    utils.sendAjax(url, { deviceid: this.deviceid }, function(resp) {
+                    utils.sendAjax(url, {
+                        deviceid: this.deviceid
+                    }, function(resp) {
                         if (resp.status === 0) {
                             me.deleteRecordsModal = true;
                             me.deleteRecordsObject = resp;
@@ -46,5 +47,5 @@
                 }
             }
         })
-   </script>
+    </script>
 </div>

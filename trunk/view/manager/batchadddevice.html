@@ -565,13 +565,11 @@
                 }
             },
             mounted: function() {
-
                 this.getDeviceType();
                 this.createrToUser = userName;
                 this.userlists = userlists;
                 this.overduetime = new Date(Date.now() + 365 * 24 * 3600 * 1000);
                 this.userType = vstore.state.userType;
-                this.idLength = vRoot.$store.state.deviceTypes[this.userType].defaultidlength;
             }
         })
     </script>
