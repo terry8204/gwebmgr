@@ -65,7 +65,7 @@
                             </Row>
                         </div>
                     </Poptip>
-                    <Poptip v-if="userType<2" trigger="click" confirm title="确定清除记录吗?" @on-ok="clearRecord">
+                    <Poptip v-if="userType<1" trigger="click" confirm title="确定清除记录吗?" @on-ok="clearRecord">
                         <i-button style="margin:0 5px;"> {{$t("bgMgr.clearRecord")}} </i-button>
                     </Poptip>
                 </div>
@@ -338,7 +338,6 @@
                             deviceid: deviceid
                         };
                         utils.sendAjax(url, data, function(resp) {
-                            console.log(resp);
                             if (resp.status == 0) {
                                 item.resultType = 0;
                             } else {
@@ -364,7 +363,6 @@
                             mileage: mileage
                         };
                         utils.sendAjax(url, data, function(resp) {
-                            console.log(resp);
                             if (resp.status == 0) {
                                 item.resultType = 0;
                             } else {
