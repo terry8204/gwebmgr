@@ -1326,7 +1326,6 @@
                                 height: 20,
                                 backgroundColor: '#EDEDED',
                                 fillerColor: 'rgb(54, 72, 96,0.5)',
-                                //fillerColor:'rgb(244,129,38,0.8)',
                                 bottom: 0
                             }, {
                                 type: "inside",
@@ -1349,7 +1348,6 @@
                                 type: 'value',
                                 nameTextStyle: 10,
                                 nameGap: 5,
-
                             }, {
                                 name: dis,
                                 type: 'value',
@@ -1369,62 +1367,62 @@
                                     symbol: 'none',
                                     yAxisIndex: 1,
                                     color: '#F0805A',
-                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                                    data: this.recvtime
+                                    data: this.recvtime,
+                                    smooth: true,
                                 }, {
                                     name: dis,
                                     type: 'line',
                                     symbol: 'none',
                                     yAxisIndex: 1,
                                     color: '#3CB371',
-                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                                    data: this.distance
+                                    data: this.distance,
+                                    smooth: true,
                                 }, {
                                     name: speed,
                                     type: 'line',
                                     symbol: 'none',
                                     yAxisIndex: 0,
-                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
                                     color: '#4876FF',
-                                    data: this.veo
+                                    data: this.veo,
+                                    smooth: true,
                                 }, {
                                     name: recorderspeed,
                                     type: 'line',
                                     symbol: 'none',
                                     yAxisIndex: 0,
-                                    //itemStyle: {normal: {areaStyle: {type: 'default'}}},
                                     color: '#710000',
                                     data: this.recorderspeed,
+                                    smooth: true,
                                 }, {
-                                    //show:'false',
                                     name: totoil,
                                     type: 'line',
                                     symbol: 'none',
                                     color: '#C1232B',
-                                    data: this.oil
+                                    data: this.oil,
+                                    smooth: true,
                                 }, {
-                                    //show:'false',
                                     name: usoil1,
                                     type: 'line',
                                     symbol: 'none',
                                     color: '#8E388E',
-                                    data: this.oil1
+                                    data: this.oil1,
+                                    smooth: true,
                                 },
 
                                 {
-                                    //show:'false',
                                     name: usoil2,
                                     type: 'line',
                                     symbol: 'none',
                                     color: '#FF4500',
-                                    data: this.oil2
+                                    data: this.oil2,
+                                    smooth: true,
                                 }, {
-                                    //show:'false',
                                     name: status,
                                     type: 'line',
                                     symbol: 'none',
                                     color: '#000',
-                                    data: this.devStates
+                                    data: this.devStates,
+                                    smooth: true,
                                 },
                             ]
                         };

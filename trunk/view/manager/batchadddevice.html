@@ -185,7 +185,7 @@
                 timezone: '99',
                 teltype: '1',
                 loading: false,
-                idLength: 15,
+                idLength: 11,
                 iconState: "ios-arrow-down",
                 deviceid: "",
                 deviceIds: [],
@@ -518,7 +518,17 @@
                 }, 1000)
             },
             watch: {
-
+                idLength: function() {
+                    var exec = /[0-9A-Za-z]/g.exec(this.deviceid);
+                    if (exec) {
+                        var idx = exec.index;
+                        var newText = this.deviceid.slice(idx);
+                        this.matchingDeviceIds(this, newText);
+                    } else {
+                        this.isOk = false;
+                        this.errorTips = me.$t('message.deviceIdTips');
+                    }
+                },
                 isShowMatchDev: function() {
                     if (!this.isShowMatchDev) {
                         this.iconState = "ios-arrow-down";

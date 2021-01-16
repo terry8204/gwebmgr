@@ -2656,7 +2656,7 @@ function speedingReport(groupslist) {
                         symbol: 'none',
                         yAxisIndex: 1,
                         color: '#F0805A',
-                        //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                        smooth: true,
                         data: this.recvtime
                     }, {
                         name: dis,
@@ -2664,14 +2664,14 @@ function speedingReport(groupslist) {
                         symbol: 'none',
                         yAxisIndex: 1,
                         color: '#3CB371',
-                        //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                        smooth: true,
                         data: this.distance
                     }, {
                         name: speed,
                         type: 'line',
                         symbol: 'none',
                         yAxisIndex: 0,
-                        //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                        smooth: true,
                         color: '#4876FF',
                         data: this.veo
                     }]
@@ -5363,14 +5363,14 @@ function timeOilConsumption(groupslist) {
                             symbol: 'none',
                             yAxisIndex: 1,
                             color: '#F0805A',
-                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            smooth: true,
                             data: this.recvtime
                         }, {
                             name: speed,
                             type: 'line',
                             symbol: 'none',
                             yAxisIndex: 0,
-                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            smooth: true,
                             color: '#4876FF',
                             data: this.veo
                         }, {
@@ -5379,17 +5379,17 @@ function timeOilConsumption(groupslist) {
                             symbol: 'none',
                             yAxisIndex: 1,
                             color: '#3CB371',
-                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            smooth: true,
                             data: this.distance
                         }, {
-                            //show:'false',
+                            smooth: true,
                             name: totoil,
                             type: 'line',
                             symbol: 'none',
                             color: '#C1232B',
                             data: this.oil
                         }, {
-                            //show:'false',
+                            smooth: true,
                             name: usoil1,
                             type: 'line',
                             symbol: 'none',
@@ -5398,7 +5398,7 @@ function timeOilConsumption(groupslist) {
                         },
 
                         {
-                            //show:'false',
+                            smooth: true,
                             name: usoil2,
                             type: 'line',
                             symbol: 'none',
@@ -5407,7 +5407,7 @@ function timeOilConsumption(groupslist) {
                         },
 
                         {
-                            //show:'false',
+                            smooth: true,
                             name: status,
                             type: 'line',
                             symbol: 'none',
@@ -5671,7 +5671,6 @@ function dayOil(groupslist) {
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilDaily(), data, function(resp) {
                     self.loading = false;
-                    console.log(resp);
                     if (resp.status == 0) {
                         if (resp.records) {
                             var records = [],
@@ -6507,18 +6506,18 @@ function temperature(groupslist) {
                             symbol: 'none',
                             xAxisIndex: 0,
                             color: '#F0805A',
-                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            smooth: true,
                             data: this.recvtime
                         }, {
                             name: speed,
                             type: 'line',
                             symbol: 'none',
                             yAxisIndex: 1,
-                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            smooth: true,
                             color: '#4876FF',
                             data: this.veo,
                         }, {
-                            //show:'false',
+                            smooth: true,
                             name: temp1,
                             type: 'line',
                             symbol: 'none',
@@ -6533,10 +6532,11 @@ function temperature(groupslist) {
                             color: '#8E388E',
                             data: this.temp2,
                             yAxisIndex: 0,
+                            smooth: true,
                         },
 
                         {
-                            //show:'false',
+                            smooth: true,
                             name: temp3,
                             type: 'line',
                             symbol: 'none',
@@ -6545,7 +6545,7 @@ function temperature(groupslist) {
                             yAxisIndex: 0,
                         },
                         {
-                            //show:'false',
+                            smooth: true,
                             name: temp4,
                             type: 'line',
                             symbol: 'none',
@@ -6559,7 +6559,7 @@ function temperature(groupslist) {
                             symbol: 'none',
                             yAxisIndex: 0,
                             color: '#3CB371',
-                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            smooth: true,
                             data: this.averageTemp
                         },
                         {
@@ -6568,7 +6568,7 @@ function temperature(groupslist) {
                             symbol: 'none',
                             yAxisIndex: 0,
                             color: '#9EEA6A',
-                            //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                            smooth: true,
                             data: this.humi1s
                         },
                     ]
