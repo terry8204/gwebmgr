@@ -104,7 +104,7 @@
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.idLength")}}: &nbsp;</i-col>
                 <i-col span="8">
-                    <input-number v-model.number="idLength" :max="15" :min="8" :editable="false" style="width: 100%;"></input-number>
+                    <input-number v-model.number="idLength" :max="30" :min="8" style="width: 100%;"></input-number>
                 </i-col>
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.timeZone")}} : &nbsp;</i-col>
                 <i-col span="8">
@@ -519,6 +519,7 @@
             },
             watch: {
                 idLength: function() {
+                    if (this.deviceid == '') return;
                     var exec = /[0-9A-Za-z]/g.exec(this.deviceid);
                     if (exec) {
                         var idx = exec.index;
@@ -526,7 +527,7 @@
                         this.matchingDeviceIds(this, newText);
                     } else {
                         this.isOk = false;
-                        this.errorTips = me.$t('message.deviceIdTips');
+                        this.errorTips = this.$t('message.deviceIdTips');
                     }
                 },
                 isShowMatchDev: function() {
@@ -537,13 +538,13 @@
                     }
                 },
                 createrToUser: function(newVal) {
-
                     if (userlists.indexOf(newVal) != -1) {
                         this.groupid = "";
                         this.queryGroupsByUserName(newVal);
                     }
                 },
                 deviceid: function(newVal) {
+                    if (newVal == '') return;
                     var exec = /[0-9A-Za-z]/g.exec(newVal);
                     if (exec) {
                         var idx = exec.index;
@@ -551,8 +552,11 @@
                         this.matchingDeviceIds(this, newText);
                     } else {
                         this.isOk = false;
-                        this.errorTips = me.$t('message.deviceIdTips');
+                        this.errorTips = this.$t('message.deviceIdTips');
                     }
+                },
+                devicetype: function(newVal) {
+                    this.idLength = vRoot.$store.state.deviceTypes[newVal].defaultidlength;
                 }
             },
             computed: {
@@ -567,6 +571,7 @@
                 this.userlists = userlists;
                 this.overduetime = new Date(Date.now() + 365 * 24 * 3600 * 1000);
                 this.userType = vstore.state.userType;
+                this.idLength = vRoot.$store.state.deviceTypes[this.userType].defaultidlength;
             }
         })
     </script>
