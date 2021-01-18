@@ -1853,7 +1853,7 @@
                         var data = {
                             deviceid: editObject.deviceid,
                             weightindex: this.sensorType,
-                            markers: this.weightTable,
+                            markers: this.weightData,
                         }
                         me.saveLoading = true;
                         utils.sendAjax(url, data, function(resp) {
