@@ -1873,7 +1873,7 @@
                             } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                                 me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                             } else if (status === CMD_SEND_CONFIRMED) {
-                                me.$Message.success(me.$t('message.saveSucc'));
+                                me.$Message.success(me.$t('message.saveSucc') + ',' + resp.cause);
                             } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                                 me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                             } else if (status === CMD_SEND_SYNC_TIMEOUT) {
