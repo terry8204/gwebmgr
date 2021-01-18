@@ -857,6 +857,9 @@ var myUrls = {
     queryWeightMarkers: function() {
         return this.apihosts + 'webapi?action=queryweightmarkers_sync&token=' + token;
     },
+    saveWeightMarkers: function() {
+        return this.apihosts + 'webapi?action=saveweightmarkers_sync&token=' + token;
+    },
 }
 
 

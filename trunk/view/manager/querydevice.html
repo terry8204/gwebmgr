@@ -792,7 +792,7 @@
                 </div>
             </div>
             <div slot="footer" style="text-align:center;">
-                <i-button style="width: 100px" type="primary" @click="saveWeightDetectors">{{$t("bgMgr.submit")}}</i-button>
+                <i-button style="width: 100px" type="primary" @click="saveWeightDetectors" :loading="saveLoading">{{$t("bgMgr.submit")}}</i-button>
                 <i-button style="width: 100px" type="primary" @click="queryWeightMarkers" :loading="loading">{{$t("reportForm.query")}}</i-button>
             </div>
         </Modal>
@@ -802,6 +802,7 @@
             el: "#querydev",
             i18n: utils.getI18n(),
             data: {
+                saveLoading: false,
                 ioModal: false,
                 ioCount: 0,
                 ioObject: {
@@ -1248,7 +1249,6 @@
                 onClickWeight: function(params) {
                     this.weightModal = true;
                     editObject = params.row;
-                    // this.queryWeightMarkers();
                 },
                 onClickIoSetting: function(params) {
                     editObject = params.row;
@@ -1847,7 +1847,44 @@
                     });
                 },
                 saveWeightDetectors: function() {
-                    // var url = myUrls.
+                    if (this.weightData.length) {
+                        var me = this;
+                        var url = myUrls.saveWeightMarkers();
+                        var data = {
+                            deviceid: editObject.deviceid,
+                            weightindex: this.sensorType,
+                            markers: this.weightTable,
+                        }
+                        me.saveLoading = true;
+                        utils.sendAjax(url, data, function(resp) {
+                            me.saveLoading = false;
+                            console.log(resp);
+                            var status = resp.status;
+                            if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                                me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                            } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                                me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                                me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                            } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                                me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                            } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                                me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                            } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                                me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                            } else if (status === CMD_SEND_CONFIRMED) {
+                                me.$Message.success(me.$t('message.saveSucc'));
+                            } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                                me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                            } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                                me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                            }
+                        }, function(e) {
+                            me.saveLoading = false;
+                        });
+                    } else {
+                        this.$Message.error(isZh ? '请填写AD值' : '请填写AD值');
+                    }
                 },
                 saveOilDetectors: function() {
                     var oilDetector1 = {
