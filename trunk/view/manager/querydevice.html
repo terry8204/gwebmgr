@@ -796,7 +796,7 @@
                         <i-button type="primary" @click="addWeightData">{{$t("user.add")}}</i-button>
                     </i-col>
                 </Row>
-                <i-table border :columns="weightColumns" ref="weightTable" :data="weightData" height="340"></i-table>
+                <i-table border v-if="weightModal" :columns="weightColumns" ref="weightTable" :data="weightData" height="340"></i-table>
                 <div style="margin: 10px 0 0 0;text-align: right;">
                     <i-button type="primary" @click="importWeightData">{{$t("device.importData")}}</i-button>
                     <i-button type="info" @click="exportWeightData">{{$t("reportForm.exportData")}}</i-button>
