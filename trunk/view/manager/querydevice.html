@@ -753,8 +753,18 @@
                 <span>{{$t("device.weightMarking")}}</span>
             </p>
             <div>
+
                 <Row style="margin: 10px 0;">
-                    <i-col span="4" style="line-height: 32px;text-align: center;">
+                    <i-col span="4" style="line-height: 32px;text-align: right;">
+                        通讯协议 :
+                    </i-col>
+                    <i-col span="5">
+                        <i-select v-model="protocolType" style="width:100%;">
+                            <i-option value="1">河北重油</i-option>
+                            <i-option value="2">上海通立</i-option>
+                        </i-select>
+                    </i-col>
+                    <i-col span="4" offset="1" style="line-height: 32px;text-align: right;">
                         传感器类型 :
                     </i-col>
                     <i-col span="5">
@@ -765,14 +775,14 @@
                     </i-col>
                 </Row>
                 <Row style="margin: 10px 0;">
-                    <i-col span="4" style="line-height: 32px;text-align: center;">
-                        AD值:
+                    <i-col span="4" style="line-height: 32px;text-align: right;">
+                        AD值 :
                     </i-col>
                     <i-col span="5">
                         <input-number :max="65535" :min="0" v-model.trim.number="advalue" style="width:100%"></input-number>
                     </i-col>
-                    <i-col span="4" offset="1" style="line-height: 32px;text-align: center;">
-                        载重值:
+                    <i-col span="4" offset="1" style="line-height: 32px;text-align: right;">
+                        载重值 :
                     </i-col>
                     <i-col span="5">
                         <input-number :max="1500" :min="0" v-model.trim.number="weight" style="width:100%"></input-number>
@@ -868,6 +878,7 @@
                 oilModal: false, //石油 
                 weightModal: false, //石油 
                 sensorType: '0', //载重
+                protocolType: '1', //通讯协议
                 tankShape1: '0', //油箱形状
                 maxAdValue1: 65535,
                 length1: 0,
@@ -1259,7 +1270,8 @@
                     var url = myUrls.queryWeightMarkers();
                     var data = {
                         deviceid: editObject.deviceid,
-                        weightindex: Number(this.sensorType)
+                        weightindex: Number(this.sensorType),
+                        protocoltype: Number(this.protocolType)
                     };
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
@@ -1854,6 +1866,7 @@
                             deviceid: editObject.deviceid,
                             weightindex: this.sensorType,
                             markers: this.weightData,
+                            protocoltype: Number(this.protocolType)
                         }
                         me.saveLoading = true;
                         utils.sendAjax(url, data, function(resp) {
