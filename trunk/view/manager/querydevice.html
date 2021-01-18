@@ -772,13 +772,13 @@
                         <input-number :max="65535" :min="0" v-model.trim.number="advalue" style="width:100%"></input-number>
                     </i-col>
                     <i-col span="4" offset="1" style="line-height: 32px;text-align: center;">
-                        载重值(kg):
+                        载重值:
                     </i-col>
                     <i-col span="5">
                         <input-number :max="1500" :min="0" v-model.trim.number="weight" style="width:100%"></input-number>
                     </i-col>
                     <i-col span="1" style="line-height: 32px;">
-                        L
+                        Kg
                     </i-col>
                     <i-col span="2">
                         <i-button type="primary" @click="addWeightData">{{$t("user.add")}}</i-button>
@@ -793,7 +793,7 @@
             </div>
             <div slot="footer" style="text-align:center;">
                 <i-button style="width: 100px" type="primary" @click="saveWeightDetectors">{{$t("bgMgr.submit")}}</i-button>
-                <i-button style="width: 100px" type="primary" @click="queryWeightMarkers">{{$t("reportForm.query")}}</i-button>
+                <i-button style="width: 100px" type="primary" @click="queryWeightMarkers" :loading="loading">{{$t("reportForm.query")}}</i-button>
             </div>
         </Modal>
     </div>
@@ -1248,7 +1248,7 @@
                 onClickWeight: function(params) {
                     this.weightModal = true;
                     editObject = params.row;
-                    this.queryWeightMarkers();
+                    // this.queryWeightMarkers();
                 },
                 onClickIoSetting: function(params) {
                     editObject = params.row;
@@ -1261,17 +1261,36 @@
                         deviceid: editObject.deviceid,
                         weightindex: Number(this.sensorType)
                     };
+                    me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
                         console.log('resp', resp);
-                        if (resp.markers) {
+                        me.loading = false;
+                        var status = resp.status;
+                        if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                            me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                        } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                            me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                            me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                        } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                            me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                        } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                            me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                        } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                            me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                        } else if (status === CMD_SEND_CONFIRMED) {
                             if (resp.markers.length) {
                                 me.weightData = resp.markers;
                             } else {
-                                me.$Message.error('没有数据')
-                            }
-                        } else {
-                            me.$Message.error('查询失败')
+                                me.weightData = [];
+                            };
+                        } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                            me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                        } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                            me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                         }
+                    }, function(e) {
+                        me.loading = false;
                     });
                 },
                 queryCarMasterInfo: function(params) {

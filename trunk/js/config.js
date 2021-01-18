@@ -855,7 +855,7 @@ var myUrls = {
         return this.apihosts + 'webapi?action=querydirectdevicesfordatav&token=' + token;
     },
     queryWeightMarkers: function() {
-        return this.apihosts + 'webapi?action=queryweightmarkers&token=' + token;
+        return this.apihosts + 'webapi?action=queryweightmarkers_sync&token=' + token;
     },
 }
 
