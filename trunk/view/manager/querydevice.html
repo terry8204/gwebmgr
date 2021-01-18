@@ -162,7 +162,11 @@
                 <i-button type="primary" style="width: 100%" @click="handleEditInsure">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
-        <Modal v-model="editCarIconModal" width="400" :title="$t('device.editCarIcon')">
+        <Modal v-model="editCarIconModal" width="400">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="ios-create-outline"></Icon>
+                <span>{{$t('device.editCarIcon')}} - {{devicename}}</span>
+            </p>
             <Row>
                 <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('device.currentIcon')}} : &nbsp;</i-col>
                 <i-col span="16">
@@ -379,7 +383,7 @@
         <Modal v-model="ioModal" width="650">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
-                <span>{{$t("device.ioConfig")}}</span>
+                <span>{{$t("device.ioConfig")}} - {{devicename}}</span>
             </p>
             <div>
                 <Row style="height:24px;margin: 2px 0;">
@@ -417,7 +421,7 @@
         <Modal v-model="oilModal" width="650">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
-                <span>{{$t("device.oilMarking")}}</span>
+                <span>{{$t("device.oilMarking")}} - {{devicename}}</span>
             </p>
             <div>
                 <Tabs type="card" v-model="tabsActive">
@@ -750,7 +754,7 @@
         <Modal v-model="weightModal" width="650">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
-                <span>{{$t("device.weightMarking")}}</span>
+                <span>{{$t("device.weightMarking")}} - {{devicename}}</span>
             </p>
             <div>
 
@@ -1257,14 +1261,17 @@
                     this.oilModal = true;
                     this.tabsActive = 'oil1';
                     editObject = params.row;
+                    this.setDeviceData();
                     this.queryOilInfo(params.row.deviceid);
                 },
                 onClickWeight: function(params) {
-                    this.weightModal = true;
                     editObject = params.row;
+                    this.setDeviceData();
+                    this.weightModal = true;
                 },
                 onClickIoSetting: function(params) {
                     editObject = params.row;
+                    this.setDeviceData();
                     this.queryIoConfig(editObject.deviceid);
                 },
                 queryWeightMarkers: function() {
