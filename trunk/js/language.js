@@ -2035,7 +2035,7 @@
                 irregular: '不规则',
                 tankVolume: '油箱的容积',
                 sensorLength: '传感器长度',
-                maxAnalogQuantity: '最大模拟量',
+                maxAnalogQuantity: '装满模拟量',
                 tankLength: '油箱的长度',
                 tankWidth: '油箱的宽度',
                 tankHeight: '油箱的高度',

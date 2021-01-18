@@ -449,10 +449,10 @@
                                     <i-option value="4">{{$t("device.irregular")}}</i-option>
                                 </i-select>
                             </i-col>
-                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;" v-show="isShowMaxAdValue1">
                                 {{$t("device.maxAnalogQuantity")}}:
                             </i-col>
-                            <i-col span="5">
+                            <i-col span="5" v-show="isShowMaxAdValue1">
                                 <input-number :max="65535" :min="1" v-model.trim.number="maxAdValue1" style="width:100%"></input-number>
                             </i-col>
                         </Row>
@@ -591,10 +591,10 @@
                                     <i-option value="4">{{$t("device.irregular")}}</i-option>
                                 </i-select>
                             </i-col>
-                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;" v-show="isShowMaxAdValue2">
                                 {{$t("device.maxAnalogQuantity")}} :
                             </i-col>
-                            <i-col span="5">
+                            <i-col span="5" v-show="isShowMaxAdValue2">
                                 <input-number :max="65535" :min="1" v-model.trim.number="maxAdValue2" style="width:100%"></input-number>
                             </i-col>
                         </Row>
@@ -2238,6 +2238,7 @@
                 },
             },
             watch: {
+
                 isShowMatchDev: function() {
                     if (!this.isShowMatchDev) {
                         this.iconState = "ios-arrow-down";
@@ -2255,6 +2256,12 @@
                 }
             },
             computed: {
+                isShowMaxAdValue1: function() {
+                    return this.tankShape1 != '0' && this.tankShape1 != '4';
+                },
+                isShowMaxAdValue2: function() {
+                    return this.tankShape2 != '0' && this.tankShape2 != '4';
+                },
                 disabledOverdueTime: function() {
                     return this.userType > 4;
                 },
@@ -2267,6 +2274,7 @@
             },
             mixins: [mixIn],
             mounted: function() {
+
                 var me = this;
                 this.userlists = userlists;
                 this.userType = vstore.state.userType;
