@@ -793,7 +793,7 @@
             </div>
             <div slot="footer" style="text-align:center;">
                 <i-button style="width: 100px" type="primary" @click="saveWeightDetectors">{{$t("bgMgr.submit")}}</i-button>
-                <i-button style="width: 100px" type="primary" @click="queryWeightCalibration">{{$t("reportForm.query")}}</i-button>
+                <i-button style="width: 100px" type="primary" @click="queryWeightMarkers">{{$t("reportForm.query")}}</i-button>
             </div>
         </Modal>
     </div>
@@ -1248,15 +1248,15 @@
                 onClickWeight: function(params) {
                     this.weightModal = true;
                     editObject = params.row;
-                    this.queryWeightCalibration();
+                    this.queryWeightMarkers();
                 },
                 onClickIoSetting: function(params) {
                     editObject = params.row;
                     this.queryIoConfig(editObject.deviceid);
                 },
-                queryWeightCalibration: function() {
+                queryWeightMarkers: function() {
                     var me = this;
-                    var url = myUrls.queryWeightCalibration();
+                    var url = myUrls.queryWeightMarkers();
                     var data = {
                         deviceid: editObject.deviceid,
                         weightindex: Number(this.sensorType)

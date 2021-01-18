@@ -1074,6 +1074,26 @@ var utils = {
     isLocalhost: function() {
         return location.hostname.indexOf('localhost') != -1 || location.hostname.indexOf('127.0.0.1') != -1;
     },
+    getGroupName: function(groupslist, deviceid) {
+        var groupName = '';
+        for (var i = 0; i < groupslist.length; i++) {
+            var group = groupslist[i];
+            for (var j = 0; j < group.devices.length; j++) {
+                var device = group.devices[j];
+
+                if (device.deviceid === deviceid) {
+                    if (group.groupname.indexOf('-') == -1) {
+                        groupName = group.groupname;
+                    } else {
+                        groupName = group.groupname.split('-')[1];
+                    }
+                    break;
+                }
+                if (groupName != '') { break };
+            }
+        }
+        return groupName;
+    },
     getDeviceListGroups: function(groups, isNeedDevice, username) {
         var groupsList = [],
             me = this;

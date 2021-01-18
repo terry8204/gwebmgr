@@ -19,18 +19,11 @@
             </div>
             <div style="float: left;position: relative;width: 300px;">
                 <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
+                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-focus="focus" :placeholder="placeholder"></i-input>
                     <transition name="fade">
-                        <ul class="search-item-wrapper" v-show="isShowMatchDev">
-                            <li class="demo-auto-complete-item" v-for="item in filterData">
-                                <div class="demo-auto-complete-group" v-show="item.devices.length">
-                                    <span>{{ item.groupname }}</span>
-                                </div>
-                                <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
-                                    <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.allDeviceIdTitle }}</span>
-                                </div>
-                            </li>
-                        </ul>
+                        <div class="search-item-wrapper" v-show="isShowMatchDev">
+                            <Tree :data="treeData" show-checkbox @on-check-change="onCheckedDevice"></Tree>
+                        </div>
                     </transition>
                 </div>
             </div>
@@ -51,7 +44,15 @@
             <div id="charts" style="height: 180px;width: 100%;"></div>
         </div>
         <div style="margin:10px;">
-            <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
+            <Tabs :value="activeTab" @on-click="onClickTab">
+                <Tab-pane :label="$t('reportForm.addOilStatistics')" name="tabTotal">
+                    <i-table ref="totalTable" :columns="allColumns" :data="allTableData" :height="lastTableHeight" :loading="loading"></i-table>
+                </Tab-pane>
+                <Tab-pane :label="$t('reportForm.addOilDetailed')" name="tabDetail">
+                    <i-table ref="detailTable" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
+                </Tab-pane>
+                <i-button type="primary" size="small" slot="extra" style="margin:7px 5px 0 0;" @click="exportData">{{$t("reportForm.exportData")}}</i-button>
+            </Tabs>
         </div>
     </div>
 </div>

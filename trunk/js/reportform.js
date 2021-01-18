@@ -5738,9 +5738,54 @@ function refuelingReport(groupslist) {
         data: {
             loading: false,
             tank: '0',
+            activeTab: 'tabTotal',
             groupslist: [],
+            allColumns: [{
+                    title: vRoot.$t("reportForm.index"),
+                    key: 'index',
+                    width: 70,
+                }, {
+                    title: vRoot.$t("alarm.action"),
+                    width: 160,
+                    render: function(h, params) {
+                        return h('span', {
+                            on: {
+                                click: function() {
+                                    vueInstanse.activeTab = "tabDetail";
+                                    vueInstanse.getDetailTableData(params.row.deviceid, params.row.records);
+                                }
+                            },
+                            style: {
+                                color: '#e4393c',
+                                cursor: 'pointer'
+                            }
+                        }, "[" + vRoot.$t("reportForm.accDetailed") + "]")
+                    }
+                },
+                {
+                    title: vRoot.$t("alarm.devName"),
+                    key: 'devicename'
+                },
+                {
+                    title: vRoot.$t("alarm.devNum"),
+                    key: 'deviceid'
+                },
+                {
+                    title: vRoot.$t("monitor.groupName"),
+                    key: 'groupname',
+                },
+                {
+                    title: vRoot.$t('reportForm.fuelVolume'),
+                    key: 'totalOil'
+                },
+                {
+                    title: vRoot.$t('reportForm.refuelingTimes'),
+                    key: 'count'
+                },
+            ],
+            allTableData: [],
             columns: [
-                { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
+                { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename' },
                 { title: vRoot.$t('reportForm.soil'), key: 'soil' },
                 { title: vRoot.$t('reportForm.eoil'), key: 'eoil' },
@@ -5758,7 +5803,6 @@ function refuelingReport(groupslist) {
                         var lon = row.slon ? row.slon.toFixed(5) : null;
                         if (lat && lon) {
                             if (row.saddress == null) {
-
                                 return h('Button', {
                                     props: {
                                         type: 'error',
@@ -5768,7 +5812,9 @@ function refuelingReport(groupslist) {
                                         click: function() {
                                             utils.getJiuHuAddressSyn(lon, lat, function(resp) {
                                                 if (resp && resp.address) {
-                                                    vueInstanse.records[params.index].saddress = resp.address;
+                                                    var newRow = deepClone(row);
+                                                    newRow.saddress = resp.address;
+                                                    vueInstanse.$set(vueInstanse.tableData, params.index, newRow)
                                                     LocalCacheMgr.setAddress(lon, lat, resp.address);
                                                 }
                                             })
@@ -5777,68 +5823,7 @@ function refuelingReport(groupslist) {
                                 }, lon + "," + lat)
 
                             } else {
-                                // return h('span', {}, row.saddress);
-                                return h('Tooltip', {
-                                    props: {
-                                        content: row.saddress,
-                                        placement: "top-start",
-                                        maxWidth: 200
-                                    },
-                                }, [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        }
-                                    }, lon + "," + lat)
-                                ]);
-                            }
-                        } else {
-                            return h('span', {}, '');
-                        }
-                    },
-                },
-                {
-                    title: vRoot.$t('reportForm.eaddress'),
-                    render: function(h, params) {
-                        var row = params.row;
-                        var lat = row.elat ? row.elat.toFixed(5) : null;
-                        var lon = row.elon ? row.elon.toFixed(5) : null;
-                        if (lat && lon) {
-                            if (row.eaddress == null) {
-
-                                return h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: function() {
-                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
-                                                if (resp && resp.address) {
-                                                    vueInstanse.records[params.index].eaddress = resp.address;
-                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
-                                                }
-                                            })
-                                        }
-                                    }
-                                }, lon + "," + lat)
-                            } else {
-                                return h('Tooltip', {
-                                    props: {
-                                        content: row.eaddress,
-                                        placement: "top-start",
-                                        maxWidth: 200
-                                    },
-                                }, [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        }
-                                    }, lon + "," + lat)
-                                ]);
-                                // return h('span', {}, row.eaddress);
+                                return h('span', {}, row.saddress);
                             }
                         } else {
                             return h('span', {}, '');
@@ -5849,12 +5834,48 @@ function refuelingReport(groupslist) {
             tableData: [],
             recvtime: [],
             oil: [],
-            distance: [],
         },
-        mixins: [reportMixin],
+        mixins: [treeMixin],
         methods: {
+            exportData: function() {
+                if (this.activeTab == 'tabTotal') {
+                    var allColumns = deepClone(this.allColumns.filter(function(col, index) { return index != 1; }));
+                    var allTableData = deepClone(this.allTableData);
+                    allTableData.forEach(function(item) {
+                        item.deviceid = '\t' + item.deviceid;
+                        item.devicename = '\t' + item.devicename;
+                    });
+                    this.$refs.totalTable.exportCsv({
+                        filename: vRoot.$t('reportForm.addOilStatistics'),
+                        original: false,
+                        columns: allColumns,
+                        data: allTableData
+                    });
+                } else {
+                    var columns = deepClone(this.columns);
+                    var tableData = deepClone(this.tableData);
+                    columns.pop();
+                    columns.push({
+                        title: isZh ? '地址' : 'Address',
+                        key: 'saddress',
+                    })
+                    tableData.forEach(function(item) {
+                        item.deviceid = '\t' + item.deviceid;
+                        item.devicename = '\t' + item.devicename;
+                        item.begintimeStr = '\t' + item.begintimeStr;
+                        item.endtimeStr = '\t' + item.endtimeStr;
+                    });
+                    this.$refs.detailTable.exportCsv({
+                        filename: vRoot.$t('reportForm.addOilDetailed'),
+                        original: false,
+                        columns: columns,
+                        data: tableData
+                    });
+                }
+
+            },
             charts: function() {
-                var cotgas = vRoot.$t('reportForm.oilConsumption');
+                var cotgas = vRoot.$t('reportForm.fuelVolume');
                 var no_data = vRoot.$t('reportForm.empty');
                 var option = {
                     tooltip: {
@@ -5926,21 +5947,56 @@ function refuelingReport(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 360;
+                this.lastTableHeight = wHeight - 415;
+            },
+            onClickTab: function(name) {
+                this.activeTab = name;
+            },
+            getDetailTableData: function(deviceid, records) {
+                records.sort(function(a, b) {
+                    return b.begintime - a.begintime;
+                })
+                records.forEach(function(record, index) {
+                    record.index = index + 1;
+                    var slat = record.slat.toFixed(5);
+                    var slon = record.slon.toFixed(5);
+                    var saddress = LocalCacheMgr.getAddress(slon, slat);
+                    if (saddress != null) {
+                        record.saddress = saddress;
+                    } else {
+                        record.saddress = null;
+                    };
+                    var oil = record.eoil - record.soil;
+                    oil = oil.toFixed(2);
+                    record.devicename = vstore.state.deviceInfos[deviceid].devicename;
+                    record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
+                    record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
+                    record.addoil = oil;
+                });
+                this.tableData = records;
             },
             onClickQuery: function() {
-                if (this.queryDeviceId == "") { return };
                 var self = this;
-                if (this.isSelectAll === null) {
-                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                this.activeTab = 'tabTotal';
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+
+                if (deviceids.length == 0) {
                     return;
-                };
+                }
+
                 var data = {
                     // username: vstore.state.userName,
                     startday: this.dateVal[0],
                     endday: this.dateVal[1],
                     offset: timeDifference,
-                    devices: [this.queryDeviceId],
+                    devices: deviceids,
                     oilstate: 1,
                     oilindex: Number(self.tank)
                 };
@@ -5949,56 +6005,50 @@ function refuelingReport(groupslist) {
                     self.loading = false;
                     if (resp.status == 0) {
                         if (resp.records) {
-                            var records = [],
-                                oilArr = [],
-                                distance = [],
-                                recvtime = [],
-                                totalOil = 0;
+                            var oilArr = [],
+                                recvtime = [];
                             resp.records.forEach(function(item, index) {
-                                records = item.records;
-                                records.sort(function(a, b) {
-                                    return b.begintime - a.begintime;
-                                })
+                                item.index = index + 1;
+                                item.devicename = vstore.state.deviceInfos[item.deviceid].devicename;
+                                item.groupname = utils.getGroupName(groupslist, item.deviceid);
+                                var totalOil = 0;
+                                var records = item.records;
                                 records.forEach(function(record) {
-                                    var callat = record.elat.toFixed(5);
-                                    var callon = record.elon.toFixed(5);
-                                    var eaddress = LocalCacheMgr.getAddress(callon, callat);
-                                    if (eaddress != null) {
-                                        record.eaddress = eaddress;
-                                    } else {
-                                        record.eaddress = null;
-                                    };
-                                    var slat = record.slat.toFixed(5);
-                                    var slon = record.slon.toFixed(5);
-                                    var saddress = LocalCacheMgr.getAddress(slon, slat);
-                                    if (saddress != null) {
-                                        record.saddress = saddress;
-                                    } else {
-                                        record.saddress = null;
-                                    };
+
                                     record.eoil = record.eoil / 100;
                                     record.soil = record.soil / 100;
                                     var oil = record.eoil - record.soil;
-                                    oil = oil.toFixed(2);
-                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
-                                    record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
-                                    record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
-                                    record.addoil = oil;
-                                    totalOil += Number(oil);
-                                    oilArr.push(oil);
-                                    recvtime.push(record.devicename);
+                                    totalOil += oil;
+
+
+                                    var lat = record.slat.toFixed(5);
+                                    var lon = record.slon.toFixed(5);
+                                    var saddress = LocalCacheMgr.getAddress(lon, lat);
+                                    if (saddress != null) {
+                                        record.saddress = saddress;
+                                    } else {
+                                        utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                            if (resp && resp.address) {
+                                                (function(lon, lat, record, resp) {
+                                                    record.saddress = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                })(lon, lat, record, resp)
+                                            }
+                                        })
+                                    };
                                 });
+                                totalOil = totalOil.toFixed(2);
+                                if (totalOil > 0) {
+                                    oilArr.push(totalOil);
+                                    recvtime.push(item.devicename);
+                                }
+                                item.totalOil = totalOil;
+                                item.count = records.length;
                             });
-                            records.push({
-                                addoil: (isZh ? '合计:' : 'Total:') + totalOil
-                            });
+
                             self.oil = oilArr;
-                            self.distance = distance;
                             self.recvtime = recvtime;
-
-                            self.records = records;
-
-                            self.tableData = records;
+                            self.allTableData = resp.records;
                             self.charts();
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));
@@ -6013,12 +6063,25 @@ function refuelingReport(groupslist) {
             }
         },
         mounted: function() {
-            this.groupslist = groupslist;
+            var me = this;
             this.myChart = null;
             this.records = [];
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts();
-
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
         }
     });
 }
@@ -6029,29 +6092,72 @@ function oilLeakageReport(groupslist) {
         i18n: utils.getI18n(),
         data: {
             loading: false,
-            groupslist: [],
             tank: '0',
-            columns: [
-                { title: vRoot.$t("reportForm.index"), type: 'index', width: 70 },
-                { title: vRoot.$t("alarm.devName"), key: 'devicename' },
+            activeTab: 'tabTotal',
+            groupslist: [],
+            allColumns: [{
+                    title: vRoot.$t("reportForm.index"),
+                    key: 'index',
+                    width: 70,
+                }, {
+                    title: vRoot.$t("alarm.action"),
+                    width: 160,
+                    render: function(h, params) {
+                        return h('span', {
+                            on: {
+                                click: function() {
+                                    vueInstanse.activeTab = "tabDetail";
+                                    vueInstanse.getDetailTableData(params.row.deviceid, params.row.records);
+                                }
+                            },
+                            style: {
+                                color: '#e4393c',
+                                cursor: 'pointer'
+                            }
+                        }, "[" + vRoot.$t("reportForm.accDetailed") + "]")
+                    }
+                },
                 {
-                    title: vRoot.$t("reportForm.oilLeakage") + '(L)',
+                    title: vRoot.$t("alarm.devName"),
+                    key: 'devicename'
+                },
+                {
+                    title: vRoot.$t("alarm.devNum"),
+                    key: 'deviceid'
+                },
+                {
+                    title: vRoot.$t("monitor.groupName"),
+                    key: 'groupname',
+                },
+                {
+                    title: vRoot.$t('reportForm.oilLeakage'),
+                    key: 'totalOil'
+                },
+                {
+                    title: vRoot.$t('reportForm.oilLeakageTimes'),
+                    key: 'count'
+                },
+            ],
+            allTableData: [],
+            columns: [
+                { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename' },
+                { title: vRoot.$t('reportForm.soil'), key: 'soil' },
+                { title: vRoot.$t('reportForm.eoil'), key: 'eoil' },
+                {
+                    title: vRoot.$t('reportForm.fuelVolume') + '(L)',
                     key: 'addoil',
                 },
-                { title: vRoot.$t("reportForm.lsoil"), key: 'soil' },
-                { title: vRoot.$t("reportForm.leoil"), key: 'eoil' },
-
-                { title: vRoot.$t("reportForm.startDate"), key: 'begintimeStr' },
-                { title: vRoot.$t("reportForm.endDate"), key: 'endtimeStr' },
+                { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr' },
+                { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr' },
                 {
-                    title: vRoot.$t("reportForm.saddress"),
+                    title: vRoot.$t('reportForm.saddress'),
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.slat ? row.slat.toFixed(5) : null;
                         var lon = row.slon ? row.slon.toFixed(5) : null;
                         if (lat && lon) {
                             if (row.saddress == null) {
-
                                 return h('Button', {
                                     props: {
                                         type: 'error',
@@ -6061,7 +6167,9 @@ function oilLeakageReport(groupslist) {
                                         click: function() {
                                             utils.getJiuHuAddressSyn(lon, lat, function(resp) {
                                                 if (resp && resp.address) {
-                                                    vueInstanse.records[params.index].saddress = resp.address;
+                                                    var newRow = deepClone(row);
+                                                    newRow.saddress = resp.address;
+                                                    vueInstanse.$set(vueInstanse.tableData, params.index, newRow)
                                                     LocalCacheMgr.setAddress(lon, lat, resp.address);
                                                 }
                                             })
@@ -6070,67 +6178,7 @@ function oilLeakageReport(groupslist) {
                                 }, lon + "," + lat)
 
                             } else {
-                                return h('Tooltip', {
-                                    props: {
-                                        content: row.saddress,
-                                        placement: "top-start",
-                                        maxWidth: 200
-                                    },
-                                }, [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        }
-                                    }, lon + "," + lat)
-                                ]);
-                            }
-                        } else {
-                            return h('span', {}, '');
-                        }
-                    },
-                },
-                {
-                    title: vRoot.$t("reportForm.eaddress"),
-                    render: function(h, params) {
-                        var row = params.row;
-                        var lat = row.elat ? row.elat.toFixed(5) : null;
-                        var lon = row.elon ? row.elon.toFixed(5) : null;
-                        if (lat && lon) {
-                            if (row.eaddress == null) {
-
-                                return h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: function() {
-                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
-                                                if (resp && resp.address) {
-                                                    vueInstanse.records[params.index].eaddress = resp.address;
-                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
-                                                }
-                                            })
-                                        }
-                                    }
-                                }, lon + "," + lat)
-                            } else {
-                                return h('Tooltip', {
-                                    props: {
-                                        content: row.eaddress,
-                                        placement: "top-start",
-                                        maxWidth: 200
-                                    },
-                                }, [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        }
-                                    }, lon + "," + lat)
-                                ]);
-                                // return h('span', {}, row.eaddress);
+                                return h('span', {}, row.saddress);
                             }
                         } else {
                             return h('span', {}, '');
@@ -6141,14 +6189,49 @@ function oilLeakageReport(groupslist) {
             tableData: [],
             recvtime: [],
             oil: [],
-            distance: [],
         },
-        mixins: [reportMixin],
+        mixins: [treeMixin],
         methods: {
-            charts: function() {
+            exportData: function() {
+                if (this.activeTab == 'tabTotal') {
+                    var allColumns = deepClone(this.allColumns.filter(function(col, index) { return index != 1; }));
+                    var allTableData = deepClone(this.allTableData);
+                    allTableData.forEach(function(item) {
+                        item.deviceid = '\t' + item.deviceid;
+                        item.devicename = '\t' + item.devicename;
+                    });
+                    this.$refs.totalTable.exportCsv({
+                        filename: vRoot.$t('reportForm.oilLeakageStatistics'),
+                        original: false,
+                        columns: allColumns,
+                        data: allTableData
+                    });
+                } else {
+                    var columns = deepClone(this.columns);
+                    var tableData = deepClone(this.tableData);
+                    columns.pop();
+                    columns.push({
+                        title: isZh ? '地址' : 'Address',
+                        key: 'saddress',
+                    })
+                    tableData.forEach(function(item) {
+                        item.deviceid = '\t' + item.deviceid;
+                        item.devicename = '\t' + item.devicename;
+                        item.begintimeStr = '\t' + item.begintimeStr;
+                        item.endtimeStr = '\t' + item.endtimeStr;
+                    });
+                    this.$refs.detailTable.exportCsv({
+                        filename: vRoot.$t('reportForm.oilLeakageDetailed'),
+                        original: false,
+                        columns: columns,
+                        data: tableData
+                    });
+                }
 
-                var cotgas = vRoot.$t("reportForm.oilConsumption");
-                var no_data = vRoot.$t("reportForm.empty");
+            },
+            charts: function() {
+                var cotgas = vRoot.$t('reportForm.oilLeakage');
+                var no_data = vRoot.$t('reportForm.empty');
                 var option = {
                     tooltip: {
                         show: true,
@@ -6197,6 +6280,7 @@ function oilLeakageReport(groupslist) {
                         type: 'bar',
                         itemStyle: {
                             //默认样式
+                            backgroundColor: '#000',
                             normal: {
                                 label: {
                                     show: true,
@@ -6206,90 +6290,120 @@ function oilLeakageReport(groupslist) {
                                         fontWeight: 'bold'
                                     }
                                 }
-                            }
+                            },
                         },
+                        color: '#e4393c',
                         data: this.oil
                     }]
                 };
                 this.chartsIns.setOption(option);
+
             },
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 360;
+                this.lastTableHeight = wHeight - 415;
+            },
+            onClickTab: function(name) {
+                this.activeTab = name;
+            },
+            getDetailTableData: function(deviceid, records) {
+                records.sort(function(a, b) {
+                    return b.begintime - a.begintime;
+                })
+                records.forEach(function(record, index) {
+                    record.index = index + 1;
+                    var slat = record.slat.toFixed(5);
+                    var slon = record.slon.toFixed(5);
+                    var saddress = LocalCacheMgr.getAddress(slon, slat);
+                    if (saddress != null) {
+                        record.saddress = saddress;
+                    } else {
+                        record.saddress = null;
+                    };
+                    var oil = record.eoil - record.soil;
+                    oil = oil.toFixed(2);
+                    record.devicename = vstore.state.deviceInfos[deviceid].devicename;
+                    record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
+                    record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
+                    record.addoil = oil;
+                });
+                this.tableData = records;
             },
             onClickQuery: function() {
-                if (this.queryDeviceId == "") { return };
                 var self = this;
-                if (this.isSelectAll === null) {
-                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                this.activeTab = 'tabTotal';
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+
+                if (deviceids.length == 0) {
                     return;
-                };
+                }
+
                 var data = {
                     // username: vstore.state.userName,
                     startday: this.dateVal[0],
                     endday: this.dateVal[1],
                     offset: timeDifference,
-                    devices: [this.queryDeviceId],
+                    devices: deviceids,
                     oilstate: -1,
-                    oilindex: Number(this.tank)
+                    oilindex: Number(self.tank)
                 };
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
                     self.loading = false;
                     if (resp.status == 0) {
                         if (resp.records) {
-                            var records = [],
-                                oilArr = [],
-                                distance = [],
-                                recvtime = [],
-                                totalOil = 0;
+                            var oilArr = [],
+                                recvtime = [];
                             resp.records.forEach(function(item, index) {
-                                records = item.records;
-                                records.sort(function(a, b) {
-                                    return b.begintime - a.begintime;
-                                })
+                                item.index = index + 1;
+                                item.devicename = vstore.state.deviceInfos[item.deviceid].devicename;
+                                item.groupname = utils.getGroupName(groupslist, item.deviceid);
+                                var totalOil = 0;
+                                var records = item.records;
                                 records.forEach(function(record) {
-                                    var callat = record.elat.toFixed(5);
-                                    var callon = record.elon.toFixed(5);
-                                    var saddress = LocalCacheMgr.getAddress(callon, callat);
+
+                                    record.eoil = record.eoil / 100;
+                                    record.soil = record.soil / 100;
+                                    var oil = record.eoil - record.soil;
+                                    totalOil += oil;
+
+
+                                    var lat = record.slat.toFixed(5);
+                                    var lon = record.slon.toFixed(5);
+                                    var saddress = LocalCacheMgr.getAddress(lon, lat);
                                     if (saddress != null) {
                                         record.saddress = saddress;
                                     } else {
-                                        record.saddress = null;
+                                        utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                            if (resp && resp.address) {
+                                                (function(lon, lat, record, resp) {
+                                                    record.saddress = resp.address;
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                })(lon, lat, record, resp)
+                                            }
+                                        })
                                     };
-                                    var elat = record.elat.toFixed(5);
-                                    var elon = record.elon.toFixed(5);
-                                    var eaddress = LocalCacheMgr.getAddress(elon, elat);
-                                    if (eaddress != null) {
-                                        record.eaddress = eaddress;
-                                    } else {
-                                        record.eaddress = null;
-                                    };
-                                    record.eoil = record.eoil / 100;
-                                    record.soil = record.soil / 100;
-                                    var oil = record.soil - record.eoil;
-                                    oil = oil.toFixed(2);
-                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
-                                    record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
-                                    record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
-                                    record.addoil = oil;
-                                    totalOil += Number(oil);
-                                    oilArr.push(oil);
-                                    recvtime.push(record.devicename);
                                 });
+                                totalOil = totalOil.toFixed(2);
+                                if (totalOil > 0) {
+                                    oilArr.push(totalOil);
+                                    recvtime.push(item.devicename);
+                                }
+                                item.totalOil = totalOil;
+                                item.count = records.length;
                             });
-                            records.push({
-                                addoil: (isZh ? '合计:' : 'Total') + totalOil
-                            });
+
                             self.oil = oilArr;
-                            self.distance = distance;
                             self.recvtime = recvtime;
-
-                            self.records = records;
-                            self.total = records.length;
-
-                            self.tableData = self.records;
+                            self.allTableData = resp.records;
                             self.charts();
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));
@@ -6304,14 +6418,28 @@ function oilLeakageReport(groupslist) {
             }
         },
         mounted: function() {
-            this.groupslist = groupslist;
+            var me = this;
             this.myChart = null;
             this.records = [];
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts();
-
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
+                        me.treeData = me.groupslist;
+                    }
+                });
+            } else {
+                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
+                me.treeData = me.groupslist;
+            }
         }
     });
+
 }
 
 
