@@ -1308,7 +1308,7 @@
                         } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                             me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                         } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                            me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                            me.$Message.error(me.$t('monitor.CMD_SEND_SYNC_TIMEOUT') + resp.cause);
                         }
                     }, function(e) {
                         me.loading = false;
@@ -1899,7 +1899,7 @@
                             } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                                 me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                             } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                                me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                                me.$Message.error(me.$t('monitor.CMD_SEND_SYNC_TIMEOUT') + resp.cause);
                             }
                         }, function(e) {
                             me.saveLoading = false;
