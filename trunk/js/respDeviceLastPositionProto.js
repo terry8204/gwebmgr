@@ -232,6 +232,10 @@ var deviceLastPositionProto = {
                         "weight": {
                             "type": "sint64",
                             "id": 51
+                        },
+                        "srcweightad0": {
+                            "type": "sint32",
+                            "id": 52
                         }
                     }
                 }
