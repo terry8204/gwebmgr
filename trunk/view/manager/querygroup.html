@@ -43,54 +43,6 @@
                     </i-col>
                 </Row>
 
-                <!-- <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.mintime")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <input-number :max="3600" :min="30" :step="30" v-model="mintime" style="width: 210px;"></input-number>&nbsp;s
-                    </i-col>
-                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
-                        <span>
-                                <Icon type="star"></Icon> {{$t("group.mintimeTip")}}
-                            </span>
-                    </i-col>
-                </Row>
-
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.maxtime")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <input-number :max="3600" :min="30" :step="30" v-model="maxtime" style="width: 210px;"></input-number>&nbsp;s
-                    </i-col>
-                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
-                        <span>
-                                <Icon type="star"></Icon> {{$t("group.maxtimeTip")}}
-                            </span>
-                    </i-col>
-                </Row> -->
-
-
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t("group.userCount")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim.number="usercount"></i-input>
-                    </i-col>
-                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
-                        <span>
-                                <Icon type="star"></Icon> {{$t("group.userCountTip")}}
-                            </span>
-                    </i-col>
-                </Row>
-
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t("group.devCount")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim.number="devicecount"></i-input>
-                    </i-col>
-                    <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
-                        <span>
-                                <Icon type="star"></Icon> {{$t("group.devCountTip")}}
-                            </span>
-                    </i-col>
-                </Row>
 
                 <Row style="margin: 10px 0">
                     <i-col span="6" :offset="6">
@@ -124,11 +76,8 @@
                     title: vRoot.$t("bgMgr.creater"),
                     key: 'creater'
                 }, {
-                    title: vRoot.$t("group.userCount"),
-                    key: 'usercount'
-                }, {
                     title: vRoot.$t("group.devCount"),
-                    key: 'devicecount'
+                    key: 'deviceslength'
                 }, {
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
@@ -180,8 +129,6 @@
                 groupname: "",
                 mintime: 30,
                 maxtime: 3600,
-                usercount: "",
-                devicecount: "",
                 groupname: "",
                 taleHeight: 300,
             },
@@ -301,6 +248,13 @@
                 },
                 doQueryAllgroupsInfo: function(resp) {
                     if (resp.status === 0 && resp.grouplist !== null) {
+                        resp.grouplist.forEach(function(item) {
+                            if (item.devices) {
+                                item.deviceslength = item.devices.length;
+                            } else {
+                                item.deviceslength = 0;
+                            }
+                        })
                         this.tableData = resp.grouplist;
                     } else {
                         this.tableData = [];
@@ -346,16 +300,6 @@
                         maxtime: this.maxtime,
                         groupname: this.groupname,
                     };
-                    if (this.usercount == "") {
-                        data.usercount = 0;
-                    } else {
-                        data.usercount = this.usercount;
-                    }
-                    if (this.devicecount == "") {
-                        data.devicecount = 0;
-                    } else {
-                        data.devicecount = this.devicecount;
-                    }
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
                             var newData = Object.assign(editObject, data);
@@ -370,16 +314,12 @@
                     this.groupname = "";
                     this.mintime = 30;
                     this.maxtime = 3600;
-                    this.usercount = "";
-                    this.devicecount = "";
                     this.groupname = "";
                 },
                 setGroupInfo: function() {
                     this.groupname = editObject.groupname;
                     this.mintime = editObject.mintime;
                     this.maxtime = editObject.maxtime;
-                    this.usercount = editObject.usercount;
-                    this.devicecount = editObject.devicecount;
                     this.groupname = editObject.groupname;
                 },
 

@@ -60,29 +60,7 @@
             </Row> -->
 
 
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t("group.userCount")}} : &nbsp;</i-col>
-                <i-col span="8">
-                    <i-input v-model.trim.number="usercount"></i-input>
-                </i-col>
-                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
-                    <span>
-                            <Icon type="star"></Icon> {{$t("group.userCountTip")}}
-                        </span>
-                </i-col>
-            </Row>
 
-            <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t("group.devCount")}} : &nbsp;</i-col>
-                <i-col span="8">
-                    <i-input v-model.trim.number="devicecount"></i-input>
-                </i-col>
-                <i-col span="10" style="height: 100%;line-height:32px;padding-left:20px;">
-                    <span>
-                            <Icon type="star"></Icon> {{$t("group.devCountTip")}}
-                        </span>
-                </i-col>
-            </Row>
 
             <Row style="margin: 10px 0">
                 <i-col span="6" :offset="6">
@@ -96,15 +74,13 @@
     </div>
 
     <script>
-      vueInstanse =  new Vue({
+        vueInstanse = new Vue({
             el: "#addgroup",
             i18n: utils.getI18n(),
             data: {
                 groupname: "",
                 mintime: 30,
                 maxtime: 3600,
-                usercount: "",
-                devicecount: "",
                 groupname: "",
                 iconState: "ios-arrow-down",
                 isShowMatchDev: false,
@@ -145,16 +121,7 @@
                         groupname: this.groupname,
                         creater: this.createrToUser
                     };
-                    if (this.usercount == "") {
-                        data.usercount = 0;
-                    } else {
-                        data.usercount = this.usercount;
-                    }
-                    if (this.devicecount == "") {
-                        data.devicecount = 0;
-                    } else {
-                        data.devicecount = this.devicecount;
-                    }
+
                     utils.sendAjax(url, data, this.doAddcallback);
                 },
                 doAddcallback: function(resp) {
