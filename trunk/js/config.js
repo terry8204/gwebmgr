@@ -97,9 +97,6 @@ var myUrls = {
     editGroup: function() {
         return this.apihost + 'webapi?action=editgroup&token=' + token
     },
-    editGroupMonitor: function() {
-        return this.apihost + 'webapi?action=editgroupmonitor&token=' + token
-    },
     queryGroupByUser: function() {
         return this.apihost + 'webapi?action=queryallgroups&token=' + token
     },
