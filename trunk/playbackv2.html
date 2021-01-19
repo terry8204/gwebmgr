@@ -1556,7 +1556,7 @@
                         var data = {
                             deviceid: this.deviceid,
                             lbs: 1,
-                            timezone: 0,
+                            timezone: DateFormat.getOffset(),
                             begintime: DateFormat.longToDateTimeStr(this.startTimeValue, timeDifference),
                             endtime: DateFormat.longToDateTimeStr(this.endTimeValue, timeDifference),
                         };

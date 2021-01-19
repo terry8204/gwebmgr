@@ -2932,7 +2932,7 @@ function messageRecords(groupslist) {
                 var data = {
                     deviceid: this.queryDeviceId,
                     lbs: 1,
-                    timezone: 0,
+                    timezone: timeDifference,
                     interval: -1,
                     begintime: startTimeStr,
                     endtime: endTimeStr
