@@ -1045,7 +1045,7 @@
                     this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
                 } else {
                     var limitcount = 0;
-                    var data = this.variableDeepSearch(this.treeDeviceList, value, limitcount);
+                    var data = this.variableDeepSearch(this.treeDeviceList, newVal, limitcount);
                     if (data.length == 0) {
                         data.push({
                             name: isZh ? '无数据' : 'No data',
