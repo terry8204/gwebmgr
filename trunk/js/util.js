@@ -689,19 +689,19 @@ var utils = {
         var temp = this.getTemperature(isZh, track);
         var decice = findTheDevice(track.deviceid)
         var content =
-            '<p>' + (isZh ? '设备名称' : 'Device Name') + ': ' + track.devicename + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px"></i><i id="stared" onclick="onStarDevice(' + track.deviceid + ')" class="ivu-icon ivu-icon-md-heart" style="font-size: 16px;cursor: pointer;float:right;margin-right:22px;color:' + (decice.stared == 1 ? '#e4393c' : '#c1c1c1') + ';"></i></p>' +
-            '<p>' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px;"></i></p>' +
-            '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
-            '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
-            '<p> ' + (isZh ? '更新时间' : 'Update time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
-            '<p> ' + (isZh ? '定位时间' : 'Posi time') + ': ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
-            '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + rxlevel + '</p>' +
-            '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + this.getMileage(track.totaldistance) + oil + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '设备名称' : 'Device Name') + '</span>: ' + track.devicename + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px"></i><i id="stared" onclick="onStarDevice(' + track.deviceid + ')" class="ivu-icon ivu-icon-md-heart" style="font-size: 16px;cursor: pointer;float:right;margin-right:22px;color:' + (decice.stared == 1 ? '#e4393c' : '#c1c1c1') + ';"></i></p>' +
+            '<p><span class="window_title">' + (isZh ? '设备序号' : 'Device Number') + '</span>: ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px;"></i></p>' +
+            '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '经度纬度' : 'Longitude and latitude') + '</span>: ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
+            '<p><span class="window_title">' + (isZh ? '定位时间' : 'Posi time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '总里程数' : 'Mileage') + '</span>: ' + this.getMileage(track.totaldistance) + oil + '</p>' +
             (temp ? temp : '') +
-            '<p> ' + (isZh ? '停留时长' : 'Park Duration') + ': ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
-            '<p class="last-strstatus"> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
-            (extendsBtns.video ? ('<p> ' + (isZh ? '视频' : 'video') + ': ' + videoState + '</p>') : ("")) +
-            '<p class="last-address"> ' + (isZh ? '地址' : 'Address') + ': ' + b_address + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '停留时长' : 'Park Duration') + '</span>: ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
+            (extendsBtns.video ? ('<p><span class="window_title">' + (isZh ? '视频状态' : 'video') + '</span>: ' + videoState + '</p>') : ("")) +
+            '<p class="last-address">' + b_address + '</p>' +
             '<p class="operation">' +
             '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
             deviceid +
