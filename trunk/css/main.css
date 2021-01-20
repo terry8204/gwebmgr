@@ -279,10 +279,8 @@ p>span.window_title {
 }
 
 .maptalks-msgBox .maptalks-msgContent p span.ivu-btn {
-    background-color: #2D8CF0;
-    color: #ffffff;
-    border: 0;
-    border-radius: 5px;
+    color: #4096D1;
+    border: 1px solid #4096D1;
 }
 
 #my-map-wrap #my-map {
