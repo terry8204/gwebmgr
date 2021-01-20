@@ -18,9 +18,8 @@ var treeMixin = {
             this.selectedCount = 0;
             this.sosoValue = '';
             this.checkedDevice = [];
-            this.cleanSelected(this.groupslist);
-            this.treeData = this.groupslist;
-
+            this.treeDeviceList[0].open = true;
+            this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
             if (this.tableData) {
                 this.tableData = [];
             }
@@ -38,20 +37,7 @@ var treeMixin = {
             }
         },
         cleanSelectedDev: function() {
-            this.sosoValue = '';
-            this.checkedDevice = [];
-            this.selectedCount = 0;
-
-            function recurrence(list) {
-                for (var i = 0; i < list.length; i++) {
-                    var item = list[i];
-                    item.checked = false;
-                    if (item.children) {
-                        recurrence(item.children)
-                    }
-                }
-            }
-            recurrence(this.treeData);
+            this.sosoValue = this.clean();
         },
         changePage: function(index) {
             var offset = index * 20;
@@ -90,45 +76,63 @@ var treeMixin = {
         },
         filterMethod: function(value) {
             value = value.toLowerCase();
-            this.treeData = [];
-            this.treeData = this.variableDeepSearch(this.groupslist, value, 5);
+
+            if (value === '') {
+                this.treeDeviceList[0].open = true;
+                this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
+            } else {
+                var data = this.variableDeepSearch(this.treeDeviceList, value, 0);
+                if (data.length == 0) {
+                    data.push({
+                        name: isZh ? '无数据' : 'No data',
+                        nocheck: true
+                    })
+                }
+                this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, data);
+            }
+
             this.checkedDevice = [];
             if (this.isShowMatchDev == false) {
                 this.isShowMatchDev = true;
             }
         },
         variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
+
             var childTemp = [];
             var that = this;
             for (var i = 0; i < treeDataFilter.length; i++) {
                 var copyItem = null;
                 var item = treeDataFilter[i];
                 if (item != null) {
+
                     var isFound = false;
-                    if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
-                        copyItem = deepClone(item);
-                        copyItem.expand = false;
+                    if (item.name.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                        copyItem = item;
+                        copyItem.open = false;
                         isFound = true;
                     }
                     if (isFound == false && item.children && item.children.length > 0) {
+                        // item.expand = true;
+                        // childTemp.push(item);
                         var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
                         if (rs && rs.length > 0) {
                             copyItem = deepClone(item);
                             copyItem.children = rs;
-                            copyItem.expand = true;
+                            copyItem.open = true;
                             isFound = true;
                         }
                     }
+
                     if (isFound == true) {
                         limitcount++;
                         childTemp.push(copyItem);
-                        if (limitcount > 10) {
+
+                        if (limitcount > 1000) {
                             break;
                         }
                     }
                 }
             }
-
             return childTemp;
         },
         sosoSelect: function(item) {
@@ -153,24 +157,38 @@ var treeMixin = {
             return title;
         },
         onCheckedDevice: function(arr) {
-
             this.checkedDevice = arr;
             var sosoValue = "";
             var selectedCount = 0;
             arr.forEach(function(item) {
-                if (item.children) {
-                    sosoValue += item.title + ","
-                    item.children.forEach(function(item) {
-                        if (item.deviceid) {
-                            selectedCount++;
-                        }
-                    })
-                } else {
-                    sosoValue += item.title + ","
+                if (item.deviceid != null) {
+                    sosoValue += item.name + ","
+                    selectedCount++;
                 }
             });
             this.sosoValue = sosoValue;
             this.selectedCount = selectedCount;
+        },
+        initZTree: function(rootuser) {
+            this.treeDeviceList = [utils.castUsersTreeToDevicesTree(rootuser, true, false)];
+            var me = this;
+            this.setting = {
+                check: {
+                    enable: true,
+                    chkStyle: "checkbox",
+                    chkboxType: {
+                        "Y": "ps",
+                        "N": "ps"
+                    }
+                },
+                callback: {
+                    onCheck: function(id, ztree) {
+                        var checkedNodes = me.zTreeObj.getCheckedNodes();
+                        me.onCheckedDevice(checkedNodes);
+                    }
+                }
+            };
+            this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
         }
     },
     mounted: function() {
@@ -179,6 +197,9 @@ var treeMixin = {
         window.onresize = function() {
             me.calcTableHeight();
         }
+    },
+    destroyed: function() {
+        this.zTreeObj.destroy();
     },
     created: function() {
         this.checkedDevice = [];
@@ -833,13 +854,11 @@ function posiReport(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
         }
     })
@@ -1070,13 +1089,11 @@ function groupMileage(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
             this.calcTableHeight();
             window.onresize = function() {
@@ -1449,13 +1466,11 @@ function accDetails(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
 
             this.calcTableHeight();
@@ -2071,13 +2086,11 @@ function rotateReport(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
             this.barChartJourney = echarts.init(document.getElementById('barContainer'));
             this.displayChart();
@@ -2687,13 +2700,11 @@ function speedingReport(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
             this.initMap();
             this.barChartJourney = echarts.init(document.getElementById('barContainer'));
@@ -4625,13 +4636,11 @@ function dropLineReport(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
             window.onresize = function() {
                 me.calcTableHeight();
@@ -4810,13 +4819,11 @@ function deviceOnlineDaily(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
             window.onresize = function() {
                 me.calcTableHeight();
@@ -4929,13 +4936,11 @@ function groupsOnlineDaily(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, false)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, false)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
             window.onresize = function() {
                 me.calcTableHeight();
@@ -5157,13 +5162,11 @@ function deviceMonthOnlineDaily(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
             window.onresize = function() {
                 me.calcTableHeight();
@@ -6074,13 +6077,11 @@ function refuelingReport(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
         }
     });
@@ -6429,13 +6430,11 @@ function oilLeakageReport(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
         }
     });
@@ -7221,13 +7220,11 @@ function driverWorkDetails() {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
             this.calcTableHeight();
             window.onresize = function() {
@@ -7592,13 +7589,11 @@ function ioReport(groupslist) {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
 
             this.calcTableHeight();
@@ -7918,13 +7913,11 @@ function multiMedia() {
                     me.isSpin = false;
                     if (rootuserinfo) {
                         rootuser = rootuserinfo;
-                        me.groupslist = [utils.castUsersTreeToDevicesTree(rootuserinfo, true)];
-                        me.treeData = me.groupslist;
+                        me.initZTree(rootuser);
                     }
                 });
             } else {
-                me.groupslist = [utils.castUsersTreeToDevicesTree(rootuser, true)];
-                me.treeData = me.groupslist;
+                me.initZTree(rootuser);
             }
             this.calcTableHeight();
             window.onresize = function() {

@@ -1804,7 +1804,7 @@
                 addRepair: "添加维修记录",
                 repairRecord: "维修记录",
                 allAevcieList: "全部设备列表",
-                selectedDeviceList: "已选中设备列表",
+                selectedDeviceList: "已选中设备列表(最大500个):",
                 transferGroupList: "转入用户分组列表",
                 result: "结果",
                 exportDevice: "导入设备",

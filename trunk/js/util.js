@@ -1094,62 +1094,30 @@ var utils = {
         }
         return groupName;
     },
-    getDeviceListGroups: function(groups, isNeedDevice, username) {
+    getDeviceListGroups: function(groups, username) {
+
         var groupsList = [],
             me = this;
         if (groups != null) {
             for (var i = 0; i < groups.length; ++i) {
                 var group = groups[i];
                 var groupObj = {
-                    title: (group.devices && group.devices.length != 0) ? group.groupname + '(' + group.devices.length + ')' : group.groupname + '(0)',
+                    name: (group.devices && group.devices.length != 0) ? group.groupname + '(' + group.devices.length + ')' : group.groupname + '(0)',
                     groupid: group.groupid,
                     username: username,
                     groupname: group.groupname,
-                    totalCount: group.devices.length
+                    totalCount: group.devices.length,
+                    icon: myUrls.viewhost + "zTreeStyle/img/diy/group.svg"
                 }
-                if (isNeedDevice) {
-                    groupObj.render = utils.renderGroup;
-                } else {
-                    groupObj.render = (function(group, username) {
-                        return function(h, params) {
-                            var data = params.data;
-                            return h('span', {
-                                on: {
-                                    'click': function() {
-                                        me.selectedUserName = username;
-                                        me.selectedGroupId = group.groupid;
-                                        me.selectedGroupName = group.groupname;
-                                    }
-                                },
-                                style: {
-                                    cursor: 'pointer',
-                                    color: (me.selectedUserName == username && me.selectedGroupId == group.groupid) ? '#2D8CF0' : '#000'
-                                }
-                            }, [
-                                h('span', [
-                                    h('Icon', {
-                                        props: {
-                                            type: 'ios-folder-open'
-                                        },
-                                        style: {
-                                            marginRight: '8px'
-                                        }
-                                    }),
-                                    h('span', data.title)
-                                ]),
-                            ])
-                        }
-                    })(group, username);
-                }
-                if (isNeedDevice && group.devices) {
+                if (group.devices) {
                     groupObj.children = [];
                     group.devices.forEach(function(device) {
-
+                        var isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
                         groupObj.children.push({
                             username: username,
                             deviceid: device.deviceid,
-                            title: device.devicename,
-                            render: utils.renderDev
+                            name: device.devicename,
+                            icon: myUrls.viewhost + (isOnline ? "zTreeStyle/img/diy/car.svg" : "zTreeStyle/img/diy/car_offline.svg")
                         });
                         utils.deviceInfos[device.deviceid] = {
                             deviceid: device.deviceid,
@@ -1166,44 +1134,17 @@ var utils = {
 
         if (groupsList.length == 0) {
             groupsList.push({
-                title: 'Default(0)',
+                name: 'Default(0)',
                 groupid: 0,
                 username: username,
                 totalCount: 0,
-                render: function(h, params) {
-                    var data = params.data;
-                    return h('span', {
-                        on: {
-                            'click': function() {
-                                me.selectedUserName = username;
-                                me.selectedGroupId = 0;
-                                me.selectedGroupName = 'Default';
-                            }
-                        },
-                        style: {
-                            cursor: 'pointer',
-                            color: (me.selectedUserName == username && me.selectedGroupId == 0) ? '#2D8CF0' : '#000'
-                        }
-                    }, [
-                        h('span', [
-                            h('Icon', {
-                                props: {
-                                    type: 'ios-folder-open'
-                                },
-                                style: {
-                                    marginRight: '8px'
-                                }
-                            }),
-                            h('span', data.title)
-                        ]),
-                    ])
-                }
+                icon: myUrls.viewhost + "zTreeStyle/img/diy/group.svg"
             });
         }
         return groupsList;
 
     },
-    doCastUsersTreeToDevicesTree: function(usersTrees, isNeedDevice) {
+    doCastUsersTreeToDevicesTree: function(usersTrees) {
 
         var devicesTreeRecord = [];
         if (usersTrees != null && usersTrees.length > 0) {
@@ -1213,11 +1154,11 @@ var utils = {
                 var subusers = usersTree.subusers;
                 var currentsubDevicesTreeRecord = {
                     username: username,
-                    render: utils.renderPerson
+                    icon: myUrls.viewhost + "zTreeStyle/img/diy/account.svg"
                 };
-                var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username);
+                var deviceListGroups = this.getDeviceListGroups(usersTree.groups, username);
                 if (username != null && subusers != null && subusers.length > 0) {
-                    var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice);
+                    var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
                     subDevicesTreeRecord = deviceListGroups.concat(subDevicesTreeRecord);
                     currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
                 } else {
@@ -1231,25 +1172,25 @@ var utils = {
                     }
                 }
                 currentsubDevicesTreeRecord.totalCount = totalCount;
-                currentsubDevicesTreeRecord.title = username + "(" + totalCount + ")";
+                currentsubDevicesTreeRecord.name = username + "(" + totalCount + ")";
                 devicesTreeRecord.push(currentsubDevicesTreeRecord);
             }
         }
         return devicesTreeRecord;
     },
-    castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice) {
+    castUsersTreeToDevicesTree: function(devicesTreeRecord) {
         var iViewTree = {
-            render: utils.renderPerson,
-            expand: true,
-            deviceid: '',
+            open: true,
+            deviceid: null,
+            icon: myUrls.viewhost + "zTreeStyle/img/diy/1_close.png"
         };
         if (devicesTreeRecord != null) {
             var username = devicesTreeRecord.username;
             var subusers = devicesTreeRecord.subusers;
-            var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username);
+            var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, username);
             if (username != null && subusers != null && subusers.length > 0) {
 
-                var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice);
+                var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
 
                 iViewTree.children = deviceListGroups.concat(subDevicesTreeRecord);
 
@@ -1262,7 +1203,7 @@ var utils = {
                     totalCount += iViewTree.children[i].totalCount;
                 }
             }
-            iViewTree.title = username + "(" + totalCount + ")";
+            iViewTree.name = username + "(" + totalCount + ")";
         }
         return iViewTree;
     },

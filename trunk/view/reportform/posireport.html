@@ -31,7 +31,7 @@
                     <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-focus="focus" :placeholder="placeholder"></i-input>
                     <transition name="fade">
                         <div class="search-item-wrapper" v-show="isShowMatchDev">
-                            <Tree :data="treeData" show-checkbox @on-check-change="onCheckedDevice"></Tree>
+                            <ul id="ztree" class="ztree"></ul>
                         </div>
                     </transition>
                 </div>

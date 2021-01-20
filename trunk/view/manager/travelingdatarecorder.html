@@ -30,7 +30,10 @@
                 <div style="line-height: 45px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
                 </div>
-                <Tree :data="searchDeviceList" show-checkbox :style="streeStyle" @on-check-change="onCheckChange"></Tree>
+                <div :style="streeStyle">
+                    <ul id="ztree" class="ztree"></ul>
+                </div>
+                <!-- <Tree :data="searchDeviceList" show-checkbox :style="streeStyle" @on-check-change="onCheckChange"></Tree> -->
             </div>
             <div style="padding: 0 10px;width: 500px;flex: 1;">
                 <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight" highlight-row @on-current-change="onCurrentChange"></i-table>
@@ -793,7 +796,11 @@
                     }
                 })
 
-                this.tableData = this.tableData.concat(tableData);
+                var newArr = this.tableData.concat(tableData);
+                if (newArr.length > 500) {
+                    newArr = newArr.slice(0, 500);
+                }
+                this.tableData = newArr;
 
                 setTimeout(function() {
                     if (tableData.length) {
@@ -828,8 +835,26 @@
                 });
             },
             setTreeDataList: function(rootuser) {
-                this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
-                this.treeDeviceList = deepClone(this.searchDeviceList);
+                // this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
+                this.treeDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
+                var me = this;
+                this.setting = {
+                    check: {
+                        enable: true,
+                        chkStyle: "checkbox",
+                        chkboxType: {
+                            "Y": "ps",
+                            "N": "ps"
+                        }
+                    },
+                    callback: {
+                        onCheck: function(id, ztree) {
+                            var checkedNodes = me.zTreeObj.getCheckedNodes();
+                            me.onCheckChange(checkedNodes);
+                        }
+                    }
+                };
+                this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
             },
             filtered: function(textStr) {
                 function uniq(array) {
@@ -857,84 +882,32 @@
                         var group = groups[i];
                         var groupObj = {
                             groupid: group.groupid,
-                            title: group.groupname
+                            name: group.groupname,
+                            icon: myUrls.viewhost + "zTreeStyle/img/diy/group.svg"
                         }
                         if (isNeedDevice) {
                             groupObj.render = utils.renderGroup;
+
                         } else {
-                            groupObj.render = function(h, params) {
-                                var data = params.data;
-                                var children = null;
-
-                                if (isNeedRadio) {
-                                    children = [
-                                        h('span', [
-                                            h('Radio', {
-                                                props: {
-                                                    value: (me.selectedUserName == username && me.selectedGroupId == data.groupid)
-                                                },
-                                                style: {
-                                                    marginRight: '4px'
-                                                }
-                                            }),
-                                            h('Icon', {
-                                                props: {
-                                                    type: 'ios-folder-open'
-                                                },
-                                                style: {
-                                                    marginRight: '8px'
-                                                }
-                                            }),
-                                            h('span', data.title)
-                                        ])
-                                    ]
-                                } else {
-                                    children = [
-                                        h('span', [
-                                            h('Icon', {
-                                                props: {
-                                                    type: 'ios-folder-open'
-                                                },
-                                                style: {
-                                                    marginRight: '8px'
-                                                }
-                                            }),
-                                            h('span', data.title)
-                                        ])
-                                    ]
-                                }
-
-                                return h('span', {
-                                    on: {
-                                        'click': function() {
-                                            me.selectedUserName = username;
-                                            me.selectedGroupId = data.groupid;
-                                            me.selectedGroupName = data.groupname;
-                                        }
-                                    },
-                                    style: {
-                                        cursor: 'pointer',
-                                        color: (me.selectedUserName == username && me.selectedGroupId == data.groupid) ? '#2D8CF0' : '#000'
-                                    }
-                                }, children)
-                            };
+                            groupObj.totalCount = group.devices.length;
+                            groupObj.name = group.groupname + '(' + group.devices.length + ')';
                         }
                         if (isNeedDevice && group.devices) {
                             groupObj.totalCount = group.devices.length;
                             groupObj.children = [];
-                            groupObj.title = group.groupname + '(' + group.devices.length + ')';
+                            groupObj.name = group.groupname + '(' + group.devices.length + ')';
                             group.devices.forEach(function(device) {
                                 groupObj.children.push({
                                     deviceid: device.deviceid,
-                                    title: device.devicename,
-                                    render: utils.renderDev
+                                    name: device.devicename,
+                                    icon: myUrls.viewhost + "zTreeStyle/img/diy/car.svg"
                                 });
                                 utils.deviceInfos[device.deviceid] = {
                                     deviceid: device.deviceid,
                                     devicename: device.devicename,
                                     username: username,
-                                    groupid: groupObj.groupid,
-                                    groupname: groupObj.groupname,
+                                    groupid: group.groupid,
+                                    groupname: group.groupname,
                                     forwardid: device.forwardid,
                                 }
                             });
@@ -945,70 +918,17 @@
 
                 if (groupsList.length == 0) {
                     groupsList.push({
-                        title: 'Default(0)',
+                        name: 'Default(0)',
                         groupid: 0,
                         totalCount: 0,
-                        render: function(h, params) {
-                            var data = params.data;
-                            var children = [];
-                            if (isNeedRadio) {
-                                children = [
-                                    h('span', [
-                                        h('Radio', {
-                                            props: {
-                                                value: (me.selectedUserName == username && me.selectedGroupId == group.groupid)
-                                            },
-                                            style: {
-                                                marginRight: '4px'
-                                            }
-                                        }),
-                                        h('Icon', {
-                                            props: {
-                                                type: 'ios-folder-open'
-                                            },
-                                            style: {
-                                                marginRight: '8px'
-                                            }
-                                        }),
-                                        h('span', data.title)
-                                    ])
-                                ]
-                            } else {
-                                children = [
-                                    h('span', [
-                                        h('Icon', {
-                                            props: {
-                                                type: 'ios-folder-open'
-                                            },
-                                            style: {
-                                                marginRight: '8px'
-                                            }
-                                        }),
-                                        h('span', data.title)
-                                    ])
-                                ]
-                            }
-                            return h('span', {
-                                on: {
-                                    'click': function() {
-                                        me.selectedUserName = username;
-                                        me.selectedGroupId = 0;
-                                        me.selectedGroupName = 'Default';
-                                    }
-                                },
-                                style: {
-                                    cursor: 'pointer',
-                                    color: (me.selectedUserName == username && me.selectedGroupId == 0) ? '#2D8CF0' : '#000'
-                                }
-                            }, children)
-                        }
+                        children: [],
+                        icon: myUrls.viewhost + "zTreeStyle/img/diy/group.svg"
                     });
                 }
                 return groupsList;
 
             },
             doCastUsersTreeToDevicesTree: function(usersTrees, isNeedDevice, isNeedRadio) {
-
                 var devicesTreeRecord = [];
                 if (usersTrees != null && usersTrees.length > 0) {
                     for (var i = 0; i < usersTrees.length; ++i) {
@@ -1016,14 +936,16 @@
                         var username = usersTree.username;
                         var subusers = usersTree.subusers;
                         var currentsubDevicesTreeRecord = {
-                            render: utils.renderPerson,
+                            name: username,
+                            username: username,
+                            nocheck: isNeedRadio,
+                            icon: myUrls.viewhost + "zTreeStyle/img/diy/account.svg"
                         };
                         var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username, isNeedRadio);
                         if (username != null && subusers != null && subusers.length > 0) {
                             var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
                             subDevicesTreeRecord = deviceListGroups.concat(subDevicesTreeRecord);
                             currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
-
                         } else {
                             currentsubDevicesTreeRecord.children = deviceListGroups;
 
@@ -1035,7 +957,7 @@
                             }
                         }
                         currentsubDevicesTreeRecord.totalCount = totalCount;
-                        currentsubDevicesTreeRecord.title = username + "(" + totalCount + ")";
+                        currentsubDevicesTreeRecord.name = username + "(" + totalCount + ")";
                         devicesTreeRecord.push(currentsubDevicesTreeRecord);
                     }
                 }
@@ -1043,19 +965,19 @@
             },
             castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice, isNeedRadio) {
                 var iViewTree = {
-                    render: utils.renderPerson,
-                    expand: true,
+                    open: true,
+                    nocheck: isNeedRadio,
+                    icon: myUrls.viewhost + "zTreeStyle/img/diy/1_open.png"
                 };
                 if (devicesTreeRecord != null) {
                     var username = devicesTreeRecord.username;
                     var subusers = devicesTreeRecord.subusers;
+                    iViewTree.name = username;
+                    iViewTree.username = username;
                     var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username, isNeedRadio);
                     if (username != null && subusers != null && subusers.length > 0) {
-
                         var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
-
                         iViewTree.children = deviceListGroups.concat(subDevicesTreeRecord);
-
                     } else {
                         iViewTree.children = deviceListGroups;
                     }
@@ -1065,10 +987,11 @@
                             totalCount += iViewTree.children[i].totalCount;
                         }
                     }
-                    iViewTree.title = username + "(" + totalCount + ")";
+                    iViewTree.name = username + "(" + totalCount + ")";
                 }
                 return iViewTree;
             },
+
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.taleHeight = wHeight - 110;
@@ -1092,7 +1015,6 @@
                 });
             },
             variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
-
                 var childTemp = [];
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -1101,9 +1023,9 @@
                     if (item != null) {
 
                         var isFound = false;
-                        if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                        if (item.name.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
                             copyItem = item;
-                            copyItem.expand = false;
+                            copyItem.open = false;
                             isFound = true;
                         }
                         if (isFound == false && item.children && item.children.length > 0) {
@@ -1113,7 +1035,7 @@
                             if (rs && rs.length > 0) {
                                 copyItem = deepClone(item);
                                 copyItem.children = rs;
-                                copyItem.expand = true;
+                                copyItem.open = true;
                                 isFound = true;
                             }
                         }
@@ -1121,7 +1043,8 @@
                         if (isFound == true) {
                             limitcount++;
                             childTemp.push(copyItem);
-                            if (limitcount > 10) {
+
+                            if (limitcount > 1000) {
                                 break;
                             }
                         }
@@ -1153,10 +1076,19 @@
             searchDeviceVal: function(newVal) {
 
                 if (newVal === '') {
-                    this.searchDeviceList = deepClone(this.treeDeviceList);
+                    this.treeDeviceList[0].open = true;
+                    this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
                 } else {
                     var limitcount = 0;
-                    this.searchDeviceList = this.variableDeepSearch(deepClone(this.treeDeviceList), newVal, limitcount);
+                    var data = this.variableDeepSearch(this.treeDeviceList, newVal, limitcount);
+                    if (data.length == 0) {
+                        data.push({
+                            name: isZh ? '无数据' : 'No data',
+                            nocheck: true
+                        })
+                    }
+                    this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, data);
+
                 }
 
             },
@@ -1268,6 +1200,9 @@
                 }
                 this.onRefresh();
             }
+        },
+        destroyed: function() {
+            this.zTreeObj.destroy();
         },
         mounted: function() {
             var me = this;
