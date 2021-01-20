@@ -1094,6 +1094,33 @@ var utils = {
         }
         return groupName;
     },
+    getIsVideoDevice: function(deviceType) {
+        var isVedio = false;
+        var functions = vstore.state.deviceTypes[deviceType].functions;
+        if (functions && functions.indexOf('video') != -1) {
+            isVedio = true;
+        }
+        return isVedio;
+    },
+    getzTreeDeviceIcon: function(device) {
+        var url = myUrls.viewhost;
+        var isOnline = device.isOnline !== undefined ? device.isOnline : false;
+        var isVedio = this.getIsVideoDevice(device.devicetype);
+        if (isVedio) {
+            if (isOnline) {
+                url += "zTreeStyle/img/diy/video.svg";
+            } else {
+                url += "zTreeStyle/img/diy/video_offline.svg";
+            }
+        } else {
+            if (isOnline) {
+                url += "zTreeStyle/img/diy/car.svg";
+            } else {
+                url += "zTreeStyle/img/diy/car_offline.svg";
+            }
+        }
+        return url;
+    },
     getDeviceListGroups: function(groups, username) {
 
         var groupsList = [],
@@ -1112,12 +1139,12 @@ var utils = {
                 if (group.devices) {
                     groupObj.children = [];
                     group.devices.forEach(function(device) {
-                        var isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
+                        var device = vstore.state.deviceInfos[device.deviceid];
                         groupObj.children.push({
                             username: username,
                             deviceid: device.deviceid,
                             name: device.devicename,
-                            icon: myUrls.viewhost + (isOnline ? "zTreeStyle/img/diy/car.svg" : "zTreeStyle/img/diy/car_offline.svg")
+                            icon: me.getzTreeDeviceIcon(device)
                         });
                         utils.deviceInfos[device.deviceid] = {
                             deviceid: device.deviceid,
