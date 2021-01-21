@@ -257,6 +257,10 @@ var myUrls = {
     updateDeviceTypeCmd: function() {
         return this.apihost + 'webapi?action=updatedevicetypecmd&token=' + token
     },
+    //查询用户信息
+    queryUserDetail: function() {
+        return this.apihost + 'webapi?action=queryuserdetail&token=' + token
+    },
     //查询用户所有有的设备指令
     queryAllDeviceCmdByUser: function() {
         return this.apihost + 'webapi?action=queryalldevicecmdbyuser&token=' + token

@@ -14,7 +14,7 @@ var bgManager = {
                     icon: 'ios-stats',
                 },
                 {
-                    title: me.$t("bgMgr.userMgr"),
+                    title: me.$t("bgMgr.organizationMgr"),
                     name: 'userMar',
                     icon: 'md-person',
                     children: [
@@ -23,6 +23,7 @@ var bgManager = {
                         { title: me.$t("user.employees"), name: 'employees', icon: 'md-person-add' },
                         { title: me.$t("bgMgr.onlineUsers"), name: 'onlineUsers', icon: 'ios-analytics' },
                         { title: me.$t("header.loginRecords"), name: 'loginRecords', icon: 'ios-clipboard-outline' },
+                        { title: me.$t("bgMgr.organStructure"), name: 'organStructure', icon: 'ios-clipboard-outline' },
                     ]
                 },
                 {
@@ -164,6 +165,9 @@ var bgManager = {
                     break
                 case 'loginRecords':
                     page = 'loginrecords.html'
+                    break
+                case 'organStructure':
+                    page = 'organstructure.html'
                     break
                 case 'chargeMgr':
                     page = 'chargemgr.html'

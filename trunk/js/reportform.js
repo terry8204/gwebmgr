@@ -199,7 +199,7 @@ var treeMixin = {
         }
     },
     destroyed: function() {
-        this.zTreeObj.destroy();
+        this.zTreeObj && this.zTreeObj.destroy();
     },
     created: function() {
         this.checkedDevice = [];

@@ -1666,3 +1666,43 @@ div.msg_content {
 .navigation-display-ui .navigation-display-li .navigation-display-li-btn-wrap:last-child {
     padding-bottom: 0px;
 }
+
+div.icon_example {
+    height: 25px;
+}
+
+div.icon_example>span {
+    vertical-align: middle;
+}
+
+.user_icon {
+    background: url('../zTreeStyle/img/diy/account.svg') 0 0 no-repeat;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.group_icon {
+    background: url('../zTreeStyle/img/diy/group.svg') 0 0 no-repeat;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.device_icon {
+    background: url('../zTreeStyle/img/diy/car.svg') 0 0 no-repeat;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.video_icon {
+    background: url('../zTreeStyle/img/diy/video.svg') 0 0 no-repeat;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}

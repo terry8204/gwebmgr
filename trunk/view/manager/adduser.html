@@ -49,6 +49,7 @@
                 </i-col>
             </Row>
 
+
             <Row style="margin: 10px 0">
                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                     &nbsp;{{$t("user.showname")}} : &nbsp;
@@ -156,16 +157,8 @@
                 isShowMatchDev: false,
                 userlists: [],
                 createrToUser: userName,
-                dateOptions: {
-                    disabledDate: function(date) {
-                        return date && date.valueOf() < Date.now() - 86400000;
-                    }
-                },
                 isDisabled: true,
-                directiveList: [],
                 userTypeList: [],
-                hadDeviceCmd: [],
-                directiveInfo: {},
                 qq: "",
                 email: "",
                 phone: "",
@@ -253,7 +246,6 @@
                     }
                 },
                 setUserTypeByUser: function(userType) {
-                    // var userType = vstore.state.userType;
                     var newArray = [{
                         "name": isZh ? "一级管理员" : 'Supervisor',
                         "type": 1
@@ -282,7 +274,6 @@
                         newArray = [];
                     }
                     this.userTypeList = newArray;
-
                 },
                 focus: function() {
                     this.isShowMatchDev = true;

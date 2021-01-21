@@ -594,7 +594,8 @@
                 groupMgr: "Group Manager",
                 addGroup: "Add Group",
                 queryGroup: "Query Group",
-                userMgr: "User Manager",
+                organizationMgr: "Organ Manager",
+                organStructure: "组织架构",
                 addUser: "Add User",
                 queryUser: "Query User",
                 devMgr: "Device Manager",
@@ -905,7 +906,8 @@
                 scale: 'Scale',
                 timeZone: 'Time zone',
                 automatic: 'Auto',
-                addNewDeviceTip: 'new device has 10 days experience period, contact the superior for renewal.'
+                addNewDeviceTip: 'new device has 10 days experience period, contact the superior for renewal.',
+                editDefaultGroupNameTip: 'The default group name cannot be edited'
             },
             insure: {
                 templateDownload: 'Template download',
@@ -1772,7 +1774,8 @@
                 groupMgr: "分组管理",
                 addGroup: "添加分组",
                 queryGroup: "查询分组",
-                userMgr: "用户管理",
+                organizationMgr: "组织管理",
+                organStructure: "组织架构",
                 addUser: "添加用户",
                 queryUser: "查询用户",
                 devMgr: "设备管理",
@@ -2084,7 +2087,9 @@
                 scale: '模拟量(AD)',
                 timeZone: '时区',
                 automatic: '自动',
-                addNewDeviceTip: '新添加的设备有10天体验期，到期请联系上级续费。'
+                addNewDeviceTip: '新添加的设备有10天体验期，到期请联系上级续费。',
+                editDefaultGroupNameTip: '默认组不可编辑名称'
+
             },
             insure: {
                 templateDownload: '模版下载',

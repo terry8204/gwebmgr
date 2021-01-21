@@ -1,0 +1,1001 @@
+<div id="organ-structure" class="full" style="padding: 10px;">
+    <div class="demo-spin-container" v-if="loading">
+        <Spin size="large" fix></Spin>
+    </div>
+    <div class="full" style="position: relative;">
+        <div style="position: absolute;top:0px;left:0px;right: 0px;height: 30px;">
+            <h3 class="h3-title">
+                {{$t("bgMgr.organStructure")}}
+                <div style="float: right;" v-show="selectType =='user'">
+                    <i-button size="small" type="primary" @click="addUser">添加用户</i-button>
+                    <i-button size="small" type="primary" @click="addGroup">添加分组</i-button>
+                </div>
+            </h3>
+        </div>
+        <div style="position: absolute;top:30px;left:0;right: 0px;bottom: 0px;border: 1px solid #e3e3e3;">
+            <div style="position: absolute;top:0px;left:0;bottom: 0px;width: 300px;border-right: 1px solid #e3e3e3;">
+                <div style="padding: 5px;">
+                    <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
+                </div>
+                <div style="position: absolute;top:35px;left:0;bottom: 0px;right: 0px;overflow-y: auto;">
+                    <ul id="ztree" class="ztree"></ul>
+                </div>
+            </div>
+            <div style="position: absolute;top:0px;left:300px;bottom: 0px;right: 0px;">
+                <div v-if="selectType =='user'">
+                    <div style="margin-left: 20px;width: 600px;">
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
+                            <i-col span="12">
+                                <div class="search-wrapper">
+                                    <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                                    <transition name="fade">
+                                        <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                                            <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
+                                                <div :value="item" :key="item">
+                                                    <span style="cursor: pointer;">{{ item }}</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </transition>
+                                </div>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.username")}} : &nbsp;</i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="username" :disabled="isEditUser"></i-input>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp; {{$t("user.showname")}}: &nbsp;</i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="showname"></i-input>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;{{$t("user.userType")}} : &nbsp;</i-col>
+                            <i-col span="12">
+                                <i-select v-model="usertype">
+                                    <i-option v-for="item in userTypeList" :value="item.type" :key="item.type">{{ item.name }}</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;{{$t("user.corporateName")}} : &nbsp;
+                            </i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="companyname"></i-input>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;{{$t("user.name")}} : &nbsp;
+                            </i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="cardname"></i-input>
+                            </i-col>
+                        </Row>
+
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;{{$t("user.phone")}} : &nbsp;</i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="phone"></i-input>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;{{$t("user.address")}} : &nbsp;
+                            </i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="companyaddr"></i-input>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;QQ : &nbsp;</i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="qq"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;{{$t("user.weChat")}} : &nbsp;</i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="wechat"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;{{$t("header.email")}} : &nbsp;</i-col>
+                            <i-col span="12">
+                                <i-input v-model.trim="email"></i-input>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.moreLanding")}} : &nbsp;</i-col>
+                            <i-col span="12">
+                                <i-select v-model="multilogin">
+                                    <i-option value="1">{{$t("header.yes")}}</i-option>
+                                    <i-option value="0">{{$t("header.no")}}</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="12" :offset="4">
+                                <i-button style="width:100%" @click="handleEditUser">{{$t("bgMgr.submit")}}</i-button>
+                            </i-col>
+                        </Row>
+                    </div>
+                </div>
+                <div v-if="selectType =='group'">
+                    <Row style="margin: 10px 0">
+                        <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("group.groupName")}} : &nbsp;</i-col>
+                        <i-col span="8">
+                            <i-input v-model.trim="groupName" :disabled="selectedGroupId==0"></i-input>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0">
+                        <i-col span="8" :offset="4">
+                            <i-button type="primary" style="width: 100%" @click="handleEditGroupName" :disabled="selectedGroupId==0">{{$t("bgMgr.submit")}}</i-button>
+                        </i-col>
+                    </Row>
+                    <Row style="margin: 10px 0" v-show="selectedGroupId==0">
+                        <i-col span="8" :offset="4">
+                            <Alert type="warning">{{$t("device.editDefaultGroupNameTip")}}</Alert>
+                        </i-col>
+                    </Row>
+                </div>
+                <div v-if="selectType =='device'">
+                    <div style="width:700px;margin-left: 20px;">
+                        <Row style="margin: 10px 0" v-if="userType < 4">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <div class="search-wrapper">
+                                    <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                                    <transition name="fade">
+                                        <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                                            <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
+                                                <div :value="item" :key="item">
+                                                    <span style="cursor: pointer;">{{ item }}</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </transition>
+                                </div>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model.sync="groupid">
+                                    <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">SIM : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim.number="simnum"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("bgMgr.expirenotifytime")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <date-picker type="date" v-model="expirenotifytime" :disabled="disabledOverdueTime"></date-picker>
+                            </i-col>
+
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="devicename"></i-input>
+                            </i-col>
+
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <!-- devicetype -->
+                                <i-select v-model="devicetype" :disabled="isfree!==2">
+                                    <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("alarm.devNum")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="deviceid" disabled></i-input>
+                            </i-col>
+
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.networkType")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="teltype">
+                                    <i-option value="1">{{$t("reportForm.maxSignal")}}32(2G)</i-option>
+                                    <i-option value="2">{{$t("reportForm.maxSignal")}}64(2G)</i-option>
+                                    <i-option value="3">{{$t("reportForm.maxSignal")}}32(3G)</i-option>
+                                    <i-option value="4">{{$t("reportForm.maxSignal")}}32(4G)</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.forwardAddress")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="forwardurl" disabled></i-input>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="reportedpoint"></i-input>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allReportCount")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="totalpoint"></i-input>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.isUse")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="deviceenable">
+                                    <i-option value="0">{{$t("user.ban")}}</i-option>
+                                    <i-option value="1">{{$t("user.allow")}}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.tutelageUser")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="monitor"></i-input>
+                            </i-col>
+                        </Row>
+
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.subEeditor")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="allowedit" :disabled="isAlloweditDisabled">
+                                    <i-option value="0">{{$t("user.ban")}}</i-option>
+                                    <i-option value="1">{{$t("user.allow")}}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="loginenable">
+                                    <i-option value="0">{{$t("user.ban")}}</i-option>
+                                    <i-option value="1">{{$t("user.allow")}}</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.timeZone")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="timezone">
+                                    <i-option value="99">{{$t("device.automatic")}}</i-option>
+                                    <i-option value="-12">-12</i-option>
+                                    <i-option value="-11">-11</i-option>
+                                    <i-option value="-10">-10</i-option>
+                                    <i-option value="-9">-9</i-option>
+                                    <i-option value="-8">-8</i-option>
+                                    <i-option value="-7">-7</i-option>
+                                    <i-option value="-6">-6</i-option>
+                                    <i-option value="-5">-5</i-option>
+                                    <i-option value="-4">-4</i-option>
+                                    <i-option value="-3">-3</i-option>
+                                    <i-option value="-2">-2</i-option>
+                                    <i-option value="-1">-1</i-option>
+                                    <i-option value="0">0</i-option>
+                                    <i-option value="1">+1</i-option>
+                                    <i-option value="2">+2</i-option>
+                                    <i-option value="3">+3</i-option>
+                                    <i-option value="4">+4</i-option>
+                                    <i-option value="5">+5</i-option>
+                                    <i-option value="6">+6</i-option>
+                                    <i-option value="7">+7</i-option>
+                                    <i-option value="8">+8</i-option>
+                                    <i-option value="9">+9</i-option>
+                                    <i-option value="10">+10</i-option>
+                                    <i-option value="11">+11</i-option>
+                                    <i-option value="12">+12</i-option>
+                                    <i-option value="13">+13</i-option>
+                                    <i-option value="14">+14</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="12" :offset="7">
+                                <i-button style="width: 100%" @click="handleEditDevice">{{$t("bgMgr.submit")}}</i-button>
+                            </i-col>
+                        </Row>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    vueInstanse = new Vue({
+        el: "#organ-structure",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            userType: localStorage.getItem('userType'),
+            searchDeviceVal: '',
+            selectType: 'group',
+            groupName: '',
+            selectedGroupId: null,
+            selectedUserName: null,
+            selectedDeviceid: null,
+
+            isShowMatchDev: false,
+            createrToUser: '',
+            iconState: "ios-arrow-down",
+            groupid: '',
+            groupsList: [],
+            simnum: '',
+            expirenotifytime: null,
+            devicename: '',
+            devicetype: null,
+            deviceTypeList: [],
+            deviceid: '',
+            teltype: '',
+            reportedpoint: '',
+            totalpoint: '',
+            deviceenable: '',
+            monitor: '',
+            allowedit: '',
+            loginenable: '',
+            timezone: '8',
+            isfree: 0,
+            forwardurl: "",
+
+
+            userTypeList: [],
+            username: "",
+            showname: "",
+            usertype: "",
+            showname: "",
+            companyname: "",
+            cardname: "",
+            phone: "",
+            companyaddr: "",
+            qq: "",
+            wechat: "",
+            email: "",
+            multilogin: "",
+            isEditUser: true,
+            isEditGroup: true,
+        },
+        methods: {
+            addUser: function() {
+                var newVal = this.selectedUserName;
+                this.isEditUser = false;
+                this.createrToUser = newVal;
+                var index = -1;
+                this.list.forEach(function(item, idx) {
+                    if (item.username === newVal) {
+                        index = idx;
+                    }
+                });
+                this.usertype = "";
+                if (index != -1) {
+                    this.setUserTypeByUser(this.list[index].usertype);
+                }
+                this.setUserInfo({
+                    multilogin: 1
+                });
+            },
+            addGroup: function() {
+                this.isEditGroup = false;
+            },
+            handleEditUser: function() {
+                var me = this;
+                var url = myUrls.editUser();
+                var userType = this.usertype;
+                var data = {
+                    username: this.createrToUser,
+                    usertype: userType,
+                }
+
+                data.multilogin = Number(this.multilogin);
+                this.qq ? data.qq = this.qq : "";
+                this.email ? data.email = this.email : "";
+                this.phone ? data.phone = this.phone : "";
+                this.wechat ? data.wechat = this.wechat : "";
+                this.companyname ? data.companyname = this.companyname : null;
+                this.cardname ? data.cardname = this.cardname : null;
+                this.companyaddr ? data.companyaddr = this.companyaddr : null;
+                this.showname ? data.showname = this.showname : null;
+
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        me.$Message.success(me.$t("message.changeSucc"));
+                    } else {
+                        me.$Message.error(me.$t("message.changeFail"));
+                    }
+                });
+            },
+            handleEditDevice: function() {
+                var me = this;
+                var url = myUrls.editDevice();
+                if (this.expirenotifytime == "") {
+                    me.$Message.error(me.$t("message.plSelectTime"));
+                    return;
+                }
+                var data = {
+                    deviceid: this.deviceid,
+                    devicetype: this.devicetype,
+                    expirenotifytime: new Date(this.expirenotifytime).getTime(),
+                    loginenable: Number(this.loginenable),
+                    deviceenable: Number(this.deviceenable),
+                    allowedit: Number(this.allowedit),
+                    timezone: Number(this.timezone),
+                };
+
+                if (this.devicename) {
+                    data.devicename = this.devicename;
+                };
+                if (this.teltype) {
+                    data.teltype = Number(this.teltype);
+                };
+
+
+                if (this.simnum !== "") {
+                    data.simnum = this.simnum;
+                };
+                if (this.groupid !== "" && this.groupsList.length) {
+                    data.groupid = this.groupid;
+                } else {
+                    data.groupid = 0;
+                };
+
+                if (this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)) {
+                    data.reportedpoint = Number(this.reportedpoint);
+                }
+
+                if (this.totalpoint && !isNaN(this.totalpoint)) {
+                    data.totalpoint = Number(this.totalpoint);
+                }
+
+                data.monitor = this.monitor;
+
+                this.forwardurl && (data.forwardurl = this.forwardurl);
+
+                if (userlists.indexOf(this.createrToUser) == -1) {
+                    me.$Message.error(me.$t("message.selectCorrectAccount"));
+                    return;
+                }
+
+                if (this.userType < 4) {
+                    data.creater = this.createrToUser;
+                } else {
+                    data.creater = userName;
+                }
+
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        me.$Message.success(me.$t("message.changeSucc"));
+                    } else if (resp.status = -1) {
+                        me.$Message.error(me.$t("message.changeFail"));
+                    }
+                });
+            },
+            getUserInfoList: function() {
+                var url = myUrls.queryUser();
+                utils.sendAjax(url, {
+                    username: userName
+                }, this.doUserInfoList);
+            },
+            doUserInfoList: function(resp) {
+                var me = this;
+                var list = [];
+                if (resp.status == 0 && resp.userlists != null) {
+
+                    resp.userlists.forEach(function(item) {
+                        if (item.usertype < 4) {
+                            list.push({
+                                username: item.username,
+                                usertype: item.usertype
+                            })
+                        }
+                    });
+                }
+                list.push({
+                    username: userName,
+                    usertype: vstore.state.userType
+                })
+                me.list = list;
+            },
+            handleEditGroupName: function() {
+                if (this.groupName == "") {
+                    this.$Message.error(this.$t("message.fillGroupNameTip"));
+                    return;
+                };
+                var url = myUrls.editGroup(),
+                    me = this;
+                var data = {
+                    groupid: this.selectedGroupId,
+                    groupname: this.groupName,
+                };
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        me.$Message.success(me.$t("message.changeSucc"));
+                    } else {
+                        me.$Message.error(resp.cause);
+                    }
+                });
+            },
+            getDeviceList: function(selectedDeviceid) {
+                var me = this;
+                var url = myUrls.queryDevices();
+                utils.sendAjax(url, {
+                    count: 10,
+                    keyword: selectedDeviceid,
+                    offset: 0,
+                    all: false,
+                    expiredays: 0
+                }, function(resp) {
+                    if (resp.status == 0 && resp.devices != null) {
+                        editObject = resp.devices[0];
+                        me.setDeviceData();
+                    }
+                });
+            },
+            getDeviceType: function() {
+                var me = this;
+                var deviceTypes = vstore.state.deviceTypes;
+                for (var key in deviceTypes) {
+                    var item = deviceTypes[key];
+                    var label = item.typename;
+                    if (item.remark) {
+                        label += "(" + item.remark + ")";
+                    }
+                    me.deviceTypeList.push({
+                        value: item.devicetypeid,
+                        label: label
+                    });
+                }
+            },
+            setDeviceData: function() {
+                var me = this;
+                me.deviceid = editObject.deviceid;
+                me.simnum = editObject.simnum;
+                me.expirenotifytime = new Date(editObject.expirenotifytime);
+                me.devicename = editObject.devicename;
+                me.devicetype = editObject.devicetype;
+                me.loginenable = editObject.loginenable + "";
+                me.deviceenable = "" + editObject.deviceenable;
+                me.reportedpoint = editObject.reportedpoint;
+                me.totalpoint = editObject.totalpoint;
+                me.forwardurl = editObject.forwardurl;
+                me.isfree = editObject.isfree;
+                me.monitor = editObject.monitor;
+                me.timezone = String(editObject.timezone);
+                me.teltype = String(editObject.teltype);
+                me.allowedit = String(editObject.allowedit);
+                me.createrToUser = editObject.creater;
+            },
+            selectedCmd: function(item) {
+                var me = this;
+                setTimeout(function() {
+                    me.isShowMatchDev = false;
+                    me.createrToUser = item;
+                }, 100)
+            },
+            queryUserDetail: function(username) {
+                var me = this;
+                var url = myUrls.queryUserDetail();
+                utils.sendAjax(url, {
+                    username: username
+                }, function(resp) {
+                    me.usertype = resp.usertype;
+                    me.setUserInfo(resp);
+                    console.log(resp);
+                })
+            },
+            queryDevicesTree: function() {
+                this.loading = true;
+                var url = myUrls.queryDevicesTree(),
+                    me = this;
+                var data = {
+                    username: userName
+                };
+                utils.sendAjax(url, data, function(respData) {
+                    me.loading = false;
+                    if (respData.status === 0) {
+                        rootuser = respData.rootuser;
+                        me.setTreeDataList(respData.rootuser);
+                    }
+                });
+            },
+            sosoValueChange: function() {
+                var me = this;
+                var value = this.createrToUser.toLowerCase();
+
+                if (this.timeoutIns != null) {
+                    clearTimeout(this.timeoutIns);
+                }
+
+                if (!value.trim()) {
+                    this.userlists = userlists;
+                    return;
+                }
+
+                this.timeoutIns = setTimeout(function() {
+                    me.filterMethod(value);
+                }, 100);
+            },
+            focus: function() {
+                this.isShowMatchDev = true;
+            },
+            blur: function() {
+                var me = this
+                setTimeout(function() {
+                    me.isShowMatchDev = false;
+                }, 300)
+            },
+            queryGroupsByUserName: function(userName) {
+                me = this;
+                groupsList = [{
+                    value: 0,
+                    label: "Default",
+                }];
+                var groupid = editObject.groupid;
+                var foundGroupId = false;
+                for (var key in me.allGroups) {
+                    var item = me.allGroups[key];
+                    if (item.creater == userName) {
+                        groupsList.push({
+                            label: item.groupname,
+                            value: item.groupid
+                        });
+                        if (item.groupid == groupid) {
+                            foundGroupId = true;
+                        }
+                    }
+                }
+
+                me.groupsList = groupsList;
+                me.groupid = editObject.groupid;
+                if (foundGroupId) {
+                    vueInstanse.groupid = editObject.groupid;
+                } else {
+                    vueInstanse.groupid = 0;
+                }
+            },
+            filterMethod: function(value) {
+                var list = [];
+                userlists.forEach(function(itme) {
+                    if (itme.toLowerCase().indexOf(value) != -1) {
+                        list.push(itme);
+                    }
+                })
+                this.userlists = list;
+            },
+            setTreeDataList: function(rootuser) {
+                this.treeDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
+
+                var me = this;
+                this.setting = {
+                    check: {
+                        enable: true,
+                        chkStyle: "radio",
+                        radioType: "all"
+                    },
+                    callback: {
+                        onCheck: function(id, ztree) {
+                            var nodes = me.zTreeObj.getCheckedNodes();
+                            if (nodes.length) {
+                                var node = nodes[0];
+                                var username = '';
+                                var groupid = 0;
+                                if (node.username !== undefined) {
+                                    username = node.username;
+                                    me.selectType = 'user';
+                                    me.queryUserDetail(username);
+                                    var parentNode = node.getParentNode();
+                                    me.createrToUser = parentNode ? parentNode.username : userName;
+                                    me.isEditUser = true;
+                                } else if (node.groupid !== undefined) {
+                                    var parentNode = node.getParentNode();
+                                    username = parentNode.username;
+                                    groupid = node.groupid;
+                                    me.groupName = node.groupname;
+                                    me.selectType = 'group';
+                                    me.isEditGroup = false;
+                                } else {
+                                    me.selectType = 'device';
+                                    var parentNode = node.getParentNode();
+                                    var pparentNode = parentNode.getParentNode();
+                                    username = pparentNode.username;
+                                    groupid = parentNode.groupid;
+                                    me.getDeviceList(node.deviceid);
+                                }
+                                me.selectedGroupId = groupid;
+                                me.selectedUserName = username;
+                            } else {
+                                me.selectedGroupId = null;
+                                me.selectedUserName = null;
+                            }
+                        }
+                    },
+                };
+                this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
+            },
+            getDeviceListGroups: function(groups, isNeedDevice, username, isNeedRadio) {
+                var groupsList = [],
+                    me = this;
+                if (groups != null) {
+                    for (var i = 0; i < groups.length; ++i) {
+                        var group = groups[i];
+                        var groupObj = {
+                            groupid: group.groupid,
+                            name: group.groupname,
+                            groupname: group.groupname,
+                            icon: myUrls.viewhost + "zTreeStyle/img/diy/group.svg"
+                        }
+                        if (isNeedDevice) {
+                            groupObj.render = utils.renderGroup;
+
+                        } else {
+                            groupObj.totalCount = group.devices.length;
+                            groupObj.name = group.groupname + '(' + group.devices.length + ')';
+                        }
+                        if (isNeedDevice && group.devices) {
+                            groupObj.totalCount = group.devices.length;
+                            groupObj.children = [];
+                            groupObj.name = group.groupname + '(' + group.devices.length + ')';
+                            group.devices.forEach(function(device) {
+                                groupObj.children.push({
+                                    deviceid: device.deviceid,
+                                    name: device.devicename,
+                                    icon: myUrls.viewhost + "zTreeStyle/img/diy/car.svg"
+                                });
+                                utils.deviceInfos[device.deviceid] = {
+                                    deviceid: device.deviceid,
+                                    devicename: device.devicename,
+                                    username: username,
+                                    groupid: group.groupid,
+                                    groupname: group.groupname,
+                                    forwardid: device.forwardid,
+                                }
+                            });
+                        }
+                        groupsList.push(groupObj);
+                    }
+                }
+
+                if (groupsList.length == 0) {
+                    groupsList.push({
+                        name: 'Default(0)',
+                        groupname: 'Default',
+                        groupid: 0,
+                        totalCount: 0,
+                        children: [],
+                        icon: myUrls.viewhost + "zTreeStyle/img/diy/group.svg"
+                    });
+                }
+                return groupsList;
+
+            },
+            doCastUsersTreeToDevicesTree: function(usersTrees, isNeedDevice, isNeedRadio) {
+                var devicesTreeRecord = [];
+                if (usersTrees != null && usersTrees.length > 0) {
+                    for (var i = 0; i < usersTrees.length; ++i) {
+                        var usersTree = usersTrees[i];
+                        var username = usersTree.username;
+                        var subusers = usersTree.subusers;
+                        var currentsubDevicesTreeRecord = {
+                            name: username,
+                            username: username,
+                            nocheck: isNeedRadio,
+                            icon: myUrls.viewhost + "zTreeStyle/img/diy/account.svg"
+                        };
+                        var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username, isNeedRadio);
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
+                            subDevicesTreeRecord = deviceListGroups.concat(subDevicesTreeRecord);
+                            currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+                        } else {
+                            currentsubDevicesTreeRecord.children = deviceListGroups;
+
+                        }
+                        var totalCount = 0;
+                        if (currentsubDevicesTreeRecord.children) {
+                            for (var j = 0; j < currentsubDevicesTreeRecord.children.length; ++j) {
+                                totalCount += currentsubDevicesTreeRecord.children[j].totalCount;
+                            }
+                        }
+                        currentsubDevicesTreeRecord.totalCount = totalCount;
+                        currentsubDevicesTreeRecord.name = username + "(" + totalCount + ")";
+                        devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                    }
+                }
+                return devicesTreeRecord;
+            },
+            castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice, isNeedRadio) {
+                var iViewTree = {
+                    open: true,
+                    nocheck: isNeedRadio,
+                    icon: myUrls.viewhost + "zTreeStyle/img/diy/1_open.png"
+                };
+                if (devicesTreeRecord != null) {
+                    var username = devicesTreeRecord.username;
+                    var subusers = devicesTreeRecord.subusers;
+                    iViewTree.name = username;
+                    iViewTree.username = username;
+                    var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username, isNeedRadio);
+                    if (username != null && subusers != null && subusers.length > 0) {
+                        var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
+                        iViewTree.children = deviceListGroups.concat(subDevicesTreeRecord);
+                    } else {
+                        iViewTree.children = deviceListGroups;
+                    }
+                    var totalCount = 0;
+                    if (iViewTree.children) {
+                        for (var i = 0; i < iViewTree.children.length; ++i) {
+                            totalCount += iViewTree.children[i].totalCount;
+                        }
+                    }
+                    iViewTree.name = username + "(" + totalCount + ")";
+                }
+                return iViewTree;
+            },
+            variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
+                var childTemp = [];
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var copyItem = null;
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+
+                        var isFound = false;
+                        if (item.name.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                            copyItem = item;
+                            copyItem.open = false;
+                            isFound = true;
+                        }
+                        if (isFound == false && item.children && item.children.length > 0) {
+                            var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
+                            if (rs && rs.length > 0) {
+                                copyItem = deepClone(item);
+                                copyItem.children = rs;
+                                copyItem.open = true;
+                                isFound = true;
+                            }
+                        }
+                        if (isFound == true) {
+                            limitcount++;
+                            childTemp.push(copyItem);
+
+                            if (limitcount > 1000) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                return childTemp;
+            },
+            queryGroupInfos: function() {
+                var me = this;
+                me.allGroups = {};
+                utils.sendAjax(myUrls.queryGroupInfos(), {}, function(resp) {
+                    if (resp.status === 0) {
+                        resp.groups.forEach(function(item) {
+                            me.allGroups[item.groupid] = item;
+                        });
+                    }
+                })
+            },
+            setUserTypeByUser: function(userType) {
+                var newArray = deepClone(vstore.state.userTypeDescrList);
+                newArray.pop();
+                for (var i = 0; i <= userType; i++) {
+                    newArray.shift();
+                }
+                this.userTypeList = newArray;
+            },
+            setUserInfo: function(userInfo) {
+                this.username = userInfo.username;
+                this.qq = userInfo.qq;
+                this.email = userInfo.email;
+                this.phone = userInfo.phone;
+                this.wechat = userInfo.wechat;
+                this.multilogin = String(userInfo.multilogin);
+                this.companyname = userInfo.companyname;
+                this.cardname = userInfo.cardname;
+                this.companyaddr = userInfo.companyaddr;
+                this.showname = userInfo.showname;
+            }
+        },
+        computed: {
+            disabledOverdueTime: function() {
+                return this.userType > 4;
+            },
+            isAlloweditDisabled: function() {
+                return !(Number(this.userType) <= 1);
+            },
+        },
+        watch: {
+            searchDeviceVal: function(newVal) {
+                if (newVal === '') {
+                    this.treeDeviceList[0].open = true;
+                    this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
+                } else {
+                    var limitcount = 0;
+                    var data = this.variableDeepSearch(this.treeDeviceList, newVal, limitcount);
+                    if (data.length == 0) {
+                        data.push({
+                            name: isZh ? '无数据' : 'No data',
+                            nocheck: true
+                        })
+                    }
+                    this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, data);
+                }
+
+            },
+            isShowMatchDev: function() {
+                if (!this.isShowMatchDev) {
+                    this.iconState = "ios-arrow-down";
+                } else {
+                    this.iconState = "ios-arrow-up";
+                }
+            },
+            createrToUser: function(newVal) {
+                if (userlists.indexOf(newVal) != -1) {
+                    try {
+                        this.queryGroupsByUserName(newVal);
+                    } catch (error) {
+                        var index = -1;
+                        this.list.forEach(function(item, idx) {
+                            if (item.username === newVal) {
+                                index = idx;
+                            }
+                        });
+                        this.usertype = "";
+                        if (index != -1) {
+                            this.setUserTypeByUser(this.list[index].usertype);
+                        } else {
+                            this.userTypeList = [];
+                        }
+                    }
+
+                } else {
+                    this.groupsList = [];
+                    this.groupid = 0;
+                }
+            }
+        },
+        destroyed: function() {
+            this.zTreeObj.destroy();
+        },
+        mounted: function() {
+            var me = this;
+            utils.deviceInfos = {};
+            this.userlists = userlists;
+            this.treeDeviceList = [];
+            me.getDeviceType();
+            me.queryGroupInfos();
+            me.getUserInfoList();
+            me.setUserTypeByUser(me.userType);
+            if (rootuser == null) {
+                this.queryDevicesTree();
+            } else {
+                me.setTreeDataList(rootuser);
+            }
+        },
+    })
+</script>

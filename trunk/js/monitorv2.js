@@ -3172,7 +3172,7 @@ var monitor = {
                 item.g_lon = g_lon_and_g_lat[0];
                 item.g_lat = g_lon_and_g_lat[1];
                 item.online = online;
-                item.devicename = this.deviceInfos[deviceid].devicename;
+                item.devicename = vstore.state.deviceInfos[deviceid].devicename;
                 // item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                 //this.positionLastrecords[deviceid] = item;
                 var oldPositionLast = this.positionLastrecords[deviceid];
@@ -3634,8 +3634,9 @@ var monitor = {
         onClickMarker: function(e) {
             var marker = e.target;
             var deviceid = marker.deviceid;
+            // console.log(deviceid, marker);
             var point = marker.getCoordinates();
-            this.currentDeviceType = this.deviceInfos[deviceid].devicetype;
+            this.currentDeviceType = vstore.state.deviceInfos[deviceid].devicetype;
             this.map.setCenter(point);
             var track = this.positionLastrecords[deviceid];
             var address = this.getAddress(track, marker);

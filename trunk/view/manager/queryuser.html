@@ -120,25 +120,6 @@
                     </i-col>
                 </Row>
 
-                <Row style="margin: 10px 0" v-show="!isShowGroup">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                        <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.groupCount")}} : &nbsp;</i-col>
-                    <i-col span="3">
-                        <input-number :max="20" :min="1" v-model="groupcount"></input-number>
-                    </i-col>
-
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
-                        <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.userCount")}} : &nbsp;</i-col>
-                    <i-col span="3">
-                        <input-number :max="100" :min="10" v-model="usercount"></input-number>
-                    </i-col>
-
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                        <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("group.devCount")}} : &nbsp;</i-col>
-                    <i-col span="3">
-                        <input-number :max="500" :min="10" v-model="devicecount"></input-number>
-                    </i-col>
-                </Row>
 
                 <Row style="margin: 10px 0">
                     <i-col span="12" :offset="4">
@@ -263,9 +244,6 @@
                 phoneLogin: "0",
                 weixinLogin: "0",
                 multilogin: "1",
-                groupcount: 10,
-                devicecount: 500,
-                usercount: 10,
                 companyList: [],
                 groupids: [],
                 groupList: [],
@@ -324,13 +302,7 @@
                         var currdevicecount = 0;
                         var currgroupcount = 0;
                         resp.userlists.forEach(function(item) {
-                            item.usedUserCount = item.company ? item.currusercount + "/" + item.usercount : "";
-                            item.usedDeviceCount = item.company ? item.currdevicecount + "/" + item.devicecount : "";
-                            item.usedGroupCount = item.company ? item.currgroupcount + "/" + item.groupcount : "";
-                            // item.company = item.company ? item.company.companyname : "";
-                            // console.log('company', item.company);
-                            currdevicecount += item.company ? item.currdevicecount : 0;
-                            currgroupcount += item.company ? item.currgroupcount : 0;
+
 
                             item.userTypeStr = me.getUserTypeStr(item.usertype);
                             item.createtime = me.timeToDateStr(item.createtime);
@@ -464,20 +436,11 @@
                     this.showname ? data.showname = this.showname : null;
 
 
-                    if (this.isShowGroup) {
-                        data.groupids = this.groupids;
-                    } else {
-                        data.groupcount = this.groupcount;
-                        data.devicecount = this.devicecount;
-                        data.usercount = this.usercount;
-                    }
 
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
                             var newData = Object.assign(editObject, data);
-                            newData.usedUserCount = newData.company ? newData.currusercount + "/" + data.usercount : "";
-                            newData.usedDeviceCount = newData.company ? newData.currdevicecount + "/" + data.devicecount : "";
-                            newData.usedGroupCount = newData.company ? newData.currgroupcount + "/" + data.groupcount : "";
+
                             me.tableData[me.editDeviceIndex] = newData;
                             utils.changeSingleItemData(me.recordsList, newData, 'username');
                             me.$Message.success(me.$t("message.changeSucc"));

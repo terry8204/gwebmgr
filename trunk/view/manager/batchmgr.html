@@ -14,32 +14,39 @@
             <i-col span="6" style="padding: 10px;">
                 {{$t("bgMgr.allAevcieList")}}
             </i-col>
-            <i-col span="14" style="padding: 10px;">
+            <i-col span="13" style="padding: 10px;">
                 {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}}
                 <i-button type="error" size="small" @click="tableData=[]" style="float: right;">{{$t("insure.removeAll")}}</i-button>
             </i-col>
-            <i-col span="4" style="padding: 10px;">
+            <i-col span="5" style="padding: 10px;">
                 {{$t("bgMgr.transferGroupList")}}
             </i-col>
         </Row>
         <Row>
             <i-col span="6" style="padding: 10px;">
-                <div style="line-height: 45px;">
+                <div class="icon_example">
+                    <span class="user_icon"></span><span>用户</span>
+                    <span class="group_icon"></span><span>分组</span>
+                    <span class="device_icon"></span><span>普通设备</span>
+                    <span class="video_icon"></span><span>视频设备</span>
+                </div>
+                <div style="height: 35px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
                 </div>
-                <!-- <Tree :data="searchDeviceList" show-checkbox :style="streeStyle" @on-check-change="onCheckChange"></Tree> -->
-                <div :style="streeStyle">
+                <div :style="treeStyle">
                     <ul id="ztree" class="ztree"></ul>
                 </div>
             </i-col>
-            <i-col span="14" style="padding: 10px;">
+            <i-col span="13" style="padding: 10px;">
                 <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight"></i-table>
             </i-col>
-            <i-col span="4" style="padding: 10px;">
-                <div :style="treeStyle">
+            <i-col span="5" style="padding: 10px;">
+                <div style="height: 35px;">
+                    <i-input v-model.trim="searchGroupVal" style="width: 100%;" icon="search"></i-input>
+                </div>
+                <div :style="streeStyle">
                     <ul id="gztree" class="ztree"></ul>
                 </div>
-                <!-- <Tree :data="treeGroupList" :style="treeStyle"></Tree> -->
             </i-col>
         </Row>
         <Row>
@@ -228,6 +235,7 @@
             errorTips: '',
             deviceid: '',
             searchDeviceVal: '',
+            searchGroupVal: '',
             searchDeviceList: [],
             treeGroupList: [],
             tableData: [],
@@ -636,15 +644,29 @@
                             var checkedNodes = me.zTreeObj.getCheckedNodes();
                             me.onCheckChange(checkedNodes);
                         }
-                    }
+                    },
+                    // view: {
+                    //     addDiyDom: function(treeId, treeNode) {
+                    //         var spaceWidth = 15;
+                    //         //获取每个li的结点下的a标签
+                    //         if (treeNode.username) {
+                    //             var aObj = $("#" + treeNode.tId + "_a");
+                    //             var spaceStr = $("<span class='blkSpaSpan' style='width:15px;float:right'>11</span>");
+                    //             aObj.append(spaceStr);
+                    //             spaceStr.click(function() {
+                    //                 alert(11);
+                    //             })
+                    //         }
+                    //     }
+                    // }
                 };
 
                 this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
 
-                // this.treeDeviceList = deepClone(this.searchDeviceList);
 
 
-                var gsetting = {
+
+                this.gsetting = {
                     check: {
                         enable: true,
                         chkStyle: "radio",
@@ -661,7 +683,6 @@
                     callback: {
                         onCheck: function() {
                             var nodes = me.gzTreeObj.getCheckedNodes();
-                            console.log(nodes);
                             if (nodes.length) {
                                 var node = nodes[0];
                                 var username = '';
@@ -684,9 +705,9 @@
                     }
                 };
 
-                this.gzTreeObj = $.fn.zTree.init($("#gztree"), gsetting, [this.castUsersTreeToDevicesTree(rootuser, false, true)]);
+                this.treeGroupList = [this.castUsersTreeToDevicesTree(rootuser, false, true)];
 
-                // this.treeGroupList = [this.castUsersTreeToDevicesTree(rootuser, false, true)];
+                this.gzTreeObj = $.fn.zTree.init($("#gztree"), this.gsetting, this.treeGroupList);
 
 
             },
@@ -992,18 +1013,58 @@
                 }
 
                 return childTemp;
-            }
+            },
+            variableDeepGroupSearch: function(treeDataFilter, searchWord, limitcount) {
+
+                var childTemp = [];
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var copyItem = null;
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+
+                        var isFound = false;
+                        if (item.name.indexOf(searchWord) != -1) {
+                            copyItem = item;
+                            copyItem.open = false;
+                            isFound = true;
+                        }
+                        if (isFound == false && item.children) {
+                            // item.expand = true;
+                            // childTemp.push(item);
+                            var rs = that.variableDeepGroupSearch(item.children, searchWord, limitcount);
+                            if (rs && rs.length > 0) {
+                                copyItem = deepClone(item);
+                                copyItem.children = rs;
+                                copyItem.open = true;
+                                isFound = true;
+                            }
+                        }
+
+                        if (isFound == true) {
+                            limitcount++;
+                            childTemp.push(copyItem);
+
+                            if (limitcount > 1000) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return childTemp;
+            },
         },
         computed: {
             treeStyle: function() {
                 return {
-                    'height': this.taleHeight + 'px',
+                    'height': (this.taleHeight - 60) + 'px',
                     'overflow-y': 'auto'
                 }
             },
             streeStyle: function() {
                 return {
-                    'height': (this.taleHeight - 45) + 'px',
+                    'height': (this.taleHeight - 35) + 'px',
                     'overflow-y': 'auto'
                 }
             },
@@ -1055,6 +1116,22 @@
                     this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, data);
                 }
 
+            },
+            searchGroupVal: function(newVal) {
+                if (newVal === '') {
+                    this.treeGroupList[0].open = true;
+                    this.gzTreeObj = $.fn.zTree.init($("#gztree"), this.gsetting, this.treeGroupList);
+                } else {
+                    var limitcount = 0;
+                    var data = this.variableDeepGroupSearch(this.treeGroupList, newVal, limitcount);
+                    if (data.length == 0) {
+                        data.push({
+                            name: isZh ? '无数据' : 'No data',
+                            nocheck: true
+                        })
+                    }
+                    this.gzTreeObj = $.fn.zTree.init($("#gztree"), this.gsetting, data);
+                }
             }
         },
         destroyed: function() {
