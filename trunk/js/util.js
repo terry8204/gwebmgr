@@ -1025,7 +1025,7 @@ var utils = {
         typeName = item.typename;
         return typeName;
     },
-    getUserInfoList: function() {
+    getUserInfoList: function(callback) {
         var url = myUrls.querySubUserNameList();
         utils.sendAjax(url, { username: userName }, function(resp) {
             if (resp.status == 0) {
@@ -1037,6 +1037,7 @@ var utils = {
                 }
             }
             userlists.push(userName);
+            callback && callback(userlists);
         });
     },
     debounce: function(func, wait, immediate) {
@@ -1104,7 +1105,12 @@ var utils = {
     },
     getzTreeDeviceIcon: function(device) {
         var url = myUrls.viewhost;
-        var isOnline = device.isOnline !== undefined ? device.isOnline : false;
+        var deviceLastPositions = vstore.state.deviceLastPositions;
+        var track = deviceLastPositions[device.deviceid];
+        var isOnline = false;
+        if (track) {
+            isOnline = this.getIsOnline(track)
+        }
         var isVedio = this.getIsVideoDevice(device.devicetype);
         if (isVedio) {
             if (isOnline) {

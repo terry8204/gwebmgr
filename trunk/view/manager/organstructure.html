@@ -4,20 +4,20 @@
     </div>
     <div class="full" style="position: relative;">
         <div style="position: absolute;top:0px;left:0px;right: 0px;height: 30px;">
-            <h3 class="h3-title">
-                {{$t("bgMgr.organStructure")}}
-                <div style="float: right;" v-show="selectType =='user'">
-                    <i-button size="small" type="primary" @click="addUser">添加用户</i-button>
-                    <i-button size="small" type="primary" @click="addGroup">添加分组</i-button>
-                </div>
-            </h3>
+            <h3 class="h3-title">{{$t("bgMgr.organStructure")}}</h3>
         </div>
         <div style="position: absolute;top:30px;left:0;right: 0px;bottom: 0px;border: 1px solid #e3e3e3;">
             <div style="position: absolute;top:0px;left:0;bottom: 0px;width: 300px;border-right: 1px solid #e3e3e3;">
-                <div style="padding: 5px;">
+                <div class="icon_example" style="margin-top:5px;text-align: center;">
+                    <span class="user_icon"></span><span>用户</span>
+                    <span class="group_icon"></span><span>分组</span>
+                    <span class="device_icon"></span><span>普通设备</span>
+                    <span class="video_icon"></span><span>视频设备</span>
+                </div>
+                <div style="padding: 0 5px 5px 5px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
                 </div>
-                <div style="position: absolute;top:35px;left:0;bottom: 0px;right: 0px;overflow-y: auto;">
+                <div style="position: absolute;top:65px;left:0;bottom: 0px;right: 0px;overflow-y: auto;">
                     <ul id="ztree" class="ztree"></ul>
                 </div>
             </div>
@@ -152,14 +152,14 @@
                             <i-input v-model.trim="groupName" :disabled="selectedGroupId==0"></i-input>
                         </i-col>
                     </Row>
-                    <Row style="margin: 10px 0">
-                        <i-col span="8" :offset="4">
-                            <i-button type="primary" style="width: 100%" @click="handleEditGroupName" :disabled="selectedGroupId==0">{{$t("bgMgr.submit")}}</i-button>
-                        </i-col>
-                    </Row>
-                    <Row style="margin: 10px 0" v-show="selectedGroupId==0">
+                    <Row style="margin: 10px 0 0 0" v-show="selectedGroupId==0">
                         <i-col span="8" :offset="4">
                             <Alert type="warning">{{$t("device.editDefaultGroupNameTip")}}</Alert>
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="8" :offset="4">
+                            <i-button type="primary" style="width: 100%" @click="handleEditGroupName" :disabled="selectedGroupId==0">{{$t("bgMgr.submit")}}</i-button>
                         </i-col>
                     </Row>
                 </div>
@@ -322,6 +322,28 @@
                         </Row>
                     </div>
                 </div>
+                <div style="position: absolute;bottom:0px;left:0px;right: 0px;height: 45px;border-top: 1px solid #e3e3e3;">
+                    <div style="width: 100%;height: 100%;line-height: 45px;display: flex;justify-content: center;align-items: center;" v-show="selectType =='user'">
+                        <i-button type="primary" @click="addUser" style="margin: 0 10px;">添加用户</i-button>
+                        <i-button type="primary" @click="addGroup" style="margin: 0 10px;">添加分组</i-button>
+                        <Poptip trigger="click" title="确定要删除吗?" confirm @on-ok="deleteUser">
+                            <i-button type="error" style="margin: 0 10px;">删除用户</i-button>
+                        </Poptip>
+                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">刷新架构</i-button>
+                    </div>
+                    <div style="width: 100%;height: 100%;line-height: 45px;display: flex;justify-content: center;align-items: center;" v-show="selectType =='group'">
+                        <Poptip trigger="click" title="确定要删除吗?" confirm @on-ok="deleteGroup">
+                            <i-button :disabled="selectedGroupId==0" type="error" style="margin: 0 10px;">删除分组</i-button>
+                        </Poptip>
+                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">刷新架构</i-button>
+                    </div>
+                    <div style="width: 100%;height: 100%;line-height: 45px;display: flex;justify-content: center;align-items: center;" v-show="selectType =='device'">
+                        <Poptip trigger="click" title="确定要删除吗?" confirm @on-ok="deleteDevice">
+                            <i-button type="error" style="margin: 0 10px;">删除设备</i-button>
+                        </Poptip>
+                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">刷新架构</i-button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -334,7 +356,7 @@
             loading: false,
             userType: localStorage.getItem('userType'),
             searchDeviceVal: '',
-            selectType: 'group',
+            selectType: null,
             groupName: '',
             selectedGroupId: null,
             selectedUserName: null,
@@ -400,13 +422,101 @@
             },
             addGroup: function() {
                 this.isEditGroup = false;
+                this.selectType = 'group';
+                this.groupName = '';
+                this.selectedGroupId = -11;
+                this.createrToUser = this.selectedUserName;
+            },
+            deleteUser: function() {
+                var me = this;
+                var url = myUrls.delUser();
+                utils.sendAjax(url, {
+                    usernames: [this.selectedUserName]
+                }, function(resp) {
+                    if (resp.status == 0) {
+                        rootuser = null;
+                        isNeedRefresh = true;
+                        me.$Message.success(me.$t("message.deleteSucc"));
+                        me.selectType = null;
+                        me.removeNodes();
+                        utils.getUserInfoList(function(userlists) {
+                            me.userlists = userlists;
+                        });
+                    } else if (resp.status == 1) {
+                        me.$Message.error(me.$t("message.deleteUserTips") + resp.count);
+                    } else {
+                        me.$Message.error(resp.cause);
+                    }
+                });
+            },
+            deleteGroup: function() {
+                var me = this;
+                var url = myUrls.deleteGroup();
+                var data = {
+                    groupid: this.selectedGroupId,
+                    username: this.selectedUserName,
+                };
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        rootuser = null;
+                        isNeedRefresh = true;
+                        me.$Message.success(me.$t("message.deleteSucc"));
+                        me.selectType = null;
+                        me.removeNodes();
+                    } else {
+                        me.$Message.error(resp.cause);
+                    }
+                });
+            },
+            deleteDevice: function() {
+                var me = this;
+                var url = myUrls.deleteDevice();
+                var deviceid = this.selectedDeviceid;
+                var data = {
+                    deviceid: deviceid
+                };
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        rootuser = null;
+                        isNeedRefresh = true;
+                        if (deviceid == globalDeviceId) {
+                            globalDeviceId = "";
+                            vRoot.$store.commit('currentDeviceId', "");
+                        }
+                        me.selectType = null;
+                        me.$Message.error(me.$t("message.deleteSucc"));
+                        me.removeNodes();
+                    } else {
+                        me.$Message.error(me.$t("message.deleteFail"));
+                    }
+                });
+            },
+            removeNodes: function() {
+                var nodes = this.zTreeObj.getCheckedNodes();
+                if (nodes && nodes.length) {
+                    this.zTreeObj.removeNode(nodes[0]);
+                    this.zTreeObj.refresh();
+                }
             },
             handleEditUser: function() {
                 var me = this;
-                var url = myUrls.editUser();
+                var isEditUser = this.isEditUser;
                 var userType = this.usertype;
+
+                if (userType == "") {
+                    this.$Message.error('请现在用户类型');
+                    return;
+                }
+
+                if (isEditUser) {
+                    var url = myUrls.editUser();
+                } else {
+                    var url = myUrls.addUser();
+                }
+
                 var data = {
-                    username: this.createrToUser,
+                    creater: this.createrToUser,
+                    username: this.username,
                     usertype: userType,
                 }
 
@@ -422,11 +532,30 @@
 
                 utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
-                        me.$Message.success(me.$t("message.changeSucc"));
+                        if (!isEditUser) {
+
+                            me.zTreeObj.addNodes(me.parentNode, {
+                                name: data.username,
+                                username: data.username,
+                                nocheck: false,
+                                icon: myUrls.viewhost + "zTreeStyle/img/diy/account.svg",
+                                pId: me.parentNode.id,
+                                children: [],
+                            });
+                        } else {
+                            console.log(me.oldCreater, data.creater);
+                            if (me.oldCreater !== data.creater) {
+                                me.refreshzTree();
+                            }
+                        }
+
+                        me.$Message.success(me.$t(isEditUser ? "message.changeSucc" : "message.addSucc"));
                     } else {
-                        me.$Message.error(me.$t("message.changeFail"));
+
+                        me.$Message.error(me.$t(isEditUser ? "message.changeFail" : "message.addFail"));
                     }
                 });
+
             },
             handleEditDevice: function() {
                 var me = this;
@@ -435,6 +564,7 @@
                     me.$Message.error(me.$t("message.plSelectTime"));
                     return;
                 }
+
                 var data = {
                     deviceid: this.deviceid,
                     devicetype: this.devicetype,
@@ -487,7 +617,14 @@
 
                 utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
+                        me.parentNode.name = data.devicename; // 修改name属性
+                        me.parentNode.devicename = data.devicename; // 修改name属性
+                        me.zTreeObj.updateNode(me.parentNode); // 调用updateNode修改属性，一定要加这一句，不然reAsyncChildNodes没有任何反应
+                        me.zTreeObj.reAsyncChildNodes(me.parentNode, 'refresh', false);
                         me.$Message.success(me.$t("message.changeSucc"));
+                        if (me.oldCreater !== data.creater) {
+                            me.refreshzTree();
+                        }
                     } else if (resp.status = -1) {
                         me.$Message.error(me.$t("message.changeFail"));
                     }
@@ -503,7 +640,6 @@
                 var me = this;
                 var list = [];
                 if (resp.status == 0 && resp.userlists != null) {
-
                     resp.userlists.forEach(function(item) {
                         if (item.usertype < 4) {
                             list.push({
@@ -524,32 +660,57 @@
                     this.$Message.error(this.$t("message.fillGroupNameTip"));
                     return;
                 };
-                var url = myUrls.editGroup(),
-                    me = this;
-                var data = {
-                    groupid: this.selectedGroupId,
-                    groupname: this.groupName,
-                };
-                utils.sendAjax(url, data, function(resp) {
-                    if (resp.status == 0) {
-                        me.$Message.success(me.$t("message.changeSucc"));
-                    } else {
-                        me.$Message.error(resp.cause);
-                    }
-                });
+                me = this;
+                if (this.isEditGroup) {
+                    var url = myUrls.editGroup();
+
+                    var data = {
+                        groupid: this.selectedGroupId,
+                        groupname: this.groupName,
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            me.parentNode.name = data.groupname + '(' + me.parentNode.children.length + ')'; // 修改name属性
+                            me.parentNode.groupname = data.groupname; // 修改name属性
+                            me.zTreeObj.updateNode(me.parentNode); // 调用updateNode修改属性，一定要加这一句，不然reAsyncChildNodes没有任何反应
+                            me.zTreeObj.reAsyncChildNodes(me.parentNode, 'refresh', false);
+                            me.$Message.success(me.$t("message.changeSucc"));
+                        } else {
+                            me.$Message.error(resp.cause);
+                        }
+                    });
+                } else {
+                    var url = myUrls.addGroup();
+                    var data = {
+                        groupname: this.groupName,
+                        creater: this.createrToUser
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            rootuser = null;
+                            me.zTreeObj.addNodes(me.parentNode, {
+                                name: me.groupName,
+                                groupid: resp.groupid,
+                                groupname: me.groupName,
+                                pId: me.parentNode.id,
+                                icon: myUrls.viewhost + "zTreeStyle/img/diy/group.svg",
+                                children: [],
+                            });
+                            me.$Message.success(me.$t("message.addSucc"));
+                        } else {
+                            me.$Message.error(resp.cause);
+                        }
+                    });
+                }
             },
             getDeviceList: function(selectedDeviceid) {
                 var me = this;
-                var url = myUrls.queryDevices();
+                var url = myUrls.queryDeviceById();
                 utils.sendAjax(url, {
-                    count: 10,
-                    keyword: selectedDeviceid,
-                    offset: 0,
-                    all: false,
-                    expiredays: 0
+                    deviceid: selectedDeviceid,
                 }, function(resp) {
-                    if (resp.status == 0 && resp.devices != null) {
-                        editObject = resp.devices[0];
+                    if (resp.status == 0 && resp.device != null) {
+                        editObject = resp.device;
                         me.setDeviceData();
                     }
                 });
@@ -587,6 +748,7 @@
                 me.teltype = String(editObject.teltype);
                 me.allowedit = String(editObject.allowedit);
                 me.createrToUser = editObject.creater;
+                this.oldCreater = me.createrToUser;
             },
             selectedCmd: function(item) {
                 var me = this;
@@ -699,6 +861,7 @@
                         onCheck: function(id, ztree) {
                             var nodes = me.zTreeObj.getCheckedNodes();
                             if (nodes.length) {
+                                me.parentNode = nodes[0];
                                 var node = nodes[0];
                                 var username = '';
                                 var groupid = 0;
@@ -708,6 +871,7 @@
                                     me.queryUserDetail(username);
                                     var parentNode = node.getParentNode();
                                     me.createrToUser = parentNode ? parentNode.username : userName;
+                                    me.oldCreater = me.createrToUser;
                                     me.isEditUser = true;
                                 } else if (node.groupid !== undefined) {
                                     var parentNode = node.getParentNode();
@@ -715,20 +879,25 @@
                                     groupid = node.groupid;
                                     me.groupName = node.groupname;
                                     me.selectType = 'group';
-                                    me.isEditGroup = false;
+                                    me.isEditGroup = true;
                                 } else {
                                     me.selectType = 'device';
                                     var parentNode = node.getParentNode();
                                     var pparentNode = parentNode.getParentNode();
                                     username = pparentNode.username;
                                     groupid = parentNode.groupid;
+                                    me.selectedDeviceid = node.deviceid;
                                     me.getDeviceList(node.deviceid);
                                 }
                                 me.selectedGroupId = groupid;
                                 me.selectedUserName = username;
                             } else {
-                                me.selectedGroupId = null;
-                                me.selectedUserName = null;
+                                if (me.parentNode) {
+                                    me.zTreeObj.checkNode(me.parentNode, true, true)
+                                }
+                                // me.selectType = null;
+                                // me.selectedGroupId = null;
+                                // me.selectedUserName = null;
                             }
                         }
                     },
@@ -759,10 +928,11 @@
                             groupObj.children = [];
                             groupObj.name = group.groupname + '(' + group.devices.length + ')';
                             group.devices.forEach(function(device) {
+                                var deviceinfo = vstore.state.deviceInfos[device.deviceid];
                                 groupObj.children.push({
                                     deviceid: device.deviceid,
                                     name: device.devicename,
-                                    icon: myUrls.viewhost + "zTreeStyle/img/diy/car.svg"
+                                    icon: utils.getzTreeDeviceIcon(deviceinfo)
                                 });
                                 utils.deviceInfos[device.deviceid] = {
                                     deviceid: device.deviceid,
@@ -919,6 +1089,10 @@
                 this.cardname = userInfo.cardname;
                 this.companyaddr = userInfo.companyaddr;
                 this.showname = userInfo.showname;
+            },
+            refreshzTree: function() {
+                this.selectType = null;
+                this.queryDevicesTree();
             }
         },
         computed: {

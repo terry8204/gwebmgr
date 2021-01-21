@@ -31,6 +31,7 @@ vstore = new Vuex.Store({
         isShowCompany: isShowCompany === 'true' ? true : false,
         userType: localStorage.getItem('userType'),
         deviceInfos: {},
+        deviceLastPositions: {},
         userTypeDescrList: [
             { "name": isZh ? "系统管理员" : 'Admin', "type": 0 },
             { "name": isZh ? "一级管理员" : 'Supervisor', "type": 1 },

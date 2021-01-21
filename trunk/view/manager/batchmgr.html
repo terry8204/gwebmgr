@@ -752,10 +752,11 @@
                             groupObj.children = [];
                             groupObj.name = group.groupname + '(' + group.devices.length + ')';
                             group.devices.forEach(function(device) {
+                                var deviceinfo = vstore.state.deviceInfos[device.deviceid];
                                 groupObj.children.push({
                                     deviceid: device.deviceid,
                                     name: device.devicename,
-                                    icon: myUrls.viewhost + "zTreeStyle/img/diy/car.svg"
+                                    icon: utils.getzTreeDeviceIcon(deviceinfo)
                                 });
                                 utils.deviceInfos[device.deviceid] = {
                                     deviceid: device.deviceid,

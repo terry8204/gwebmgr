@@ -3927,6 +3927,7 @@ var monitor = {
     created: function() {
         this.currentPlayingIndex = 0;
         this.positionLastrecords = {}; // 全部设备最后一次位置记录
+        vstore.state.deviceLastPositions = this.positionLastrecords;
         this.mapAllMarkers = {}; // 全部设备的Marker集合
     },
     activated: function() {
