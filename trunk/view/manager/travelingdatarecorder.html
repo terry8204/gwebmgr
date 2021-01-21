@@ -27,13 +27,18 @@
         </div>
         <div style="display: flex;flex-direction: row;position: absolute;left: 0;right: 0;bottom: 0;top: 40px;">
             <div style="padding: 0 10px;width: 320px;">
-                <div style="line-height: 45px;">
+                <div class="icon_example" style="text-align: center;">
+                    <span class="user_icon"></span><span>用户</span>
+                    <span class="group_icon"></span><span>分组</span>
+                    <span class="device_icon"></span><span>普通设备</span>
+                    <span class="video_icon"></span><span>视频设备</span>
+                </div>
+                <div style="line-height: 35px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
                 </div>
                 <div :style="streeStyle">
                     <ul id="ztree" class="ztree"></ul>
                 </div>
-                <!-- <Tree :data="searchDeviceList" show-checkbox :style="streeStyle" @on-check-change="onCheckChange"></Tree> -->
             </div>
             <div style="padding: 0 10px;width: 500px;flex: 1;">
                 <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight" highlight-row @on-current-change="onCurrentChange"></i-table>
@@ -835,7 +840,6 @@
                 });
             },
             setTreeDataList: function(rootuser) {
-                // this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
                 this.treeDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
                 var me = this;
                 this.setting = {
@@ -897,10 +901,11 @@
                             groupObj.children = [];
                             groupObj.name = group.groupname + '(' + group.devices.length + ')';
                             group.devices.forEach(function(device) {
+                                var deviceinfo = vstore.state.deviceInfos[device.deviceid];
                                 groupObj.children.push({
                                     deviceid: device.deviceid,
                                     name: device.devicename,
-                                    icon: myUrls.viewhost + "zTreeStyle/img/diy/car.svg"
+                                    icon: utils.getzTreeDeviceIcon(deviceinfo)
                                 });
                                 utils.deviceInfos[device.deviceid] = {
                                     deviceid: device.deviceid,
@@ -1057,7 +1062,7 @@
         computed: {
             streeStyle: function() {
                 return {
-                    'height': (this.taleHeight - 45) + 'px',
+                    'height': (this.taleHeight - 65) + 'px',
                     'overflow-y': 'auto'
                 }
             },

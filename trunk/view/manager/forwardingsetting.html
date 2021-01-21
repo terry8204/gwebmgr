@@ -8,45 +8,56 @@
             <div>{{$t("bgMgr.sending")}}:{{idx}}/{{tableData.length}}</div>
         </Spin>
     </div>
-    <div class="full">
+    <div class="full" style="position: relative;">
         <h3 class="h3-title">转发设置</h3>
-        <Row>
-            <i-col span="5" style="padding: 10px;">
-                {{$t("bgMgr.allAevcieList")}}
-            </i-col>
-            <i-col span="19" style="padding: 10px;">
+        <div style="position: absolute;top: 28px;left: 0;right: 0;height: 35px;">
+            <div style="position: absolute;left: 0;top: 0;bottom: 0;width: 300px;line-height: 35px;">{{$t("bgMgr.allAevcieList")}}</div>
+            <div style="position: absolute;right: 0;top: 0;bottom: 0;left: 310px;line-height: 35px;">
                 {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}}
-                <i-button type="error" size="small" @click="tableData=[]" style="float: right;">{{$t("insure.removeAll")}}</i-button>
-            </i-col>
-        </Row>
-        <Row>
-            <i-col span="5" style="padding: 10px;">
-                <div style="line-height: 45px;">
+                <i-button type="error" size="small" @click="tableData=[]" style="float: right;margin-top: 5px;">{{$t("insure.removeAll")}}</i-button>
+            </div>
+        </div>
+
+        <div style="position: absolute;top: 63px;left: 0;right: 0;bottom: 45px;">
+            <div style="position: absolute;left: 0;top: 0;bottom: 0;width: 300px;">
+                <div class="icon_example" style="text-align: center;">
+                    <span class="user_icon"></span><span>用户</span>
+                    <span class="group_icon"></span><span>分组</span>
+                    <span class="device_icon"></span><span>普通设备</span>
+                    <span class="video_icon"></span><span>视频设备</span>
+                </div>
+                <div style="height: 35px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
                 </div>
-                <Tree :data="searchDeviceList" show-checkbox :style="streeStyle" @on-check-change="onCheckChange"></Tree>
-            </i-col>
-            <i-col span="19" style="padding: 10px;">
+                <div :style="streeStyle">
+                    <ul id="ztree" class="ztree"></ul>
+                </div>
+            </div>
+            <div style="position: absolute;right: 0;top: 0;bottom: 0;left: 310px;">
                 <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight"></i-table>
-            </i-col>
-        </Row>
-        <Row style="border: 1px solid #DCDEE2;padding: 5px;">
-            <i-col span="3" offset="5">
-                <i-select v-model="filterforwardtype">
-                    <i-option value="all">全部已转发设备</i-option>
-                    <i-option v-for="(item,idx) in forwards" :value="item.forwardid" :key="item.forwardid">
-                        {{item.servername}}
-                    </i-option>
-                </i-select>
-            </i-col>
-            <i-col span="2">
-                <i-button @click="handleFilterProtocolDevice" style="margin: 0 10px;width: 100%;">查询</i-button>
-            </i-col>
-            <i-col span="8" style="padding-left: 10px;">
-                <i-button @click="showBatchModal(1)" style="margin-left:10px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
-                <i-button @click="showBatchModal(2)" style="margin-left:10px;" type="error">设置不转发</i-button>
-            </i-col>
-        </Row>
+            </div>
+        </div>
+
+        <div style="position: absolute;left: 0;right: 0;bottom: 0px; height: 45px;padding: 5px;">
+            <Row style="border: 1px solid #DCDEE2;padding: 5px;">
+                <i-col span="3" offset="5">
+                    <i-select v-model="filterforwardtype">
+                        <i-option value="all">全部已转发设备</i-option>
+                        <i-option v-for="(item,idx) in forwards" :value="item.forwardid" :key="item.forwardid">
+                            {{item.servername}}
+                        </i-option>
+                    </i-select>
+                </i-col>
+                <i-col span="2">
+                    <i-button @click="handleFilterProtocolDevice" style="margin: 0 10px;width: 100%;">查询</i-button>
+                </i-col>
+                <i-col span="8" style="padding-left: 10px;">
+                    <i-button @click="showBatchModal(1)" style="margin-left:10px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
+                    <i-button @click="showBatchModal(2)" style="margin-left:10px;" type="error">设置不转发</i-button>
+                </i-col>
+            </Row>
+        </div>
+
         <Modal v-model="batchModal" width="900" :title="$t('bgMgr.batchModification')">
             <div v-if="showBatchModalType == 1" style=" overflow: hidden;height: 366px;">
                 <div style="float: left; overflow-y: auto;width: 258px;height: 366px;">
@@ -594,8 +605,29 @@
                 });
             },
             setTreeDataList: function(rootuser) {
-                this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
-                this.treeDeviceList = deepClone(this.searchDeviceList);
+                this.treeDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
+                var me = this;
+                this.setting = {
+                    check: {
+                        enable: true,
+                        chkStyle: "checkbox",
+                        chkboxType: {
+                            "Y": "ps",
+                            "N": "ps"
+                        }
+                    },
+                    callback: {
+                        onCheck: function(id, ztree) {
+                            var checkedNodes = me.zTreeObj.getCheckedNodes();
+                            me.onCheckChange(checkedNodes);
+                        }
+                    }
+                };
+                this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
+
+
+                // this.searchDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
+                // this.treeDeviceList = deepClone(this.searchDeviceList);
             },
             filtered: function(textStr) {
                 function uniq(array) {
@@ -621,22 +653,28 @@
                 if (groups != null) {
                     for (var i = 0; i < groups.length; ++i) {
                         var group = groups[i];
-
                         var groupObj = {
                             groupid: group.groupid,
-                            title: group.groupname,
+                            name: group.groupname,
+                            icon: myUrls.viewhost + "zTreeStyle/img/diy/group.svg"
+                        }
+                        if (isNeedDevice) {
+                            groupObj.render = utils.renderGroup;
 
+                        } else {
+                            groupObj.totalCount = group.devices.length;
+                            groupObj.name = group.groupname + '(' + group.devices.length + ')';
                         }
                         if (isNeedDevice && group.devices) {
                             groupObj.totalCount = group.devices.length;
-                            groupObj.title = group.groupname + '(' + group.devices.length + ')';
-                            groupObj.render = utils.renderGroup;
                             groupObj.children = [];
+                            groupObj.name = group.groupname + '(' + group.devices.length + ')';
                             group.devices.forEach(function(device) {
+                                var deviceinfo = vstore.state.deviceInfos[device.deviceid];
                                 groupObj.children.push({
                                     deviceid: device.deviceid,
-                                    title: device.devicename,
-                                    render: utils.renderDev
+                                    name: device.devicename,
+                                    icon: utils.getzTreeDeviceIcon(deviceinfo)
                                 });
                                 utils.deviceInfos[device.deviceid] = {
                                     deviceid: device.deviceid,
@@ -654,70 +692,17 @@
 
                 if (groupsList.length == 0) {
                     groupsList.push({
-                        title: 'Default(0)',
+                        name: 'Default(0)',
                         groupid: 0,
                         totalCount: 0,
-                        render: function(h, params) {
-                            var data = params.data;
-                            var children = [];
-                            if (isNeedRadio) {
-                                children = [
-                                    h('span', [
-                                        h('Radio', {
-                                            props: {
-                                                value: (me.selectedUserName == username && me.selectedGroupId == group.groupid)
-                                            },
-                                            style: {
-                                                marginRight: '4px'
-                                            }
-                                        }),
-                                        h('Icon', {
-                                            props: {
-                                                type: 'ios-folder-open'
-                                            },
-                                            style: {
-                                                marginRight: '8px'
-                                            }
-                                        }),
-                                        h('span', data.title)
-                                    ])
-                                ]
-                            } else {
-                                children = [
-                                    h('span', [
-                                        h('Icon', {
-                                            props: {
-                                                type: 'ios-folder-open'
-                                            },
-                                            style: {
-                                                marginRight: '8px'
-                                            }
-                                        }),
-                                        h('span', data.title)
-                                    ])
-                                ]
-                            }
-                            return h('span', {
-                                on: {
-                                    'click': function() {
-                                        me.selectedUserName = username;
-                                        me.selectedGroupId = 0;
-                                        me.selectedGroupName = 'Default';
-                                    }
-                                },
-                                style: {
-                                    cursor: 'pointer',
-                                    color: (me.selectedUserName == username && me.selectedGroupId == 0) ? '#2D8CF0' : '#000'
-                                }
-                            }, children)
-                        }
+                        children: [],
+                        icon: myUrls.viewhost + "zTreeStyle/img/diy/group.svg"
                     });
                 }
                 return groupsList;
 
             },
             doCastUsersTreeToDevicesTree: function(usersTrees, isNeedDevice, isNeedRadio) {
-
                 var devicesTreeRecord = [];
                 if (usersTrees != null && usersTrees.length > 0) {
                     for (var i = 0; i < usersTrees.length; ++i) {
@@ -725,15 +710,16 @@
                         var username = usersTree.username;
                         var subusers = usersTree.subusers;
                         var currentsubDevicesTreeRecord = {
-                            render: utils.renderPerson,
+                            name: username,
+                            username: username,
+                            nocheck: isNeedRadio,
+                            icon: myUrls.viewhost + "zTreeStyle/img/diy/account.svg"
                         };
-
                         var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username, isNeedRadio);
                         if (username != null && subusers != null && subusers.length > 0) {
                             var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
                             subDevicesTreeRecord = deviceListGroups.concat(subDevicesTreeRecord);
                             currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
-
                         } else {
                             currentsubDevicesTreeRecord.children = deviceListGroups;
 
@@ -745,29 +731,27 @@
                             }
                         }
                         currentsubDevicesTreeRecord.totalCount = totalCount;
-                        currentsubDevicesTreeRecord.title = username + "(" + totalCount + ")";
+                        currentsubDevicesTreeRecord.name = username + "(" + totalCount + ")";
                         devicesTreeRecord.push(currentsubDevicesTreeRecord);
                     }
                 }
                 return devicesTreeRecord;
             },
             castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice, isNeedRadio) {
-
                 var iViewTree = {
-                    render: utils.renderPerson,
-                    expand: true,
+                    open: true,
+                    nocheck: isNeedRadio,
+                    icon: myUrls.viewhost + "zTreeStyle/img/diy/1_open.png"
                 };
                 if (devicesTreeRecord != null) {
                     var username = devicesTreeRecord.username;
                     var subusers = devicesTreeRecord.subusers;
-
+                    iViewTree.name = username;
+                    iViewTree.username = username;
                     var deviceListGroups = this.getDeviceListGroups(devicesTreeRecord.groups, isNeedDevice, username, isNeedRadio);
                     if (username != null && subusers != null && subusers.length > 0) {
-
                         var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers, isNeedDevice, isNeedRadio);
-
                         iViewTree.children = deviceListGroups.concat(subDevicesTreeRecord);
-
                     } else {
                         iViewTree.children = deviceListGroups;
                     }
@@ -777,13 +761,13 @@
                             totalCount += iViewTree.children[i].totalCount;
                         }
                     }
-                    iViewTree.title = username + "(" + totalCount + ")";
+                    iViewTree.name = username + "(" + totalCount + ")";
                 }
                 return iViewTree;
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.taleHeight = wHeight - 204;
+                this.taleHeight = wHeight - 194;
             },
             queryForwardProtocols: function() {
                 var me = this;
@@ -834,45 +818,7 @@
                 return res;
             },
 
-            variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
 
-                var childTemp = [];
-                var that = this;
-                for (var i = 0; i < treeDataFilter.length; i++) {
-                    var copyItem = null;
-                    var item = treeDataFilter[i];
-                    if (item != null) {
-
-                        var isFound = false;
-                        if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
-                            copyItem = item;
-                            copyItem.expand = false;
-                            isFound = true;
-                        }
-                        if (isFound == false && item.children && item.children.length > 0) {
-                            // item.expand = true;
-                            // childTemp.push(item);
-                            var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
-                            if (rs && rs.length > 0) {
-                                copyItem = deepClone(item);
-                                copyItem.children = rs;
-                                copyItem.expand = true;
-                                isFound = true;
-                            }
-                        }
-
-                        if (isFound == true) {
-                            limitcount++;
-                            childTemp.push(copyItem);
-                            if (limitcount > 10) {
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                return childTemp;
-            },
             queryGroupInfos: function(callback) {
                 var me = this;
                 me.allGroups = {};
@@ -891,6 +837,45 @@
                 }
                 return groupName;
             },
+            variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
+                var childTemp = [];
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var copyItem = null;
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+
+                        var isFound = false;
+                        if (item.name.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                            copyItem = item;
+                            copyItem.open = false;
+                            isFound = true;
+                        }
+                        if (isFound == false && item.children && item.children.length > 0) {
+                            // item.expand = true;
+                            // childTemp.push(item);
+                            var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
+                            if (rs && rs.length > 0) {
+                                copyItem = deepClone(item);
+                                copyItem.children = rs;
+                                copyItem.open = true;
+                                isFound = true;
+                            }
+                        }
+
+                        if (isFound == true) {
+                            limitcount++;
+                            childTemp.push(copyItem);
+
+                            if (limitcount > 1000) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return childTemp;
+            }
         },
         computed: {
             fontColor: function() {
@@ -898,7 +883,7 @@
             },
             streeStyle: function() {
                 return {
-                    'height': (this.taleHeight - 45) + 'px',
+                    'height': (this.taleHeight - 60) + 'px',
                     'overflow-y': 'auto'
                 }
             },
@@ -913,10 +898,19 @@
         watch: {
             searchDeviceVal: function(newVal) {
                 if (newVal === '') {
-                    this.searchDeviceList = deepClone(this.treeDeviceList);
+                    this.treeDeviceList[0].open = true;
+                    this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
                 } else {
                     var limitcount = 0;
-                    this.searchDeviceList = this.variableDeepSearch(deepClone(this.treeDeviceList), newVal, limitcount);
+                    var data = this.variableDeepSearch(this.treeDeviceList, newVal, limitcount);
+                    if (data.length == 0) {
+                        data.push({
+                            name: isZh ? '无数据' : 'No data',
+                            nocheck: true
+                        })
+                    }
+                    this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, data);
+
                 }
             }
         },

@@ -18,12 +18,12 @@ var bgManager = {
                     name: 'userMar',
                     icon: 'md-person',
                     children: [
-                        { title: me.$t("bgMgr.addUser"), name: 'addUser', icon: 'ios-person-add' },
-                        { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search' },
+                        { title: me.$t("bgMgr.organStructure"), name: 'organStructure', icon: 'ios-clipboard-outline' },
+                        // { title: me.$t("bgMgr.addUser"), name: 'addUser', icon: 'ios-person-add' },
+                        // { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search' },
                         { title: me.$t("user.employees"), name: 'employees', icon: 'md-person-add' },
                         { title: me.$t("bgMgr.onlineUsers"), name: 'onlineUsers', icon: 'ios-analytics' },
                         { title: me.$t("header.loginRecords"), name: 'loginRecords', icon: 'ios-clipboard-outline' },
-                        { title: me.$t("bgMgr.organStructure"), name: 'organStructure', icon: 'ios-clipboard-outline' },
                     ]
                 },
                 {
