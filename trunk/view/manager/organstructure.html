@@ -29,7 +29,7 @@
                                 <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
                             <i-col span="12">
                                 <div class="search-wrapper">
-                                    <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                                    <i-input v-model.trim="createrToUser" :disabled="disabledInput" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                                     <transition name="fade">
                                         <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
                                             <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
@@ -55,7 +55,7 @@
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp; {{$t("user.showname")}}: &nbsp;</i-col>
                             <i-col span="12">
-                                <i-input v-model.trim="showname"></i-input>
+                                <i-input v-model.trim="showname" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
 
@@ -63,7 +63,7 @@
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;{{$t("user.userType")}} : &nbsp;</i-col>
                             <i-col span="12">
-                                <i-select v-model="usertype">
+                                <i-select v-model="usertype" :disabled="disabledInput">
                                     <i-option v-for="item in userTypeList" :value="item.type" :key="item.type">{{ item.name }}</i-option>
                                 </i-select>
                             </i-col>
@@ -75,7 +75,7 @@
                                 &nbsp;{{$t("user.corporateName")}} : &nbsp;
                             </i-col>
                             <i-col span="12">
-                                <i-input v-model.trim="companyname"></i-input>
+                                <i-input v-model.trim="companyname" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
 
@@ -84,7 +84,7 @@
                                 &nbsp;{{$t("user.name")}} : &nbsp;
                             </i-col>
                             <i-col span="12">
-                                <i-input v-model.trim="cardname"></i-input>
+                                <i-input v-model.trim="cardname" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
 
@@ -93,7 +93,7 @@
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;{{$t("user.phone")}} : &nbsp;</i-col>
                             <i-col span="12">
-                                <i-input v-model.trim="phone"></i-input>
+                                <i-input v-model.trim="phone" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
 
@@ -102,7 +102,7 @@
                                 &nbsp;{{$t("user.address")}} : &nbsp;
                             </i-col>
                             <i-col span="12">
-                                <i-input v-model.trim="companyaddr"></i-input>
+                                <i-input v-model.trim="companyaddr" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
 
@@ -110,28 +110,28 @@
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;QQ : &nbsp;</i-col>
                             <i-col span="12">
-                                <i-input v-model.trim="qq"></i-input>
+                                <i-input v-model.trim="qq" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;{{$t("user.weChat")}} : &nbsp;</i-col>
                             <i-col span="12">
-                                <i-input v-model.trim="wechat"></i-input>
+                                <i-input v-model.trim="wechat" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;{{$t("header.email")}} : &nbsp;</i-col>
                             <i-col span="12">
-                                <i-input v-model.trim="email"></i-input>
+                                <i-input v-model.trim="email" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
 
                         <Row style="margin: 10px 0">
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.moreLanding")}} : &nbsp;</i-col>
                             <i-col span="12">
-                                <i-select v-model="multilogin">
+                                <i-select v-model="multilogin" :disabled="disabledInput">
                                     <i-option value="1">{{$t("header.yes")}}</i-option>
                                     <i-option value="0">{{$t("header.no")}}</i-option>
                                 </i-select>
@@ -140,7 +140,7 @@
 
                         <Row style="margin: 10px 0">
                             <i-col span="12" :offset="4">
-                                <i-button style="width:100%" @click="handleEditUser">{{$t("bgMgr.submit")}}</i-button>
+                                <i-button style="width:100%" @click="handleEditUser" :disabled="disabledInput">{{$t("bgMgr.submit")}}</i-button>
                             </i-col>
                         </Row>
                     </div>
@@ -543,7 +543,6 @@
                                 children: [],
                             });
                         } else {
-                            console.log(me.oldCreater, data.creater);
                             if (me.oldCreater !== data.creater) {
                                 me.refreshzTree();
                             }
@@ -765,7 +764,6 @@
                 }, function(resp) {
                     me.usertype = resp.usertype;
                     me.setUserInfo(resp);
-                    console.log(resp);
                 })
             },
             queryDevicesTree: function() {
@@ -903,6 +901,15 @@
                     },
                 };
                 this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
+
+                me.selectedRootNode();
+
+            },
+            selectedRootNode: function() {
+                this.selectType = 'user';
+                this.selectedUserName = userName;
+                this.parentNode = this.zTreeObj.getNodes()[0];
+                this.queryUserDetail(userName);
             },
             getDeviceListGroups: function(groups, isNeedDevice, username, isNeedRadio) {
                 var groupsList = [],
@@ -999,7 +1006,8 @@
             castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice, isNeedRadio) {
                 var iViewTree = {
                     open: true,
-                    nocheck: isNeedRadio,
+                    nocheck: false,
+                    checked: true,
                     icon: myUrls.viewhost + "zTreeStyle/img/diy/1_open.png"
                 };
                 if (devicesTreeRecord != null) {
@@ -1096,6 +1104,9 @@
             }
         },
         computed: {
+            disabledInput: function() {
+                return (userName == this.selectedUserName) && this.isEditUser;
+            },
             disabledOverdueTime: function() {
                 return this.userType > 4;
             },

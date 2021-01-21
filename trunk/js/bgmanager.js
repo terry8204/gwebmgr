@@ -26,15 +26,15 @@ var bgManager = {
                         { title: me.$t("header.loginRecords"), name: 'loginRecords', icon: 'ios-clipboard-outline' },
                     ]
                 },
-                {
-                    title: me.$t("bgMgr.groupMgr"),
-                    name: 'groupMar',
-                    icon: 'ios-albums',
-                    children: [
-                        { title: me.$t("bgMgr.addGroup"), name: 'addGroup', icon: 'ios-photos-outline' },
-                        { title: me.$t("bgMgr.queryGroup"), name: 'queryGroup', icon: 'md-search' }
-                    ]
-                },
+                // {
+                //     title: me.$t("bgMgr.groupMgr"),
+                //     name: 'groupMar',
+                //     icon: 'ios-albums',
+                //     children: [
+                //         { title: me.$t("bgMgr.addGroup"), name: 'addGroup', icon: 'ios-photos-outline' },
+                //         { title: me.$t("bgMgr.queryGroup"), name: 'queryGroup', icon: 'md-search' }
+                //     ]
+                // },
                 {
                     title: me.$t("bgMgr.devMgr"),
                     name: 'deviceMar',
