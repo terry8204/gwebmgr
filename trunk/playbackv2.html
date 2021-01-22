@@ -729,6 +729,7 @@
                     totalOil: 'Total oil',
                     oil1: "oil1",
                     oil2: "oil2",
+                    weight: 'weight',
                     status: "status",
                     oil: "oil",
                     speed: 'Speed',
@@ -795,6 +796,7 @@
                     totalOil: '总油液',
                     oil1: "油液1",
                     oil2: "油液2",
+                    weight: "载重",
                     status: "状态码",
                     oil: "油液",
                     speed: '速度',
@@ -1223,6 +1225,7 @@
                         this.oil1 = [];
                         this.oil2 = [];
                         this.devStates = [];
+                        this.weights = [];
                         this.charts = echarts.init(document.getElementById('charts'));
                         this.charts.setOption(this.getChartsOption());
                         this.charts.getZr().on('click', function(params) {
@@ -1257,7 +1260,7 @@
                         }
                     },
                     getChartsOption: function() {
-                        var totoil = this.$t('main.totalOil');
+                        var totalOil = this.$t('main.totalOil');
                         var speed = this.$t('main.speed');
                         var recorderspeed = isZh ? "行驶记录仪速度" : 'RecorderSpeed';
                         var dis = this.$t('main.mileage');
@@ -1266,6 +1269,7 @@
                         var usoil2 = this.$t('main.oil2');
                         var cotgasus = this.$t('main.oil');
                         var status = this.$t('main.status');
+                        var weight = this.$t('main.weight');
                         var option = {
                             backgroundColor: '#F9F9F9',
                             title: {
@@ -1288,13 +1292,23 @@
                                 formatter: function(v, a) {
                                     var data = vRoot.$t('main.time') + ': ' + v[0].name + '<br/>';
                                     for (i in v) {
-                                        if (v[i].seriesName && v[i].seriesName != vRoot.$t('main.time')) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                        if (v[i].seriesName && v[i].seriesName != vRoot.$t('main.time')) {
+                                            if (v[i].seriesName == weight) {
+                                                data += v[i].seriesName + ' : ' + v[i].value + 'Kg<br/>';
+                                            } else if (v[i].seriesName == dis) {
+                                                data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
+                                            } else if (v[i].seriesName == speed) {
+                                                data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                            } else if (v[i].seriesName == totalOil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2) {
+                                                data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
+                                            }
+                                        }
                                     }
                                     return data;
                                 }
                             },
                             legend: {
-                                data: [dis, speed, recorderspeed, totoil, usoil1, usoil2],
+                                data: [dis, speed, recorderspeed, totalOil, usoil1, usoil2, weight],
                                 //selected: {
                                 //    '里程' : false
                                 // },
@@ -1342,7 +1356,7 @@
                                 data: this.recvtime
                             }],
                             yAxis: [{
-                                name: totoil + '/' + speed,
+                                name: totalOil + '/' + speed,
                                 type: 'value',
                                 nameTextStyle: 10,
                                 nameGap: 5,
@@ -1392,7 +1406,7 @@
                                     data: this.recorderspeed,
                                     smooth: true,
                                 }, {
-                                    name: totoil,
+                                    name: totalOil,
                                     type: 'line',
                                     symbol: 'none',
                                     color: '#C1232B',
@@ -1415,6 +1429,13 @@
                                     data: this.oil2,
                                     smooth: true,
                                 }, {
+                                    name: weight,
+                                    type: 'line',
+                                    symbol: 'none',
+                                    color: '#000',
+                                    data: this.weights,
+                                    smooth: true,
+                                }, {
                                     name: status,
                                     type: 'line',
                                     symbol: 'none',
@@ -1424,6 +1445,7 @@
                                 },
                             ]
                         };
+
                         return option;
                     },
                     redrawCharts: function() {
@@ -1437,6 +1459,7 @@
                         var oil1 = []; //速度
                         var oil2 = []; //速度
                         var devStates = [];
+                        var weights = [];
                         this.disMin = 0;
                         var totalDistanceMin = 0;
                         records.forEach(function(item, index) {
@@ -1461,6 +1484,7 @@
                             veo.push((item.speed / 1000).toFixed(2));
                             recorderspeed.push((item.recorderspeed / 1000).toFixed(2));
                             distance.push((item.totaldistance - totalDistanceMin).toFixed(2));
+                            weights.push(item.weight / 10)
                         });
                         this.distance = distance;
                         this.recvtime = recvtime;
@@ -1470,6 +1494,7 @@
                         this.oil2 = oil2;
                         this.devStates = devStates;
                         this.recorderspeed = recorderspeed;
+                        this.weights = weights;
 
                         this.charts.setOption(this.getChartsOption());
 
