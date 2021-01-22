@@ -3254,7 +3254,7 @@ var monitor = {
             oldPositionLast.parkduration = newPositionLast.parkduration;
             oldPositionLast.loadstatus = newPositionLast.loadstatus;
             oldPositionLast.weight = newPositionLast.weight;
-
+            oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
             // int loadstatus = -1; //载重状态 0x00：空车；0x01：半载；0x02：超载；0x03：满载 0x04 装载 0x05 卸载
             // long weight = -1; //重量 单位0.1kg
         },

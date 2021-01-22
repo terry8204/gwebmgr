@@ -581,6 +581,7 @@ var utils = {
     getLoadStatus: function(track) {
         var loadstatus = track.loadstatus;
         var weight = track.weight;
+        var srcWeightAd0 = track.srcweightad0;
         var statusStr = '';
         switch (loadstatus) {
             case 0x00:
@@ -603,7 +604,7 @@ var utils = {
                 break;
         }
 
-        return (weight / 10) + 'Kg(' + statusStr + ')';
+        return statusStr + " " + (weight / 10) + 'Kg(' + srcWeightAd0 + ')';
     },
     getWindowContent: function(track, b_address) {
         var strstatus = '';
@@ -611,18 +612,12 @@ var utils = {
         if (isZh) {
             var stralarm = track.stralarm;
             strstatus = track.strstatus ? track.strstatus : '';
-            if (track.loadstatus >= 0) {
-                strstatus += this.getLoadStatus(track);
-            }
             if (stralarm) {
                 strstatus += '<span style="color:red;">' + stralarm + '</span>';
             }
         } else {
             var stralarmen = track.stralarmen;
             strstatus = track.strstatusen ? track.strstatusen : '';
-            if (track.loadstatus >= 0) {
-                strstatus += this.getLoadStatus(track);
-            }
             if (stralarm) {
                 strstatus += '<span style="color:red;">' + stralarmen + '</span>';
             }
@@ -679,6 +674,10 @@ var utils = {
             //没设置油杆的时候显示原始ad值
             oil = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1;
         };
+        var loadstatusStr = null;
+        if (track.loadstatus >= 0) {
+            loadstatusStr = this.getLoadStatus(track);
+        }
 
         var temp = this.getTemperature(isZh, track);
         var decice = findTheDevice(track.deviceid)
@@ -695,6 +694,7 @@ var utils = {
             '<p><span class="window_title">' + (isZh ? '停留时长' : 'Park Duration') + '</span>: ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
             (oil !== '' ? '<p>' + oil + '</p>' : '') +
+            (loadstatusStr ? ('<p><span class="window_title">' + (isZh ? '载重数据' : 'Weight') + '</span>: ' + loadstatusStr + '</p>') : '') +
             (extendsBtns.video ? ('<p><span class="window_title">' + (isZh ? '视频状态' : 'video') + '</span>: ' + videoState + '</p>') : ("")) +
             '<p class="last-address">' + b_address + '</p>' +
             '<p class="operation">' +
