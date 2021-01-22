@@ -664,23 +664,17 @@ var utils = {
         var srcad0 = track.srcad0;
         var srcad1 = track.srcad1;
         if (track.totaloil > 0 && track.auxoil > 0) {
-            if (isZh) {
-                oil = '(油液:' + track.totaloil / 100 + 'L@' + srcad0 + '/' + track.auxoil / 100 + 'L@' + srcad1 + ')';
-            } else {
-                oil = '(oil:' + track.totaloil / 100 + 'L@' + srcad0 + '/' + track.auxoil / 100 + 'L@' + srcad1 + ')';
-            }
+
+            oil = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + track.totaloil / 100 + 'L/' + track.auxoil / 100 + 'L(' + srcad0 + '/' + srcad1 + ')';
+
         } else if (track.totaloil > 0) {
-            if (isZh) {
-                oil = '(油液:' + track.totaloil / 100 + 'L@' + srcad0 + ')';
-            } else {
-                oil = '(oil:' + track.totaloil / 100 + 'L@' + srcad0 + ')';
-            }
+
+            oil = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + track.totaloil / 100 + 'L(' + srcad0 + ')';
+
         } else if (track.auxoil > 0) {
-            if (isZh) {
-                oil = '(油液:' + track.auxoil / 100 + 'L@' + srcad1 + ')';
-            } else {
-                oil = '(oil:' + track.auxoil / 100 + 'L@' + srcad1 + ')';
-            }
+
+            oil = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + track.auxoil / 100 + 'L(' + srcad1 + ')';
+
         } else if (srcad0 > 0 || srcad1 > 0) {
             //没设置油杆的时候显示原始ad值
             oil = '(ad:' + srcad0 + '/' + srcad1 + ')';
@@ -696,10 +690,11 @@ var utils = {
             '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
             '<p><span class="window_title">' + (isZh ? '定位时间' : 'Posi time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +
-            '<p><span class="window_title">' + (isZh ? '总里程数' : 'Mileage') + '</span>: ' + this.getMileage(track.totaldistance) + oil + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '总里程数' : 'Mileage') + '</span>: ' + this.getMileage(track.totaldistance) + '</p>' +
             (temp ? temp : '') +
             '<p><span class="window_title">' + (isZh ? '停留时长' : 'Park Duration') + '</span>: ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
+            (oil !== '' ? '<p>' + oil + '</p>' : '') +
             (extendsBtns.video ? ('<p><span class="window_title">' + (isZh ? '视频状态' : 'video') + '</span>: ' + videoState + '</p>') : ("")) +
             '<p class="last-address">' + b_address + '</p>' +
             '<p class="operation">' +
