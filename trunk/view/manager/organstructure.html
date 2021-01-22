@@ -23,11 +23,11 @@
             </div>
             <div style="position: absolute;top:0px;left:300px;bottom: 0px;right: 0px;">
                 <div v-if="selectType =='user'">
-                    <div style="margin-left: 20px;width: 600px;">
+                    <div style="margin-left: 20px;width: 700px;">
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                                 <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
-                            <i-col span="12">
+                            <i-col span="8">
                                 <div class="search-wrapper">
                                     <i-input v-model.trim="createrToUser" :disabled="disabledInput" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                                     <transition name="fade">
@@ -44,93 +44,85 @@
                         </Row>
 
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                                 <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.username")}} : &nbsp;</i-col>
-                            <i-col span="12">
+                            <i-col span="8">
                                 <i-input v-model.trim="username" :disabled="isEditUser"></i-input>
                             </i-col>
-                        </Row>
-
-                        <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp; {{$t("user.showname")}}: &nbsp;</i-col>
-                            <i-col span="12">
+                            <i-col span="8">
                                 <i-input v-model.trim="showname" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
 
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                                &nbsp;{{$t("user.userType")}} : &nbsp;</i-col>
-                            <i-col span="12">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                <i style="color: red;display: inline-block;">*</i> &nbsp;{{$t("user.userType")}} : &nbsp;</i-col>
+                            <i-col span="8">
                                 <i-select v-model="usertype" :disabled="disabledInput">
                                     <i-option v-for="item in userTypeList" :value="item.type" :key="item.type">{{ item.name }}</i-option>
                                 </i-select>
                             </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.password")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="password" :disabled="isEditUser"></i-input>
+                            </i-col>
                         </Row>
 
 
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;{{$t("user.corporateName")}} : &nbsp;
                             </i-col>
-                            <i-col span="12">
+                            <i-col span="8">
                                 <i-input v-model.trim="companyname" :disabled="disabledInput"></i-input>
                             </i-col>
-                        </Row>
-
-                        <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;{{$t("user.name")}} : &nbsp;
                             </i-col>
-                            <i-col span="12">
+                            <i-col span="8">
                                 <i-input v-model.trim="cardname" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
 
 
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;{{$t("user.phone")}} : &nbsp;</i-col>
-                            <i-col span="12">
+                            <i-col span="8">
                                 <i-input v-model.trim="phone" :disabled="disabledInput"></i-input>
                             </i-col>
-                        </Row>
-
-                        <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;{{$t("user.address")}} : &nbsp;
                             </i-col>
-                            <i-col span="12">
+                            <i-col span="8">
                                 <i-input v-model.trim="companyaddr" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
 
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                                &nbsp;QQ : &nbsp;</i-col>
-                            <i-col span="12">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;{{$t("header.qq")}} : &nbsp;</i-col>
+                            <i-col span="8">
                                 <i-input v-model.trim="qq" :disabled="disabledInput"></i-input>
                             </i-col>
-                        </Row>
-                        <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                                 &nbsp;{{$t("user.weChat")}} : &nbsp;</i-col>
-                            <i-col span="12">
+                            <i-col span="8">
                                 <i-input v-model.trim="wechat" :disabled="disabledInput"></i-input>
-                            </i-col>
-                        </Row>
-                        <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">
-                                &nbsp;{{$t("header.email")}} : &nbsp;</i-col>
-                            <i-col span="12">
-                                <i-input v-model.trim="email" :disabled="disabledInput"></i-input>
                             </i-col>
                         </Row>
 
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.moreLanding")}} : &nbsp;</i-col>
-                            <i-col span="12">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                &nbsp;{{$t("header.email")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="email" :disabled="disabledInput"></i-input>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.moreLanding")}} : &nbsp;</i-col>
+                            <i-col span="8">
                                 <i-select v-model="multilogin" :disabled="disabledInput">
                                     <i-option value="1">{{$t("header.yes")}}</i-option>
                                     <i-option value="0">{{$t("header.no")}}</i-option>
@@ -139,7 +131,7 @@
                         </Row>
 
                         <Row style="margin: 10px 0">
-                            <i-col span="12" :offset="4">
+                            <i-col span="12" :offset="6">
                                 <i-button style="width:100%" @click="handleEditUser" :disabled="disabledInput">{{$t("bgMgr.submit")}}</i-button>
                             </i-col>
                         </Row>
@@ -189,7 +181,7 @@
                                     <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                                 </i-select>
                             </i-col>
-                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">SIM : &nbsp;</i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">手机卡号 : &nbsp;</i-col>
                             <i-col span="8">
                                 <i-input v-model.trim.number="simnum"></i-input>
                             </i-col>
@@ -197,7 +189,7 @@
                         <Row style="margin: 10px 0">
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("bgMgr.expirenotifytime")}} : &nbsp;</i-col>
                             <i-col span="8">
-                                <date-picker type="date" v-model="expirenotifytime" :disabled="disabledOverdueTime"></date-picker>
+                                <date-picker type="date" v-model="expirenotifytime" :disabled="disabledOverdueTime" style="width: 100%;"></date-picker>
                             </i-col>
 
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
@@ -366,6 +358,7 @@
             createrToUser: '',
             iconState: "ios-arrow-down",
             groupid: '',
+            password: '',
             groupsList: [],
             simnum: '',
             expirenotifytime: null,
@@ -504,20 +497,25 @@
                 var userType = this.usertype;
 
                 if (userType == "") {
-                    this.$Message.error('请现在用户类型');
+                    this.$Message.error('请选择用户类型');
                     return;
-                }
-
-                if (isEditUser) {
-                    var url = myUrls.editUser();
-                } else {
-                    var url = myUrls.addUser();
                 }
 
                 var data = {
                     creater: this.createrToUser,
                     username: this.username,
                     usertype: userType,
+                }
+
+                if (isEditUser) {
+                    var url = myUrls.editUser();
+                } else {
+                    var url = myUrls.addUser();
+                    if (this.password == "") {
+                        this.$Message.error('请填写用户密码');
+                        return;
+                    }
+                    data.password = $.md5(this.password);
                 }
 
                 data.multilogin = Number(this.multilogin);
@@ -533,7 +531,6 @@
                 utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
                         if (!isEditUser) {
-
                             me.zTreeObj.addNodes(me.parentNode, {
                                 name: data.username,
                                 username: data.username,
@@ -871,6 +868,7 @@
                                     me.createrToUser = parentNode ? parentNode.username : userName;
                                     me.oldCreater = me.createrToUser;
                                     me.isEditUser = true;
+                                    me.password = '';
                                 } else if (node.groupid !== undefined) {
                                     var parentNode = node.getParentNode();
                                     username = parentNode.username;
