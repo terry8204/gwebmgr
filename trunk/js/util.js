@@ -677,7 +677,7 @@ var utils = {
 
         } else if (srcad0 > 0 || srcad1 > 0) {
             //没设置油杆的时候显示原始ad值
-            oil = '(ad:' + srcad0 + '/' + srcad1 + ')';
+            oil = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1;
         };
 
         var temp = this.getTemperature(isZh, track);
@@ -811,9 +811,9 @@ var utils = {
     },
     getMileage: function(totaldistance) {
         if (totaldistance == 0) {
-            return totaldistance + 'km';
+            return totaldistance + 'Km';
         };
-        return (totaldistance * 1.0 / 1000).toFixed(3) + 'km';
+        return (totaldistance * 1.0 / 1000).toFixed(3) + 'Km';
     },
     getI18n: function() {
         return new VueI18n({
