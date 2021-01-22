@@ -146,7 +146,18 @@
                     </Row>
                     <Row style="margin: 10px 0 0 0" v-show="selectedGroupId==0">
                         <i-col span="8" :offset="4">
-                            <Alert type="warning">{{$t("device.editDefaultGroupNameTip")}}</Alert>
+                            <Alert type="warning">
+                                <h3>{{$t("device.addNewDeviceTip1")}}</h3>
+                                <p>
+                                    {{$t("device.addNewDeviceTip2")}}
+                                </p>
+                                <p>
+                                    {{$t("device.addNewDeviceTip3")}}
+                                </p>
+                                <p>
+                                    {{$t("device.addNewDeviceTip4")}}
+                                </p>
+                            </Alert>
                         </i-col>
                     </Row>
                     <Row>
@@ -181,7 +192,7 @@
                                     <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                                 </i-select>
                             </i-col>
-                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">手机卡号 : &nbsp;</i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.sim")}} : &nbsp;</i-col>
                             <i-col span="8">
                                 <i-input v-model.trim.number="simnum"></i-input>
                             </i-col>

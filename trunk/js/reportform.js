@@ -2588,9 +2588,16 @@ function speedingReport(groupslist) {
                     tooltip: {
                         trigger: 'axis',
                         formatter: function(v) {
-                            var data = vRoot.$t('reportForm.date') + ' : ' + v[0].name + '<br/>';
+                            var data = time + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
-                                if (v[i].seriesName != vRoot.$t('reportForm.date')) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                if (v[i].seriesName != time) {
+                                    // data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                    if (v[i].seriesName == dis) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
+                                    } else if (v[i].seriesName == speed) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                    }
+                                }
                             }
                             return data;
                         }
@@ -5179,6 +5186,336 @@ function deviceMonthOnlineDaily(groupslist) {
 }
 
 
+function timeWeightConsumption(groupslist) {
+    vueInstanse = new Vue({
+        el: "#time-weight-consumption",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            groupslist: [],
+            columns: [
+                { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 100 },
+                { title: vRoot.$t('reportForm.date'), key: 'updatetimeStr', sortable: true, width: 160 },
+                { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 150 },
+                { title: vRoot.$t('reportForm.weight'), key: 'weight', width: 100 },
+                { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
+                { title: vRoot.$t('reportForm.status'), key: 'strstatus' },
+                {
+                    title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
+                    render: function(h, params) {
+                        var row = params.row;
+                        var callat = row.callat.toFixed(5);
+                        var callon = row.callon.toFixed(5);
+
+                        if (callat && callon) {
+                            if (row.address == null) {
+
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].address = resp.address;
+                                                    LocalCacheMgr.setAddress(callon, callat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, callon + "," + callat)
+
+                            } else {
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.address,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, callon + "," + callat)
+                                ]);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
+            ],
+            tableData: [],
+            recvtime: [],
+            weights: [],
+            veo: [],
+            distance: [],
+            currentIndex: 1,
+        },
+        mixins: [reportMixin],
+        methods: {
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentPageIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            charts: function() {
+                var speed = vRoot.$t('reportForm.speed');
+                var dis = vRoot.$t('reportForm.mileage');
+                var time = vRoot.$t('reportForm.time');
+                var weight = vRoot.$t('reportForm.weight');
+                var status = vRoot.$t('reportForm.status');
+                var option = {
+                    title: {
+                        text: time + '/' + weight,
+                        x: 'center',
+                        textStyle: {
+                            fontSize: 12,
+                            fontWeight: 'bolder',
+                            color: '#333'
+                        }
+                    },
+                    grid: {
+                        x: 50,
+                        y: 40,
+                        x2: 50,
+                        y2: 40
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: function(v) {
+                            var data = time + ' : ' + v[0].name + '<br/>';
+                            for (i in v) {
+                                if (v[i].seriesName && v[i].seriesName != time) {
+                                    if (v[i].seriesName == weight) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Kg<br/>';
+                                    } else if (v[i].seriesName == dis) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
+                                    } else if (v[i].seriesName == speed) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                    }
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                    legend: {
+                        data: [speed, dis, weight],
+                        //selected: {
+                        //    '里程' : false
+                        // },
+                        x: 'left'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: {
+                                show: true
+                            }
+                        },
+                        itemSize: 14
+                    },
+                    dataZoom: [{
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        backgroundColor: '#EDEDED',
+                        fillerColor: 'rgb(54, 72, 96,0.5)',
+                        //fillerColor:'rgb(244,129,38,0.8)',
+                        bottom: 0
+                    }, {
+                        type: "inside",
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        bottom: 0
+                    }],
+                    xAxis: [{
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLine: {
+                            onZero: false
+                        },
+                        data: this.recvtime
+                    }],
+                    yAxis: [{
+                        name: weight + '/' + speed,
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 5,
+
+                    }, {
+                        name: dis,
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 2,
+
+                        axisLabel: {
+                            formatter: '{value} km',
+                        },
+                        axisTick: {
+                            show: false
+                        }
+                    }],
+                    series: [{
+                            name: time,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#F0805A',
+                            smooth: true,
+                            data: this.recvtime
+                        }, {
+                            name: speed,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 0,
+                            smooth: true,
+                            color: '#4876FF',
+                            data: this.veo
+                        }, {
+                            name: dis,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#3CB371',
+                            smooth: true,
+                            data: this.distance
+                        }, {
+                            smooth: true,
+                            name: weight,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#C1232B',
+                            data: this.weights
+                        },
+                        {
+                            smooth: true,
+                            name: status,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000',
+                            data: this.devStates
+                        },
+                    ]
+                };
+
+                this.chartsIns.setOption(option);
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 400;
+            },
+            onClickQuery: function() {
+                if (this.queryDeviceId == "") { return };
+                var self = this;
+                if (this.isSelectAll === null) {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                    return;
+                };
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                };
+                this.loading = true;
+                utils.sendAjax(myUrls.reportWeightTime(), data, function(resp) {
+                    self.loading = false;
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var records = [],
+                                weights = [],
+                                veo = [],
+                                distance = [],
+                                recvtime = [],
+                                devStates = [];
+                            resp.records.forEach(function(item, index) {
+                                records = item.records;
+                                var independent = item.independent === 0;
+                                records.forEach(function(record) {
+                                    var callon = record.callon.toFixed(5);
+                                    var callat = record.callat.toFixed(5);
+                                    var address = LocalCacheMgr.getAddress(callon, callat);
+                                    if (address != null) {
+                                        record.address = address;
+                                    } else {
+                                        record.address = null;
+                                    }
+                                    var ad0 = record.ad0;
+                                    var ad1 = record.ad1;
+                                    if (ad0 < 0) {
+                                        ad0 = 0;
+                                    };
+                                    if (ad1 < 0) {
+                                        ad1 = 0;
+                                    };
+                                    record.ad0 = ad0 / 100;
+                                    record.ad1 = ad1 / 100;
+                                    if (independent) {
+                                        record.oil = record.ad0 + record.ad1;
+                                    } else {
+                                        record.oil = record.ad0;
+                                    }
+                                    record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
+                                    weights.push(record.weight / 10);
+                                    veo.push((record.speed / 1000).toFixed(2));
+                                    record.totaldistance = (record.totaldistance / 1000).toFixed(2);
+                                    distance.push(record.totaldistance);
+                                    recvtime.push(record.updatetimeStr);
+                                    devStates.push(record.strstatus);
+                                });
+                            });
+
+                            self.veo = veo;
+                            self.weights = weights;
+                            self.distance = distance;
+                            self.recvtime = recvtime;
+                            self.records = records;
+                            self.devStates = devStates;
+                            self.total = records.length;
+                            records.sort(function(a, b) {
+                                return b.updatetime - a.updatetime;
+                            })
+                            self.currentPageIndex = 1;
+                            self.tableData = records.slice(0, 20);
+                            self.charts();
+                        } else {
+                            self.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
+                })
+            },
+            onSortChange: function(column) {
+
+            }
+        },
+        mounted: function() {
+            this.groupslist = groupslist;
+            this.myChart = null;
+            this.records = [];
+            this.chartsIns = echarts.init(document.getElementById('charts'));
+            this.charts();
+        }
+    });
+}
+
+
 function timeOilConsumption(groupslist) {
     vueInstanse = new Vue({
         el: "#time-oil-consumption",
@@ -5292,7 +5629,18 @@ function timeOilConsumption(groupslist) {
                         formatter: function(v) {
                             var data = time + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
-                                if (v[i].seriesName && v[i].seriesName != time) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                if (v[i].seriesName && v[i].seriesName != time) {
+                                    // data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                    if (v[i].seriesName == weight) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Kg<br/>';
+                                    } else if (v[i].seriesName == dis) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
+                                    } else if (v[i].seriesName == speed) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                    } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
+                                    }
+                                }
                             }
                             return data;
                         }
@@ -6560,7 +6908,13 @@ function temperature(groupslist) {
                         formatter: function(v) {
                             var data = time + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
-                                if (v[i].seriesName != time) data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                if (v[i].seriesName != time) {
+                                    if (v[i].seriesName == speed) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                    } else {
+                                        data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                    }
+                                }
                             }
                             return data;
                         }
@@ -8062,6 +8416,14 @@ var reportForm = {
                     ]
                 },
                 {
+                    title: me.$t("reportForm.weightReport"),
+                    name: 'weightReport',
+                    icon: 'md-keypad',
+                    children: [
+                        { title: me.$t("reportForm.timeWeightConsumption"), name: 'timeWeightConsumption', icon: 'ios-timer-outline' },
+                    ]
+                },
+                {
                     title: me.$t("reportForm.tempReport"),
                     name: 'temperatureConsumption',
                     icon: 'ios-color-wand-outline',
@@ -8173,6 +8535,9 @@ var reportForm = {
                         break;
                     case 'timeoilconsumption.html':
                         timeOilConsumption(groupslist);
+                        break;
+                    case 'timeweightconsumption.html':
+                        timeWeightConsumption(groupslist);
                         break;
                     case 'dayoil.html':
                         dayOil(groupslist);

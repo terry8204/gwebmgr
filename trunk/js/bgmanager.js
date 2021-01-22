@@ -1,4 +1,5 @@
 // 后台管理
+
 var bgManager = {
     template: document.getElementById('manager-template').innerHTML,
     data: function() {
@@ -8,114 +9,7 @@ var bgManager = {
             theme: 'light',
             activeName: "bgNav",
             openedNames: [],
-            navList: [{
-                    title: isZh ? "管理导航" : "Manager nav",
-                    name: 'bgNav',
-                    icon: 'ios-stats',
-                },
-                {
-                    title: me.$t("bgMgr.organizationMgr"),
-                    name: 'userMar',
-                    icon: 'md-person',
-                    children: [
-                        { title: me.$t("bgMgr.organStructure"), name: 'organStructure', icon: 'ios-clipboard-outline' },
-                        // { title: me.$t("bgMgr.addUser"), name: 'addUser', icon: 'ios-person-add' },
-                        // { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search' },
-                        { title: me.$t("user.employees"), name: 'employees', icon: 'md-person-add' },
-                        { title: me.$t("bgMgr.onlineUsers"), name: 'onlineUsers', icon: 'ios-analytics' },
-                        { title: me.$t("header.loginRecords"), name: 'loginRecords', icon: 'ios-clipboard-outline' },
-                    ]
-                },
-                // {
-                //     title: me.$t("bgMgr.groupMgr"),
-                //     name: 'groupMar',
-                //     icon: 'ios-albums',
-                //     children: [
-                //         { title: me.$t("bgMgr.addGroup"), name: 'addGroup', icon: 'ios-photos-outline' },
-                //         { title: me.$t("bgMgr.queryGroup"), name: 'queryGroup', icon: 'md-search' }
-                //     ]
-                // },
-                {
-                    title: me.$t("bgMgr.devMgr"),
-                    name: 'deviceMar',
-                    icon: 'md-phone-portrait',
-                    children: [
-                        { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search' },
-                        { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add' },
-                        { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add' },
-                        { title: me.$t("bgMgr.batchMgr"), name: 'batchMgrDevice', icon: 'ios-folder-outline' },
-                        { title: "记录仪采集", name: 'travelingDataRecorder', icon: 'ios-car-outline' },
-                        { title: me.$t("bgMgr.stockDev"), name: 'stockDev', icon: 'md-cube' },
-                        { title: me.$t("bgMgr.notPutIntoStorage"), name: 'notPutIntoStorage', icon: 'md-basket' },
-                        // { title: me.$t("bgMgr.clearRecord"), name: "clearRecord", icon: "ios-paw" },
-                        // { title: me.$t("bgMgr.setMileage"), name: "setMileage", icon: "md-paper" },
-                    ]
-                },
-                {
-                    title: me.$t("bgMgr.operateMgr"),
-                    name: 'operateMar',
-                    icon: 'ios-analytics',
-                    children: [
-                        { title: me.$t("bgMgr.importOwnerInfo"), name: 'ImportOwner', icon: 'md-add' },
-                        { title: me.$t("bgMgr.importInsureInfo"), name: 'ImportInsure', icon: 'md-add' },
-                        { title: me.$t("bgMgr.importPolicyInfo"), name: 'ImportInsure2', icon: 'md-add' },
-                        { title: me.$t("bgMgr.importVin"), name: 'ImportVehicleNumber', icon: 'md-add' },
-                        { title: me.$t("bgMgr.importOfflineInsurePolicyInfo"), name: 'ImportOfflineInsure', icon: 'md-add' },
-                        { title: me.$t("bgMgr.importSimInfo"), name: 'ImportSim', icon: 'md-add' },
-                        { title: me.$t("bgMgr.importDeviceName"), name: 'ImportDeviceName', icon: 'md-add' },
-                    ]
-                },
-                {
-                    title: me.$t("bgMgr.repairMgr"),
-                    name: 'repairMar',
-                    icon: 'md-build',
-                    children: [
-                        { title: me.$t("bgMgr.addRepair"), name: 'addRepair', icon: 'ios-add' },
-                        { title: me.$t("bgMgr.repairRecord"), name: 'repairRecord', icon: 'ios-document' },
-                    ]
-                },
-                {
-                    title: me.$t("bgMgr.bonusList"),
-                    name: 'priceMar',
-                    icon: 'logo-windows',
-                    children: [
-                        { title: me.$t("bgMgr.priceList"), name: 'priceList', icon: 'logo-apple' },
-                        { title: me.$t("bgMgr.memberSwitch"), name: 'bonusList', icon: 'ios-barcode' },
-                        { title: me.$t("bgMgr.transferRecords"), name: 'transferRecord', icon: 'ios-paper-outline' },
-                    ]
-                },
-                {
-                    title: '转发管理',
-                    name: 'forward809',
-                    icon: 'ios-laptop',
-                    children: [
-                        { title: "接入平台列表", name: 'accessPlatformList', icon: 'md-git-merge' },
-                        { title: "转发设置", name: 'forwardingSetting', icon: 'md-git-merge' },
-                    ]
-
-                },
-                {
-                    title: '第三方平台',
-                    name: 'thirdPlatform',
-                    icon: 'ios-analytics',
-                    children: [{
-                            title: '永州企业基本信息',
-                            name: 'yongZhouEnterpriseInfo',
-                            icon: 'md-add'
-                        },
-                        {
-                            title: '永州车辆基本信息',
-                            name: 'yongZhouVehicleInfo',
-                            icon: 'md-add'
-                        },
-                        {
-                            title: '永州驾驶员基本信息',
-                            name: 'yongZhouDriverInfo',
-                            icon: 'md-add'
-                        },
-                    ]
-                },
-            ]
+            navList: [],
         }
     },
     methods: {
@@ -249,16 +143,6 @@ var bgManager = {
             vueInstanse && vueInstanse.$destroy && vueInstanse.$destroy();
             var me = this
             var pagePath = null
-                // if (page == "chargemgr.html") {
-                //     if (utils.isLocalhost()) {
-                //         pagePath = myUrls.viewhost + '/' + page
-                //     } else {
-                //         pagePath = './' + page
-                //     }
-                //     window.open(pagePath + '?token=' + token + "&username=" + userName);
-                //     $('#mar-view').html("");
-                //     return;
-                // }
             if (utils.isLocalhost()) {
                 pagePath = myUrls.viewhost + 'view/manager/' + page
             } else {
@@ -268,22 +152,155 @@ var bgManager = {
             $('#mar-view').load(pagePath, function() {
                 me.$Loading.finish()
             })
+        },
+        getAllNavList: function name() {
+            var me = this;
+            return [{
+                    title: isZh ? "管理导航" : "Manager nav",
+                    name: 'bgNav',
+                    icon: 'ios-stats',
+                    maxShowUserType: 99,
+                },
+                {
+                    title: me.$t("bgMgr.organizationMgr"),
+                    name: 'userMar',
+                    icon: 'md-person',
+                    maxShowUserType: 99,
+                    children: [
+                        { title: me.$t("bgMgr.organStructure"), name: 'organStructure', icon: 'md-git-network', maxShowUserType: 99 },
+                        // { title: me.$t("bgMgr.addUser"), name: 'addUser', icon: 'ios-person-add' },
+                        // { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search' },
+                        { title: me.$t("user.employees"), name: 'employees', icon: 'md-person-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.onlineUsers"), name: 'onlineUsers', icon: 'ios-analytics', maxShowUserType: 99 },
+                        { title: me.$t("header.loginRecords"), name: 'loginRecords', icon: 'ios-clipboard-outline', maxShowUserType: 99 },
+                    ]
+                },
+                // {   <Icon type="" />
+                //     title: me.$t("bgMgr.groupMgr"),
+                //     name: 'groupMar',
+                //     icon: 'ios-albums',
+                //     children: [
+                //         { title: me.$t("bgMgr.addGroup"), name: 'addGroup', icon: 'ios-photos-outline' },
+                //         { title: me.$t("bgMgr.queryGroup"), name: 'queryGroup', icon: 'md-search' }
+                //     ]
+                // },
+                {
+                    title: me.$t("bgMgr.devMgr"),
+                    name: 'deviceMar',
+                    icon: 'md-phone-portrait',
+                    maxShowUserType: 99,
+                    children: [
+                        { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.batchMgr"), name: 'batchMgrDevice', icon: 'ios-folder-outline', maxShowUserType: 99 },
+                        { title: "记录仪采集", name: 'travelingDataRecorder', icon: 'ios-car-outline', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.stockDev"), name: 'stockDev', icon: 'md-cube', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.notPutIntoStorage"), name: 'notPutIntoStorage', icon: 'md-basket', maxShowUserType: 99 },
+                        // { title: me.$t("bgMgr.clearRecord"), name: "clearRecord", icon: "ios-paw" },
+                        // { title: me.$t("bgMgr.setMileage"), name: "setMileage", icon: "md-paper" },
+                    ]
+                },
+                {
+                    title: me.$t("bgMgr.operateMgr"),
+                    name: 'operateMar',
+                    icon: 'ios-analytics',
+                    maxShowUserType: 99,
+                    children: [
+                        { title: me.$t("bgMgr.importOwnerInfo"), name: 'ImportOwner', icon: 'md-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.importInsureInfo"), name: 'ImportInsure', icon: 'md-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.importPolicyInfo"), name: 'ImportInsure2', icon: 'md-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.importVin"), name: 'ImportVehicleNumber', icon: 'md-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.importOfflineInsurePolicyInfo"), name: 'ImportOfflineInsure', icon: 'md-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.importSimInfo"), name: 'ImportSim', icon: 'md-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.importDeviceName"), name: 'ImportDeviceName', icon: 'md-add', maxShowUserType: 99 },
+                    ]
+                },
+                {
+                    title: me.$t("bgMgr.repairMgr"),
+                    name: 'repairMar',
+                    icon: 'md-build',
+                    maxShowUserType: 99,
+                    children: [
+                        { title: me.$t("bgMgr.addRepair"), name: 'addRepair', icon: 'ios-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.repairRecord"), name: 'repairRecord', icon: 'ios-document', maxShowUserType: 99 },
+                    ]
+                },
+                {
+                    title: me.$t("bgMgr.bonusList"),
+                    name: 'priceMar',
+                    icon: 'logo-windows',
+                    maxShowUserType: 1,
+                    children: [
+                        { title: me.$t("bgMgr.priceList"), name: 'priceList', icon: 'logo-apple', maxShowUserType: 1 },
+                        { title: me.$t("bgMgr.memberSwitch"), name: 'bonusList', icon: 'ios-barcode', maxShowUserType: 1 },
+                        { title: me.$t("bgMgr.transferRecords"), name: 'transferRecord', icon: 'ios-paper-outline', maxShowUserType: 1 },
+                        { title: vRoot.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline', maxShowUserType: 1 }
+                    ]
+                },
+                {
+                    title: '转发管理',
+                    name: 'forward809',
+                    icon: 'ios-laptop',
+                    maxShowUserType: 99,
+                    children: [
+                        { title: "接入平台列表", name: 'accessPlatformList', icon: 'md-git-merge', maxShowUserType: 99 },
+                        { title: "转发设置", name: 'forwardingSetting', icon: 'md-git-merge', maxShowUserType: 99 },
+                    ]
+
+                },
+                {
+                    title: '第三方平台',
+                    name: 'thirdPlatform',
+                    icon: 'ios-analytics',
+                    maxShowUserType: 99,
+                    children: [{
+                            title: '永州企业基本信息',
+                            name: 'yongZhouEnterpriseInfo',
+                            icon: 'md-add',
+                            maxShowUserType: 99
+                        },
+                        {
+                            title: '永州车辆基本信息',
+                            name: 'yongZhouVehicleInfo',
+                            icon: 'md-add',
+                            maxShowUserType: 99
+                        },
+                        {
+                            title: '永州驾驶员基本信息',
+                            name: 'yongZhouDriverInfo',
+                            icon: 'md-add',
+                            maxShowUserType: 99
+                        },
+                    ]
+                },
+            ];
+        },
+        filterNavFunctions: function name(currentUserType) {
+            var filterNavList = [];
+            var allNavList = this.getAllNavList();
+            allNavList.forEach(function name(category) {
+                var copyCategory = deepClone(category);
+                if (category.children) {
+                    copyCategory.children = [];
+                    category.children.forEach(function name(child) {
+                        if (child.maxShowUserType >= currentUserType) {
+                            copyCategory.children.push(child)
+                        }
+                    })
+                    if (copyCategory.children.length) {
+                        filterNavList.push(copyCategory);
+                    }
+                } else {
+                    filterNavList.push(copyCategory);
+                }
+            })
+            this.navList = filterNavList;
         }
     },
     mounted: function() {
-        this.userType = vstore.state.userType;
-        if (this.userType == 4) {
-            this.navList.splice(0, 1);
-        };
-        if (this.userType != 0) {
-            this.navList[6].children.splice(1, 1);
-        };
-        if (this.userType < 2) {
-            this.navList[6].children.push({ title: vRoot.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline' })
-        };
-        if (this.userType > 1) {
-            this.navList.splice(6, 1);
-        };
+        this.userType = Number(vstore.state.userType);
+        this.filterNavFunctions(this.userType);
         this.selectditem('bgNav');
     }
 }

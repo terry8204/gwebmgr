@@ -861,6 +861,9 @@ var myUrls = {
     saveWeightMarkers: function() {
         return this.apihosts + 'webapi?action=saveweightmarkers_sync&token=' + token;
     },
+    reportWeightTime: function() {
+        return this.apihosts + 'webapi?action=reportweighttime&token=' + token;
+    },
 }
 
 
