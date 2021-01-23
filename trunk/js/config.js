@@ -864,6 +864,9 @@ var myUrls = {
     reportWeightTime: function() {
         return this.apihosts + 'webapi?action=reportweighttime&token=' + token;
     },
+    reportWeightSummary: function() {
+        return this.apihosts + 'webapi?action=reportweightsummary&token=' + token;
+    },
 }
 
 

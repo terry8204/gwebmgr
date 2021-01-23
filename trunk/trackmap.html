@@ -783,7 +783,8 @@
                             '<p> ' + (isZh ? '更新时间' : 'Update time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
                             '<p> ' + (isZh ? '定位时间' : 'Posi time') + ': ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
                             '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + rxlevel + '</p>' +
-                            '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + utils.getMileage(track.totaldistance) + '</p>' +
+                            '<p> ' + (isZh ? '总里程' : 'Total Mileage') + ': ' + utils.getMileage(track.totaldistance) + '</p>' +
+                            '<p> ' + (isZh ? '行驶里程' : 'Travel Mileage') + ': ' + utils.getMileage(this.getTravelMileage()) + '</p>' +
                             '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
                             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>';
                         return content;
@@ -902,7 +903,6 @@
                                 this.tracks.push(record);
                                 this.exactTracks.push(record);
 
-
                                 this.carMarker = this.createMarker(record, true, './images/carstate/0_green_0.png', 15);
                                 this.startMarker = this.createMarker(record, false, './images/icon_st.png', 0);
                                 this.markerLayer = new maptalks.VectorLayer('marker', [this.startMarker, this.carMarker]).addTo(this.map);
@@ -997,6 +997,16 @@
                                     data.positionLast && me.doLastPosition(data.positionLast);
                                 };
                             })
+                        }
+                    },
+                    getTravelMileage: function() {
+                        var tracks = this.isExact ? this.exactTracks : this.tracks;
+                        if (tracks.length <= 1) {
+                            return 0;
+                        } else {
+                            var firstMileage = tracks[0];
+                            var lastMileage = tracks[tracks.length - 1];
+                            return lastMileage.totaldistance - firstMileage.totaldistance;
                         }
                     },
                     reDrawMap: function(newVal) {

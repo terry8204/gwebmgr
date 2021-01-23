@@ -1481,9 +1481,9 @@
                             devStates.push(item.strstatus);
                             oil.push(item.ad0 + item.ad1);
                             recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
-                            veo.push((item.speed / 1000).toFixed(2));
-                            recorderspeed.push((item.recorderspeed / 1000).toFixed(2));
-                            distance.push((item.totaldistance - totalDistanceMin).toFixed(2));
+                            veo.push(Number((item.speed / 1000).toFixed(2)));
+                            recorderspeed.push(Number((item.recorderspeed / 1000).toFixed(3)));
+                            distance.push(Number((item.totaldistance - totalDistanceMin).toFixed(3)));
                             weights.push(item.weight / 10)
                         });
                         this.distance = distance;
@@ -1530,7 +1530,7 @@
                                         if (item.totaldistance == 0) {
                                             me.mileageMonthRecord[item.day] = '0.0';
                                         } else {
-                                            me.mileageMonthRecord[item.day] = (item.totaldistance / 1000).toFixed(1);
+                                            me.mileageMonthRecord[item.day] = (item.totaldistance / 1000).toFixed(2);
                                         }
                                     }
                                 })
@@ -1705,7 +1705,7 @@
 
                         this.lineString.setCoordinates(pointList);
 
-                        this.totalMileage = ((tracks[tracks.length - 1].totaldistance - tracks[0].totaldistance)).toFixed(2);
+                        this.totalMileage = Number(((tracks[tracks.length - 1].totaldistance - tracks[0].totaldistance)).toFixed(3));
 
 
 

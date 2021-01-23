@@ -5520,6 +5520,10 @@ function timeWeightConsumption(groupslist) {
 }
 
 
+function weightSummary(groupslist) {
+
+}
+
 function timeOilConsumption(groupslist) {
     vueInstanse = new Vue({
         el: "#time-oil-consumption",
@@ -8425,6 +8429,7 @@ var reportForm = {
                     icon: 'md-keypad',
                     children: [
                         { title: me.$t("reportForm.timeWeightConsumption"), name: 'timeWeightConsumption', icon: 'ios-timer-outline' },
+                        { title: me.$t("reportForm.weightSummary"), name: 'weightSummary', icon: 'ios-bus-outline' },
                     ]
                 },
                 {
@@ -8542,6 +8547,9 @@ var reportForm = {
                         break;
                     case 'timeweightconsumption.html':
                         timeWeightConsumption(groupslist);
+                        break;
+                    case 'weightsummary.html':
+                        weightSummary(groupslist);
                         break;
                     case 'dayoil.html':
                         dayOil(groupslist);

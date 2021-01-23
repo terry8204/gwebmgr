@@ -321,6 +321,7 @@ Vue.component('my-video', {
             this.cleanDevicedInfo();
             if (this.deviceId && this.deviceId != device.deviceid) {
                 if (this.isPlaying) {
+                    this.isTimerStop = false;
                     this.handleStopVideos();
                 }
 
@@ -344,6 +345,7 @@ Vue.component('my-video', {
                 return;
             }
             if (this.isPlaying) {
+                this.isTimerStop = false;
                 this.handleStopVideos();
             } else {
                 this.handleStartVideos();
@@ -482,7 +484,8 @@ Vue.component('my-video', {
                 me.isSendAjaxState = false;
             });
             player.addEventListener('pause', function() {
-                me.playerStateTips = me.$t('video.pause');
+                me.playerStateTips = me.isTimerStop ? me.$t('video.threeMinutes') : me.$t('video.pause');
+                me.isTimerStop = false;
                 me.isPlaying = false;
             });
             player.addEventListener('waiting', function() {
@@ -679,12 +682,11 @@ Vue.component('my-video', {
             }, function(resp) {})
         },
         timeout: function() {
-
             if (this.isPlaying) {
                 var nowTime = Date.now();
                 if ((nowTime - this.startTimes) > 1000 * 60 * 3) {
+                    this.isTimerStop = true;
                     this.handleStopVideos();
-                    this.playerStateTips = this.$t('video.threeMinutes');
                 }
             }
         }
