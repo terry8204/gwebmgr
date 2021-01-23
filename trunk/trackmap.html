@@ -84,9 +84,12 @@
             font-size: 15px;
         }
         
+        p>span.window_title {
+            color: #4096D1;
+        }
+        
         .last-address {
             white-space: normal;
-            width: 260px;
         }
         
         .down-wrapper {
@@ -777,16 +780,17 @@
                         var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
                         var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
                         var content =
-                            '<p> ' + (isZh ? '设备序号' : 'Device Number') + ': ' + track.deviceid + "  " + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceName + '</p>' +
-                            '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
-                            '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
-                            '<p> ' + (isZh ? '更新时间' : 'Update time') + ': ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
-                            '<p> ' + (isZh ? '定位时间' : 'Posi time') + ': ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
-                            '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + rxlevel + '</p>' +
-                            '<p> ' + (isZh ? '总里程' : 'Total Mileage') + ': ' + utils.getMileage(track.totaldistance) + '</p>' +
-                            '<p> ' + (isZh ? '行驶里程' : 'Travel Mileage') + ': ' + utils.getMileage(this.getTravelMileage()) + '</p>' +
-                            '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
-                            '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + b_address + '</p>';
+                            '<p><span class="window_title">' + (isZh ? '设备序号' : 'Device Number') + '</span>: ' + track.deviceid + "  " + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceName + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '经纬纬度' : 'Longitude and latitude') + '</span>: ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
+                            '<p><span class="window_title">' + (isZh ? '定位时间' : 'Posi time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '停留时长' : 'Park Duration') + '</span>: ' + utils.timeStamp(track.parkduration, isZh) + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '总里程数' : 'Total Mileage') + '</span>: ' + utils.getMileage(track.totaldistance) + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '行驶里程' : 'Travel Mileage') + '</span>: ' + utils.getMileage(this.getTravelMileage()) + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
+                            '<p class="last-address"> ' + b_address + '</p>';
                         return content;
                     },
                     getAddress: function(info, callback) {
@@ -884,6 +888,7 @@
                                         this.map.setCenter(isBMap ? record.bpoint : record.gpoint);
                                         this.carMarker.setCoordinates(isBMap ? record.bpoint : record.gpoint);
                                         this.carMarker.setSymbol(this.getMarkerSymbol('./images/carstate/0_green_0.png', record.course, 15));
+                                        me.trackHtml = me.getWindowContent(record, isZh ? '正在解析地址...' : 'Resolving address...');
                                         this.getAddress(record, function(address) {
                                             me.trackHtml = me.getWindowContent(record, address);
                                         })
@@ -892,6 +897,7 @@
                                     this.map.setCenter(isBMap ? record.bpoint : record.gpoint);
                                     this.carMarker.setCoordinates(isBMap ? record.bpoint : record.gpoint);
                                     this.carMarker.setSymbol(this.getMarkerSymbol('./images/carstate/0_green_0.png', record.course, 15));
+                                    me.trackHtml = me.getWindowContent(record, isZh ? '正在解析地址...' : 'Resolving address...');
                                     this.getAddress(record, function(address) {
                                         me.trackHtml = me.getWindowContent(record, address);
                                     })
@@ -909,7 +915,7 @@
                                 this.markerLayer.setZIndex(999);
                                 this.map.setCenter(isBMap ? record.bpoint : record.gpoint);
                                 this.map.setZoom(16);
-
+                                me.trackHtml = me.getWindowContent(record, isZh ? '正在解析地址...' : 'Resolving address...');
                                 this.getAddress(record, function(address) {
                                     me.trackHtml = me.getWindowContent(record, address);
                                 })

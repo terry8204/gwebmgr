@@ -196,6 +196,10 @@
             overflow: hidden;
         }
         
+        p>span.window_title {
+            color: #4096D1;
+        }
+        
         #map {
             position: absolute;
             left: 10px;
@@ -1297,7 +1301,7 @@
                                                 data += v[i].seriesName + ' : ' + v[i].value + 'Kg<br/>';
                                             } else if (v[i].seriesName == dis) {
                                                 data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
-                                            } else if (v[i].seriesName == speed) {
+                                            } else if (v[i].seriesName == speed || v[i].seriesName == recorderspeed) {
                                                 data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
                                             } else if (v[i].seriesName == totalOil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2) {
                                                 data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
@@ -2152,17 +2156,17 @@
                         var speed = info.speed == 0 ? "0km/h" : (info.speed / 1000).toFixed(2) + "km/h";
                         var recorderspeed = info.recorderspeed == 0 ? "0km/h" : (info.recorderspeed / 1000).toFixed(2) + "km/h";
                         var sContent = '<div>' +
-                            '<p> ' + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceid + '</p>' +
-                            '<p> ' + (isZh ? '经纬度' : 'Longitude and latitude') + ': ' + info.callon + "," + info.callat + '</p>' +
-                            '<p> ' + (isZh ? '定位类型' : 'Position Type') + ': ' + posiType + '</p>' +
-                            '<p> ' + (isZh ? '方向' : 'Direction') + ': ' + utils.getCarDirection(info.course) + '</p>' +
-                            '<p> ' + (isZh ? '速度' : 'Speed') + ': ' + speed + '(' + (isZh ? '信号:' : 'Signal:') + info.rxlevel + '%)</p>' +
-                            '<p> ' + (isZh ? '记录仪行驶速度' : 'RecorderSpeed') + ': ' + recorderspeed + '</p>' +
-                            '<p> ' + (isZh ? '总里程' : 'Mileage') + ': ' + (info.totaldistance == 0 ? 0 : info.totaldistance) + 'km</p>' +
-                            '<p> ' + (isZh ? '最后时间' : 'Last time') + ': ' + DateFormat.longToDateTimeStr(info.updatetime, timeDifference) + '</p>' +
-                            '<p> ' + (isZh ? '状态' : 'Status') + ': ' + strstatus + '</p>' +
-                            (parkingTime > 60 * 1000 * 5 ? '<p> ' + (isZh ? '停留时间' : 'Parking time') + ': ' + utils.timeStamp(parkingTime) + '</p>' : '') +
-                            '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + address + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '设备名称' : 'Device Name') + '</span>: ' + this.deviceid + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '经度纬度' : 'Longitude and latitude') + '</span>: ' + info.callon + "," + info.callat + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '设备方向' : 'Direction') + '</span>: ' + utils.getCarDirection(info.course) + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + '(' + (isZh ? '信号:' : 'Signal:') + info.rxlevel + '%)</p>' +
+                            '<p><span class="window_title">' + (isZh ? '记录速度' : 'RecorderSpeed') + '</span>: ' + recorderspeed + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '总里程数' : 'Mileage') + '</span>: ' + (info.totaldistance == 0 ? 0 : info.totaldistance) + 'km</p>' +
+                            '<p><span class="window_title">' + (isZh ? '最后时间' : 'Last time') + '</span>: ' + DateFormat.longToDateTimeStr(info.updatetime, timeDifference) + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
+                            (parkingTime > 60 * 1000 * 5 ? '<p><span class="window_title">' + (isZh ? '停留时间' : 'Parking time') + '</span>: ' + utils.timeStamp(parkingTime) + '</p>' : '') +
+                            '<p class="last-address"> ' + address + '</p>' +
                             '<p>' +
                             '<span style="margin-right:5px;" class="ivu-btn ivu-btn-default ivu-btn-small" onclick="queryTrackDetail(' + deviceid + ')">' + (isZh ? '详细信息' : 'Detailed info') + '</span>' +
                             '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshTrackPosition(' + deviceid + ')" style="color:' + color + ';">' + (isZh ? '刷新位置' : 'Refresh position') + '</span>' +
