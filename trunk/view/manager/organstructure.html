@@ -317,6 +317,14 @@
                                     <i-option value="14">+14</i-option>
                                 </i-select>
                             </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.calmileageway")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="calmileageway">
+                                    <i-option value="0">{{$t("device.automatic")}}</i-option>
+                                    <i-option value="1">{{$t("device.devCalc")}}</i-option>
+                                    <i-option value="2">{{$t("device.platformCalc")}}</i-option>
+                                </i-select>
+                            </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
                             <i-col span="12" :offset="7">
@@ -385,6 +393,7 @@
             allowedit: '',
             loginenable: '',
             timezone: '8',
+            calmileageway: '0',
             isfree: 0,
             forwardurl: "",
 
@@ -580,6 +589,7 @@
                     deviceenable: Number(this.deviceenable),
                     allowedit: Number(this.allowedit),
                     timezone: Number(this.timezone),
+                    calmileageway: Number(this.calmileageway),
                 };
 
                 if (this.devicename) {
@@ -752,6 +762,7 @@
                 me.isfree = editObject.isfree;
                 me.monitor = editObject.monitor;
                 me.timezone = String(editObject.timezone);
+                me.calmileageway = String(editObject.calmileageway);
                 me.teltype = String(editObject.teltype);
                 me.allowedit = String(editObject.allowedit);
                 me.createrToUser = editObject.creater;
