@@ -142,6 +142,17 @@
             </Row>
 
             <Row style="margin: 10px 0">
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.calmileageway")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-select v-model="calmileageway">
+                        <i-option value="0">{{$t("device.automatic")}}</i-option>
+                        <i-option value="1">{{$t("device.devCalc")}}</i-option>
+                        <i-option value="2">{{$t("device.platformCalc")}}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+
+            <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('alarm.devNum')}} : &nbsp;</i-col>
                 <i-col span="6">
                     <i-input v-model.trim="deviceid" type="textarea" :placeholder="$t('device.copyBatchNumber')" :autosize="{minRows: 2,maxRows: 15}"></i-input>
@@ -194,6 +205,7 @@
                     }
                 },
                 timezone: '99',
+                calmileageway: '0',
                 teltype: '1',
                 loading: false,
                 idLength: 11,
@@ -297,6 +309,7 @@
                         loginenable: Number(this.loginenable),
                         deviceenable: Number(this.deviceenable),
                         timezone: Number(this.timezone),
+                        calmileageway: Number(this.calmileageway),
                     };
 
                     if (this.teltype) {
