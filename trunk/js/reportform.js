@@ -5198,9 +5198,10 @@ function timeWeightConsumption(groupslist) {
                 { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 100 },
                 { title: vRoot.$t('reportForm.date'), key: 'updatetimeStr', sortable: true, width: 160 },
                 { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 150 },
-                { title: vRoot.$t('reportForm.weight'), key: 'weight', width: 100 },
+                { title: vRoot.$t('reportForm.weight') + '(Kg)', key: 'weight', width: 100 },
                 { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
                 { title: vRoot.$t('reportForm.status'), key: 'strstatus' },
+                { title: vRoot.$t('reportForm.loadstatus'), key: 'loadstatusStr' },
                 {
                     title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
                     render: function(h, params) {
@@ -5453,6 +5454,7 @@ function timeWeightConsumption(groupslist) {
                                         record.address = address;
                                     } else {
                                         record.address = null;
+
                                     }
                                     var ad0 = record.ad0;
                                     var ad1 = record.ad1;
@@ -5469,9 +5471,11 @@ function timeWeightConsumption(groupslist) {
                                     } else {
                                         record.oil = record.ad0;
                                     }
+                                    record.loadstatusStr = utils.getloadstatusStr(record.loadstatus);
+                                    record.weight = (record.weight / 10);
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
-                                    weights.push(record.weight / 10);
+                                    weights.push(record.weight);
                                     veo.push((record.speed / 1000).toFixed(2));
                                     record.totaldistance = (record.totaldistance / 1000).toFixed(2);
                                     distance.push(record.totaldistance);

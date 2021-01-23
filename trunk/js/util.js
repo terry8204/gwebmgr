@@ -578,6 +578,30 @@ var utils = {
         }
         return tempStr;
     },
+    getloadstatusStr: function(loadstatus) {
+        var statusStr = '';
+        switch (loadstatus) {
+            case 0x00:
+                statusStr = isZh ? '空车' : '';
+                break;
+            case 0x01:
+                statusStr = isZh ? '半载' : '';
+                break;
+            case 0x02:
+                statusStr = isZh ? '超载' : '';
+                break;
+            case 0x03:
+                statusStr = isZh ? '满载' : '';
+                break;
+            case 0x04:
+                statusStr = isZh ? '装载' : '';
+                break;
+            case 0x05:
+                statusStr = isZh ? '卸载' : '';
+                break;
+        }
+        return statusStr;
+    },
     getLoadStatus: function(track) {
         var loadstatus = track.loadstatus;
         var weight = track.weight;
