@@ -443,20 +443,6 @@
                         me.$Message.success(me.$t("message.deleteSucc"));
                         me.selectType = null;
                         me.removeNodes();
-                        utils.getUserInfoList(function(userlists) {
-                            var filteredUserList = [];
-                            if (userlists != null) {
-                                userlists.forEach(function(item) {
-                                    if (item.usertype < 5) {
-                                        filteredUserList.push({
-                                            username: item.username,
-                                            usertype: item.usertype
-                                        })
-                                    }
-                                });
-                            }
-                            me.userlists = userlists;
-                        });
                     } else if (resp.status == 1) {
                         me.$Message.error(me.$t("message.deleteUserTips") + resp.count);
                     } else {
