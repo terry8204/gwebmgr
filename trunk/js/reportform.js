@@ -5455,13 +5455,13 @@ function timeWeightConsumption(groupslist) {
                                 recvtime = [],
                                 loadstatuss = [],
                                 devStates = [];
+                            var fisstDistance = 0;
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
                                 var independent = item.independent === 0;
                                 records.forEach(function(record, index) {
                                     if (index == 0) {
-                                        self.disMin = record.totaldistance / 1000;
-                                        console.log('self.disMin', self.disMin);
+                                        fisstDistance = record.totaldistance;
                                     }
 
                                     var callon = record.callon.toFixed(5);
@@ -5495,7 +5495,7 @@ function timeWeightConsumption(groupslist) {
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     weights.push(record.weight);
                                     veo.push((record.speed / 1000).toFixed(2));
-                                    record.totaldistance = (record.totaldistance / 1000).toFixed(2);
+                                    record.totaldistance = ((record.totaldistance - fisstDistance) / 1000).toFixed(2);
                                     distance.push(record.totaldistance);
                                     recvtime.push(record.updatetimeStr);
                                     devStates.push(record.strstatus);
@@ -6027,10 +6027,11 @@ function timeOilConsumption(groupslist) {
                                 devStates = [];
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
+                                var firstDistance = 0;
                                 var independent = item.independent === 0;
                                 records.forEach(function(record, index) {
                                     if (index == 0) {
-                                        self.disMin = record.totaldistance / 1000;
+                                        firstDistance = record.totaldistance;
                                     };
                                     var callon = record.callon.toFixed(5);
                                     var callat = record.callat.toFixed(5);
@@ -6059,7 +6060,7 @@ function timeOilConsumption(groupslist) {
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     oil.push(record.oil);
                                     veo.push((record.speed / 1000).toFixed(2));
-                                    record.totaldistance = (record.totaldistance / 1000).toFixed(2);
+                                    record.totaldistance = ((record.totaldistance - firstDistance) / 1000).toFixed(2);
                                     distance.push(record.totaldistance);
                                     recvtime.push(record.updatetimeStr);
                                     oil1.push(record.ad0);
