@@ -5521,7 +5521,203 @@ function timeWeightConsumption(groupslist) {
 
 
 function weightSummary(groupslist) {
+    vueInstanse = new Vue({
+        el: "#weight-summary",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            groupslist: [],
+            columns: [
+                { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename' },
+                { title: vRoot.$t('reportForm.date'), key: 'statisticsday', sortable: true },
+                { title: vRoot.$t('reportForm.mileage') + '(km)', key: 'distance', },
+                { title: vRoot.$t('reportForm.oilConsumption'), key: 'oil', },
+                { title: vRoot.$t('reportForm.fuelConsumption100km'), key: 'oilPercent' },
+            ],
+            tableData: [],
+            recvtime: [],
+            oil: [],
+            distance: [],
+            currentIndex: 1,
+        },
+        mixins: [reportMixin],
+        methods: {
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentPageIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            charts: function() {
+                var dis = vRoot.$t('reportForm.mileage');
+                var cotgas = vRoot.$t('reportForm.oilConsumption');
+                var no_data = vRoot.$t('reportForm.empty');
+                var option = {
+                    tooltip: {
+                        show: true,
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: [dis, cotgas],
+                        y: 13,
+                        x: 'center'
+                    },
 
+                    grid: {
+                        x: 100,
+                        y: 40,
+                        x2: 80,
+                        y2: 30
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        //boundaryGap : false,
+                        axisLabel: {
+                            show: true,
+                            interval: 0, // {number}
+                            rotate: 0,
+                            margin: 8,
+                            textStyle: {
+                                fontSize: 12
+                            }
+                        },
+                        data: this.recvtime.length === 0 ? [no_data] : this.recvtime
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        position: 'bottom',
+                        nameLocation: 'end',
+                        boundaryGap: [0, 0.2],
+                        axisLabel: {
+                            formatter: '{value}'
+                        }
+                    }],
+                    series: [{
+                            name: dis,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                                //悬浮式样式
+                            },
+                            data: this.distance
+                        },
+                        {
+                            name: cotgas,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                            },
+                            data: this.oil
+                        }
+                    ]
+                };
+                this.chartsIns.setOption(option);
+            },
+
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 360;
+            },
+            onClickQuery: function() {
+                if (this.queryDeviceId == "") { return };
+                var self = this;
+                if (this.isSelectAll === null) {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                    return;
+                };
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                };
+                this.loading = true;
+                utils.sendAjax(myUrls.reportWeightSummary(), data, function(resp) {
+                    self.loading = false;
+                    console.log('resp', resp);
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var records = [],
+                                oil = [],
+                                distance = [],
+                                recvtime = [];
+                            resp.records.forEach(function(item, index) {
+                                records = item.records;
+                                records.forEach(function(record) {
+                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
+                                    record.distance = record.enddis - record.begindis;
+                                    record.oil = record.beginoil - record.endoil + record.addoil - record.leakoil;
+                                    record.oil = record.oil / 100;
+                                    record.addoil = record.addoil / 100;
+                                    record.leakoil = record.leakoil / 100;
+
+                                    record.distance = (record.distance / 1000).toFixed(2);
+                                    if (record.distance != 0) {
+                                        record.oilPercent = ((record.oil / (record.distance)) * 100).toFixed(2);
+                                    } else {
+                                        record.oilPercent = 0;
+                                    }
+                                    oil.push(record.oil);
+                                    distance.push(record.distance);
+                                    recvtime.push(record.statisticsday);
+                                });
+                            });
+                            self.oil = oil;
+                            self.distance = distance;
+                            self.recvtime = recvtime;
+
+                            self.records = records;
+                            self.total = records.length;
+
+                            self.currentPageIndex = 1;
+                            self.tableData = records.slice(0, 20);
+                            self.charts();
+                        } else {
+                            self.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
+                })
+            },
+            onSortChange: function(column) {
+
+            }
+        },
+        mounted: function() {
+            this.groupslist = groupslist;
+            this.myChart = null;
+            this.records = [];
+            this.chartsIns = echarts.init(document.getElementById('charts'));
+            this.charts();
+
+        }
+    });
 }
 
 function timeOilConsumption(groupslist) {

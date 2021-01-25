@@ -3476,11 +3476,6 @@ var monitor = {
                 });
                 me.$store.dispatch('setdeviceInfos', me.groups);
                 me.getLastPosition([], function() {
-
-                    // me.caclOnlineCount();
-                    // isNeedRefreshMapUI == true;
-                    // me.updateTreeOnlineState();
-
                     me.addClusterLayer();
                     communicate.$on("positionlast", me.handleWebSocket);
                     communicate.$on("on-click-expiration", function(deviceid) {
