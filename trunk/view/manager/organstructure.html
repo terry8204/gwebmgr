@@ -147,16 +147,7 @@
                     <Row style="margin: 10px 0 0 0" v-show="selectedGroupId==0">
                         <i-col span="8" :offset="4">
                             <Alert type="warning">
-                                <h3>{{$t("device.addNewDeviceTip1")}}</h3>
-                                <p>
-                                    {{$t("device.addNewDeviceTip2")}}
-                                </p>
-                                <p>
-                                    {{$t("device.addNewDeviceTip3")}}
-                                </p>
-                                <p>
-                                    {{$t("device.addNewDeviceTip4")}}
-                                </p>
+                                <h3>{{$t("device.editDefaultGroupNameTip")}}</h3>
                             </Alert>
                         </i-col>
                     </Row>
@@ -453,17 +444,17 @@
                         me.selectType = null;
                         me.removeNodes();
                         utils.getUserInfoList(function(userlists) {
-                        var filteredUserList = [];
-                    		if (userlists != null) {
-								userlists.forEach(function(item) {
-                            	if (item.usertype < 5) {
-                                	filteredUserList.push({
-                                    	username: item.username,
-                                    	usertype: item.usertype
-                                	})
-                            	}
-                        		});
-                    		}
+                            var filteredUserList = [];
+                            if (userlists != null) {
+                                userlists.forEach(function(item) {
+                                    if (item.usertype < 5) {
+                                        filteredUserList.push({
+                                            username: item.username,
+                                            usertype: item.usertype
+                                        })
+                                    }
+                                });
+                            }
                             me.userlists = userlists;
                         });
                     } else if (resp.status == 1) {
@@ -1109,16 +1100,15 @@
                 })
             },
             setUserTypeByUser: function(userType) {
-            debugger;
+                debugger;
                 var allUserTypes = deepClone(vstore.state.userTypeDescrList);
                 var filteredUserTypes = [];
-              	allUserTypes.forEach(function(userItem) {
-              	    //filter the little admin and only the admin 
-              		if(userItem.type > userType && userItem.type < 5)
-              		{
-              			filteredUserTypes.push(userItem);
-              		}
-              	});
+                allUserTypes.forEach(function(userItem) {
+                    //filter the little admin and only the admin 
+                    if (userItem.type > userType && userItem.type < 5) {
+                        filteredUserTypes.push(userItem);
+                    }
+                });
                 this.userTypeList = filteredUserTypes;
             },
             setUserInfo: function(userInfo) {

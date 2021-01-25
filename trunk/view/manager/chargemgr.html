@@ -3,7 +3,7 @@
         <input type="file" id="file" style="display: none;" />
         <div style="float: left;position: relative;width: 210px;line-height:32px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                 <transition name="fade">
                     <div class="search-item-wrapper" v-show="isShowMatchDev">
                         <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
@@ -173,7 +173,6 @@
         new Vue({
             el: '#charge-mgr',
             i18n: utils.getI18n(),
-            mixins: [treeMixin],
             data: {
                 isOk: false,
                 importModal: false,
@@ -252,8 +251,70 @@
                 loading: false,
                 maturityType: '2',
                 bonuspoints: 0,
+                sosoValue: '',
+                isShowMatchDev: false,
+                treeData: [],
             },
             methods: {
+                onCheckedDevice: function(arr) {
+                    this.sosoValue = 121;
+                },
+                onClickOutside: function(e) {
+                    this.readonly = false;
+                    this.isShowMatchDev = false;
+                },
+                focus: function() {
+                    this.readonly = false;
+                    this.isShowMatchDev = true;
+                },
+                sosoValueChange: function() {
+                    var me = this;
+                    var value = this.sosoValue;
+                    this.filterMethod(this.sosoValue);
+                },
+                filterMethod: function(value) {
+                    value = value.toLowerCase();
+                    this.treeData = [];
+                    this.treeData = this.variableDeepSearch(this.groupslist, value, 5);
+                    this.checkedDevice = [];
+                    if (this.isShowMatchDev == false) {
+                        this.isShowMatchDev = true;
+                    }
+                },
+                variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
+                    var childTemp = [];
+                    var that = this;
+                    for (var i = 0; i < treeDataFilter.length; i++) {
+                        var copyItem = null;
+                        var item = treeDataFilter[i];
+                        if (item != null) {
+                            var isFound = false;
+                            if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                                copyItem = deepClone(item);
+                                copyItem.expand = false;
+                                isFound = true;
+                            }
+                            if (isFound == false && item.children && item.children.length > 0) {
+                                var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
+                                if (rs && rs.length > 0) {
+                                    copyItem = deepClone(item);
+                                    copyItem.children = rs;
+                                    copyItem.expand = true;
+                                    isFound = true;
+                                }
+                            }
+                            if (isFound == true) {
+                                limitcount++;
+                                childTemp.push(copyItem);
+                                if (limitcount > 10) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    return childTemp;
+                },
                 queryBonusByUsername: function() {
                     var me = this;
                     var url = myUrls.queryBonusByUsername();

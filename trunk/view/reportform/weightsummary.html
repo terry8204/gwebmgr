@@ -44,10 +44,15 @@
             <div id="charts" style="height: 180px;width: 100%;"></div>
         </div>
         <div style="margin:10px;">
-            <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
-        </div>
-        <div style="padding-left:10px;">
-            <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
+            <Tabs :value="activeTab" @on-click="onClickTab">
+                <Tab-pane label="载重总览" name="tabTotal">
+                    <i-table ref="totalTable" :columns="allWeightColumns" :data="allWeightTableData" :height="lastTableHeight" :loading="loading"></i-table>
+                </Tab-pane>
+                <Tab-pane label="载重明细" name="tabDetail">
+                    <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
+                </Tab-pane>
+            </Tabs>
+
         </div>
     </div>
 </div>
