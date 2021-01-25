@@ -5256,6 +5256,7 @@ function timeWeightConsumption(groupslist) {
             weights: [],
             veo: [],
             distance: [],
+            loadstatuss: [],
             currentIndex: 1,
         },
         mixins: [reportMixin],
@@ -5300,6 +5301,8 @@ function timeWeightConsumption(groupslist) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
                                     } else if (v[i].seriesName == speed) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                    } else {
+                                        data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                     }
                                 }
                             }
@@ -5361,7 +5364,7 @@ function timeWeightConsumption(groupslist) {
                         type: 'value',
                         nameTextStyle: 10,
                         nameGap: 2,
-
+                        min: this.disMin,
                         axisLabel: {
                             formatter: '{value} km',
                         },
@@ -5409,6 +5412,14 @@ function timeWeightConsumption(groupslist) {
                             color: '#000',
                             data: this.devStates
                         },
+                        {
+                            smooth: true,
+                            name: '载重状态',
+                            type: 'line',
+                            symbol: 'none',
+                            // color: '#red',
+                            data: this.loadstatuss
+                        },
                     ]
                 };
 
@@ -5442,11 +5453,17 @@ function timeWeightConsumption(groupslist) {
                                 veo = [],
                                 distance = [],
                                 recvtime = [],
+                                loadstatuss = [],
                                 devStates = [];
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
                                 var independent = item.independent === 0;
-                                records.forEach(function(record) {
+                                records.forEach(function(record, index) {
+                                    if (index == 0) {
+                                        self.disMin = record.totaldistance / 1000;
+                                        console.log('self.disMin', self.disMin);
+                                    }
+
                                     var callon = record.callon.toFixed(5);
                                     var callat = record.callat.toFixed(5);
                                     var address = LocalCacheMgr.getAddress(callon, callat);
@@ -5472,6 +5489,7 @@ function timeWeightConsumption(groupslist) {
                                         record.oil = record.ad0;
                                     }
                                     record.loadstatusStr = utils.getloadstatusStr(record.loadstatus);
+                                    loadstatuss.push(record.loadstatusStr);
                                     record.weight = (record.weight / 10);
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
@@ -5490,6 +5508,7 @@ function timeWeightConsumption(groupslist) {
                             self.recvtime = recvtime;
                             self.records = records;
                             self.devStates = devStates;
+                            self.loadstatuss = loadstatuss;
                             self.total = records.length;
                             records.sort(function(a, b) {
                                 return b.updatetime - a.updatetime;
@@ -5513,6 +5532,7 @@ function timeWeightConsumption(groupslist) {
             this.groupslist = groupslist;
             this.myChart = null;
             this.records = [];
+            this.disMin = 0;
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts();
         }
@@ -5669,22 +5689,22 @@ function weightSummary(groupslist) {
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
                                 records.forEach(function(record) {
-                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
-                                    record.distance = record.enddis - record.begindis;
-                                    record.oil = record.beginoil - record.endoil + record.addoil - record.leakoil;
-                                    record.oil = record.oil / 100;
-                                    record.addoil = record.addoil / 100;
-                                    record.leakoil = record.leakoil / 100;
+                                    // record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
+                                    // record.distance = record.enddis - record.begindis;
+                                    // record.oil = record.beginoil - record.endoil + record.addoil - record.leakoil;
+                                    // record.oil = record.oil / 100;
+                                    // record.addoil = record.addoil / 100;
+                                    // record.leakoil = record.leakoil / 100;
 
-                                    record.distance = (record.distance / 1000).toFixed(2);
-                                    if (record.distance != 0) {
-                                        record.oilPercent = ((record.oil / (record.distance)) * 100).toFixed(2);
-                                    } else {
-                                        record.oilPercent = 0;
-                                    }
-                                    oil.push(record.oil);
-                                    distance.push(record.distance);
-                                    recvtime.push(record.statisticsday);
+                                    // record.distance = (record.distance / 1000).toFixed(2);
+                                    // if (record.distance != 0) {
+                                    //     record.oilPercent = ((record.oil / (record.distance)) * 100).toFixed(2);
+                                    // } else {
+                                    //     record.oilPercent = 0;
+                                    // }
+                                    // oil.push(record.oil);
+                                    // distance.push(record.distance);
+                                    // recvtime.push(record.statisticsday);
                                 });
                             });
                             self.oil = oil;
@@ -5904,7 +5924,7 @@ function timeOilConsumption(groupslist) {
                         type: 'value',
                         nameTextStyle: 10,
                         nameGap: 2,
-
+                        min: this.disMin,
                         axisLabel: {
                             formatter: '{value} km',
                         },
@@ -6008,7 +6028,10 @@ function timeOilConsumption(groupslist) {
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
                                 var independent = item.independent === 0;
-                                records.forEach(function(record) {
+                                records.forEach(function(record, index) {
+                                    if (index == 0) {
+                                        self.disMin = record.totaldistance / 1000;
+                                    };
                                     var callon = record.callon.toFixed(5);
                                     var callat = record.callat.toFixed(5);
                                     var address = LocalCacheMgr.getAddress(callon, callat);
@@ -6076,6 +6099,7 @@ function timeOilConsumption(groupslist) {
             this.groupslist = groupslist;
             this.myChart = null;
             this.records = [];
+            this.disMin = 0;
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts();
         }
