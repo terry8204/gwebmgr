@@ -1,4 +1,7 @@
 <div id="weight-summary">
+    <div class="demo-spin-container" v-if="isSpin">
+        <Spin size="large" fix></Spin>
+    </div>
     <div class="report-item-header">
         <Row style="margin:10px;height: 35px;">
             <div style="float: left;">
@@ -18,18 +21,11 @@
             </div>
             <div style="float: left;position: relative;width: 300px;">
                 <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
+                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-focus="focus" :placeholder="placeholder"></i-input>
                     <transition name="fade">
-                        <ul class="search-item-wrapper" v-show="isShowMatchDev">
-                            <li class="demo-auto-complete-item" v-for="item in filterData">
-                                <div class="demo-auto-complete-group" v-show="item.devices.length">
-                                    <span>{{ item.groupname }}</span>
-                                </div>
-                                <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
-                                    <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.allDeviceIdTitle }}</span>
-                                </div>
-                            </li>
-                        </ul>
+                        <div class="search-item-wrapper" v-show="isShowMatchDev">
+                            <ul id="ztree" class="ztree"></ul>
+                        </div>
                     </transition>
                 </div>
             </div>
@@ -40,16 +36,16 @@
                 <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
             </div>
         </Row>
-        <div style="width:100%;height: 180px;position: relative;">
-            <div id="charts" style="height: 180px;width: 100%;"></div>
+        <div style="width:600px;height: 380px;position: relative;margin: 0 auto;">
+            <div id="charts" style="height: 380px;width: 100%;"></div>
         </div>
         <div style="margin:10px;">
             <Tabs :value="activeTab" @on-click="onClickTab">
                 <Tab-pane label="载重总览" name="tabTotal">
-                    <i-table ref="totalTable" :columns="allWeightColumns" :data="allWeightTableData" :height="lastTableHeight" :loading="loading"></i-table>
+                    <i-table ref="totalTable" highlight-row @on-current-change="onCurrentChange" :columns="allWeightColumns" :data="allWeightTableData" :height="lastTableHeight" :loading="loading"></i-table>
                 </Tab-pane>
                 <Tab-pane label="载重明细" name="tabDetail">
-                    <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
+                    <i-table ref="detailTable" :columns="columns" highlight-row @on-current-change="onCurrentChange" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
                 </Tab-pane>
             </Tabs>
 

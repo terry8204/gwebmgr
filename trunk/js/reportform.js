@@ -5545,31 +5545,43 @@ function weightSummary(groupslist) {
         el: "#weight-summary",
         i18n: utils.getI18n(),
         data: {
+            isSpin: false,
             loading: false,
             groupslist: [],
             columns: [
                 { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename' },
                 { title: vRoot.$t('reportForm.date'), key: 'statisticsday', sortable: true },
-                { title: '载重状态', key: 'loadstatusStr', },
-                { title: vRoot.$t('reportForm.mileage') + '(km)', key: 'distance', },
-                { title: '时长', key: 'durationtimeStr', },
+                { title: '空车时长', key: 'emptyDurationTime' },
+                { title: '空车里程', key: 'emptyDurationDist' },
+                { title: '半载时长', key: 'halfLoadDurationTime' },
+                { title: '半载里程', key: 'halfLoadDurationDist' },
+                { title: '超载时长', key: 'overDurationTime' },
+                { title: '超载里程', key: 'overDurationDist' },
+                { title: '满载时长', key: 'fullDurationTime' },
+                { title: '满载里程', key: 'fullDurationDist' },
+                { title: '装载时长', key: 'loadingDurationTime' },
+                { title: '装载里程', key: 'loadingDurationDist' },
+                { title: '卸载时长', key: 'unloadDurationTime' },
+                { title: '卸载里程', key: 'unloadDurationDist' },
             ],
             tableData: [],
             seriesData: [],
 
             activeTab: 'tabTotal',
             allWeightColumns: [
-                { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
+                { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
                 {
                     title: vRoot.$t("alarm.action"),
-                    width: 160,
+                    width: 100,
                     render: function(h, params) {
                         return h('span', {
                             on: {
-                                click: function() {
+                                click: function(e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
                                     vueInstanse.activeTab = "tabDetail";
-                                    vueInstanse.getDetailTableData(params.row.deviceid, params.row.records);
+                                    vueInstanse.getDetailTableData(params.row.deviceid, params.row.dailyrecords);
                                 }
                             },
                             style: {
@@ -5580,157 +5592,242 @@ function weightSummary(groupslist) {
                     }
                 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename' },
-                { title: vRoot.$t('reportForm.date'), key: 'statisticsday', sortable: true },
-
+                { title: '空车时长', key: 'emptyDurationTime' },
+                { title: '空车里程', key: 'emptyDurationDist' },
+                { title: '半载时长', key: 'halfLoadDurationTime' },
+                { title: '半载里程', key: 'halfLoadDurationDist' },
+                { title: '超载时长', key: 'overDurationTime' },
+                { title: '超载里程', key: 'overDurationDist' },
+                { title: '满载时长', key: 'fullDurationTime' },
+                { title: '满载里程', key: 'fullDurationDist' },
+                { title: '装载时长', key: 'loadingDurationTime' },
+                { title: '装载里程', key: 'loadingDurationDist' },
+                { title: '卸载时长', key: 'unloadDurationTime' },
+                { title: '卸载里程', key: 'unloadDurationDist' },
+                //载重状态 0x00：空车；0x01：半载；0x02：超载；0x03：满载 0x04 装载 0x05 卸载
             ],
             allWeightTableData: [],
         },
-        mixins: [reportMixin],
+        mixins: [treeMixin],
         methods: {
             getDetailTableData: function(deviceid, records) {
-
+                var tableData = [];
+                records.forEach(function(dayItem) {
+                    var item = { deviceid: deviceid };
+                    item.statisticsday = dayItem.statisticsday;
+                    item.devicename = vstore.state.deviceInfos[deviceid].devicename;
+                    dayItem.records.forEach(function(totalRecord) {
+                        switch (totalRecord.loadstatus) {
+                            case 0:
+                                item.emptyDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                item.emptyDurationDist = totalRecord.durationdistance;
+                                item.durationtime0 = totalRecord.durationtime / 1000 / 60;
+                                break;
+                            case 1:
+                                item.halfLoadDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                item.halfLoadDurationDist = totalRecord.durationdistance;
+                                item.durationtime1 = totalRecord.durationtime / 1000 / 60;
+                                break;
+                            case 2:
+                                item.overDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                item.overDurationDist = totalRecord.durationdistance;
+                                item.durationtime2 = totalRecord.durationtime / 1000 / 60;
+                                break;
+                            case 3:
+                                item.fullDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                item.fullDurationDist = totalRecord.durationdistance;
+                                item.durationtime3 = totalRecord.durationtime / 1000 / 60;
+                                break;
+                            case 4:
+                                item.loadingDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                item.loadingDurationDist = totalRecord.durationdistance;
+                                item.durationtime4 = totalRecord.durationtime / 1000 / 60;
+                                break;
+                            case 5:
+                                item.unloadDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                item.unloadDurationDist = totalRecord.durationdistance;
+                                item.durationtime5 = totalRecord.durationtime / 1000 / 60;
+                                break;
+                        }
+                    });
+                    tableData.push(item);
+                });
+                this.tableData = tableData;
             },
             onClickTab: function(name) {
                 this.activeTab = name;
             },
-            charts: function() {
+            onCurrentChange: function(current) {
+                var seriesData = [];
+                var titleText = '';
+                if (current.statisticsday) {
+                    titleText = '载重时长-' + current.deviceid + '-' + current.statisticsday;
+                } else {
+                    titleText = '载重时长-' + current.deviceid;
+                }
+                for (var i = 0; i < 6; i++) {
+                    var title = utils.getloadstatusStr(i) + '时长';
+                    seriesData.push({
+                        value: current['durationtime' + i],
+                        name: title
+                    });
+                }
+                this.seriesData = seriesData;
+                this.charts(titleText);
+            },
+            charts: function(title) {
                 var option = {
-                    backgroundColor: '#2c343c',
-
                     title: {
-                        text: '载重时长',
-                        left: 'center',
-                        top: 20,
-                        textStyle: {
-                            color: '#ccc'
-                        }
+                        text: title,
+                        bottom: 'auto'
                     },
-
                     tooltip: {
                         trigger: 'item'
                     },
-
-                    visualMap: {
-                        show: false,
-                        min: 80,
-                        max: 600,
-                        inRange: {
-                            colorLightness: [0, 1]
-                        }
+                    legend: {
+                        orient: 'vertical',
+                        left: 'right',
                     },
+                    // grid: {
+                    //     top: 5,
+                    //     left: 20,
+                    //     right: 5,
+                    //     bottom: 5,
+                    // },
                     series: [{
-                        name: '载重时长',
                         type: 'pie',
-                        radius: '55%',
-                        center: ['50%', '50%'],
-                        data: this.seriesData.sort(function(a, b) { return a.value - b.value; }),
-                        roseType: 'radius',
-                        label: {
-                            color: 'rgba(255, 255, 255, 0.3)'
-                        },
-                        labelLine: {
-                            lineStyle: {
-                                color: 'rgba(255, 255, 255, 0.3)'
-                            },
-                            smooth: 0.2,
-                            length: 10,
-                            length2: 20
-                        },
-                        itemStyle: {
-                            color: '#c23531',
-                            shadowBlur: 200,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        },
-
-                        animationType: 'scale',
-                        animationEasing: 'elasticOut',
-                        animationDelay: function(idx) {
-                            return Math.random() * 200;
+                        radius: '70%',
+                        data: this.seriesData,
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
                         }
                     }]
-                };
+                };;
                 this.chartsIns.setOption(option);
             },
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 360;
+                this.lastTableHeight = wHeight - 615;
             },
             onClickQuery: function() {
-                if (this.queryDeviceId == "") { return };
-                var self = this;
-                if (this.isSelectAll === null) {
-                    this.$Message.error(this.$t("reportForm.selectDevTip"));
-                    return;
-                };
-                var data = {
-                    // username: vstore.state.userName,
-                    startday: this.dateVal[0],
-                    endday: this.dateVal[1],
-                    offset: timeDifference,
-                    devices: [this.queryDeviceId],
-                };
-                this.loading = true;
-                utils.sendAjax(myUrls.reportWeightSummary(), data, function(resp) {
-                    self.loading = false;
-                    console.log('resp', resp);
-                    if (resp.status == 0) {
-                        if (resp.records) {
-                            var records = [],
-                                tiems = [],
-                                distance = [],
-                                recvtime = [],
-                                tableData = [],
-                                seriesData = [];
-                            resp.records.forEach(function(devItem, index) {
-                                records = devItem.dailyrecords;
-                                records.forEach(function(dayItem) {
-                                    dayItem.records.forEach(function name(record) {
-                                        var item = {}
-                                        item.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
-                                        item.statisticsday = dayItem.statisticsday;
-                                        item.distance = (record.durationdistance / 1000).toFixed(2);
-                                        item.loadstatusStr = utils.getloadstatusStr(record.loadstatus);
-                                        item.durationtimeStr = utils.timeStampNoSecond(record.durationtime);
-                                        seriesData.push({
-                                            value: (record.durationtime / 1000 / 3600).toFixed(2),
-                                            name: item.loadstatusStr
-                                        })
-                                        tableData.push(item);
-                                    })
-                                });
-                            });
-                            self.tiems = tiems;
-                            self.distance = distance;
-                            self.recvtime = recvtime;
-
-                            self.records = records;
-                            self.total = records.length;
-
-                            self.currentPageIndex = 1;
-                            self.tableData = tableData;
-                            self.seriesData = seriesData;
-                            // self.tableData = records.slice(0, 20);
-                            self.charts();
-                        } else {
-                            self.$Message.error(self.$t("reportForm.noRecord"));
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
                         }
-                    } else {
-                        self.$Message.error(resp.cause);
                     }
-                })
+                });
+
+                if (deviceids.length) {
+                    var self = this;
+                    var data = {
+                        // username: vstore.state.userName,
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: timeDifference,
+                        devices: deviceids,
+                    };
+                    this.loading = true;
+                    this.activeTab = 'tabTotal';
+                    utils.sendAjax(myUrls.reportWeightSummary(), data, function(resp) {
+                        self.loading = false;
+                        console.log('resp', resp);
+                        if (resp.status == 0) {
+                            if (resp.records) {
+                                var tableData = [];
+
+                                resp.records.forEach(function(deyItem, index) {
+                                    var totalObj = {
+                                        index: index + 1,
+                                        deviceid: deyItem.deviceid,
+                                        devicename: vstore.state.deviceInfos[deyItem.deviceid].devicename,
+                                        dailyrecords: deyItem.dailyrecords,
+                                    }
+                                    deyItem.totalrecords.forEach(function(totalRecord) {
+                                        switch (totalRecord.loadstatus) {
+                                            case 0:
+                                                totalObj.emptyDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                                totalObj.emptyDurationDist = totalRecord.durationdistance;
+                                                totalObj.durationtime0 = totalRecord.durationtime / 1000 / 60;
+                                                break;
+                                            case 1:
+                                                totalObj.halfLoadDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                                totalObj.halfLoadDurationDist = totalRecord.durationdistance;
+                                                totalObj.durationtime1 = totalRecord.durationtime / 1000 / 60;
+                                                break;
+                                            case 2:
+                                                totalObj.overDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                                totalObj.overDurationDist = totalRecord.durationdistance;
+                                                totalObj.durationtime2 = totalRecord.durationtime / 1000 / 60;
+                                                break;
+                                            case 3:
+                                                totalObj.fullDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                                totalObj.fullDurationDist = totalRecord.durationdistance;
+                                                totalObj.durationtime3 = totalRecord.durationtime / 1000 / 60;
+                                                break;
+                                            case 4:
+                                                totalObj.loadingDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                                totalObj.loadingDurationDist = totalRecord.durationdistance;
+                                                totalObj.durationtime4 = totalRecord.durationtime / 1000 / 60;
+                                                break;
+                                            case 5:
+                                                totalObj.unloadDurationTime = utils.timeStampNoSecond(totalRecord.durationtime);
+                                                totalObj.unloadDurationDist = totalRecord.durationdistance;
+                                                totalObj.durationtime5 = totalRecord.durationtime / 1000 / 60;
+                                                break;
+                                        }
+                                    });
+
+                                    tableData.push(totalObj);
+
+                                });
+
+                                self.allWeightTableData = tableData;
+                                setTimeout(function name() {
+                                    self.$refs.totalTable.$refs.tbody.clickCurrentRow(0);
+                                }, 800);
+
+                            } else {
+                                self.$Message.error(self.$t("reportForm.noRecord"));
+                            }
+                        } else {
+                            self.$Message.error(resp.cause);
+                        }
+                    })
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+
             },
             onSortChange: function(column) {
 
             }
         },
         mounted: function() {
-            this.groupslist = groupslist;
+            var me = this;
+
             this.myChart = null;
             this.records = [];
             this.chartsIns = echarts.init(document.getElementById('charts'));
-            this.charts();
-
+            this.charts("载重时长");
+            if (rootuser == null) {
+                me.isSpin = true;
+                utils.queryDevicesTree(function(rootuserinfo) {
+                    me.isSpin = false;
+                    if (rootuserinfo) {
+                        rootuser = rootuserinfo;
+                        me.initZTree(rootuser);
+                    }
+                });
+            } else {
+                me.initZTree(rootuser);
+            }
         }
     });
 }
