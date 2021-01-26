@@ -3,6 +3,8 @@
     <input type="file" id="file1" style="display: none;" />
     <input type="file" id="file2" style="display: none;" />
     <input type="file" id="file3" style="display: none;" />
+    <input type="file" id="file4" style="display: none;" />
+    <input type="file" id="file5" style="display: none;" />
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.queryDev")}}</h3>
         <ul>
@@ -568,7 +570,6 @@
                             </Row>
                             <i-table border :columns="taggingColumns1" ref="taggingTab1" :data="taggingData1" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
-
                                 <i-button type="primary" @click="importTownerInfo1">{{$t("device.import")}}</i-button>
                                 <i-button type="info" @click="exportDevice1">{{$t("reportForm.exportData")}}</i-button>
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
@@ -712,6 +713,288 @@
                             <div style="margin: 10px 0 0 0;text-align: right;">
                                 <i-button type="primary" style="width:80px;" @click="importTownerInfo2">{{$t("device.import")}}</i-button>
                                 <i-button type="info" style="width:80px;" @click="exportDevice2">{{$t("reportForm.exportData")}}</i-button>
+                                <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
+                            </div>
+                        </div>
+                    </tab-pane>
+                    <tab-pane :label="$t('device.oil3')" style="min-height: 210px;" name="oil3">
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                {{$t("device.threshold")}}:
+                            </i-col>
+                            <i-col span="5">
+                                <input-number :max="10000" :min="1" v-model.trim.number="threshold3" style="width:100%"></input-number>
+                            </i-col>
+                            <i-col span="1" style="line-height: 32px;">
+                                L
+                            </i-col>
+                            <i-col span="14" style="line-height: 18px;">
+                                {{$t("device.thresholdDesc")}}
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                {{$t("device.tankShape")}}:
+                            </i-col>
+                            <i-col span="6">
+                                <i-select v-model="tankShape3" style="width:128.75px">
+                                    <i-option value="0">{{$t("device.noTank")}}</i-option>
+                                    <i-option value="1">{{$t("device.cuboid")}}</i-option>
+                                    <i-option value="2">{{$t("device.verticalCylinder")}}</i-option>
+                                    <i-option value="3">{{$t("device.transverseCylinder")}}</i-option>
+                                    <i-option value="4">{{$t("device.irregular")}}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="line-height: 32px;text-align: center;" v-show="isShowMaxAdValue3">
+                                {{$t("device.maxAnalogQuantity")}} :
+                            </i-col>
+                            <i-col span="5" v-show="isShowMaxAdValue3">
+                                <input-number :max="65535" :min="1" v-model.trim.number="maxAdValue3" style="width:100%"></input-number>
+                            </i-col>
+                        </Row>
+                        <div v-if="tankShape3 == 1">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankLength")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="length3" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankWidth")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="width3" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankHeight")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="height3" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape3 == 3">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankHeight")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="height3" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankDiameter")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="diameter3" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape3 == 3">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankLength")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="width3" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankDiameter")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="diameter3" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape3 == 4">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.scale")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="65535" :min="0" v-model.trim.number="tagging3" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col offset="1" span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.calibratedFluid")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="0" v-model.trim.number="taggingOil3" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    L
+                                </i-col>
+                                <i-col span="2">
+                                    <i-button type="primary" @click="addTaggingRowData3">{{$t("user.add")}}</i-button>
+                                </i-col>
+                            </Row>
+                            <i-table border :columns="taggingColumns3" ref="taggingTab3" :data="taggingData3" height="200"></i-table>
+                            <div style="margin: 10px 0 0 0;text-align: right;">
+                                <i-button type="primary" style="width:80px;" @click="importTownerInfo3">{{$t("device.import")}}</i-button>
+                                <i-button type="info" style="width:80px;" @click="exportDevice3">{{$t("reportForm.exportData")}}</i-button>
+                                <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
+                            </div>
+                        </div>
+                    </tab-pane>
+                    <tab-pane :label="$t('device.oil4')" style="min-height: 210px;" name="oil4">
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                {{$t("device.threshold")}}:
+                            </i-col>
+                            <i-col span="5">
+                                <input-number :max="10000" :min="1" v-model.trim.number="threshold4" style="width:100%"></input-number>
+                            </i-col>
+                            <i-col span="1" style="line-height: 32px;">
+                                L
+                            </i-col>
+                            <i-col span="14" style="line-height: 18px;">
+                                {{$t("device.thresholdDesc")}}
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0;">
+                            <i-col span="4" style="line-height: 32px;text-align: center;">
+                                {{$t("device.tankShape")}}:
+                            </i-col>
+                            <i-col span="6">
+                                <i-select v-model="tankShape4" style="width:128.75px">
+                                    <i-option value="0">{{$t("device.noTank")}}</i-option>
+                                    <i-option value="1">{{$t("device.cuboid")}}</i-option>
+                                    <i-option value="2">{{$t("device.verticalCylinder")}}</i-option>
+                                    <i-option value="3">{{$t("device.transverseCylinder")}}</i-option>
+                                    <i-option value="4">{{$t("device.irregular")}}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="line-height: 32px;text-align: center;" v-show="isShowMaxAdValue4">
+                                {{$t("device.maxAnalogQuantity")}} :
+                            </i-col>
+                            <i-col span="5" v-show="isShowMaxAdValue4">
+                                <input-number :max="65535" :min="1" v-model.trim.number="maxAdValue4" style="width:100%"></input-number>
+                            </i-col>
+                        </Row>
+                        <div v-if="tankShape4 == 1">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankLength")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="length4" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankWidth")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="width4" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankHeight")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="height4" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape4 == 3">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankHeight")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="height4" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankDiameter")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="diameter4" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape4 == 3">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankLength")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="width4" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.tankDiameter")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="1" v-model.trim.number="diameter4" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    cm
+                                </i-col>
+                            </Row>
+                        </div>
+                        <div v-if="tankShape4 == 4">
+                            <Row style="margin: 10px 0;">
+                                <i-col span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.scale")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="65535" :min="0" v-model.trim.number="tagging4" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col offset="1" span="4" style="line-height: 32px;text-align: center;">
+                                    {{$t("device.calibratedFluid")}}:
+                                </i-col>
+                                <i-col span="5">
+                                    <input-number :max="1500" :min="0" v-model.trim.number="taggingOil4" style="width:100%"></input-number>
+                                </i-col>
+                                <i-col span="1" style="line-height: 32px;">
+                                    L
+                                </i-col>
+                                <i-col span="2">
+                                    <i-button type="primary" @click="addTaggingRowData4">{{$t("user.add")}}</i-button>
+                                </i-col>
+                            </Row>
+                            <i-table border :columns="taggingColumns4" ref="taggingTab4" :data="taggingData4" height="200"></i-table>
+                            <div style="margin: 10px 0 0 0;text-align: right;">
+                                <i-button type="primary" style="width:80px;" @click="importTownerInfo4">{{$t("device.import")}}</i-button>
+                                <i-button type="info" style="width:80px;" @click="exportDevice4">{{$t("reportForm.exportData")}}</i-button>
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
@@ -889,6 +1172,8 @@
 
                 threshold1: 30,
                 threshold2: 30,
+                threshold3: 30,
+                threshold4: 30,
 
                 oilModal: false, //石油 
                 weightModal: false, //石油 
@@ -913,6 +1198,26 @@
                 tagging2: 0,
                 taggingOil2: 0,
                 taggingData2: [],
+                //
+                tankShape3: '0', //油箱形状
+                maxAdValue3: 65535,
+                length3: 0,
+                width3: 0,
+                height3: 0,
+                diameter3: 0, //圆柱体直径
+                tagging3: 0,
+                taggingOil3: 0,
+                taggingData3: [],
+                //
+                tankShape4: '0', //油箱形状
+                maxAdValue4: 65535,
+                length4: 0,
+                width4: 0,
+                height4: 0,
+                diameter4: 0, //圆柱体直径
+                tagging4: 0,
+                taggingOil4: 0,
+                taggingData4: [],
                 taggingColumns1: [{
                     type: 'index',
                     width: 50
@@ -962,6 +1267,60 @@
                             on: {
                                 click: function() {
                                     vueInstanse.taggingData2.splice(index, 1);
+                                }
+                            }
+                        }, vRoot.$t('monitor.delete'))
+                    },
+                }],
+                taggingColumns3: [{
+                    type: 'index',
+                    width: 50
+                }, {
+                    key: 'height',
+                    title: vRoot.$t('device.scale'),
+                }, {
+                    key: 'volume',
+                    title: vRoot.$t('reportForm.oil'),
+                }, {
+                    title: vRoot.$t('alarm.action'),
+                    width: 100,
+                    render: function(h, params) {
+                        var index = params.index;
+                        return h('Button', {
+                            props: {
+                                type: 'error',
+                                size: 'small'
+                            },
+                            on: {
+                                click: function() {
+                                    vueInstanse.taggingData3.splice(index, 1);
+                                }
+                            }
+                        }, vRoot.$t('monitor.delete'))
+                    },
+                }],
+                taggingColumns4: [{
+                    type: 'index',
+                    width: 50
+                }, {
+                    key: 'height',
+                    title: vRoot.$t('device.scale'),
+                }, {
+                    key: 'volume',
+                    title: vRoot.$t('reportForm.oil'),
+                }, {
+                    title: vRoot.$t('alarm.action'),
+                    width: 100,
+                    render: function(h, params) {
+                        var index = params.index;
+                        return h('Button', {
+                            props: {
+                                type: 'error',
+                                size: 'small'
+                            },
+                            on: {
+                                click: function() {
+                                    vueInstanse.taggingData4.splice(index, 1);
                                 }
                             }
                         }, vRoot.$t('monitor.delete'))
@@ -1145,6 +1504,24 @@
                                                     vueInstanse.maxAdValue2 = item.maxAdValue;
                                                     vueInstanse.taggingData2 = item.markers;
                                                     vueInstanse.threshold2 = item.threshold;
+                                                } else if (index == 2) {
+                                                    vueInstanse.tankShape3 = String(item.appearance);
+                                                    vueInstanse.diameter3 = item.diameter;
+                                                    vueInstanse.height3 = item.height;
+                                                    vueInstanse.length3 = item.length;
+                                                    vueInstanse.width3 = item.width;
+                                                    vueInstanse.maxAdValue3 = item.maxAdValue;
+                                                    vueInstanse.taggingData3 = item.markers;
+                                                    vueInstanse.threshold3 = item.threshold;
+                                                } else if (index == 4) {
+                                                    vueInstanse.tankShape4 = String(item.appearance);
+                                                    vueInstanse.diameter4 = item.diameter;
+                                                    vueInstanse.height4 = item.height;
+                                                    vueInstanse.length4 = item.length;
+                                                    vueInstanse.width4 = item.width;
+                                                    vueInstanse.maxAdValue4 = item.maxAdValue;
+                                                    vueInstanse.taggingData4 = item.markers;
+                                                    vueInstanse.threshold4 = item.threshold;
                                                 }
                                             });
                                             vueInstanse.$Message.success(vRoot.$t('device.importSucc'));
@@ -1543,7 +1920,27 @@
                             markers: this.taggingData2,
                             threshold: this.threshold2
                         };
-                        var oildetectors = [oilDetector1, oilDetector2];
+                        var oilDetector3 = {
+                            appearance: Number(this.tankShape3),
+                            maxAdValue: this.maxAdValue3,
+                            length: this.length3,
+                            width: this.width3,
+                            height: this.height3,
+                            diameter: this.diameter3,
+                            markers: this.taggingData3,
+                            threshold: this.threshold3
+                        };
+                        var oilDetector4 = {
+                            appearance: Number(this.tankShape4),
+                            maxAdValue: this.maxAdValue4,
+                            length: this.length4,
+                            width: this.width4,
+                            height: this.height4,
+                            diameter: this.diameter4,
+                            markers: this.taggingData4,
+                            threshold: this.threshold4
+                        };
+                        var oildetectors = [oilDetector1, oilDetector2, oilDetector3, oilDetector4];
                         var url = myUrls.saveOilDetectors(),
                             me = this;
                         var data = {
@@ -1620,6 +2017,52 @@
                             return b.height - a.height;
                         });
                         this.taggingData2 = taggingData;
+                    }
+                },
+                addTaggingRowData3: function() {
+                    var isHas = false;
+                    var taggingData = deepClone(this.taggingData3);
+                    for (var i = 0; i < taggingData.length; i++) {
+                        var item = taggingData[i];
+                        if (item.height === this.tagging3) {
+                            isHas = true;
+                            break;
+                        }
+                    }
+                    if (isHas) {
+                        this.$Message.error(vRoot.$t('device.scaleAlreadyExists'));
+                    } else {
+                        taggingData.push({
+                            height: this.tagging3,
+                            volume: this.taggingOil3
+                        });
+                        taggingData.sort(function(a, b) {
+                            return b.height - a.height;
+                        });
+                        this.taggingData3 = taggingData;
+                    }
+                },
+                addTaggingRowData4: function() {
+                    var isHas = false;
+                    var taggingData = deepClone(this.taggingData4);
+                    for (var i = 0; i < taggingData.length; i++) {
+                        var item = taggingData[i];
+                        if (item.height === this.tagging4) {
+                            isHas = true;
+                            break;
+                        }
+                    }
+                    if (isHas) {
+                        this.$Message.error(vRoot.$t('device.scaleAlreadyExists'));
+                    } else {
+                        taggingData.push({
+                            height: this.tagging4,
+                            volume: this.taggingOil4
+                        });
+                        taggingData.sort(function(a, b) {
+                            return b.height - a.height;
+                        });
+                        this.taggingData4 = taggingData;
                     }
                 },
                 handleEditInsure: function() {
@@ -1872,6 +2315,24 @@
                                     me.maxAdValue2 = item.maxAdValue;
                                     me.taggingData2 = item.markers;
                                     me.threshold2 = item.threshold;
+                                } else if (index == 2) {
+                                    me.tankShape3 = String(item.appearance);
+                                    me.diameter3 = item.diameter;
+                                    me.height3 = item.height;
+                                    me.length3 = item.length;
+                                    me.width3 = item.width;
+                                    me.maxAdValue3 = item.maxAdValue;
+                                    me.taggingData3 = item.markers;
+                                    me.threshold3 = item.threshold;
+                                } else if (index == 3) {
+                                    me.tankShape4 = String(item.appearance);
+                                    me.diameter4 = item.diameter;
+                                    me.height4 = item.height;
+                                    me.length4 = item.length;
+                                    me.width4 = item.width;
+                                    me.maxAdValue4 = item.maxAdValue;
+                                    me.taggingData4 = item.markers;
+                                    me.threshold4 = item.threshold;
                                 }
                             })
                         } else {
@@ -1941,7 +2402,27 @@
                         markers: this.taggingData2,
                         threshold: this.threshold2
                     };
-                    var oildetectors = [oilDetector1, oilDetector2];
+                    var oilDetector3 = {
+                        appearance: Number(this.tankShape3),
+                        maxAdValue: this.maxAdValue3,
+                        length: this.length3,
+                        width: this.width3,
+                        height: this.height3,
+                        diameter: this.diameter3,
+                        markers: this.taggingData3,
+                        threshold: this.threshold3
+                    };
+                    var oilDetector4 = {
+                        appearance: Number(this.tankShape4),
+                        maxAdValue: this.maxAdValue4,
+                        length: this.length4,
+                        width: this.width4,
+                        height: this.height4,
+                        diameter: this.diameter4,
+                        markers: this.taggingData4,
+                        threshold: this.threshold4
+                    };
+                    var oildetectors = [oilDetector1, oilDetector2, oilDetector3, oilDetector4];
                     var url = myUrls.saveOilDetectors(),
                         me = this;
                     var data = {
@@ -2269,6 +2750,53 @@
                             }
 
                             tableData.push({
+                                height: excelData[vinnoKey] ? excelData[vinnoKey].v : '',
+                                volume: excelData[policynoKey] ? excelData[policynoKey].v : '',
+                            })
+
+                            indexY++;
+                        }
+                        this.taggingData3 = tableData;
+                    } catch (error) {
+                        this.$Message.error(vRoot.$t('message.useTemplateTips'));
+                    }
+                },
+                parserExcelData4: function(excelData) {
+                    try {
+                        var indexY = 2;
+                        var tableData = [];
+                        while (true) {
+                            var vinnoKey = this.excelX[0] + indexY; //设备ID
+                            var policynoKey = this.excelX[1] + indexY; //防盗号
+
+                            if (excelData[vinnoKey] == undefined) {
+                                break;
+                            }
+
+                            tableData.push({
+                                height: excelData[vinnoKey] ? excelData[vinnoKey].v : '',
+                                volume: excelData[policynoKey] ? excelData[policynoKey].v : '',
+                            })
+                            indexY++;
+                        }
+                        this.taggingData4 = tableData;
+                    } catch (error) {
+                        this.$Message.error(vRoot.$t('message.useTemplateTips'));
+                    }
+                },
+                parserExcelData5: function(excelData) {
+                    try {
+                        var indexY = 2;
+                        var tableData = [];
+                        while (true) {
+                            var vinnoKey = this.excelX[0] + indexY; //设备ID
+                            var policynoKey = this.excelX[1] + indexY; //防盗号
+
+                            if (excelData[vinnoKey] == undefined) {
+                                break;
+                            }
+
+                            tableData.push({
                                 advalue: excelData[vinnoKey] ? excelData[vinnoKey].v : '',
                                 weight: excelData[policynoKey] ? excelData[policynoKey].v : '',
                             })
@@ -2281,9 +2809,9 @@
                     }
                 },
                 importWeightData: function() {
-                    this.fileEl3.files.length = 0;
-                    this.fileEl3.value = "";
-                    this.fileEl3.click();
+                    this.fileEl5.files.length = 0;
+                    this.fileEl5.value = "";
+                    this.fileEl5.click();
                 },
                 importTownerInfo1: function() {
                     this.fileEl1.files.length = 0;
@@ -2294,6 +2822,16 @@
                     this.fileEl2.files.length = 0;
                     this.fileEl2.value = "";
                     this.fileEl2.click();
+                },
+                importTownerInfo3: function() {
+                    this.fileEl3.files.length = 0;
+                    this.fileEl3.value = "";
+                    this.fileEl3.click();
+                },
+                importTownerInfo4: function() {
+                    this.fileEl4.files.length = 0;
+                    this.fileEl4.value = "";
+                    this.fileEl4.click();
                 },
                 exportDevice1: function() {
                     var taggingColumns1 = deepClone(this.taggingColumns1);
@@ -2306,17 +2844,6 @@
                         quoted: true,
                     });
                 },
-                exportWeightData: function() {
-                    var weightColumns = deepClone(this.weightColumns);
-                    weightColumns.pop();
-                    weightColumns.shift();
-                    this.$refs.weightTable.exportCsv({
-                        filename: vRoot.$t('device.weightMarking') + '-' + editObject.deviceid + '-' + this.sensorType,
-                        columns: weightColumns,
-                        data: this.weightData,
-                        quoted: true,
-                    });
-                },
                 exportDevice2: function() {
                     var taggingColumns2 = deepClone(this.taggingColumns2);
                     taggingColumns2.pop();
@@ -2325,6 +2852,39 @@
                         filename: vRoot.$t('device.calibration'),
                         columns: taggingColumns2,
                         data: this.taggingData2,
+                        quoted: true,
+                    });
+                },
+                exportDevice3: function() {
+                    var taggingColumns3 = deepClone(this.taggingColumns3);
+                    taggingColumns3.pop();
+                    taggingColumns3.shift();
+                    this.$refs.taggingTab3.exportCsv({
+                        filename: vRoot.$t('device.calibration'),
+                        columns: taggingColumns3,
+                        data: this.taggingData3,
+                        quoted: true,
+                    });
+                },
+                exportDevice4: function() {
+                    var taggingColumns4 = deepClone(this.taggingColumns4);
+                    taggingColumns4.pop();
+                    taggingColumns4.shift();
+                    this.$refs.taggingTab4.exportCsv({
+                        filename: vRoot.$t('device.calibration'),
+                        columns: taggingColumns4,
+                        data: this.taggingData4,
+                        quoted: true,
+                    });
+                },
+                exportWeightData: function() {
+                    var weightColumns = deepClone(this.weightColumns);
+                    weightColumns.pop();
+                    weightColumns.shift();
+                    this.$refs.weightTable.exportCsv({
+                        filename: vRoot.$t('device.weightMarking') + '-' + editObject.deviceid + '-' + this.sensorType,
+                        columns: weightColumns,
+                        data: this.weightData,
                         quoted: true,
                     });
                 },
@@ -2353,6 +2913,12 @@
                 },
                 isShowMaxAdValue2: function() {
                     return this.tankShape2 != '0' && this.tankShape2 != '4';
+                },
+                isShowMaxAdValue3: function() {
+                    return this.tankShape3 != '0' && this.tankShape3 != '4';
+                },
+                isShowMaxAdValue4: function() {
+                    return this.tankShape4 != '0' && this.tankShape4 != '4';
                 },
                 disabledOverdueTime: function() {
                     return this.userType > 4;
@@ -2383,10 +2949,6 @@
                 this.fileEl1.onchange = function(e) {
                     var idx = e.srcElement.value.lastIndexOf('.');
                     var houzhui = e.srcElement.value.slice(idx);
-                    // if (houzhui.indexOf('xls') == -1) {
-                    //     me.$Message.error("请选择我们提供的模版提交");
-                    //     return;
-                    // }
                     var file = e.target.files[0]
                     me.readWorkbookFromLocalFile(file, function(workbook) {
                         me.parserExcelData1(workbook.Sheets['测量标定']);
@@ -2409,10 +2971,30 @@
                 this.fileEl3.onchange = function(e) {
                     var idx = e.srcElement.value.lastIndexOf('.');
                     var houzhui = e.srcElement.value.slice(idx);
+                    var file = e.target.files[0]
+                    me.readWorkbookFromLocalFile(file, function(workbook) {
+                        me.parserExcelData3(workbook.Sheets['测量标定']);
+                    });
+                };
+
+                this.fileEl4 = document.getElementById('file4');
+                this.fileEl4.onchange = function(e) {
+                    var idx = e.srcElement.value.lastIndexOf('.');
+                    var houzhui = e.srcElement.value.slice(idx);
+                    var file = e.target.files[0]
+                    me.readWorkbookFromLocalFile(file, function(workbook) {
+                        me.parserExcelData4(workbook.Sheets['测量标定']);
+                    });
+                };
+
+                this.fileEl5 = document.getElementById('file5');
+                this.fileEl5.onchange = function(e) {
+                    var idx = e.srcElement.value.lastIndexOf('.');
+                    var houzhui = e.srcElement.value.slice(idx);
 
                     var file = e.target.files[0]
                     me.readWorkbookFromLocalFile(file, function(workbook) {
-                        me.parserExcelData3(workbook.Sheets['载重标定']);
+                        me.parserExcelData5(workbook.Sheets['载重标定']);
                     });
                 };
 

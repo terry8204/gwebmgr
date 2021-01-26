@@ -573,8 +573,17 @@ var utils = {
             tempStr += humi1 / 10 + '%';
         }
 
+        var humi2 = track.humi2;
+        if (humi2 != undefined && humi2 > 0) {
+            if (tempStr != null) {
+                tempStr += "|";
+            }
+            tempStr += humi2 / 10 + '%';
+        }
+
+
         if (tempStr != null) {
-            tempStr = '<p>' + (isZh ? '温湿度: ' : 'Temperature: ') + tempStr + '</p>'
+            tempStr = '<p><span class="window_title">' + (isZh ? '温度湿度</span>: ' : 'Temperature</span>: ') + tempStr + '</p>'
         }
         return tempStr;
     },
