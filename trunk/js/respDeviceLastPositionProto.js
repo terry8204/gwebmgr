@@ -236,7 +236,11 @@ var deviceLastPositionProto = {
                         "srcweightad0": {
                             "type": "sint32",
                             "id": 52
-                        }
+                        },
+                        "humi2": {
+                            "type": "sint32",
+                            "id": 53
+                        },
                     }
                 }
             }
