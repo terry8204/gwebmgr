@@ -2591,12 +2591,10 @@ var monitor = {
                                         item.devicename = me.deviceInfos[deviceid] ? me.deviceInfos[deviceid].devicename : "";
                                         //item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                                         // console.log("lastPositon", item.devicename, DateFormat.longToDateTimeStr(item.updatetime, 0));
-                                        var oldPositionLast = me.positionLastrecords[deviceid];
-                                        if (oldPositionLast == undefined) {
-                                            me.positionLastrecords[deviceid] = item;
-                                        } else {
-                                            me.copyPositionLastValue(oldPositionLast, item);
-                                        }
+
+
+                                        me.positionLastrecords[deviceid] = item;
+
 
                                     }
                                 })
@@ -3173,91 +3171,95 @@ var monitor = {
                 item.g_lat = g_lon_and_g_lat[1];
                 item.online = online;
                 item.devicename = vstore.state.deviceInfos[deviceid].devicename;
-                // item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
-                //this.positionLastrecords[deviceid] = item;
-                var oldPositionLast = this.positionLastrecords[deviceid];
 
-                if (oldPositionLast == undefined) {
-                    this.positionLastrecords[deviceid] = item;
-                } else {
-                    this.copyPositionLastValue(oldPositionLast, item);
-                }
+
+                // if (oldPositionLast == undefined) {
+                this.positionLastrecords[deviceid] = item;
+                // } else {
+                //     this.copyPositionLastValue(oldPositionLast, item);
+                // }
             }
         },
 
-        copyPositionLastValue: function(oldPositionLast, newPositionLast) {
+        // copyPositionLastValue: function(oldPositionLast, newPositionLast) {
 
-            oldPositionLast.b_lon = newPositionLast.b_lon;
-            oldPositionLast.b_lat = newPositionLast.b_lat;
-            oldPositionLast.g_lat = newPositionLast.g_lat;
-            oldPositionLast.g_lon = newPositionLast.g_lon;
-            oldPositionLast.online = newPositionLast.online;
-            //============================             =        //============================     
-            oldPositionLast.positionlastid = newPositionLast.positionlastid;
-            oldPositionLast.deviceid = newPositionLast.deviceid;
-            oldPositionLast.username = newPositionLast.username;
-            oldPositionLast.devicetime = newPositionLast.devicetime;
-            oldPositionLast.arrivedtime = newPositionLast.arrivedtime;
-            oldPositionLast.updatetime = newPositionLast.updatetime;
-            oldPositionLast.validpoistiontime = newPositionLast.validpoistiontime;
-            oldPositionLast.callat = newPositionLast.callat;
-            oldPositionLast.callon = newPositionLast.callon;
-            oldPositionLast.radius = newPositionLast.radius;
-            oldPositionLast.speed = newPositionLast.speed;
-            oldPositionLast.altitude = newPositionLast.altitude;
-            oldPositionLast.course = newPositionLast.course;
-            oldPositionLast.mileage = newPositionLast.mileage;
-            oldPositionLast.totaldistance = newPositionLast.totaldistance;
-            oldPositionLast.totaloil = newPositionLast.totaloil;
-            oldPositionLast.auxoil = newPositionLast.auxoil;
-            oldPositionLast.srcad0 = newPositionLast.srcad0;
-            oldPositionLast.srcad1 = newPositionLast.srcad1;
-            oldPositionLast.temp1 = newPositionLast.temp1;
-            oldPositionLast.temp2 = newPositionLast.temp2;
-            oldPositionLast.temp3 = newPositionLast.temp3;
-            oldPositionLast.temp4 = newPositionLast.temp4;
-            oldPositionLast.temp5 = newPositionLast.temp5;
-            oldPositionLast.temp6 = newPositionLast.temp6;
-            oldPositionLast.temp7 = newPositionLast.temp7;
-            oldPositionLast.temp8 = newPositionLast.temp8;
-            oldPositionLast.humi1 = newPositionLast.humi1;
-            oldPositionLast.humi2 = newPositionLast.humi2;
-            oldPositionLast.humi3 = newPositionLast.humi3;
-            oldPositionLast.humi4 = newPositionLast.humi4;
-            oldPositionLast.humi5 = newPositionLast.humi5;
-            oldPositionLast.humi6 = newPositionLast.humi6;
-            oldPositionLast.humi7 = newPositionLast.humi7;
-            oldPositionLast.humi8 = newPositionLast.humi8;
-            oldPositionLast.status = newPositionLast.status;
-            oldPositionLast.strstatus = newPositionLast.strstatus;
-            oldPositionLast.strstatusen = newPositionLast.strstatusen;
+        //     oldPositionLast.b_lon = newPositionLast.b_lon;
+        //     oldPositionLast.b_lat = newPositionLast.b_lat;
+        //     oldPositionLast.g_lat = newPositionLast.g_lat;
+        //     oldPositionLast.g_lon = newPositionLast.g_lon;
+        //     oldPositionLast.online = newPositionLast.online;
+        //     //============================             =        //============================     
+        //     oldPositionLast.positionlastid = newPositionLast.positionlastid;
+        //     oldPositionLast.deviceid = newPositionLast.deviceid;
+        //     oldPositionLast.username = newPositionLast.username;
+        //     oldPositionLast.devicetime = newPositionLast.devicetime;
+        //     oldPositionLast.arrivedtime = newPositionLast.arrivedtime;
+        //     oldPositionLast.updatetime = newPositionLast.updatetime;
+        //     oldPositionLast.validpoistiontime = newPositionLast.validpoistiontime;
+        //     oldPositionLast.callat = newPositionLast.callat;
+        //     oldPositionLast.callon = newPositionLast.callon;
+        //     oldPositionLast.radius = newPositionLast.radius;
+        //     oldPositionLast.speed = newPositionLast.speed;
+        //     oldPositionLast.altitude = newPositionLast.altitude;
+        //     oldPositionLast.course = newPositionLast.course;
+        //     oldPositionLast.mileage = newPositionLast.mileage;
+        //     oldPositionLast.totaldistance = newPositionLast.totaldistance;
+        //     oldPositionLast.totaloil = newPositionLast.totaloil;
+        //     oldPositionLast.auxoil = newPositionLast.auxoil;
+        //     oldPositionLast.srcad0 = newPositionLast.srcad0;
+        //     oldPositionLast.srcad1 = newPositionLast.srcad1;
+        //     oldPositionLast.temp1 = newPositionLast.temp1;
+        //     oldPositionLast.temp2 = newPositionLast.temp2;
+        //     oldPositionLast.temp3 = newPositionLast.temp3;
+        //     oldPositionLast.temp4 = newPositionLast.temp4;
+        //     oldPositionLast.temp5 = newPositionLast.temp5;
+        //     oldPositionLast.temp6 = newPositionLast.temp6;
+        //     oldPositionLast.temp7 = newPositionLast.temp7;
+        //     oldPositionLast.temp8 = newPositionLast.temp8;
+        //     oldPositionLast.humi1 = newPositionLast.humi1;
+        //     oldPositionLast.humi2 = newPositionLast.humi2;
+        //     oldPositionLast.humi3 = newPositionLast.humi3;
+        //     oldPositionLast.humi4 = newPositionLast.humi4;
+        //     oldPositionLast.humi5 = newPositionLast.humi5;
+        //     oldPositionLast.humi6 = newPositionLast.humi6;
+        //     oldPositionLast.humi7 = newPositionLast.humi7;
+        //     oldPositionLast.humi8 = newPositionLast.humi8;
+        //     oldPositionLast.status = newPositionLast.status;
+        //     oldPositionLast.strstatus = newPositionLast.strstatus;
+        //     oldPositionLast.strstatusen = newPositionLast.strstatusen;
 
-            oldPositionLast.strvideoalarm = newPositionLast.strvideoalarm;
-            oldPositionLast.strvideoalarmen = newPositionLast.strvideoalarmen;
+        //     oldPositionLast.strvideoalarm = newPositionLast.strvideoalarm;
+        //     oldPositionLast.strvideoalarmen = newPositionLast.strvideoalarmen;
 
-            oldPositionLast.alarm = newPositionLast.alarm;
-            oldPositionLast.stralarm = newPositionLast.stralarm;
-            oldPositionLast.stralarmen = newPositionLast.stralarmen;
+        //     oldPositionLast.alarm = newPositionLast.alarm;
+        //     oldPositionLast.stralarm = newPositionLast.stralarm;
+        //     oldPositionLast.stralarmen = newPositionLast.stralarmen;
 
-            oldPositionLast.gotsrc = newPositionLast.gotsrc;
-            oldPositionLast.rxlevel = newPositionLast.rxlevel;
-            oldPositionLast.gpstotalnum = newPositionLast.gpstotalnum;
-            oldPositionLast.gpsvalidnum = newPositionLast.gpsvalidnum;
-            oldPositionLast.exvoltage = newPositionLast.exvoltage;
-            oldPositionLast.voltagev = newPositionLast.voltagev;
-            oldPositionLast.voltagepercent = newPositionLast.voltagepercent;
-            oldPositionLast.reportmode = newPositionLast.reportmode;
-            oldPositionLast.moving = newPositionLast.moving;
-            oldPositionLast.parklat = newPositionLast.parklat;
-            oldPositionLast.parklon = newPositionLast.parklon;
-            oldPositionLast.parktime = newPositionLast.parktime;
-            oldPositionLast.parkduration = newPositionLast.parkduration;
-            oldPositionLast.loadstatus = newPositionLast.loadstatus;
-            oldPositionLast.weight = newPositionLast.weight;
-            oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
-            // int loadstatus = -1; //载重状态 0x00：空车；0x01：半载；0x02：超载；0x03：满载 0x04 装载 0x05 卸载
-            // long weight = -1; //重量 单位0.1kg
-        },
+        //     oldPositionLast.gotsrc = newPositionLast.gotsrc;
+        //     oldPositionLast.rxlevel = newPositionLast.rxlevel;
+        //     oldPositionLast.gpstotalnum = newPositionLast.gpstotalnum;
+        //     oldPositionLast.gpsvalidnum = newPositionLast.gpsvalidnum;
+        //     oldPositionLast.exvoltage = newPositionLast.exvoltage;
+        //     oldPositionLast.voltagev = newPositionLast.voltagev;
+        //     oldPositionLast.voltagepercent = newPositionLast.voltagepercent;
+        //     oldPositionLast.reportmode = newPositionLast.reportmode;
+        //     oldPositionLast.moving = newPositionLast.moving;
+        //     oldPositionLast.parklat = newPositionLast.parklat;
+        //     oldPositionLast.parklon = newPositionLast.parklon;
+        //     oldPositionLast.parktime = newPositionLast.parktime;
+        //     oldPositionLast.parkduration = newPositionLast.parkduration;
+        //     oldPositionLast.loadstatus = newPositionLast.loadstatus;
+        //     oldPositionLast.weight = newPositionLast.weight;
+        //     oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
+
+        //     oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
+        //     oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
+        //     oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
+        //     oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
+
+        //     // int loadstatus = -1; //载重状态 0x00：空车；0x01：半载；0x02：超载；0x03：满载 0x04 装载 0x05 卸载
+        //     // long weight = -1; //重量 单位0.1kg
+        // },
 
         dorefreshMapUI: function() {
             // console.log("dorefreshMapUI enter isNeedRefreshMapUI=",isNeedRefreshMapUI);

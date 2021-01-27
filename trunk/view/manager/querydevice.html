@@ -42,7 +42,7 @@
             <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changeDevicePage"></Page>
         </div>
 
-        <Modal v-model="ownerInfoModal" width="500">
+        <Modal v-model="ownerInfoModal" width="500" :mask-closable="false">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
                 <span>{{$t('monitor.ownerInfo')}}</span>
@@ -105,7 +105,7 @@
             </div>
         </Modal>
 
-        <Modal v-model="insureInfoModal" width="500">
+        <Modal v-model="insureInfoModal" width="500" :mask-closable="false">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
                 <span>{{$t('device.insureInfo')}}</span>
@@ -164,7 +164,7 @@
                 <i-button type="primary" style="width: 100%" @click="handleEditInsure">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
-        <Modal v-model="editCarIconModal" width="400">
+        <Modal v-model="editCarIconModal" width="400" :mask-closable="false">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
                 <span>{{$t('device.editCarIcon')}} - {{devicename}}</span>
@@ -219,7 +219,7 @@
                 <i-button style="width:100%;" type="primary" @click="chargeModal=false">{{$t("monitor.confirm")}}</i-button>
             </div>
         </Modal>
-        <Modal v-model="modal" width="900" :title="$t('device.editDev')">
+        <Modal v-model="modal" width="900" :title="$t('device.editDev')" :mask-closable="false">
             <div style="width:700px;margin:10px auto">
                 <Row style="margin: 10px 0" v-if="userType < 4">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
@@ -390,7 +390,7 @@
             </div>
             <div slot="footer" style="height:20px;"></div>
         </Modal>
-        <Modal v-model="ioModal" width="650">
+        <Modal v-model="ioModal" width="650" :mask-closable="false">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
                 <span>{{$t("device.ioConfig")}} - {{devicename}}</span>
@@ -428,7 +428,7 @@
             </div>
         </Modal>
 
-        <Modal v-model="oilModal" width="650">
+        <Modal v-model="oilModal" width="650" :mask-closable="false">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
                 <span>{{$t("device.oilMarking")}} - {{devicename}}</span>
@@ -1042,7 +1042,7 @@
                 <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">{{$t("device.queryTemplate")}}</i-button>
             </div>
         </Modal>
-        <Modal v-model="weightModal" width="650">
+        <Modal v-model="weightModal" width="650" :mask-closable="false">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
                 <span>{{$t("device.weightMarking")}} - {{devicename}}</span>

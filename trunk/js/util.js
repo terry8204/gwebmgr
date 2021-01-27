@@ -688,24 +688,26 @@ var utils = {
             extendsStr = '',
             videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
         this.videoState = videoState;
-        var oil = '';
+        var oilStr = '';
         var srcad0 = track.srcad0;
         var srcad1 = track.srcad1;
-        if (track.totaloil > 0 && track.auxoil > 0) {
+        var srcad2 = track.srcad2;
+        var srcad3 = track.srcad3;
+        var totalOil = track.totaloil / 100;
+        var auxoil = track.auxoil / 100;
+        var thirdoil = track.thirdoil / 100;
+        var fourthoil = track.fourthoil / 100;
+        if (totalOil > 0 || auxoil > 0 || thirdoil > 0 || fourthoil > 0) {
+            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ';
 
-            oil = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + track.totaloil / 100 + 'L/' + track.auxoil / 100 + 'L(' + srcad0 + '/' + srcad1 + ')';
-
-        } else if (track.totaloil > 0) {
-
-            oil = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + track.totaloil / 100 + 'L(' + srcad0 + ')';
-
-        } else if (track.auxoil > 0) {
-
-            oil = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + track.auxoil / 100 + 'L(' + srcad1 + ')';
-
-        } else if (srcad0 > 0 || srcad1 > 0) {
+            oilStr += totalOil + "L";
+            oilStr += '/' + auxoil + "L";
+            oilStr += '/' + thirdoil + "L";
+            oilStr += '/' + fourthoil + "L";
+            oilStr += '(' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3 + ")";
+        } else if (srcad0 > 0 || srcad1 > 0 || srcad2 > 0 || srcad3 > 0) {
             //没设置油杆的时候显示原始ad值
-            oil = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1;
+            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
         };
         var loadstatusStr = null;
         if (track.loadstatus >= 0) {
@@ -726,7 +728,7 @@ var utils = {
             (temp ? temp : '') +
             '<p><span class="window_title">' + (isZh ? '停留时长' : 'Park Duration') + '</span>: ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
-            (oil !== '' ? '<p>' + oil + '</p>' : '') +
+            (oilStr !== '' ? '<p>' + oilStr + '</p>' : '') +
             (loadstatusStr ? ('<p><span class="window_title">' + (isZh ? '载重数据' : 'Weight') + '</span>: ' + loadstatusStr + '</p>') : '') +
             (extendsBtns.video ? ('<p><span class="window_title">' + (isZh ? '视频状态' : 'video') + '</span>: ' + videoState + '</p>') : ("")) +
             '<p class="last-address">' + b_address + '</p>' +
