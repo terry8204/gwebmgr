@@ -852,7 +852,7 @@ var utils = {
     },
     getI18n: function() {
         return new VueI18n({
-            locale: localStorage.getItem("PATH_LANG") || 'zh',
+            locale: localStorage.getItem("PATH_LANG") || messages.defaultLang,
             messages: messages
         });
     },

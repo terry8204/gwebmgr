@@ -13,7 +13,7 @@ new Vue({
         loading: false,
         placeholder: "",
         pwdPlaceholder: "",
-        language: localStorage.getItem("PATH_LANG") || 'zh',
+        language: localStorage.getItem("PATH_LANG") || messages.defaultLang,
     },
     methods: {
         getBrowserInfo: function() {

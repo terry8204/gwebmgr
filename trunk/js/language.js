@@ -3,9 +3,12 @@
  *  {{ $t("message.hello") }}
  *   this.$i18n.locale='zh'
  */
+
 (function(win) {
     Vue.use(VueI18n);
+
     var messages = {
+        defaultLang: 'zh',
         en: {
             message: {
                 captureFail: "Capture failed. Please check if the device is online",
