@@ -241,6 +241,22 @@ var deviceLastPositionProto = {
                             "type": "sint32",
                             "id": 53
                         },
+                        "srcad2": {
+                            "type": "sint32",
+                            "id": 54
+                        },
+                        "srcad3": {
+                            "type": "sint32",
+                            "id": 55
+                        },
+                        "thirdoil": {
+                            "type": "sint32",
+                            "id": 56
+                        },
+                        "forthoil": {
+                            "type": "sint32",
+                            "id": 57
+                        }
                     }
                 }
             }
