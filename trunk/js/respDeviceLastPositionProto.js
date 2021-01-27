@@ -253,7 +253,7 @@ var deviceLastPositionProto = {
                             "type": "sint32",
                             "id": 56
                         },
-                        "forthoil": {
+                        "fourthoil": {
                             "type": "sint32",
                             "id": 57
                         }
