@@ -4180,7 +4180,7 @@ function reportOnlineSummary(groupslist) {
         data: {
             multiple: false,
             createrToUser: userName,
-            userlists: userlists,
+            userlists: globalUserList,
             groupslist: [],
             iconState: 'ios-arrow-down',
             columns: [
@@ -4289,7 +4289,7 @@ function reportOnlineSummary(groupslist) {
         },
         methods: {
             onClickQuery: function() {
-                if (userlists.indexOf(this.createrToUser) == -1) {
+                if (globalUserList.indexOf(this.createrToUser) == -1) {
                     this.$Message.error(this.$t("message.selectCorrectAccount"));
                     return;
                 }

@@ -29,10 +29,10 @@
                                 <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
                             <i-col span="8">
                                 <div class="search-wrapper">
-                                    <i-input v-model.trim="createrToUser" :disabled="disabledInput" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                                    <i-input v-model.trim="createrToUser" :disabled="disabledInput" :icon="iconState" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                                     <transition name="fade">
                                         <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
-                                            <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
+                                            <li v-for="item in currentPageUserLists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
                                                 <div :value="item" :key="item">
                                                     <span style="cursor: pointer;">{{ item }}</span>
                                                 </div>
@@ -40,6 +40,9 @@
                                         </ul>
                                     </transition>
                                 </div>
+                                <!-- <i-select v-model="createrToUser" filterable>
+                                    <i-option v-for="item in userlists" :value="item" :key="item">{{ item }}</i-option>
+                                </i-select> -->
                             </i-col>
                         </Row>
 
@@ -163,10 +166,10 @@
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
                             <i-col span="8">
                                 <div class="search-wrapper">
-                                    <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                                    <i-input v-model.trim="createrToUser" :icon="iconState" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                                     <transition name="fade">
                                         <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
-                                            <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
+                                            <li v-for="item in currentPageUserLists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
                                                 <div :value="item" :key="item">
                                                     <span style="cursor: pointer;">{{ item }}</span>
                                                 </div>
@@ -363,6 +366,8 @@
             selectedGroupId: null,
             selectedUserName: null,
             selectedDeviceid: null,
+
+            currentPageUserLists: [],
 
             isShowMatchDev: false,
             createrToUser: '',
@@ -609,7 +614,7 @@
 
                 this.forwardurl && (data.forwardurl = this.forwardurl);
 
-                if (userlists.indexOf(this.createrToUser) == -1) {
+                if (globalUserList.indexOf(this.createrToUser) == -1) {
                     me.$Message.error(me.$t("message.selectCorrectAccount"));
                     return;
                 }
@@ -788,23 +793,23 @@
                     }
                 });
             },
-            sosoValueChange: function() {
+            sosoValueChange: function(value) {
                 var me = this;
-                var value = this.createrToUser.toLowerCase();
 
                 if (this.timeoutIns != null) {
                     clearTimeout(this.timeoutIns);
                 }
 
                 if (!value.trim()) {
-                    this.userlists = userlists;
+                    this.currentPageUserLists = globalUserList;
                     return;
                 }
 
                 this.timeoutIns = setTimeout(function() {
                     me.filterMethod(value);
-                }, 100);
+                }, 500);
             },
+
             focus: function() {
                 this.isShowMatchDev = true;
             },
@@ -844,13 +849,14 @@
                 }
             },
             filterMethod: function(value) {
-                var list = [];
-                userlists.forEach(function(itme) {
-                    if (itme.toLowerCase().indexOf(value) != -1) {
+                var list = []
+                globalUserList.forEach(function(itme) {
+                    if (itme.indexOf(value) != -1) {
                         list.push(itme);
                     }
                 })
-                this.userlists = list;
+                this.currentPageUserLists = list;
+
             },
             setTreeDataList: function(rootuser) {
                 this.treeDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
@@ -1150,7 +1156,8 @@
                 }
             },
             createrToUser: function(newVal) {
-                if (userlists.indexOf(newVal) != -1) {
+                this.sosoValueChange(String(newVal));
+                if (globalUserList.indexOf(newVal) != -1) {
                     try {
                         this.queryGroupsByUserName(newVal);
                     } catch (error) {
@@ -1180,7 +1187,7 @@
         mounted: function() {
             var me = this;
             utils.deviceInfos = {};
-            this.userlists = userlists;
+            this.currentPageUserLists = deepClone(globalUserList);
             this.treeDeviceList = [];
             me.getDeviceType();
             me.queryGroupInfos();

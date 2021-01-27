@@ -258,7 +258,7 @@
                     if (this.devicename.trim()) data.devicename = this.devicename.trim();
 
 
-                    if (userlists.indexOf(this.createrToUser) == -1) {
+                    if (globalUserList.indexOf(this.createrToUser) == -1) {
                         me.$Message.error(me.$t("message.selectCorrectAccount"));
                         return;
                     }
@@ -323,7 +323,7 @@
                     }
 
                     if (!value.trim()) {
-                        this.userlists = userlists;
+                        this.userlists = globalUserList;
                         return;
                     }
 
@@ -342,7 +342,7 @@
                 },
                 filterMethod: function(value) {
                     var list = [];
-                    userlists.forEach(function(itme) {
+                    globalUserList.forEach(function(itme) {
                         if (itme.toLowerCase().indexOf(value) != -1) {
                             list.push(itme);
                         }
@@ -411,7 +411,7 @@
                 this.userType = vstore.state.userType;
                 this.records = [];
                 this.createrToUser = userName;
-                this.userlists = userlists;
+                this.userlists = globalUserList;
                 this.initMap();
                 this.calcTableHeight();
                 this.qeuryNoFoundDeviceids();

@@ -1061,11 +1061,11 @@ var utils = {
                     resp.usernames.sort(function(a, b) {
                         return a.localeCompare(b);
                     });
-                    userlists = resp.usernames;
+                    globalUserList = resp.usernames;
                 }
             }
-            userlists.push(userName);
-            callback && callback(userlists);
+            globalUserList.push(userName);
+            callback && callback(globalUserList);
         });
     },
     debounce: function(func, wait, immediate) {

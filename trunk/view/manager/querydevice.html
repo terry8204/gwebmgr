@@ -2519,7 +2519,7 @@
 
                     this.forwardurl && (data.forwardurl = this.forwardurl);
 
-                    if (userlists.indexOf(this.createrToUser) == -1) {
+                    if (globalUserList.indexOf(this.createrToUser) == -1) {
                         me.$Message.error(me.$t("message.selectCorrectAccount"));
                         return;
                     }
@@ -2612,7 +2612,7 @@
                     }
 
                     if (!value.trim()) {
-                        this.userlists = userlists;
+                        this.userlists = globalUserList;
                         return;
                     }
 
@@ -2631,7 +2631,7 @@
                 },
                 filterMethod: function(value) {
                     var list = [];
-                    userlists.forEach(function(itme) {
+                    globalUserList.forEach(function(itme) {
                         if (itme.toLowerCase().indexOf(value) != -1) {
                             list.push(itme);
                         }
@@ -2899,7 +2899,7 @@
                     }
                 },
                 createrToUser: function(newVal) {
-                    if (userlists.indexOf(newVal) != -1) {
+                    if (globalUserList.indexOf(newVal) != -1) {
                         this.queryGroupsByUserName(newVal);
                     } else {
                         this.groupsList = [];
@@ -2934,7 +2934,7 @@
             mounted: function() {
 
                 var me = this;
-                this.userlists = userlists;
+                this.userlists = globalUserList;
                 this.userType = vstore.state.userType;
                 this.allGroups = {};
                 if (this.userType > 1) {

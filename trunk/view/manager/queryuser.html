@@ -357,8 +357,8 @@
                             });
                             me.total = me.recordsList.length;
                             me.tableData = me.recordsList.slice(me.currentIndex - 1, 10);
-                            if (userlists.indexOf(username) != -1) {
-                                userlists.splice(userlists.indexOf(username), 1)
+                            if (globalUserList.indexOf(username) != -1) {
+                                globalUserList.splice(globalUserList.indexOf(username), 1)
                             }
                         } else if (resp.status == 1) {
                             me.$Message.error(me.$t("message.deleteUserTips") + resp.count);

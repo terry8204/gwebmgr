@@ -146,7 +146,7 @@
                 modal: false,
                 loading: false,
                 isEdit: false,
-                userlists: userlists,
+                userlists: globalUserList,
                 isShowMatchDev: false,
                 iconState: "ios-arrow-down",
                 columns: [{
@@ -316,7 +316,7 @@
                     }
 
                     if (!value.trim()) {
-                        this.userlists = userlists;
+                        this.userlists = globalUserList;
                         return;
                     }
 
@@ -422,7 +422,7 @@
                         drivercardtype: this.drivercardtype,
                     };
                     if (this.isEdit) {
-                        if (userlists.indexOf(this.creater) == -1) {
+                        if (globalUserList.indexOf(this.creater) == -1) {
                             me.$Message.error(me.$t("message.selectCorrectAccount"));
                             return;
                         }
