@@ -256,6 +256,10 @@ var deviceLastPositionProto = {
                         "fourthoil": {
                             "type": "sint32",
                             "id": 57
+                        },
+                        "masteroil": {
+                            "type": "sint32",
+                            "id": 58
                         }
                     }
                 }
