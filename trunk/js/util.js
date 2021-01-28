@@ -699,7 +699,7 @@ var utils = {
         var auxoil = track.auxoil / 100;
         var thirdoil = track.thirdoil / 100;
         var fourthoil = track.fourthoil / 100;
-        debugger;
+
         if ((totalOil > 0) ||
             (masteroil > 0) ||
             (auxoil > 0) ||

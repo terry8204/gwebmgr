@@ -48,7 +48,7 @@
         </div>
     </div>
     <div style="margin:10px;">
-        <i-table :columns="columns" border ref="table" :height="tableHeight" :data="tableData" :loading="loading" @on-selection-change="onSelection"></i-table>
+        <i-table :row-class-name="rowClassName" :columns="columns" border ref="table" :height="tableHeight" :data="tableData" :loading="loading" @on-selection-change="onSelection"></i-table>
     </div>
     <Modal v-model="adminModal" width="400" v-cloak>
         <p slot="header" style="color:#2D8CF0;text-align:center">
@@ -212,6 +212,7 @@
                 }, {
                     title: vRoot.$t('charge.useState'),
                     key: 'isfree',
+                    sortable: true,
                     render: function(h, params) {
                         var isfree = params.row.isfree;
                         var str = '';
@@ -256,6 +257,14 @@
                 treeData: [],
             },
             methods: {
+                rowClassName: function(row, index) {
+                    if (row.isfree == 4 || row.isfree == 5) {
+                        return 'equipment-expired'
+                    } else if (row.isfree == 2) {
+                        return 'device-experience'
+                    }
+                    return 'device-normal';
+                },
                 onCheckedDevice: function(arr) {
                     this.sosoValue = 121;
                 },
@@ -489,6 +498,8 @@
                                 deviceids.push(item.deviceid);
                             })
                             me.queryDevicesByIds(deviceids);
+                        } else if (respData.status == 2) {
+                            me.$Message.error(isZh ? "剩余金豆数不足,请购买金豆" : "Recharge failed");
                         } else {
                             me.$Message.error(isZh ? "充值失败" : "Recharge failed");
                         }

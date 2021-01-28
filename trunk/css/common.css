@@ -731,3 +731,15 @@ div.work-inner-map-wraper {
         opacity: 0
     }
 }
+
+.ivu-table .device-experience td {
+    color: rgb(214, 194, 9);
+}
+
+.ivu-table .device-normal td {
+    color: rgb(21, 129, 6);
+}
+
+.ivu-table .equipment-expired td {
+    color: red;
+}

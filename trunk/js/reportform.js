@@ -2842,8 +2842,7 @@ function messageRecords(groupslist) {
             isShowMatchDev: true,
             startDate: new Date(),
             columns: [
-                { title: vRoot.$t("reportForm.trackid"), key: 'trackid', fixed: 'left', width: 80 },
-                { title: vRoot.$t("reportForm.sn"), key: 'sn', width: 80, "sortable": true },
+                { title: vRoot.$t("reportForm.sn"), key: 'sn', width: 80, "sortable": true, fixed: 'left' },
                 { title: vRoot.$t("reportForm.messagetype"), key: 'messagetype', width: 110 },
                 { title: vRoot.$t("reportForm.typedescr"), key: 'typedescr', width: 120 },
                 { title: vRoot.$t("reportForm.status"), key: 'status', width: 80 },
@@ -5847,6 +5846,8 @@ function timeOilConsumption(groupslist) {
                 { title: vRoot.$t('reportForm.totalOil'), key: 'oil', width: 100 },
                 { title: vRoot.$t('reportForm.oil1'), key: 'ad0', width: 90 },
                 { title: vRoot.$t('reportForm.oil2'), key: 'ad1', width: 90 },
+                { title: vRoot.$t('reportForm.oil3'), key: 'ad2', width: 90 },
+                { title: vRoot.$t('reportForm.oil4'), key: 'ad3', width: 90 },
                 { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
                 { title: vRoot.$t('reportForm.status'), key: 'strstatus' },
                 {
@@ -5905,6 +5906,8 @@ function timeOilConsumption(groupslist) {
             distance: [],
             oil1: [],
             oil2: [],
+            oil3: [],
+            oil4: [],
             currentIndex: 1,
         },
         mixins: [reportMixin],
@@ -5922,6 +5925,8 @@ function timeOilConsumption(groupslist) {
                 var time = vRoot.$t('reportForm.time');
                 var usoil1 = vRoot.$t('reportForm.oil1');
                 var usoil2 = vRoot.$t('reportForm.oil2');
+                var usoil3 = vRoot.$t('reportForm.oil3');
+                var usoil4 = vRoot.$t('reportForm.oil4');
                 var cotgasus = vRoot.$t('reportForm.oil');
                 var status = vRoot.$t('reportForm.status');
                 var option = {
@@ -5953,7 +5958,7 @@ function timeOilConsumption(groupslist) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
                                     } else if (v[i].seriesName == speed) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
-                                    } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2) {
+                                    } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
                                     }
                                 }
@@ -5962,7 +5967,7 @@ function timeOilConsumption(groupslist) {
                         }
                     },
                     legend: {
-                        data: [speed, dis, totoil, usoil1, usoil2],
+                        data: [speed, dis, totoil, usoil1, usoil2, usoil3, usoil4],
                         //selected: {
                         //    '里程' : false
                         // },
@@ -6072,6 +6077,22 @@ function timeOilConsumption(groupslist) {
                             color: '#FF4500',
                             data: this.oil2
                         },
+                        {
+                            smooth: true,
+                            name: usoil3,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#2177C7',
+                            data: this.oil3
+                        },
+                        {
+                            smooth: true,
+                            name: usoil4,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#B05432',
+                            data: this.oil4
+                        },
 
                         {
                             smooth: true,
@@ -6116,11 +6137,13 @@ function timeOilConsumption(groupslist) {
                                 recvtime = [],
                                 oil1 = [],
                                 oil2 = [],
+                                oil3 = [],
+                                oil4 = [],
                                 devStates = [];
                             var firstDistance = 0;
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
-                                var independent = item.independent === 0;
+                                // var independent = item.independent === 0;
                                 records.forEach(function(record, index) {
                                     if (index == 0) {
                                         firstDistance = record.totaldistance;
@@ -6133,30 +6156,40 @@ function timeOilConsumption(groupslist) {
                                     } else {
                                         record.address = null;
                                     }
+                                    var totalad = record.totalad;
                                     var ad0 = record.ad0;
                                     var ad1 = record.ad1;
+                                    var ad2 = record.ad2;
+                                    var ad3 = record.ad3;
                                     if (ad0 < 0) {
                                         ad0 = 0;
                                     };
                                     if (ad1 < 0) {
                                         ad1 = 0;
                                     };
+                                    if (ad2 < 0) {
+                                        ad2 = 0;
+                                    };
+                                    if (ad3 < 0) {
+                                        ad3 = 0;
+                                    };
+                                    record.totalad = totalad / 100;
                                     record.ad0 = ad0 / 100;
                                     record.ad1 = ad1 / 100;
-                                    if (independent) {
-                                        record.oil = record.ad0 + record.ad1;
-                                    } else {
-                                        record.oil = record.ad0;
-                                    }
+                                    record.ad2 = ad2 / 100;
+                                    record.ad3 = ad3 / 100;
+
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
-                                    oil.push(record.oil);
+                                    oil.push(record.totalad);
                                     veo.push((record.speed / 1000).toFixed(2));
                                     record.totaldistance = ((record.totaldistance - firstDistance) / 1000).toFixed(2);
                                     distance.push(record.totaldistance);
                                     recvtime.push(record.updatetimeStr);
                                     oil1.push(record.ad0);
                                     oil2.push(record.ad1);
+                                    oil3.push(record.ad2);
+                                    oil4.push(record.ad3);
                                     devStates.push(record.strstatus);
                                 });
                             });
@@ -6167,6 +6200,8 @@ function timeOilConsumption(groupslist) {
                             self.recvtime = recvtime;
                             self.oil1 = oil1;
                             self.oil2 = oil2;
+                            self.oil3 = oil3;
+                            self.oil4 = oil4;
                             self.records = records;
                             self.devStates = devStates;
                             self.total = records.length;
