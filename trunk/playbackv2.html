@@ -733,6 +733,8 @@
                     totalOil: 'Total oil',
                     oil1: "oil1",
                     oil2: "oil2",
+                    oil3: "oil3",
+                    oil4: "oil4",
                     weight: 'weight',
                     status: "status",
                     oil: "oil",
@@ -800,6 +802,8 @@
                     totalOil: '总油液',
                     oil1: "油液1",
                     oil2: "油液2",
+                    oil3: "油液3",
+                    oil4: "油液4",
                     weight: "载重",
                     status: "状态码",
                     oil: "油液",
@@ -1228,6 +1232,8 @@
                         this.oil = [];
                         this.oil1 = [];
                         this.oil2 = [];
+                        this.oil3 = [];
+                        this.oil4 = [];
                         this.devStates = [];
                         this.weights = [];
                         this.charts = echarts.init(document.getElementById('charts'));
@@ -1271,6 +1277,8 @@
                         var time = this.$t('main.time');
                         var usoil1 = this.$t('main.oil1');
                         var usoil2 = this.$t('main.oil2');
+                        var usoil3 = this.$t('main.oil3');
+                        var usoil4 = this.$t('main.oil4');
                         var cotgasus = this.$t('main.oil');
                         var status = this.$t('main.status');
                         var weight = this.$t('main.weight');
@@ -1303,7 +1311,7 @@
                                                 data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
                                             } else if (v[i].seriesName == speed || v[i].seriesName == recorderspeed) {
                                                 data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
-                                            } else if (v[i].seriesName == totalOil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2) {
+                                            } else if (v[i].seriesName == totalOil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
                                                 data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
                                             }
                                         }
@@ -1312,7 +1320,7 @@
                                 }
                             },
                             legend: {
-                                data: [dis, speed, recorderspeed, totalOil, usoil1, usoil2, weight],
+                                data: [dis, speed, recorderspeed, totalOil, usoil1, usoil2, , usoil3, usoil4, weight],
                                 //selected: {
                                 //    '里程' : false
                                 // },
@@ -1378,76 +1386,87 @@
                                 }
                             }],
                             series: [{
-                                    name: time,
-                                    type: 'line',
-                                    symbol: 'none',
-                                    yAxisIndex: 1,
-                                    color: '#F0805A',
-                                    data: this.recvtime,
-                                    smooth: true,
-                                }, {
-                                    name: dis,
-                                    type: 'line',
-                                    symbol: 'none',
-                                    yAxisIndex: 1,
-                                    color: '#3CB371',
-                                    data: this.distance,
-                                    smooth: true,
-                                }, {
-                                    name: speed,
-                                    type: 'line',
-                                    symbol: 'none',
-                                    yAxisIndex: 0,
-                                    color: '#4876FF',
-                                    data: this.veo,
-                                    smooth: true,
-                                }, {
-                                    name: recorderspeed,
-                                    type: 'line',
-                                    symbol: 'none',
-                                    yAxisIndex: 0,
-                                    color: '#710000',
-                                    data: this.recorderspeed,
-                                    smooth: true,
-                                }, {
-                                    name: totalOil,
-                                    type: 'line',
-                                    symbol: 'none',
-                                    color: '#C1232B',
-                                    data: this.oil,
-                                    smooth: true,
-                                }, {
-                                    name: usoil1,
-                                    type: 'line',
-                                    symbol: 'none',
-                                    color: '#8E388E',
-                                    data: this.oil1,
-                                    smooth: true,
-                                },
-
-                                {
-                                    name: usoil2,
-                                    type: 'line',
-                                    symbol: 'none',
-                                    color: '#FF4500',
-                                    data: this.oil2,
-                                    smooth: true,
-                                }, {
-                                    name: weight,
-                                    type: 'line',
-                                    symbol: 'none',
-                                    color: '#000',
-                                    data: this.weights,
-                                    smooth: true,
-                                }, {
-                                    name: status,
-                                    type: 'line',
-                                    symbol: 'none',
-                                    color: '#000',
-                                    data: this.devStates,
-                                    smooth: true,
-                                },
-                            ]
+                                name: time,
+                                type: 'line',
+                                symbol: 'none',
+                                yAxisIndex: 1,
+                                color: '#F0805A',
+                                data: this.recvtime,
+                                smooth: true,
+                            }, {
+                                name: dis,
+                                type: 'line',
+                                symbol: 'none',
+                                yAxisIndex: 1,
+                                color: '#3CB371',
+                                data: this.distance,
+                                smooth: true,
+                            }, {
+                                name: speed,
+                                type: 'line',
+                                symbol: 'none',
+                                yAxisIndex: 0,
+                                color: '#4876FF',
+                                data: this.veo,
+                                smooth: true,
+                            }, {
+                                name: recorderspeed,
+                                type: 'line',
+                                symbol: 'none',
+                                yAxisIndex: 0,
+                                color: '#710000',
+                                data: this.recorderspeed,
+                                smooth: true,
+                            }, {
+                                name: totalOil,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#C1232B',
+                                data: this.oil,
+                                smooth: true,
+                            }, {
+                                name: usoil1,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#8E388E',
+                                data: this.oil1,
+                                smooth: true,
+                            }, {
+                                name: usoil2,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#FF4500',
+                                data: this.oil2,
+                                smooth: true,
+                            }, {
+                                name: usoil3,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#2177C7',
+                                data: this.oil3,
+                                smooth: true,
+                            }, {
+                                name: usoil4,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#B05432',
+                                data: this.oil4,
+                                smooth: true,
+                            }, {
+                                name: weight,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#000',
+                                data: this.weights,
+                                smooth: true,
+                            }, {
+                                name: status,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#000',
+                                data: this.devStates,
+                                smooth: true,
+                            }, ]
                         };
 
                         return option;
@@ -1459,9 +1478,11 @@
                         var recvtime = []; //时间
                         var veo = []; //速度
                         var recorderspeed = []; //速度
-                        var oil = []; //速度
-                        var oil1 = []; //速度
-                        var oil2 = []; //速度
+                        var oil = [];
+                        var oil1 = [];
+                        var oil2 = [];
+                        var oil3 = [];
+                        var oil4 = [];
                         var devStates = [];
                         var weights = [];
                         this.disMin = 0;
@@ -1470,20 +1491,28 @@
                             if (index == 0) {
                                 totalDistanceMin = item.totaldistance;
                             }
+                            var totalad = item.totalad;
                             var ad0 = item.ad0;
                             var ad1 = item.ad1;
+                            var ad2 = item.ad2;
+                            var ad3 = item.ad3;
                             if (ad0 < 0) {
                                 ad0 = 0;
                             };
                             if (ad1 < 0) {
                                 ad1 = 0;
                             };
+                            item.totalad = totalad / 100
                             item.ad0 = ad0 / 100;
                             item.ad1 = ad1 / 100;
+                            item.ad2 = ad2 / 100;
+                            item.ad3 = ad3 / 100;
                             oil1.push(item.ad0);
                             oil2.push(item.ad1);
+                            oil3.push(item.ad2);
+                            oil4.push(item.ad3);
                             devStates.push(item.strstatus);
-                            oil.push(item.ad0 + item.ad1);
+                            oil.push(item.totalad);
                             recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
                             veo.push(Number((item.speed / 1000).toFixed(2)));
                             recorderspeed.push(Number((item.recorderspeed / 1000).toFixed(3)));
@@ -1496,6 +1525,8 @@
                         this.oil = oil;
                         this.oil1 = oil1;
                         this.oil2 = oil2;
+                        this.oil3 = oil3;
+                        this.oil4 = oil4;
                         this.devStates = devStates;
                         this.recorderspeed = recorderspeed;
                         this.weights = weights;
