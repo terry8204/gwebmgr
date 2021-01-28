@@ -6463,7 +6463,7 @@ function refuelingReport(groupslist) {
                                 color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        }, "[" + vRoot.$t("reportForm.accDetailed") + "]")
+                        }, "[" + vRoot.$t("reportForm.detailed") + "]")
                     }
                 },
                 {
@@ -6816,7 +6816,7 @@ function oilLeakageReport(groupslist) {
                                 color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        }, "[" + vRoot.$t("reportForm.accDetailed") + "]")
+                        }, "[" + vRoot.$t("reportForm.detailed") + "]")
                     }
                 },
                 {
