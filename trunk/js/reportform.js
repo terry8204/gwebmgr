@@ -280,6 +280,7 @@ var reportMixin = {
         filterMethod: function(value) {
             var filterData = [];
             value = value.toLowerCase();
+            console.log('this.groupslist', this.groupslist)
             for (var i = 0; i < this.groupslist.length; i++) {
                 var group = this.groupslist[i];
                 if (
@@ -5294,9 +5295,7 @@ function timeWeightConsumption(groupslist) {
                             var data = time + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
                                 if (v[i].seriesName && v[i].seriesName != time) {
-                                    if (v[i].seriesName == weight) {
-                                        data += v[i].seriesName + ' : ' + v[i].value + 'Kg<br/>';
-                                    } else if (v[i].seriesName == dis) {
+                                    if (v[i].seriesName == dis) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
                                     } else if (v[i].seriesName == speed) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
@@ -5952,12 +5951,8 @@ function timeOilConsumption(groupslist) {
                             for (i in v) {
                                 if (v[i].seriesName && v[i].seriesName != time) {
                                     // data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
-                                    if (v[i].seriesName == weight) {
-                                        data += v[i].seriesName + ' : ' + v[i].value + 'Kg<br/>';
-                                    } else if (v[i].seriesName == dis) {
+                                    if (v[i].seriesName == dis) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
-                                    } else if (v[i].seriesName == speed) {
-                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
                                     } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
                                     }
