@@ -693,18 +693,62 @@ var utils = {
         var srcad1 = track.srcad1;
         var srcad2 = track.srcad2;
         var srcad3 = track.srcad3;
+        //0xffff == none oil
         var totalOil = track.totaloil / 100;
+        var masteroil = track.masteroil / 100;
         var auxoil = track.auxoil / 100;
         var thirdoil = track.thirdoil / 100;
         var fourthoil = track.fourthoil / 100;
-        if (totalOil > 0 || auxoil > 0 || thirdoil > 0 || fourthoil > 0) {
+        debugger;
+        if ((totalOil > 0) ||
+            (masteroil > 0) ||
+            (auxoil > 0) ||
+            (thirdoil > 0) ||
+            (fourthoil > 0)) {
+            var isNotFirst = false;
             oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ';
+            var srcAdStr = "";
+            if (totalOil > 0) {
+                oilStr += totalOil.toFixed(0) + "LT";
+                isNotFirst = true;
+            }
+            if (masteroil > 0) {
+                if (isNotFirst) {
+                    isNotFirst = true;
+                    oilStr += '/';
+                }
+                oilStr += masteroil.toFixed(0) + "L1";
+            }
 
-            oilStr += totalOil + "L";
-            oilStr += '/' + auxoil + "L";
-            oilStr += '/' + thirdoil + "L";
-            oilStr += '/' + fourthoil + "L";
-            oilStr += '(' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3 + ")";
+            if (auxoil > 0) {
+                if (isNotFirst) {
+                    isNotFirst = true;
+                    oilStr += '/';
+                }
+                oilStr += auxoil.toFixed(0) + "L2";
+
+            }
+            if (thirdoil > 0) {
+                if (isNotFirst) {
+                    isNotFirst = true;
+                    oilStr += '/';
+
+                }
+                oilStr += thirdoil.toFixed(0) + "L3";
+
+            }
+
+            if (fourthoil > 0) {
+                if (isNotFirst) {
+                    isNotFirst = true;
+                    oilStr += '/';
+
+                }
+                oilStr += fourthoil.toFixed(0) + "L4";
+
+            }
+            srcAdStr = srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
+            oilStr += '(' + srcAdStr + ")";
         } else if (srcad0 > 0 || srcad1 > 0 || srcad2 > 0 || srcad3 > 0) {
             //没设置油杆的时候显示原始ad值
             oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
@@ -1545,7 +1589,7 @@ function refreshPostion(deviceid) {
     utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
         var j_address = resp.address;
         if (j_address) {
-            $("p.last-address").html((isZh ? "地址: " : "Address: ") + j_address);
+            $("p.last-address").html(j_address);
             LocalCacheMgr.setAddress(lon, lat, j_address);
         };
     });
