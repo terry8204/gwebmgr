@@ -5295,7 +5295,9 @@ function timeWeightConsumption(groupslist) {
                             var data = time + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
                                 if (v[i].seriesName && v[i].seriesName != time) {
-                                    if (v[i].seriesName == dis) {
+                                    if (v[i].seriesName == weight) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Kg<br/>';
+                                    } else if (v[i].seriesName == dis) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
                                     } else if (v[i].seriesName == speed) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
@@ -5309,9 +5311,6 @@ function timeWeightConsumption(groupslist) {
                     },
                     legend: {
                         data: [speed, dis, weight],
-                        //selected: {
-                        //    '里程' : false
-                        // },
                         x: 'left'
                     },
                     toolbox: {
@@ -5841,8 +5840,8 @@ function timeOilConsumption(groupslist) {
                 { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 100 },
                 { title: vRoot.$t('reportForm.date'), key: 'updatetimeStr', sortable: true, width: 160 },
-                { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 150 },
-                { title: vRoot.$t('reportForm.totalOil'), key: 'oil', width: 100 },
+                { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 100 },
+                { title: vRoot.$t('reportForm.totalOil'), key: 'totalad', width: 100 },
                 { title: vRoot.$t('reportForm.oil1'), key: 'ad0', width: 90 },
                 { title: vRoot.$t('reportForm.oil2'), key: 'ad1', width: 90 },
                 { title: vRoot.$t('reportForm.oil3'), key: 'ad2', width: 90 },
@@ -5900,7 +5899,7 @@ function timeOilConsumption(groupslist) {
             ],
             tableData: [],
             recvtime: [],
-            oil: [],
+            totalad: [],
             veo: [],
             distance: [],
             oil1: [],
@@ -5963,9 +5962,12 @@ function timeOilConsumption(groupslist) {
                     },
                     legend: {
                         data: [speed, dis, totoil, usoil1, usoil2, usoil3, usoil4],
-                        //selected: {
-                        //    '里程' : false
-                        // },
+                        selected: {
+                            [usoil1]: false,
+                            [usoil2]: false,
+                            [usoil3]: false,
+                            [usoil4]: false,
+                        },
                         x: 'left'
                     },
                     toolbox: {
@@ -6054,7 +6056,7 @@ function timeOilConsumption(groupslist) {
                             type: 'line',
                             symbol: 'none',
                             color: '#C1232B',
-                            data: this.oil
+                            data: this.totalad
                         }, {
                             smooth: true,
                             name: usoil1,
@@ -6126,7 +6128,7 @@ function timeOilConsumption(groupslist) {
                     if (resp.status == 0) {
                         if (resp.records) {
                             var records = [],
-                                oil = [],
+                                totalads = [],
                                 veo = [],
                                 distance = [],
                                 recvtime = [],
@@ -6176,7 +6178,7 @@ function timeOilConsumption(groupslist) {
 
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
-                                    oil.push(record.totalad);
+                                    totalads.push(record.totalad);
                                     veo.push((record.speed / 1000).toFixed(2));
                                     record.totaldistance = ((record.totaldistance - firstDistance) / 1000).toFixed(2);
                                     distance.push(record.totaldistance);
@@ -6189,7 +6191,7 @@ function timeOilConsumption(groupslist) {
                                 });
                             });
 
-                            self.oil = oil;
+                            self.totalad = totalads;
                             self.veo = veo;
                             self.distance = distance;
                             self.recvtime = recvtime;

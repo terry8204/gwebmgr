@@ -1322,9 +1322,13 @@
                             },
                             legend: {
                                 data: [dis, speed, recorderspeed, totalOil, usoil1, usoil2, , usoil3, usoil4, weight],
-                                //selected: {
-                                //    '里程' : false
-                                // },
+                                selected: {
+                                    [recorderspeed]: false,
+                                    [usoil1]: false,
+                                    [usoil2]: false,
+                                    [usoil3]: false,
+                                    [usoil4]: false,
+                                },
                                 x: 'left'
                             },
                             toolbox: {
