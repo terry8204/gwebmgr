@@ -768,8 +768,7 @@ var utils = {
             '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
             '<p><span class="window_title">' + (isZh ? '定位时间' : 'Posi time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +
-            '<p><span class="window_title">' + (isZh ? '当日里程' : 'Mileage') + '</span>: ' + track.currentDayMileage + '</p>' +
-            '<p><span class="window_title">' + (isZh ? '总里程数' : 'Mileage') + '</span>: ' + this.getMileage(track.totaldistance) + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '当日里程' : 'Mileage') + '</span>: ' + track.currentDayMileage + (isZh ? ' 总里程数: ' : ' Mileage: ') + this.getMileage(track.totaldistance) + '</p>' +
             (temp ? temp : '') +
             '<p><span class="window_title">' + (isZh ? '停留时长' : 'Park Duration') + '</span>: ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
