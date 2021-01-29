@@ -2477,22 +2477,29 @@ var monitor = {
             globalDeviceName = this.currentDeviceName;
             if (track && marker) {
 
-                this.queryCurrentDevReportMileageDetail(deviceid, function(currentDayMileage, track) {
-                    track.currentDayMileage = currentDayMileage;
-                    me.$store.commit('currentDeviceRecord', track);
-                    me.map.setCenter(marker.getCoordinates());
-                    me.map.setZoom(18);
-                    var address = me.getAddress(track, marker);
-                    var sContent = me.getInfoWindowContent(track, address);
-                    marker.setInfoWindow(sContent);
-                    marker.openInfoWindow();
-                    if (globalDeviceId) {
-                        var oldMarker = me.mapAllMarkers[globalDeviceId];
-                        oldMarker && oldMarker.setZIndex(111);
-                    }
-                    marker.setZIndex(999);
-                });
+                me.$store.commit('currentDeviceRecord', track);
+                me.map.setCenter(marker.getCoordinates());
+                me.map.setZoom(18);
+                var address = me.getAddress(track, marker);
+                var sContent = me.getInfoWindowContent(track, address);
+                marker.setInfoWindow(sContent);
+                marker.openInfoWindow();
+                if (globalDeviceId) {
+                    var oldMarker = me.mapAllMarkers[globalDeviceId];
+                    oldMarker && oldMarker.setZIndex(111);
+                }
+                marker.setZIndex(999);
 
+
+                this.queryCurrentDevReportMileageDetail(deviceid, function(currentDayMileage, track) {
+                    if (track.deviceid == globalDeviceId) {
+                        track.currentDayMileage = currentDayMileage;
+                        var address = me.getAddress(track, marker);
+                        var sContent = me.getInfoWindowContent(track, address);
+                        marker.setInfoWindow(sContent);
+                        marker.openInfoWindow();
+                    }
+                });
             } else {
                 this.$Message.error(this.$t("monitor.noRecordTrack"))
                 this.$store.commit('currentDeviceId', deviceid);
@@ -2695,7 +2702,7 @@ var monitor = {
             utils.setCurrentDeviceid(deviceid);
             var devLastInfo = me.getSingleDeviceInfo(deviceid);
             var device = this.deviceInfos[deviceid];
-            var devicetype = device.devicetype;
+            var devicetype = device ? device.devicetype : 1;
             this.currentDeviceType = devicetype;
 
             me.$store.commit('currentDeviceId', deviceid);
@@ -2703,7 +2710,7 @@ var monitor = {
                 me.$store.commit('currentDeviceRecord', devLastInfo);
             }
             globalDeviceId = deviceid;
-            globalDeviceName = device.devicename;
+            globalDeviceName = device ? device.devicename : deviceid;
             me.groups.forEach(function(group) {
                 group.devices.forEach(function(device) {
                     if (device.deviceid == deviceid) {
@@ -3285,10 +3292,12 @@ var monitor = {
                             marker.openInfoWindow();
 
                             this.queryCurrentDevReportMileageDetail(deviceid, function(currentDayMileage, track) {
-                                track.currentDayMileage = currentDayMileage;
-                                var address = me.getAddress(track, marker);
-                                var sContent = me.getInfoWindowContent(track, address);
-                                marker.setInfoWindow(sContent);
+                                if (track.deviceid == globalDeviceId) {
+                                    track.currentDayMileage = currentDayMileage;
+                                    var address = me.getAddress(track, marker);
+                                    var sContent = me.getInfoWindowContent(track, address);
+                                    marker.setInfoWindow(sContent);
+                                }
                             })
                         }
                     }
@@ -3589,22 +3598,30 @@ var monitor = {
             var me = this;
             var marker = e.target;
             var deviceid = marker.deviceid;
+            var point = marker.getCoordinates();
+            var track = this.getSingleDeviceInfo(deviceid);
+            me.currentDeviceType = vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicetype : 1;
+            me.map.setCenter(point);
+            var address = me.getAddress(track, marker);
+            var sContent = me.getInfoWindowContent(track, address);
+            marker.setInfoWindow(sContent);
+            marker.openInfoWindow();
+            if (globalDeviceId) {
+                var oldMarker = me.mapAllMarkers[globalDeviceId];
+                oldMarker && oldMarker.setZIndex(111);
+            }
+            marker.setZIndex(999);
+            globalDeviceId = deviceid;
+            me.openTreeDeviceNav(deviceid);
+
             this.queryCurrentDevReportMileageDetail(deviceid, function(currentDayMileage, track) {
-                var point = marker.getCoordinates();
-                me.currentDeviceType = vstore.state.deviceInfos[deviceid].devicetype;
-                me.map.setCenter(point);
-                track.currentDayMileage = currentDayMileage;
-                var address = me.getAddress(track, marker);
-                var sContent = me.getInfoWindowContent(track, address);
-                marker.setInfoWindow(sContent);
-                marker.openInfoWindow();
-                if (globalDeviceId) {
-                    var oldMarker = me.mapAllMarkers[globalDeviceId];
-                    oldMarker && oldMarker.setZIndex(111);
+                if (track.deviceid == globalDeviceId) {
+                    track.currentDayMileage = currentDayMileage;
+                    var address = me.getAddress(track, marker);
+                    var sContent = me.getInfoWindowContent(track, address);
+                    marker.setInfoWindow(sContent);
+                    marker.openInfoWindow();
                 }
-                marker.setZIndex(999);
-                globalDeviceId = deviceid;
-                me.openTreeDeviceNav(deviceid);
             });
         },
         getInfoWindowContent: function(track, address) {
