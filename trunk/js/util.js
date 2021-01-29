@@ -759,9 +759,9 @@ var utils = {
         }
 
         var temp = this.getTemperature(isZh, track);
-        var decice = findTheDevice(track.deviceid)
+        var device = findTheDevice(track.deviceid)
         var content =
-            '<p><span class="window_title">' + (isZh ? '设备名称' : 'Device Name') + '</span>: ' + track.devicename + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px"></i><i id="stared" onclick="onStarDevice(' + track.deviceid + ')" class="ivu-icon ivu-icon-md-heart" style="font-size: 16px;cursor: pointer;float:right;margin-right:22px;color:' + (decice.stared == 1 ? '#e4393c' : '#c1c1c1') + ';"></i></p>' +
+            '<p><span class="window_title">' + (isZh ? '设备名称' : 'Device Name') + '</span>: ' + track.devicename + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px"></i><i id="stared" onclick="onStarDevice(' + track.deviceid + ')" class="ivu-icon ivu-icon-md-heart" style="font-size: 16px;cursor: pointer;float:right;margin-right:22px;color:' + (device.stared == 1 ? '#e4393c' : '#c1c1c1') + ';"></i></p>' +
             '<p><span class="window_title">' + (isZh ? '设备序号' : 'Device Number') + '</span>: ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px;"></i></p>' +
             '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
             '<p><span class="window_title">' + (isZh ? '经度纬度' : 'Longitude and latitude') + '</span>: ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +

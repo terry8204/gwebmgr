@@ -2445,7 +2445,8 @@ var monitor = {
             this.selectedDevObj = deviceInfo;
             this.handleClickDev(deviceInfo.deviceid);
         },
-        queryCurrentDevReportMileageDetail: function(deviceid, track, callback) {
+        queryCurrentDevReportMileageDetail: function(deviceid, callback) {
+            var track = this.positionLastrecords[deviceid];
             var url = myUrls.reportMileageDetail();
             var currentDay = DateFormat.format(new Date(track.updatetime), "yyyy-MM-dd");
             var data = {
@@ -2458,9 +2459,9 @@ var monitor = {
                 if (resp.status == 0) {
                     var record = resp.records[0];
                     var mileage = ((record.maxtotaldistance - record.mintotaldistance) / 1000).toFixed(2) + 'Km';
-                    callback(mileage);
+                    callback(mileage, track);
                 } else {
-                    callback('0Km');
+                    callback('-', track);
                 }
             });
         },
@@ -2476,7 +2477,7 @@ var monitor = {
             globalDeviceName = this.currentDeviceName;
             if (track && marker) {
 
-                this.queryCurrentDevReportMileageDetail(deviceid, track, function(currentDayMileage) {
+                this.queryCurrentDevReportMileageDetail(deviceid, function(currentDayMileage, track) {
                     track.currentDayMileage = currentDayMileage;
                     me.$store.commit('currentDeviceRecord', track);
                     me.map.setCenter(marker.getCoordinates());
@@ -2615,9 +2616,8 @@ var monitor = {
                                         //item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
                                         // console.log("lastPositon", item.devicename, DateFormat.longToDateTimeStr(item.updatetime, 0));
 
-
-                                        me.positionLastrecords[deviceid] = item;
-
+                                        // me.positionLastrecords[deviceid] = item;
+                                        me.updateNewPositionLastValue(deviceid, item);
 
                                     }
                                 })
@@ -3195,94 +3195,22 @@ var monitor = {
                 item.online = online;
                 item.devicename = vstore.state.deviceInfos[deviceid].devicename;
 
-
-                // if (oldPositionLast == undefined) {
-                this.positionLastrecords[deviceid] = item;
-                // } else {
-                //     this.copyPositionLastValue(oldPositionLast, item);
-                // }
+                this.updateNewPositionLastValue(deviceid, item);
             }
         },
 
-        // copyPositionLastValue: function(oldPositionLast, newPositionLast) {
-
-        //     oldPositionLast.b_lon = newPositionLast.b_lon;
-        //     oldPositionLast.b_lat = newPositionLast.b_lat;
-        //     oldPositionLast.g_lat = newPositionLast.g_lat;
-        //     oldPositionLast.g_lon = newPositionLast.g_lon;
-        //     oldPositionLast.online = newPositionLast.online;
-        //     //============================             =        //============================     
-        //     oldPositionLast.positionlastid = newPositionLast.positionlastid;
-        //     oldPositionLast.deviceid = newPositionLast.deviceid;
-        //     oldPositionLast.username = newPositionLast.username;
-        //     oldPositionLast.devicetime = newPositionLast.devicetime;
-        //     oldPositionLast.arrivedtime = newPositionLast.arrivedtime;
-        //     oldPositionLast.updatetime = newPositionLast.updatetime;
-        //     oldPositionLast.validpoistiontime = newPositionLast.validpoistiontime;
-        //     oldPositionLast.callat = newPositionLast.callat;
-        //     oldPositionLast.callon = newPositionLast.callon;
-        //     oldPositionLast.radius = newPositionLast.radius;
-        //     oldPositionLast.speed = newPositionLast.speed;
-        //     oldPositionLast.altitude = newPositionLast.altitude;
-        //     oldPositionLast.course = newPositionLast.course;
-        //     oldPositionLast.mileage = newPositionLast.mileage;
-        //     oldPositionLast.totaldistance = newPositionLast.totaldistance;
-        //     oldPositionLast.totaloil = newPositionLast.totaloil;
-        //     oldPositionLast.auxoil = newPositionLast.auxoil;
-        //     oldPositionLast.srcad0 = newPositionLast.srcad0;
-        //     oldPositionLast.srcad1 = newPositionLast.srcad1;
-        //     oldPositionLast.temp1 = newPositionLast.temp1;
-        //     oldPositionLast.temp2 = newPositionLast.temp2;
-        //     oldPositionLast.temp3 = newPositionLast.temp3;
-        //     oldPositionLast.temp4 = newPositionLast.temp4;
-        //     oldPositionLast.temp5 = newPositionLast.temp5;
-        //     oldPositionLast.temp6 = newPositionLast.temp6;
-        //     oldPositionLast.temp7 = newPositionLast.temp7;
-        //     oldPositionLast.temp8 = newPositionLast.temp8;
-        //     oldPositionLast.humi1 = newPositionLast.humi1;
-        //     oldPositionLast.humi2 = newPositionLast.humi2;
-        //     oldPositionLast.humi3 = newPositionLast.humi3;
-        //     oldPositionLast.humi4 = newPositionLast.humi4;
-        //     oldPositionLast.humi5 = newPositionLast.humi5;
-        //     oldPositionLast.humi6 = newPositionLast.humi6;
-        //     oldPositionLast.humi7 = newPositionLast.humi7;
-        //     oldPositionLast.humi8 = newPositionLast.humi8;
-        //     oldPositionLast.status = newPositionLast.status;
-        //     oldPositionLast.strstatus = newPositionLast.strstatus;
-        //     oldPositionLast.strstatusen = newPositionLast.strstatusen;
-
-        //     oldPositionLast.strvideoalarm = newPositionLast.strvideoalarm;
-        //     oldPositionLast.strvideoalarmen = newPositionLast.strvideoalarmen;
-
-        //     oldPositionLast.alarm = newPositionLast.alarm;
-        //     oldPositionLast.stralarm = newPositionLast.stralarm;
-        //     oldPositionLast.stralarmen = newPositionLast.stralarmen;
-
-        //     oldPositionLast.gotsrc = newPositionLast.gotsrc;
-        //     oldPositionLast.rxlevel = newPositionLast.rxlevel;
-        //     oldPositionLast.gpstotalnum = newPositionLast.gpstotalnum;
-        //     oldPositionLast.gpsvalidnum = newPositionLast.gpsvalidnum;
-        //     oldPositionLast.exvoltage = newPositionLast.exvoltage;
-        //     oldPositionLast.voltagev = newPositionLast.voltagev;
-        //     oldPositionLast.voltagepercent = newPositionLast.voltagepercent;
-        //     oldPositionLast.reportmode = newPositionLast.reportmode;
-        //     oldPositionLast.moving = newPositionLast.moving;
-        //     oldPositionLast.parklat = newPositionLast.parklat;
-        //     oldPositionLast.parklon = newPositionLast.parklon;
-        //     oldPositionLast.parktime = newPositionLast.parktime;
-        //     oldPositionLast.parkduration = newPositionLast.parkduration;
-        //     oldPositionLast.loadstatus = newPositionLast.loadstatus;
-        //     oldPositionLast.weight = newPositionLast.weight;
-        //     oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
-
-        //     oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
-        //     oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
-        //     oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
-        //     oldPositionLast.srcweightad0 = newPositionLast.srcweightad0;
-
-        //     // int loadstatus = -1; //载重状态 0x00：空车；0x01：半载；0x02：超载；0x03：满载 0x04 装载 0x05 卸载
-        //     // long weight = -1; //重量 单位0.1kg
-        // },
+        updateNewPositionLastValue: function(deviceid, newPositionLast) {
+            var oldPositionLast = this.positionLastrecords[deviceid];
+            var oldCurrentMileage = "";
+            if (oldPositionLast) {
+                oldCurrentMileage = oldPositionLast.currentDayMileage;
+                if (oldCurrentMileage == undefined) {
+                    oldCurrentMileage = "-";
+                }
+            }
+            newPositionLast.currentDayMileage = oldCurrentMileage;
+            this.positionLastrecords[deviceid] = newPositionLast;
+        },
 
         dorefreshMapUI: function() {
             // console.log("dorefreshMapUI enter isNeedRefreshMapUI=",isNeedRefreshMapUI);
@@ -3321,6 +3249,7 @@ var monitor = {
             return result;
         },
         updateLastTracks: function(deviceid) {
+            var me = this;
             var currentTime = DateFormat.getCurrentUTC();
             var isBMap = this.mapType == 'bMap';
             for (var key in this.positionLastrecords) {
@@ -3346,17 +3275,22 @@ var monitor = {
                         this.clusterLayer.addMarker(marker);
                     }
                     if (deviceid === key) {
-
                         var infoWindow = marker.getInfoWindow();
-
                         if (infoWindow && infoWindow.isVisible && infoWindow.isVisible()) {
-                            var address = this.getAddress(track, marker);
-                            var sContent = this.getInfoWindowContent(track, address);
+
+                            var address = me.getAddress(track, marker)
+                            var sContent = me.getInfoWindowContent(track, address);
                             marker.setInfoWindow(sContent);
                             marker.setZIndex(999);
                             marker.openInfoWindow();
-                        }
 
+                            this.queryCurrentDevReportMileageDetail(deviceid, function(currentDayMileage, track) {
+                                track.currentDayMileage = currentDayMileage;
+                                var address = me.getAddress(track, marker);
+                                var sContent = me.getInfoWindowContent(track, address);
+                                marker.setInfoWindow(sContent);
+                            })
+                        }
                     }
 
                 }
@@ -3655,12 +3589,10 @@ var monitor = {
             var me = this;
             var marker = e.target;
             var deviceid = marker.deviceid;
-            var track = me.positionLastrecords[deviceid];
-            this.queryCurrentDevReportMileageDetail(deviceid, track, function(currentDayMileage) {
+            this.queryCurrentDevReportMileageDetail(deviceid, function(currentDayMileage, track) {
                 var point = marker.getCoordinates();
                 me.currentDeviceType = vstore.state.deviceInfos[deviceid].devicetype;
                 me.map.setCenter(point);
-
                 track.currentDayMileage = currentDayMileage;
                 var address = me.getAddress(track, marker);
                 var sContent = me.getInfoWindowContent(track, address);
@@ -3705,7 +3637,6 @@ var monitor = {
                 } else if (resp.status == 0 && address) {
 
                     LocalCacheMgr.setAddress(callon, callat, address);
-
                     var sContent = that.getInfoWindowContent(track, address);
                     marker.setInfoWindow(sContent);
                     marker.openInfoWindow();
