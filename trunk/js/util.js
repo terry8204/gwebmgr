@@ -768,6 +768,7 @@ var utils = {
             '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
             '<p><span class="window_title">' + (isZh ? '定位时间' : 'Posi time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '当日里程' : 'Mileage') + '</span>: ' + track.currentDayMileage + '</p>' +
             '<p><span class="window_title">' + (isZh ? '总里程数' : 'Mileage') + '</span>: ' + this.getMileage(track.totaldistance) + '</p>' +
             (temp ? temp : '') +
             '<p><span class="window_title">' + (isZh ? '停留时长' : 'Park Duration') + '</span>: ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
@@ -788,7 +789,7 @@ var utils = {
             deviceid +
             ')">SIM</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
             deviceid +
-            ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span></p>';
+            ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span>';
 
         // <span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setPanorama(' +deviceid + ')">' + (isZh ? '查看街景' : 'Panorama') + '</span>
 
@@ -829,7 +830,7 @@ var utils = {
             extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWatermeter(' + deviceid + ')">' + vRoot.$t('monitor.watermeter') + '</span>'
         };
         if (extendsStr.length) {
-            content += '<p class="operation" style="margin-top:3px;">' + extendsStr + '</p>';
+            content += extendsStr + '</p>';
         }
         return content;
     },

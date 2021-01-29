@@ -2445,8 +2445,27 @@ var monitor = {
             this.selectedDevObj = deviceInfo;
             this.handleClickDev(deviceInfo.deviceid);
         },
+        queryCurrentDevReportMileageDetail: function(deviceid, track, callback) {
+            var url = myUrls.reportMileageDetail();
+            var currentDay = DateFormat.format(new Date(track.updatetime), "yyyy-MM-dd");
+            var data = {
+                startday: currentDay,
+                endday: currentDay,
+                offset: timeDifference,
+                deviceid: deviceid
+            }
+            utils.sendAjax(url, data, function name(resp) {
+                if (resp.status == 0) {
+                    var record = resp.records[0];
+                    var mileage = ((record.maxtotaldistance - record.mintotaldistance) / 1000).toFixed(2) + 'Km';
+                    callback(mileage);
+                } else {
+                    callback('0Km');
+                }
+            });
+        },
         handleClickDev: function(deviceid) {
-
+            var me = this;
             this.querySingleAllCmdDefaultValue(deviceid);
             utils.setCurrentDeviceid(deviceid);
             var device = this.deviceInfos[deviceid];
@@ -2456,19 +2475,23 @@ var monitor = {
             this.currentDeviceType = device.devicetype;
             globalDeviceName = this.currentDeviceName;
             if (track && marker) {
-                this.$store.commit('currentDeviceRecord', track);
-                this.map.setCenter(marker.getCoordinates());
-                this.map.setZoom(18);
-                var address = this.getAddress(track, marker);
-                var sContent = this.getInfoWindowContent(track, address);
-                marker.setInfoWindow(sContent);
-                marker.openInfoWindow();
 
-                if (globalDeviceId) {
-                    var oldMarker = this.mapAllMarkers[globalDeviceId];
-                    oldMarker && oldMarker.setZIndex(111);
-                }
-                marker.setZIndex(999);
+                this.queryCurrentDevReportMileageDetail(deviceid, track, function(currentDayMileage) {
+                    track.currentDayMileage = currentDayMileage;
+                    me.$store.commit('currentDeviceRecord', track);
+                    me.map.setCenter(marker.getCoordinates());
+                    me.map.setZoom(18);
+                    var address = me.getAddress(track, marker);
+                    var sContent = me.getInfoWindowContent(track, address);
+                    marker.setInfoWindow(sContent);
+                    marker.openInfoWindow();
+                    if (globalDeviceId) {
+                        var oldMarker = me.mapAllMarkers[globalDeviceId];
+                        oldMarker && oldMarker.setZIndex(111);
+                    }
+                    marker.setZIndex(999);
+                });
+
             } else {
                 this.$Message.error(this.$t("monitor.noRecordTrack"))
                 this.$store.commit('currentDeviceId', deviceid);
@@ -3629,25 +3652,28 @@ var monitor = {
             this.map.addLayer(this.clusterLayer);
         },
         onClickMarker: function(e) {
+            var me = this;
             var marker = e.target;
             var deviceid = marker.deviceid;
-            // console.log(deviceid, marker);
-            var point = marker.getCoordinates();
-            this.currentDeviceType = vstore.state.deviceInfos[deviceid].devicetype;
-            this.map.setCenter(point);
-            var track = this.positionLastrecords[deviceid];
-            var address = this.getAddress(track, marker);
-            var sContent = this.getInfoWindowContent(track, address);
-            marker.setInfoWindow(sContent);
-            marker.openInfoWindow();
+            var track = me.positionLastrecords[deviceid];
+            this.queryCurrentDevReportMileageDetail(deviceid, track, function(currentDayMileage) {
+                var point = marker.getCoordinates();
+                me.currentDeviceType = vstore.state.deviceInfos[deviceid].devicetype;
+                me.map.setCenter(point);
 
-            if (globalDeviceId) {
-                var oldMarker = this.mapAllMarkers[globalDeviceId];
-                oldMarker && oldMarker.setZIndex(111);
-            }
-            marker.setZIndex(999);
-            globalDeviceId = deviceid;
-            this.openTreeDeviceNav(deviceid);
+                track.currentDayMileage = currentDayMileage;
+                var address = me.getAddress(track, marker);
+                var sContent = me.getInfoWindowContent(track, address);
+                marker.setInfoWindow(sContent);
+                marker.openInfoWindow();
+                if (globalDeviceId) {
+                    var oldMarker = me.mapAllMarkers[globalDeviceId];
+                    oldMarker && oldMarker.setZIndex(111);
+                }
+                marker.setZIndex(999);
+                globalDeviceId = deviceid;
+                me.openTreeDeviceNav(deviceid);
+            });
         },
         getInfoWindowContent: function(track, address) {
             var sContent = utils.getWindowContent(track, address);

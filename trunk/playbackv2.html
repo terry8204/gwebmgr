@@ -1142,14 +1142,14 @@
                     prevMonth() {
                         this.month--;
                         if (!this.mileageMonthRecord[this.dateStr]) {
-                            this.queryReportMileageDetail(new Date(this.year, this.month, this.date))
+                            this.queryReportMileageDetail(new Date(this.year, this.month - 1, 1));
                         }
 
                     },
                     nextMonth() {
                         this.month++;
                         if (!this.mileageMonthRecord[this.dateStr]) {
-                            this.queryReportMileageDetail(new Date(this.year, this.month, this.date))
+                            this.queryReportMileageDetail(new Date(this.year, this.month - 1, 1));
                         }
                     },
                     setTheDate() {
@@ -1548,15 +1548,19 @@
                     },
                     queryReportMileageDetail: function(date) {
                         var me = this;
+                        var currentDateStr = DateFormat.format(date, "yyyy-MM");
                         var url = myUrls.reportMileageDetail();
-                        var day = date.getFullYear() + '-' + (date.getMonth() + 1) + '-';
-                        var startday = DateFormat.addMonth(new Date(day + "1"), -1);
-                        startday = DateFormat.format(startday, "yyyy-MM-dd");
-                        var endDay = '';
-                        var monthDays = this.getMonthDays(date);
-                        var dateArr = startday.split('-');
-                        dateArr[2] = '' + monthDays;
-                        endDay = dateArr.join('-');
+                        var theDates = this.getTheMonthDays();
+                        var startday = currentDateStr + '-01';
+                        var endDay = currentDateStr + '-' + theDates;
+
+                        var currentDay = DateFormat.format(new Date(), "yyyy-MM-dd");
+                        if (currentDay.localeCompare(startday) == -1) {
+                            return;
+                        };
+                        if (currentDay.localeCompare(endDay) == -1) {
+                            endDay = currentDay;
+                        };
                         var data = {
                             startday: startday,
                             endday: endDay,
@@ -2048,7 +2052,7 @@
                         this.setTheDate();
                         this.initMap();
                         this.initCharts();
-                        this.queryReportMileageDetail(new Date(this.year, this.month, this.date));
+                        this.queryReportMileageDetail(new Date(this.year, this.month - 1, 1));
                         document.onkeydown = function(e) {
                             if (e.keyCode == 27) {
                                 me.isFullScreen = false;
