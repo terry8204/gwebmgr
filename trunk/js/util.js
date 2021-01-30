@@ -778,32 +778,32 @@ var utils = {
             (extendsBtns.video ? ('<p><span class="window_title">' + (isZh ? '视频状态' : 'video') + '</span>: ' + videoState + '</p>') : ("")) +
             '<p class="last-address">' + b_address + '</p>' +
             '<p class="operation">' +
-            '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="playBack(' +
+            '<span class="map-window-btn" onclick="playBack(' +
             deviceid +
             ')">' + (isZh ? '轨迹' : 'Track') + '</span>' +
-            '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="trackMap(' +
+            '<span class="map-window-btn" onclick="trackMap(' +
             deviceid +
-            ')">' + (isZh ? '跟踪' : 'Follow') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="refreshPostion(' +
+            ')">' + (isZh ? '跟踪' : 'Follow') + '</span><span class="map-window-btn" onclick="refreshPostion(' +
             deviceid +
-            ')">' + (isZh ? '刷新位置' : 'RefreshPosi') + '</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openSim(' +
+            ')">' + (isZh ? '刷新位置' : 'RefreshPosi') + '</span><span class="map-window-btn" onclick="openSim(' +
             deviceid +
-            ')">SIM</span><span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setFence(' +
+            ')">SIM</span><span class="map-window-btn" onclick="setFence(' +
             deviceid +
             ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span>';
 
-        // <span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="setPanorama(' +deviceid + ')">' + (isZh ? '查看街景' : 'Panorama') + '</span>
+        // <span class="map-window-btn" onclick="setPanorama(' +deviceid + ')">' + (isZh ? '查看街景' : 'Panorama') + '</span>
 
         if (extendsBtns.video) {
             var devicename = "'" + track.devicename + "'";
             var activeSafety = extendsBtns.activesafety ? 1 : 0;
             // devicename = encodeURIComponent(devicename);
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openVdeio(' + deviceid + ',' + devicename + ',' + activeSafety + ')">' + vRoot.$t('monitor.video') + '</span>'
+            extendsStr += '<span class="map-window-btn" onclick="openVdeio(' + deviceid + ',' + devicename + ',' + activeSafety + ')">' + vRoot.$t('monitor.video') + '</span>'
         };
         if (extendsBtns.camera) {
 
             var devicename = "'" + track.devicename + "'";
             // devicename = encodeURIComponent(devicename);
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openCamera(' + deviceid + ',' + devicename + ',' + activeSafety + ')">' + vRoot.$t('monitor.camera') + '</span>'
+            extendsStr += '<span class="map-window-btn" onclick="openCamera(' + deviceid + ',' + devicename + ',' + activeSafety + ')">' + vRoot.$t('monitor.camera') + '</span>'
         };
 
 
@@ -811,23 +811,23 @@ var utils = {
         if (extendsBtns.activesafety) {
             var devicename = "'" + track.devicename + "'";
             devicename = encodeURIComponent(devicename);
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openActiveSafety(' + deviceid + ',' + devicename + ')">' + vRoot.$t('monitor.activeSafety') + '</span>'
+            extendsStr += '<span class="map-window-btn" onclick="openActiveSafety(' + deviceid + ',' + devicename + ')">' + vRoot.$t('monitor.activeSafety') + '</span>'
         };
 
         if (extendsBtns.audio) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openAudio(' + deviceid + ')">' + vRoot.$t('monitor.media') + '</span>'
+            extendsStr += '<span class="map-window-btn" onclick="openAudio(' + deviceid + ')">' + vRoot.$t('monitor.media') + '</span>'
         };
         if (extendsBtns.bms) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openBms(' + deviceid + ')">BMS</span>'
+            extendsStr += '<span class="map-window-btn" onclick="openBms(' + deviceid + ')">BMS</span>'
         };
         if (extendsBtns.obd) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openObd(' + deviceid + ')">OBD</span>'
+            extendsStr += '<span class="map-window-btn" onclick="openObd(' + deviceid + ')">OBD</span>'
         };
         if (extendsBtns.weight) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWeight(' + deviceid + ')">' + vRoot.$t('monitor.weigh') + '</span>'
+            extendsStr += '<span class="map-window-btn" onclick="openWeight(' + deviceid + ')">' + vRoot.$t('monitor.weigh') + '</span>'
         };
         if (extendsBtns.watermeter) {
-            extendsStr += '<span class="ivu-btn ivu-btn-default ivu-btn-small" onclick="openWatermeter(' + deviceid + ')">' + vRoot.$t('monitor.watermeter') + '</span>'
+            extendsStr += '<span class="map-window-btn" onclick="openWatermeter(' + deviceid + ')">' + vRoot.$t('monitor.watermeter') + '</span>'
         };
         if (extendsStr.length) {
             content += extendsStr + '</p>';
@@ -1220,7 +1220,6 @@ var utils = {
                 if (group.devices) {
                     groupObj.children = [];
                     group.devices.forEach(function(device) {
-                        var device = vstore.state.deviceInfos[device.deviceid];
                         groupObj.children.push({
                             username: username,
                             deviceid: device.deviceid,
@@ -1314,15 +1313,6 @@ var utils = {
             iViewTree.name = username + "(" + totalCount + ")";
         }
         return iViewTree;
-    },
-    queryDevicesTree: function(callback) {
-        var url = myUrls.queryDevicesTree();
-        var data = {
-            username: userName
-        };
-        utils.sendAjax(url, data, function(respData) {
-            callback && callback(respData.rootuser);
-        });
     },
     queryDeviceex: function(deviceid, callback) {
         var url = myUrls.queryDeviceex();

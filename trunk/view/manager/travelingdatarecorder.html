@@ -825,19 +825,12 @@
                 return relsut;
             },
             queryDevicesTree: function() {
+                var me = this;
                 this.loading = true;
-                var url = myUrls.queryDevicesTree(),
-                    me = this;
-                var data = {
-                    username: userName
-                };
-                utils.sendAjax(url, data, function(respData) {
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
                     me.loading = false;
-                    if (respData.status === 0) {
-                        rootuser = respData.rootuser;
-                        me.setTreeDataList(respData.rootuser);
-                    }
-                });
+                    me.setTreeDataList(rootuser);
+                })
             },
             setTreeDataList: function(rootuser) {
                 this.treeDeviceList = [this.castUsersTreeToDevicesTree(rootuser, true, false)];
@@ -1213,17 +1206,12 @@
             utils.deviceInfos = {};
             this.calcTableHeight();
             this.treeDeviceList = [];
+            this.queryDevicesTree();
+            this.getDeviceType();
+            this.userName = userName;
             window.onresize = function() {
                 me.calcTableHeight();
             }
-            if (rootuser == null) {
-                this.queryDevicesTree();
-            } else {
-                me.setTreeDataList(rootuser);
-            }
-
-            this.getDeviceType();
-            this.userName = userName;
         },
     })
 </script>

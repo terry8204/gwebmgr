@@ -610,19 +610,12 @@
                 return relsut;
             },
             queryDevicesTree: function() {
+                var me = this;
                 this.loading = true;
-                var url = myUrls.queryDevicesTree(),
-                    me = this;
-                var data = {
-                    username: userName
-                };
-                utils.sendAjax(url, data, function(respData) {
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
                     me.loading = false;
-                    if (respData.status === 0) {
-                        rootuser = respData.rootuser;
-                        me.setTreeDataList(respData.rootuser);
-                    }
-                });
+                    me.setTreeDataList(rootuser);
+                })
             },
             setTreeDataList: function(rootuser) {
 
@@ -752,11 +745,10 @@
                             groupObj.children = [];
                             groupObj.name = group.groupname + '(' + group.devices.length + ')';
                             group.devices.forEach(function(device) {
-                                var deviceinfo = vstore.state.deviceInfos[device.deviceid];
                                 groupObj.children.push({
                                     deviceid: device.deviceid,
                                     name: device.devicename,
-                                    icon: utils.getzTreeDeviceIcon(deviceinfo)
+                                    icon: utils.getzTreeDeviceIcon(device)
                                 });
                                 utils.deviceInfos[device.deviceid] = {
                                     deviceid: device.deviceid,
@@ -1147,12 +1139,7 @@
             window.onresize = function() {
                 me.calcTableHeight();
             }
-            if (rootuser == null) {
-                this.queryDevicesTree();
-            } else {
-                me.setTreeDataList(rootuser);
-            }
-
+            this.queryDevicesTree();
             this.getDeviceType();
             this.userName = userName;
         },

@@ -280,7 +280,6 @@ var reportMixin = {
         filterMethod: function(value) {
             var filterData = [];
             value = value.toLowerCase();
-            console.log('this.groupslist', this.groupslist)
             for (var i = 0; i < this.groupslist.length; i++) {
                 var group = this.groupslist[i];
                 if (
@@ -836,6 +835,14 @@ function posiReport(groupslist) {
                     LocalCacheMgr.setAddress(row.fixedLon, row.fixedLat, address);
                 });
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         watch: {
             trackDetailModal: function() {
@@ -849,18 +856,7 @@ function posiReport(groupslist) {
             this.mapType = utils.getMapType();
             this.initMap();
             this.allPosiDetailData = [];
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
         }
     })
 }
@@ -1079,23 +1075,20 @@ function groupMileage(groupslist) {
                 } else {
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
-            }
+            },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         mounted: function() {
             var me = this;
             me.records = [];
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            me.queryDevicesTree();
             this.calcTableHeight();
             window.onresize = function() {
                 me.calcTableHeight();
@@ -1458,22 +1451,18 @@ function accDetails(groupslist) {
                 })
                 me.tableData = newRecords;
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         mounted: function() {
             var me = this;
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
-
+            me.queryDevicesTree();
             this.calcTableHeight();
             window.onresize = function() {
                 me.calcTableHeight();
@@ -2077,22 +2066,20 @@ function rotateReport(groupslist) {
                     ]
                 };
                 return option;
-            }
+            },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         mounted: function() {
             var me = this;
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+
+            this.queryDevicesTree();
             this.barChartJourney = echarts.init(document.getElementById('barContainer'));
             this.displayChart();
             this.calcTableHeight();
@@ -2699,21 +2686,18 @@ function speedingReport(groupslist) {
                 };
                 return option;
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         mounted: function() {
             var me = this;
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
             this.initMap();
             this.barChartJourney = echarts.init(document.getElementById('barContainer'));
             this.displayChart();
@@ -4634,21 +4618,18 @@ function dropLineReport(groupslist) {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         mounted: function() {
             var me = this;
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -4755,7 +4736,14 @@ function deviceOnlineDaily(groupslist) {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
-
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         watch: {
             daycount: function(newVla) {
@@ -4816,22 +4804,11 @@ function deviceOnlineDaily(groupslist) {
                     width: 120,
                 });
                 this.columns = columns;
-            }
+            },
         },
         mounted: function() {
             var me = this;
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -4934,21 +4911,18 @@ function groupsOnlineDaily(groupslist) {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         mounted: function() {
             var me = this;
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -5160,21 +5134,18 @@ function deviceMonthOnlineDaily(groupslist) {
                 var wHeight = window.innerHeight;
                 this.tableHeight = wHeight - 125;
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         mounted: function() {
             var me = this;
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -5802,6 +5773,14 @@ function weightSummary(groupslist) {
                 }
 
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
             onSortChange: function(column) {
 
             }
@@ -5813,18 +5792,7 @@ function weightSummary(groupslist) {
             this.records = [];
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts("载重时长");
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
         }
     });
 }
@@ -6762,6 +6730,14 @@ function refuelingReport(groupslist) {
                     }
                 })
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
             onSortChange: function(column) {
 
             }
@@ -6772,18 +6748,7 @@ function refuelingReport(groupslist) {
             this.records = [];
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts();
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
         }
     });
 }
@@ -7115,6 +7080,14 @@ function oilLeakageReport(groupslist) {
                     }
                 })
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
             onSortChange: function(column) {
 
             }
@@ -7125,18 +7098,8 @@ function oilLeakageReport(groupslist) {
             this.records = [];
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts();
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
+
         }
     });
 
@@ -7915,24 +7878,21 @@ function driverWorkDetails() {
                 } else {
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                 }
-            }
+            },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         mounted: function() {
             var me = this;
             me.records = [];
             me.initMap();
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
             this.calcTableHeight();
             window.onresize = function() {
                 me.calcTableHeight();
@@ -8287,22 +8247,18 @@ function ioReport(groupslist) {
                 })
                 me.tableData = newRecords;
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
         },
         mounted: function() {
             var me = this;
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
-
+            this.queryDevicesTree();
             this.calcTableHeight();
             this.initMap();
             window.onresize = function() {
@@ -8605,6 +8561,14 @@ function multiMedia() {
                 }
                 return str;
             },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
             onRowClick: function(row) {
                 this.cameraImgModal = true;
                 this.cameraImgUrl = row.url;
@@ -8614,18 +8578,7 @@ function multiMedia() {
             var me = this;
             me.records = [];
             me.initMap();
-            if (rootuser == null) {
-                me.isSpin = true;
-                utils.queryDevicesTree(function(rootuserinfo) {
-                    me.isSpin = false;
-                    if (rootuserinfo) {
-                        rootuser = rootuserinfo;
-                        me.initZTree(rootuser);
-                    }
-                });
-            } else {
-                me.initZTree(rootuser);
-            }
+            this.queryDevicesTree();
             this.calcTableHeight();
             window.onresize = function() {
                 me.calcTableHeight();

@@ -3452,6 +3452,7 @@ var monitor = {
                         me.editDevice(deviceid);
                         me.openTreeDeviceNav(deviceid);
                     });
+                    GlobalOrgan.getInstance();
                 }, function(error) {});
                 me.isLoadGroup = false;
                 me.setIntervalReqRecords();

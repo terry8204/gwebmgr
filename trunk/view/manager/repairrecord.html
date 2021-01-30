@@ -393,23 +393,20 @@
                     } else {
                         this.$Message.error(this.$t("reportForm.selectDevTip"));
                     }
-                }
+                },
+                queryDevicesTree: function() {
+                    var me = this;
+                    this.isSpin = true;
+                    GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                        me.isSpin = false;
+                        me.initZTree(rootuser);
+                    })
+                },
             },
             mounted: function() {
                 var me = this;
-                me.records = [];
-                if (rootuser == null) {
-                    me.isSpin = true;
-                    utils.queryDevicesTree(function(rootuserinfo) {
-                        me.isSpin = false;
-                        if (rootuserinfo) {
-                            rootuser = rootuserinfo;
-                            me.initZTree(rootuser);
-                        }
-                    });
-                } else {
-                    me.initZTree(rootuser);
-                }
+                this.records = [];
+                this.queryDevicesTree();
                 this.calcTableHeight();
                 window.onresize = function() {
                     me.calcTableHeight();

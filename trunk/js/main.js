@@ -12,7 +12,6 @@ var reportDeviceId = null;
 var globalUserList = [];
 var globalGroups = [];
 var carIconTypes = {};
-var rootuser = null; // tree users
 var isNeedRefresh = false;
 var isToAlarmListRecords = false;
 var isToPhoneAlarmRecords = false;
