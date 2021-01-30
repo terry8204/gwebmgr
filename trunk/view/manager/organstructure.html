@@ -843,23 +843,27 @@
             },
             queryGroupsByUserName: function(userName) {
                 var me = this;
-                var foundGroupId = false;
-                var groupid = editObject.groupid;
+                // var foundGroupId = false;
+                // var groupid = editObject.groupid;
                 me.groupsList = GlobalOrgan.getInstance().getGroupListByUserName(userName);
-                me.groupsList.forEach(function(group) {
-                    if (group.groupid == groupid) {
-                        foundGroupId = true;
-                        return false;
-                    }
-                })
+                // me.groupsList.forEach(function(group) {
+                //     if (group.groupid == groupid) {
+                //         foundGroupId = true;
+                //         return false;
+                //     }
+                // })
 
+                // // me.groupid = editObject.groupid;
+                // if (foundGroupId) {
+                //     me.groupid = editObject.groupid;
+                // } else {
+                //     me.groupid = 0;
+                // }
                 // console.log('me.groupsList', me.groupsList);
-                // me.groupid = editObject.groupid;
-                if (foundGroupId) {
+                if (me.groupid === undefined) {
                     me.groupid = editObject.groupid;
-                } else {
-                    me.groupid = 0;
                 }
+                // console.log(me.groupid);
             },
             filterMethod: function(value) {
                 var list = []
@@ -908,8 +912,10 @@
                                     me.selectType = 'device';
                                     var parentNode = node.getParentNode();
                                     var pparentNode = parentNode.getParentNode();
+                                    // console.log('parentNode', parentNode)
                                     username = pparentNode.username;
                                     groupid = parentNode.groupid;
+                                    me.groupid = groupid;
                                     me.selectedDeviceid = node.deviceid;
                                     me.getDeviceList(node.deviceid);
                                 }
