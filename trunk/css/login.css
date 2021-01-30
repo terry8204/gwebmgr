@@ -5,7 +5,9 @@
     min-width: 1300px;
     min-height: 580px;
     /* background-image: url('../custom/login_bg.jpg'); */
-    background-size: cover;
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .center {

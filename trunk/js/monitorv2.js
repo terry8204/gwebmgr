@@ -3282,6 +3282,7 @@ var monitor = {
                         this.clusterLayer.addMarker(marker);
                     }
                     if (deviceid === key) {
+                        var copyMarker = marker;
                         var infoWindow = marker.getInfoWindow();
                         if (infoWindow && infoWindow.isVisible && infoWindow.isVisible()) {
 
@@ -3294,9 +3295,10 @@ var monitor = {
                             this.queryCurrentDevReportMileageDetail(deviceid, function(currentDayMileage, track) {
                                 if (track.deviceid == globalDeviceId) {
                                     track.currentDayMileage = currentDayMileage;
-                                    var address = me.getAddress(track, marker);
+                                    var address = me.getAddress(track, copyMarker);
                                     var sContent = me.getInfoWindowContent(track, address);
-                                    marker.setInfoWindow(sContent);
+                                    copyMarker.setInfoWindow(sContent);
+                                    copyMarker.openInfoWindow();
                                 }
                             })
                         }
