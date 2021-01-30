@@ -479,7 +479,6 @@
 
             reloadTreeData: function() {
                 this.treeDeviceList = [this.castUsersTreeToDevicesTree(GlobalOrgan.getInstance().globalOrganData, true, false)];
-                console.log('treeDeviceList', this.treeDeviceList);
             },
 
             deleteDevice: function() {
@@ -650,6 +649,7 @@
                         me.zTreeObj.updateNode(me.parentNode); // 调用updateNode修改属性，一定要加这一句，不然reAsyncChildNodes没有任何反应
                         me.zTreeObj.reAsyncChildNodes(me.parentNode, 'refresh', false);
                         me.$Message.success(me.$t("message.changeSucc"));
+                        GlobalOrgan.getInstance().editDevice(me.selectedUserName, me.selectedGroupId, data);
                         if (me.oldCreater !== data.creater) {
                             me.refreshzTree();
                         }

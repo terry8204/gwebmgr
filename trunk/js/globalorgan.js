@@ -235,15 +235,23 @@
        }
    };
 
-   GlobalOrgan.prototype.editDevice = function(editDevice) {
-       var creater = editDevice.creater;
-       var groupid = editDevice.groupid;
-       if (groupid < 0) {
-           groupid = 0;
+   GlobalOrgan.prototype.editDevice = function(oldCreater, oldGroupid, editDevice) {
+       if (oldGroupid < 0) {
+           oldGroupid = 0;
        }
-       var foundGroup = this.getGroupByUserNameAndGroupId(creater, groupid);
-       if (foundGroup) {
-           foundGroup.organRemove(editDevice, "deviceid");
-           foundGroup.push(editDevice);
+
+       var oldFoundGroup = this.getGroupByUserNameAndGroupId(oldCreater, oldGroupid);
+       if (oldFoundGroup) {
+           oldFoundGroup.devices.organRemove(editDevice, "deviceid");
+       }
+
+       var newCreater = editDevice.creater;
+       var newGroupid = editDevice.groupid;
+       if (newGroupid < 0) {
+           newGroupid = 0;
+       }
+       var newFoundGroup = this.getGroupByUserNameAndGroupId(newCreater, newGroupid);
+       if (newFoundGroup) {
+           newFoundGroup.devices.push(editDevice);
        }
    };
