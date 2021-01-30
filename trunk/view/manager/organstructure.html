@@ -446,7 +446,7 @@
                         me.$Message.success(me.$t("message.deleteSucc"));
                         me.removeNodes();
                         GlobalOrgan.getInstance().removeUser(data.usernames[0]);
-                        me.reloadTreeData();
+                        me.reloadTreeData(false);
                         me.selectType = null;
                     } else if (resp.status == 1) {
                         me.$Message.error(me.$t("message.deleteUserTips") + resp.count);
@@ -477,8 +477,14 @@
                 });
             },
 
-            reloadTreeData: function() {
+            reloadTreeData: function(isRefreshUi) {
                 this.treeDeviceList = [this.castUsersTreeToDevicesTree(GlobalOrgan.getInstance().globalOrganData, true, false)];
+                if (isRefreshUi) {
+                    if (this.zTreeObj) {
+                        this.zTreeObj.destroy();
+                    }
+                    this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
+                }
             },
 
             deleteDevice: function() {
@@ -500,7 +506,7 @@
                         me.$Message.error(me.$t("message.deleteSucc"));
                         me.removeNodes();
                         GlobalOrgan.getInstance().removeDevice(me.selectedUserName, me.selectedGroupId, data.deviceid);
-                        me.reloadTreeData();
+                        me.reloadTreeData(false);
                         me.selectType = null;
                     } else {
                         me.$Message.error(me.$t("message.deleteFail"));
@@ -563,7 +569,6 @@
                                 children: [],
                             });
                             GlobalOrgan.getInstance().addUser(data);
-
                             me.currentPageUserLists.push(data.username);
                         } else {
                             if (me.oldCreater !== data.creater) {
@@ -573,7 +578,7 @@
                             GlobalOrgan.getInstance().editUser(me.oldCreater, data);
                         }
 
-                        me.reloadTreeData();
+                        me.reloadTreeData(true);
 
                         me.$Message.success(me.$t(isEditUser ? "message.changeSucc" : "message.addSucc"));
                     } else {
@@ -703,7 +708,7 @@
                             me.zTreeObj.updateNode(me.parentNode); // 调用updateNode修改属性，一定要加这一句，不然reAsyncChildNodes没有任何反应
                             me.zTreeObj.reAsyncChildNodes(me.parentNode, 'refresh', false);
                             GlobalOrgan.getInstance().editGroup(me.selectedUserName, data);
-                            me.reloadTreeData();
+                            me.reloadTreeData(false);
                             me.$Message.success(me.$t("message.changeSucc"));
                         } else {
                             me.$Message.error(resp.cause);
@@ -729,7 +734,7 @@
                             data.groupid = resp.groupid;
                             data.devices = [];
                             GlobalOrgan.getInstance().addGroup(data.creater, data);
-                            me.reloadTreeData();
+                            me.reloadTreeData(false);
                             me.$Message.success(me.$t("message.addSucc"));
                         } else {
                             me.$Message.error(resp.cause);
@@ -837,32 +842,23 @@
                 }, 300)
             },
             queryGroupsByUserName: function(userName) {
-                me = this;
-                groupsList = [{
-                    value: 0,
-                    label: "Default",
-                }];
-                var groupid = editObject.groupid;
+                var me = this;
                 var foundGroupId = false;
-                for (var key in me.allGroups) {
-                    var item = me.allGroups[key];
-                    if (item.creater == userName) {
-                        groupsList.push({
-                            label: item.groupname,
-                            value: item.groupid
-                        });
-                        if (item.groupid == groupid) {
-                            foundGroupId = true;
-                        }
+                var groupid = editObject.groupid;
+                me.groupsList = GlobalOrgan.getInstance().getGroupListByUserName(userName);
+                me.groupsList.forEach(function(group) {
+                    if (group.groupid == groupid) {
+                        foundGroupId = true;
+                        return false;
                     }
-                }
+                })
 
-                me.groupsList = groupsList;
-                me.groupid = editObject.groupid;
+                // console.log('me.groupsList', me.groupsList);
+                // me.groupid = editObject.groupid;
                 if (foundGroupId) {
-                    vueInstanse.groupid = editObject.groupid;
+                    me.groupid = editObject.groupid;
                 } else {
-                    vueInstanse.groupid = 0;
+                    me.groupid = 0;
                 }
             },
             filterMethod: function(value) {
@@ -935,6 +931,7 @@
                 me.selectedRootNode();
 
             },
+
             selectedRootNode: function() {
                 this.selectType = 'user';
                 this.selectedUserName = userName;
@@ -1095,17 +1092,6 @@
                 }
                 return childTemp;
             },
-            queryGroupInfos: function() {
-                var me = this;
-                me.allGroups = {};
-                utils.sendAjax(myUrls.queryGroupInfos(), {}, function(resp) {
-                    if (resp.status === 0) {
-                        resp.groups.forEach(function(item) {
-                            me.allGroups[item.groupid] = item;
-                        });
-                    }
-                })
-            },
             setUserTypeByUser: function(userType) {
                 var allUserTypes = deepClone(vstore.state.userTypeDescrList);
                 var filteredUserTypes = [];
@@ -1205,7 +1191,6 @@
             this.currentPageUserLists = deepClone(globalUserList);
             this.treeDeviceList = [];
             me.getDeviceType();
-            me.queryGroupInfos();
             me.getUserInfoList();
             me.setUserTypeByUser(me.userType);
             this.queryDevicesTree();

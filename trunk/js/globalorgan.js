@@ -126,7 +126,10 @@
        if (newUser) {
            var creater = newUser.creater;
            var foundUser = this.getUserByUserName(creater);
+           console.log('foundUser', foundUser);
            if (foundUser) {
+               var newGroups = [{ groupname: "Default", groupid: 0, devices: [] }];
+               newUser.groups = newGroups;
                foundUser.subusers.push(newUser);
            }
        }
@@ -200,6 +203,23 @@
        }
    };
 
+   GlobalOrgan.prototype.getGroupListByUserName = function(username) {
+       var groupList = [];
+       var foundUser = this.getUserByUserName(username);
+       if (foundUser) {
+
+           foundUser.groups.forEach(function(group) {
+               groupList.push({
+                   label: group.groupname,
+                   value: group.groupid
+               })
+           })
+       }
+       if (groupList.length == 0) {
+           groupList.push({ label: "Default", value: 0 });
+       }
+       return groupList;
+   }
 
    GlobalOrgan.prototype.addDevice = function(newDevice) {
        var creater = newDevice.creater;
@@ -234,6 +254,9 @@
            }
        }
    };
+
+
+
 
    GlobalOrgan.prototype.editDevice = function(oldCreater, oldGroupid, editDevice) {
        if (oldGroupid < 0) {
