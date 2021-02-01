@@ -5410,7 +5410,6 @@ function timeWeightConsumption(groupslist) {
                             name: vRoot.$t('reportForm.loadstatus'),
                             type: 'line',
                             symbol: 'none',
-                            // color: '#red',
                             data: this.loadstatuss
                         },
                     ]
@@ -8730,15 +8729,6 @@ var reportForm = {
                     ]
                 },
                 {
-                    title: me.$t("reportForm.insurMgr"),
-                    name: 'insure',
-                    icon: 'md-medkit',
-                    children: [
-                        { title: me.$t("reportForm.insurRecord"), name: 'insureRecords', icon: 'ios-list-box-outline' },
-                        { title: me.$t("reportForm.salesRecord"), name: 'salesRecord', icon: 'ios-book-outline' },
-                    ]
-                },
-                {
                     title: me.$t("reportForm.oilReport"),
                     name: 'oilConsumption',
                     icon: 'ios-speedometer-outline',
@@ -8772,6 +8762,15 @@ var reportForm = {
                     icon: 'ios-bicycle',
                     children: [
                         { title: me.$t("reportForm.driverWorkDetails"), name: 'driverWorkDetails', icon: 'md-car' },
+                    ]
+                },
+                {
+                    title: me.$t("reportForm.insurMgr"),
+                    name: 'insure',
+                    icon: 'md-medkit',
+                    children: [
+                        { title: me.$t("reportForm.insurRecord"), name: 'insureRecords', icon: 'ios-list-box-outline' },
+                        { title: me.$t("reportForm.salesRecord"), name: 'salesRecord', icon: 'ios-book-outline' },
                     ]
                 },
             ]
