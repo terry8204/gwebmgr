@@ -6663,7 +6663,7 @@ function refuelingReport(groupslist) {
                 if (deviceids.length == 0) {
                     return;
                 }
-
+                this.tableData = [];
                 var data = {
                     // username: vstore.state.userName,
                     startday: this.dateVal[0],
@@ -7014,7 +7014,7 @@ function oilLeakageReport(groupslist) {
                 if (deviceids.length == 0) {
                     return;
                 }
-
+                this.tableData = [];
                 var data = {
                     // username: vstore.state.userName,
                     startday: this.dateVal[0],
