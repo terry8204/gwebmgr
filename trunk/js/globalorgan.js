@@ -16,9 +16,11 @@
    };
 
 
+
    function GlobalOrgan() {
        this.globalOrganData = null; //store the data from server;
        this.isRequesting = false;
+       this.globalSelectedTreeData = null;
    }
 
 
@@ -140,12 +142,14 @@
                foundUser.subusers.push(newUser);
            }
        }
+       this.globalSelectedTreeData = null;
    };
 
    GlobalOrgan.prototype.removeUser = function(username) {
        if (username) {
            this.doResuicUserTreeToRemoveUser(this.globalOrganData, username);
        }
+       this.globalSelectedTreeData = null;
    };
 
    GlobalOrgan.prototype.editUser = function(oldCreater, editUser) {
@@ -160,6 +164,7 @@
                newFoundUser.subusers.push(editUser);
            }
        }
+       this.globalSelectedTreeData = null;
    };
 
    GlobalOrgan.prototype.addGroup = function(creater, newGroup) {
@@ -169,6 +174,7 @@
                foundUser.groups.push(newGroup);
            }
        }
+       this.globalSelectedTreeData = null;
    };
 
    GlobalOrgan.prototype.removeGroup = function(creater, groupid) {
@@ -191,6 +197,7 @@
                }
            }
        }
+       this.globalSelectedTreeData = null;
    };
 
    GlobalOrgan.prototype.editGroup = function(creater, editGroup) {
@@ -208,6 +215,7 @@
 
            }
        }
+       this.globalSelectedTreeData = null;
    };
 
    GlobalOrgan.prototype.getGroupListByUserName = function(username) {
@@ -238,6 +246,7 @@
        if (foundGroup) {
            foundGroup.push(newDevice);
        }
+       this.globalSelectedTreeData = null;
    };
 
 
@@ -260,6 +269,7 @@
                }
            }
        }
+       this.globalSelectedTreeData = null;
    };
 
 
@@ -284,4 +294,5 @@
        if (newFoundGroup) {
            newFoundGroup.devices.push(editDevice);
        }
+       this.globalSelectedTreeData = null;
    };

@@ -157,6 +157,7 @@ var treeMixin = {
             return title;
         },
         onCheckedDevice: function(arr) {
+
             this.checkedDevice = arr;
             var sosoValue = "";
             var selectedCount = 0;
@@ -168,10 +169,16 @@ var treeMixin = {
             });
             this.sosoValue = sosoValue;
             this.selectedCount = selectedCount;
+            var allNodes = this.zTreeObj.getNodes();
+            GlobalOrgan.getInstance().globalSelectedTreeData = null;
+            GlobalOrgan.getInstance().globalSelectedTreeData = deepClone(allNodes);
         },
         initZTree: function(rootuser) {
-            this.treeDeviceList = [utils.castUsersTreeToDevicesTree(rootuser, true, false)];
             var me = this;
+            this.treeDeviceList = [utils.castUsersTreeToDevicesTree(rootuser, true, false)];
+            if (GlobalOrgan.getInstance().globalSelectedTreeData == null) {
+                GlobalOrgan.getInstance().globalSelectedTreeData = this.treeDeviceList;
+            }
             this.setting = {
                 check: {
                     enable: true,
@@ -188,8 +195,26 @@ var treeMixin = {
                     }
                 }
             };
-            this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
-        }
+            this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, GlobalOrgan.getInstance().globalSelectedTreeData);
+            this.selectedLastActiveDevice();
+
+        },
+        selectedLastActiveDevice: function() {
+            var selectedDevices = this.zTreeObj.getCheckedNodes();
+            if (selectedDevices.length > 0) {
+                var sosoValue = '';
+                var selectedCount = 0;
+                selectedDevices.forEach(function(item) {
+                    if (item.deviceid != null) {
+                        sosoValue += item.name + ","
+                        selectedCount++;
+                    }
+                });
+                this.sosoValue = sosoValue;
+                this.selectedCount = selectedCount;
+                this.checkedDevice = selectedDevices;
+            }
+        },
     },
     mounted: function() {
         var me = this;
@@ -5382,7 +5407,7 @@ function timeWeightConsumption(groupslist) {
                         },
                         {
                             smooth: true,
-                            name: vRoot.$('reportForm.loadstatus'),
+                            name: vRoot.$t('reportForm.loadstatus'),
                             type: 'line',
                             symbol: 'none',
                             // color: '#red',
@@ -5917,11 +5942,12 @@ function timeOilConsumption(groupslist) {
                             var data = time + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
                                 if (v[i].seriesName && v[i].seriesName != time) {
-                                    // data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                     if (v[i].seriesName == dis) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
                                     } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
+                                    } else {
+                                        data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                     }
                                 }
                             }

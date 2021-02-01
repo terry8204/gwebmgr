@@ -448,6 +448,7 @@
                         GlobalOrgan.getInstance().removeUser(data.usernames[0]);
                         me.reloadTreeData(false);
                         me.selectType = null;
+
                     } else if (resp.status == 1) {
                         me.$Message.error(me.$t("message.deleteUserTips") + resp.count);
                     } else {
@@ -471,6 +472,7 @@
                         GlobalOrgan.getInstance().removeGroup(data.username, data.groupid);
                         me.reloadTreeData();
                         me.selectType = null;
+
                     } else {
                         me.$Message.error(resp.cause);
                     }
@@ -508,6 +510,7 @@
                         GlobalOrgan.getInstance().removeDevice(me.selectedUserName, me.selectedGroupId, data.deviceid);
                         me.reloadTreeData(false);
                         me.selectType = null;
+
                     } else {
                         me.$Message.error(me.$t("message.deleteFail"));
                     }
