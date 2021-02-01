@@ -14,38 +14,45 @@
            this.splice(index, 1);
        }
    };
-   var globalOrgan = null;
 
 
    function GlobalOrgan() {
        this.globalOrganData = null; //store the data from server;
+       this.isRequesting = false;
    }
 
 
    GlobalOrgan.getInstance = function() {
        if (this.globalOrgan == null) {
            this.globalOrgan = new GlobalOrgan(); // tree users
-           this.globalOrgan.getGlobalOrganData();
        }
        return this.globalOrgan;
    }
 
    GlobalOrgan.prototype.getGlobalOrganData = function(callback) {
-       if (this.globalOrganData == null) {
+       if (this.globalOrganData == null && this.isRequesting == false) {
            //get from remote server
            var url = myUrls.queryDevicesTree(),
                me = this;
            var data = {
                username: userName
            };
+           this.isRequesting = true;
            utils.sendAjax(url, data, function(respData) {
+               me.isRequesting = false;
                if (respData.status === 0) {
                    me.globalOrganData = respData.rootuser;
                    callback && callback(me.globalOrganData);
                }
+           }, function name(err) {
+               me.isRequesting = false;
            });
+       } else {
+           if (callback) {
+               callback(this.globalOrganData);
+           }
        }
-       callback && callback(this.globalOrganData);
+
        return this.globalOrganData;
    };
 

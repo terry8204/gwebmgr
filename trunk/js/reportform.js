@@ -6409,6 +6409,7 @@ function refuelingReport(groupslist) {
         i18n: utils.getI18n(),
         data: {
             loading: false,
+            isSpin: false,
             tank: '0',
             activeTab: 'tabTotal',
             groupslist: [],
@@ -6759,6 +6760,7 @@ function oilLeakageReport(groupslist) {
         i18n: utils.getI18n(),
         data: {
             loading: false,
+            isSpin: false,
             tank: '0',
             activeTab: 'tabTotal',
             groupslist: [],

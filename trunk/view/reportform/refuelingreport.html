@@ -1,5 +1,8 @@
 <meta charset="UTF-8">
 <div id="refueling-report">
+    <div class="demo-spin-container" v-if="isSpin">
+        <Spin size="large" fix></Spin>
+    </div>
     <div class="report-item-header">
         <Row style="margin:10px;height: 35px;">
             <div style="float: left;">
