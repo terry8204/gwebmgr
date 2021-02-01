@@ -279,10 +279,6 @@ p>span.window_title {
 }
 
 .maptalks-msgBox .maptalks-msgContent p span.map-window-btn {
-    /* color: #4096D1; */
-    /* border: 1px solid #4096D1;
-    --color: #ef6eae;
-    --hover: #ef8f6e; */
     display: inline-block;
     margin-bottom: 0;
     font-weight: 400;
@@ -302,10 +298,6 @@ p>span.window_title {
     padding: 5px 15px 6px;
     font-size: 12px;
     border-radius: 4px;
-    -webkit-transition: color .2s linear, background-color .2s linear, border .2s linear, -webkit-box-shadow .2s linear;
-    transition: color .2s linear, background-color .2s linear, border .2s linear, -webkit-box-shadow .2s linear;
-    transition: color .2s linear, background-color .2s linear, border .2s linear, box-shadow .2s linear;
-    transition: color .2s linear, background-color .2s linear, border .2s linear, box-shadow .2s linear, -webkit-box-shadow .2s linear;
     color: #4096D1;
     background-color: #fff;
     border-color: #4096D1;
@@ -313,27 +305,41 @@ p>span.window_title {
     font-size: 12px;
     border-radius: 3px;
     margin-bottom: 3px;
+    position: relative;
 }
 
-#my-map-wrap .maptalks-msgBox .maptalks-msgContent p span.map-window-btn:hover,
 #my-map-wrap .maptalks-msgBox .maptalks-msgContent p span.map-window-btn:focus {
-    /* box-shadow: 0px 0px 3px 2px #6fb3e0; */
-    -webkit-animation: pulse 1s;
-    animation: pulse 1s;
-    box-shadow: 0px 0px 3px 2px rgba(255, 255, 255, 0);
-    color: red;
+    outline: none;
 }
 
-@-webkit-keyframes pulse {
-    0% {
-        box-shadow: 0px 0px 3px 2px rgba(255, 255, 255, 0);
-    }
+#my-map-wrap .maptalks-msgBox .maptalks-msgContent p span.map-window-btn:hover {
+    color: #1A71CD;
+    border-color: #1A71CD;
 }
 
-@keyframes pulse {
-    0% {
-        box-shadow: 0px 0px 3px 2px rgba(255, 255, 255, 0);
-    }
+#my-map-wrap .maptalks-msgBox .maptalks-msgContent p span.map-window-btn:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    pointer-events: none;
+    background-color: #1B74D0;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    opacity: 0;
+    transition: all .3s;
+}
+
+#my-map-wrap .maptalks-msgBox .maptalks-msgContent p span.map-window-btn:active:after {
+    opacity: .3;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: 0s;
 }
 
 #my-map-wrap #my-map {
