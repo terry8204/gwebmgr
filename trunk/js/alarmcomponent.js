@@ -65,12 +65,20 @@ var waringComponent = {
                 });
             } else {
                 this.alarmTypeList.forEach(function(item) {
-
-                    if (item.alarmname.indexOf(newVal) != -1) {
-                        item.show = true;
+                    if (isZh) {
+                        if (item.alarmname.indexOf(newVal) != -1) {
+                            item.show = true;
+                        } else {
+                            item.show = false;
+                        }
                     } else {
-                        item.show = false;
+                        if (item.alarmnameen.indexOf(newVal) != -1) {
+                            item.show = true;
+                        } else {
+                            item.show = false;
+                        }
                     }
+
                 });
             }
         },

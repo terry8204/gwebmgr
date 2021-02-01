@@ -6811,10 +6811,10 @@ function oilLeakageReport(groupslist) {
             columns: [
                 { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename' },
-                { title: vRoot.$t('reportForm.soil'), key: 'soil' },
-                { title: vRoot.$t('reportForm.eoil'), key: 'eoil' },
+                { title: vRoot.$t('reportForm.lsoil'), key: 'soil' },
+                { title: vRoot.$t('reportForm.leoil'), key: 'eoil' },
                 {
-                    title: vRoot.$t('reportForm.fuelVolume') + '(L)',
+                    title: vRoot.$t('reportForm.oilLeakage') + '(L)',
                     key: 'addoil',
                 },
                 { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr' },
