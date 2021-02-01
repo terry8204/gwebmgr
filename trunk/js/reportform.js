@@ -4768,7 +4768,7 @@ function deviceOnlineDaily(groupslist) {
                         }
                     },
                     {
-                        title: '设备名称',
+                        title: vRoot.$t("alarm.devName"),
                         key: 'devicename',
                         fixed: 'left',
                         width: 140,
@@ -4786,7 +4786,7 @@ function deviceOnlineDaily(groupslist) {
                             return h('span', {}, '');
                         }
                     },
-                    { title: '设备序号', key: 'deviceid', fixed: 'left', width: 140 },
+                    { title: vRoot.$t("alarm.devNum"), key: 'deviceid', fixed: 'left', width: 140 },
                 ]
                 for (var i = 1; i <= newVla; i++) {
                     var key = String(i);
@@ -4798,7 +4798,7 @@ function deviceOnlineDaily(groupslist) {
                 }
                 columns.push({
                     key: 'onlineRate',
-                    title: '在线率',
+                    title: vRoot.$t("reportForm.onlineRate"),
                     fixed: 'right',
                     sortable: true,
                     width: 120,
@@ -5382,7 +5382,7 @@ function timeWeightConsumption(groupslist) {
                         },
                         {
                             smooth: true,
-                            name: '载重状态',
+                            name: vRoot.$('reportForm.loadstatus'),
                             type: 'line',
                             symbol: 'none',
                             // color: '#red',

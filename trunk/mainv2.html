@@ -2541,11 +2541,11 @@
                 </p>
                 <div>
                     <div>
-                        <i-input v-model.trim="searchValue" icon="ios-search-outline" style="width:100%;" placeholder="输入你想搜索的报警类型"></i-input>
+                        <i-input v-model.trim="searchValue" icon="ios-search-outline" style="width:100%;" :placeholder='$t("alarm.searchValuePlaceholder")'></i-input>
                     </div>
                     <div style="overflow:hidden;margin-top:12px;">
                         <div style="width:33.33%;float:left;padding:2px 0;" v-for="(item,index) in alarmTypeList" :key="index" v-show="item.show">
-                            <Checkbox v-model="checkboxObj[item.index]">{{ isZh ? item.alarmname : item.alarmname}}</Checkbox>
+                            <Checkbox v-model="checkboxObj[item.index]">{{ isZh ? item.alarmname : item.alarmnameen}}</Checkbox>
                         </div>
                     </div>
                 </div>

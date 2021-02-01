@@ -169,7 +169,7 @@ var bgManager = {
                     children: [
                         { title: me.$t("bgMgr.organStructure"), name: 'organStructure', icon: 'md-git-network', maxShowUserType: 99 },
                         // { title: me.$t("bgMgr.addUser"), name: 'addUser', icon: 'ios-person-add' },
-                         { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search',maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.queryUser"), name: 'queryUser', icon: 'md-search', maxShowUserType: 99 },
                         { title: me.$t("user.employees"), name: 'employees', icon: 'md-person-add', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.onlineUsers"), name: 'onlineUsers', icon: 'ios-analytics', maxShowUserType: 99 },
                         { title: me.$t("header.loginRecords"), name: 'loginRecords', icon: 'ios-clipboard-outline', maxShowUserType: 99 },
@@ -194,9 +194,9 @@ var bgManager = {
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.batchMgr"), name: 'batchMgrDevice', icon: 'ios-folder-outline', maxShowUserType: 99 },
-                        { title: "记录仪采集", name: 'travelingDataRecorder', icon: 'ios-car-outline', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.travelingDataRecorder"), name: 'travelingDataRecorder', icon: 'ios-car-outline', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.stockDev"), name: 'stockDev', icon: 'md-cube', maxShowUserType: 99 },
-                        { title: me.$t("bgMgr.notPutIntoStorage"), name: 'notPutIntoStorage', icon: 'md-basket', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.unclaimed"), name: 'notPutIntoStorage', icon: 'md-basket', maxShowUserType: 99 },
                         // { title: me.$t("bgMgr.clearRecord"), name: "clearRecord", icon: "ios-paw" },
                         // { title: me.$t("bgMgr.setMileage"), name: "setMileage", icon: "md-paper" },
                     ]
