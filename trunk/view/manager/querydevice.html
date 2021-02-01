@@ -1034,12 +1034,17 @@
                 </Tabs>
             </div>
             <div slot="footer" style="text-align: center;">
-                <Checkbox v-show="tabsActive !== 'template'" v-model="isIndependent">{{$t("device.mergeStatistical")}}</Checkbox>
-                <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
-                <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveTemplateInfo">{{$t("device.addTemplate")}}</i-button>
-                <Checkbox v-show="tabsActive == 'template'" v-model="allTemp">{{$t("device.allTemplate")}}</Checkbox>
-                <i-input v-show="tabsActive == 'template'" v-model.trim="matchingTemp" style="width:100px" :placeholder="$t('device.filterTemplate')"></i-input>
-                <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">{{$t("device.queryTemplate")}}</i-button>
+                <div v-if="tabsActive == 'templateInfo'">
+                    <i-button style="width: 100px" type="primary" @click="saveTemplateInfo">{{$t("device.saveTemplate")}}</i-button>
+                </div>
+                <div v-else>
+                    <Checkbox v-show="tabsActive !== 'template'" v-model="isIndependent">{{$t("device.mergeStatistical")}}</Checkbox>
+                    <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveOilDetectors">{{$t("bgMgr.submit")}}</i-button>
+                    <i-button v-show="tabsActive !== 'template'" style="width: 100px" type="primary" @click="saveTemplateInfo">{{$t("device.addTemplate")}}</i-button>
+                    <Checkbox v-show="tabsActive == 'template'" v-model="allTemp">{{$t("device.allTemplate")}}</Checkbox>
+                    <i-input v-show="tabsActive == 'template'" v-model.trim="matchingTemp" style="width:100px" :placeholder="$t('device.filterTemplate')"></i-input>
+                    <i-button v-show="tabsActive == 'template'" style="width: 100px" type="primary" @click="queryTemplateInfo">{{$t("device.queryTemplate")}}</i-button>
+                </div>
             </div>
         </Modal>
         <Modal v-model="weightModal" width="650" :mask-closable="false">
@@ -1460,13 +1465,19 @@
                     key: 'model',
                     width: 80,
                 }, {
+                    title: vRoot.$t('device.oilCount'),
+                    key: 'oilCount',
+                    width: 80,
+                }, {
                     title: vRoot.$t('device.tankParameters'),
                     render: function(h, params) {
                         var row = params.row;
                         return h(
                             'div', {}, [
-                                h('p', {}, row.oil1),
-                                h('p', {}, row.oil2),
+                                h('p', {}, '1:' + row.oil1),
+                                h('p', {}, '2:' + row.oil2),
+                                h('p', {}, '3:' + row.oil3),
+                                h('p', {}, '4:' + row.oil4),
                             ]
                         )
                     },
@@ -1513,7 +1524,7 @@
                                                     vueInstanse.maxAdValue3 = item.maxAdValue;
                                                     vueInstanse.taggingData3 = item.markers;
                                                     vueInstanse.threshold3 = item.threshold;
-                                                } else if (index == 4) {
+                                                } else if (index == 3) {
                                                     vueInstanse.tankShape4 = String(item.appearance);
                                                     vueInstanse.diameter4 = item.diameter;
                                                     vueInstanse.height4 = item.height;
@@ -1522,6 +1533,7 @@
                                                     vueInstanse.maxAdValue4 = item.maxAdValue;
                                                     vueInstanse.taggingData4 = item.markers;
                                                     vueInstanse.threshold4 = item.threshold;
+
                                                 }
                                             });
                                             vueInstanse.$Message.success(vRoot.$t('device.importSucc'));
@@ -1850,23 +1862,48 @@
                                     var oildetectors = item.oildetectors;
                                     var oil1 = oildetectors[0];
                                     var oil2 = oildetectors[1];
+                                    var oil3 = oildetectors[2];
+                                    var oil4 = oildetectors[3];
+                                    var oilCount = 0;
                                     item.oil1 = me.getTankShape(oil1.appearance);
                                     item.oil2 = me.getTankShape(oil2.appearance);
+                                    item.oil3 = me.getTankShape(oil3 ? oil3.appearance : 0);
+                                    item.oil4 = me.getTankShape(oil4 ? oil4.appearance : 0);
+                                    oildetectors.forEach(function(oil) {
+                                        if (oil.appearance != 0) {
+                                            oilCount++;
+                                        }
+                                    })
+                                    item.oilCount = oilCount;
                                 });
                                 me.templateData = records;
                             } else {
                                 var filters = [];
+
                                 records.forEach(function(item) {
                                     var oildetectors = item.oildetectors;
                                     var oil1 = oildetectors[0];
                                     var oil2 = oildetectors[1];
+                                    var oil3 = oildetectors[2];
+                                    var oil4 = oildetectors[3];
+                                    var oilCount = 0;
                                     item.oil1 = me.getTankShape(oil1.appearance);
                                     item.oil2 = me.getTankShape(oil2.appearance);
+                                    item.oil3 = me.getTankShape(oil3 ? oil3.appearance : 0);
+                                    item.oil4 = me.getTankShape(oil4 ? oil4.appearance : 0);
                                     if (item.templatename.indexOf(me.matchingTemp) != -1 || item.brand.indexOf(me.matchingTemp) != -1 || item.model.indexOf(me.matchingTemp) != -1) {
                                         filters.push(item);
                                     }
+                                    oildetectors.forEach(function(oil) {
+                                        if (oil.appearance != 0) {
+                                            oilCount++;
+                                        }
+                                    })
+                                    item.oilCount = oilCount;
+
                                 });
                                 me.templateData = filters;
+
                             }
                         } else {
                             me.$Message.error(vRoot.$t('monitor.queryFail'));
