@@ -7066,7 +7066,7 @@ function oilLeakageReport(groupslist) {
 
                                     record.eoil = record.eoil / 100;
                                     record.soil = record.soil / 100;
-                                    var oil = record.eoil - record.soil;
+                                    var oil = record.soil - record.eoil;
                                     totalOil += oil;
 
 
