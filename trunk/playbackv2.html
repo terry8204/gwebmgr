@@ -806,7 +806,7 @@
                     oil3: "油液3",
                     oil4: "油液4",
                     weight: "载重",
-                    status: "状态码",
+                    status: "状态",
                     oil: "油液",
                     speed: '速度',
                     mileage: '里程',
@@ -1314,6 +1314,8 @@
                                                 data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
                                             } else if (v[i].seriesName == totalOil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
                                                 data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
+                                            } else {
+                                                data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                             }
                                         }
                                     }

@@ -77,11 +77,19 @@
                 </i-col>
             </Row>
             <Row>
-                <i-col :span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">
-                    备注&nbsp;:&nbsp;
+                <i-col :span="4" style="height: 100%;text-align:right;line-height:32px;">
+                    备注(中文)&nbsp;:&nbsp;
                 </i-col>
                 <i-col :span="19">
-                    <i-input v-model.trim="remark" :autosize="{minRows: 15}" type="textarea"></i-input>
+                    <i-input v-model.trim="remark" :autosize="{minRows:3}" type="textarea"></i-input>
+                </i-col>
+            </Row>
+            <Row style="margin-top: 10px;">
+                <i-col :span="4" style="height: 100%;text-align:right;line-height:32px;">
+                    备注(英文)&nbsp;:&nbsp;
+                </i-col>
+                <i-col :span="19">
+                    <i-input v-model.trim="remarken" :autosize="{minRows:3}" type="textarea"></i-input>
                 </i-col>
             </Row>
         </div>
@@ -119,6 +127,7 @@
                     },
                     functions: [],
                     remark: "",
+                    remarken: "",
                     defaultidlength: 11,
                     deviceTypeList: [],
                     deviceCode: "",
@@ -139,8 +148,11 @@
                             title: '序号长度',
                             key: 'defaultidlength'
                         }, {
-                            title: '备注',
+                            title: '备注(中文)',
                             key: 'remark'
+                        }, {
+                            title: '备注(英文)',
+                            key: 'remarken'
                         }, {
                             title: '操作',
                             key: 'action',
@@ -250,6 +262,9 @@
                     if (this.remark !== "") {
                         data.remark = this.remark;
                     }
+                    if (this.remarken !== "") {
+                        data.remarken = this.remarken;
+                    }
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
                             if (me.isEdit) {
@@ -260,6 +275,7 @@
                                     };
                                 };
                                 me.tableData[me.rowIndex].remark = me.remark;
+                                me.tableData[me.rowIndex].remarken = me.remarken;
                                 me.tableData[me.rowIndex].defaultidlength = me.defaultidlength;
                                 me.$Message.success("编辑成功");
                             } else {
@@ -288,6 +304,7 @@
                     this.oldtypename = params.row.typename;
                     params.row.functions ? this.functions = params.row.functions.split(",") : this.functions = [];
                     this.remark = params.row.remark;
+                    this.remarken = params.row.remarken;
                     this.defaultidlength = params.row.defaultidlength;
                     this.devTypeInfo = JSON.parse(JSON.stringify(params.row));
                     this.rowIndex = params.index;
@@ -440,6 +457,7 @@
                             "udpport": 0,
                         }
                         this.remark = "";
+                        this.remarken = "";
                         this.defaultidlength = 11;
                         this.functions = [];
                     }
