@@ -448,8 +448,12 @@
                         GlobalOrgan.getInstance().removeUser(data.usernames[0]);
                         me.reloadTreeData(false);
                         me.selectType = null;
-
+                        var idx = globalUserList.indexOf(data.usernames[0]);
+                        if (idx != -1) {
+                            globalUserList.splice(idx, 1);
+                        }
                     } else if (resp.status == 1) {
+
                         me.$Message.error(me.$t("message.deleteUserTips") + resp.count);
                     } else {
                         me.$Message.error(resp.cause);
@@ -571,6 +575,7 @@
                                 pId: me.parentNode.id,
                                 children: [],
                             });
+                            globalUserList.push(data.username);
                             GlobalOrgan.getInstance().addUser(data);
                             me.currentPageUserLists.push(data.username);
                         } else {
