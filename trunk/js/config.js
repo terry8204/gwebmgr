@@ -867,6 +867,9 @@ var myUrls = {
     reportWeightSummary: function() {
         return this.apihosts + 'webapi?action=reportweightsummary&token=' + token;
     },
+    queryFunctionsDesc: function() {
+        return this.apihosts + 'webapi?action=queryfunctionsdesc&token=' + token;
+    },
 }
 
 

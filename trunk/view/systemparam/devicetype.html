@@ -45,33 +45,9 @@
                     功能列表&nbsp;:&nbsp;
                 </i-col>
                 <i-col :span="20" style="height: 100%;line-height:32px;">
-                    <checkbox-group v-model="functions">
-                        <Checkbox label="audio">
-                            <span>录音</span>
-                        </Checkbox>
-                        <Checkbox label="camera">
-                            <span>摄像头</span>
-                        </Checkbox>
-                        <Checkbox label="chat">
-                            <span>对讲功能</span>
-                        </Checkbox>
-                        <Checkbox label="bms">
-                            <span>电池管理</span>
-                        </Checkbox>
-                        <Checkbox label="obd">
-                            <span>OBD</span>
-                        </Checkbox>
-                        <Checkbox label="weight">
-                            <span>称重</span>
-                        </Checkbox>
-                        <Checkbox label="watermeter">
-                            <span>水表</span>
-                        </Checkbox>
-                        <Checkbox label="video">
-                            <span>视频</span>
-                        </Checkbox>
-                        <Checkbox label="activesafety">
-                            <span>主动安全</span>
+                    <checkbox-group v-model="functionsCheck">
+                        <Checkbox v-for="item in functionsDesc" :label="item.mask">
+                            <span>{{item.functionname}}</span>
                         </Checkbox>
                     </checkbox-group>
                 </i-col>
@@ -126,6 +102,7 @@
                         "typename": null,
                     },
                     functions: [],
+                    functionsCheck: [],
                     remark: "",
                     remarken: "",
                     defaultidlength: 11,
@@ -200,6 +177,7 @@
                     checkboxCmdObj: {},
                     loading: false,
                     cmdRecords: [],
+                    functionsDesc: [],
                 }
             },
             methods: {
@@ -235,14 +213,16 @@
                             "typecode": this.devTypeInfo.typecode,
                             "newtypename": this.devTypeInfo.typename,
                             "oldtypename": this.oldtypename,
-                            "defaultidlength": this.defaultidlength
+                            "defaultidlength": this.defaultidlength,
+                            'functionslong': this.getFunctionsLong(),
                         }
                     } else {
                         url = myUrls.addDeviceType();
                         data = {
                             "typecode": this.deviceCode,
                             "typename": this.devTypeInfo.typename,
-                            "defaultidlength": this.defaultidlength
+                            "defaultidlength": this.defaultidlength,
+                            'functionslong': this.getFunctionsLong(),
                         };
                     }
                     for (var key in data) {
@@ -256,9 +236,10 @@
                         this.$Message.error("参数都是必填的");
                         return;
                     }
-                    if (this.functions && this.functions.length) {
-                        data.functions = this.functions.join(",");
-                    }
+                    // if (this.functions && this.functions.length) {
+                    //     data.functions = this.functions.join(",");
+                    // }
+
                     if (this.remark !== "") {
                         data.remark = this.remark;
                     }
@@ -274,9 +255,11 @@
                                         me.tableData[me.rowIndex][key] = val;
                                     };
                                 };
-                                me.tableData[me.rowIndex].remark = me.remark;
-                                me.tableData[me.rowIndex].remarken = me.remarken;
-                                me.tableData[me.rowIndex].defaultidlength = me.defaultidlength;
+                                me.tableData[me.rowIndex].remark = data.remark;
+                                me.tableData[me.rowIndex].remarken = data.remarken;
+                                me.tableData[me.rowIndex].defaultidlength = data.defaultidlength;
+                                me.tableData[me.rowIndex].functionslong = data.functionslong;
+
                                 me.$Message.success("编辑成功");
                             } else {
                                 me.$Message.success("添加成功");
@@ -298,16 +281,38 @@
                     })
                 },
                 openEditDevTypeModal: function(params) {
+                    var row = params.row;
                     this.isEdit = true;
                     this.addDevTypeModal = true;
-                    console.log('params', params);
-                    this.oldtypename = params.row.typename;
-                    params.row.functions ? this.functions = params.row.functions.split(",") : this.functions = [];
-                    this.remark = params.row.remark;
-                    this.remarken = params.row.remarken;
-                    this.defaultidlength = params.row.defaultidlength;
-                    this.devTypeInfo = JSON.parse(JSON.stringify(params.row));
+                    this.oldtypename = row.typename;
+                    // params.row.functions ? this.functions = params.row.functions.split(",") : this.functions = [];
+                    this.remark = row.remark;
+                    this.remarken = row.remarken;
+                    this.defaultidlength = row.defaultidlength;
+                    this.devTypeInfo = JSON.parse(JSON.stringify(row));
                     this.rowIndex = params.index;
+                    this.functionsCheck = this.setFunctionsLong(row.functionslong);
+                },
+                setFunctionsLong: function(functionslong) {
+
+                    var functionsCheck = [];
+                    var functionsDesc = this.functionsDesc;
+                    for (var i = 0; i < functionsDesc.length; ++i) {
+                        var desc = functionsDesc[i];
+                        var mask = desc.mask;
+                        if ((mask & functionslong) == mask) {
+                            functionsCheck.push(mask);
+                        }
+                    }
+
+                    return functionsCheck;
+                },
+                getFunctionsLong: function() {
+                    var functionsLong = 0;
+                    this.functionsCheck.forEach(function(mask) {
+                        functionsLong = functionsLong | mask;
+                    })
+                    return functionsLong;
                 },
                 addInstructionsToDeviceTypes: function() {
                     var url = myUrls.editDeviceTypeCmd();
@@ -429,7 +434,6 @@
                     var url = myUrls.listDeviceTypeCode();
                     utils.sendAjax(url, {}, function(resp) {
                         if (resp.status === 0) {
-                            console.log('resp', resp);
                             resp.types.forEach(function(item) {
                                 me.deviceTypeList.push({
                                     label: item,
@@ -438,6 +442,14 @@
                             });
                         }
                     });
+                },
+                queryFunctionsDesc: function() {
+                    var me = this;
+                    var url = myUrls.queryFunctionsDesc();
+                    utils.sendAjax(url, {}, function(respData) {
+                        console.log('respData', respData);
+                        me.functionsDesc = respData.records
+                    })
                 }
             },
             watch: {
@@ -459,7 +471,7 @@
                         this.remark = "";
                         this.remarken = "";
                         this.defaultidlength = 11;
-                        this.functions = [];
+                        this.functionsCheck = [];
                     }
                 }
             },
@@ -467,6 +479,7 @@
                 this.queryDevTypeList();
                 this.queryCmdList();
                 this.queryDeviceTypeCode();
+                this.queryFunctionsDesc();
             }
         })
     </script>

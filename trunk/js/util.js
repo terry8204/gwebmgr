@@ -1,3 +1,15 @@
+const recordSoundMask = 0x0001; //0   录音
+const snapShotMask = 0x0002; //1    拍照
+const soundChatMask = 0x0004; //2. 发微聊
+const bmsMask = 0x0008; //3. 电池管理
+const obdMask = 0x0010; //4. OBD诊断
+const weightMask = 0x0020; //5. 称重
+const waterMeterMask = 0x0040; //6. 水表
+const videoMask = 0x0080; //7. 视频
+const activeSafetyMask = 0x0100; //8. 主动安全
+const oilDectectorMask = 0x0200; //9. 油耗
+const tempHumiMask = 0x0400; //10. 温湿度
+
 var utils = {
     deviceInfos: {},
     allSubgroups: {},
@@ -1352,6 +1364,11 @@ var utils = {
     },
     setCurrentDeviceid: function(deviceid) {
         this.sendAjax(myUrls.setCurrentDeviceid(), { deviceid: deviceid }, function() {});
+    },
+    hasFunction: function(functionsLong, mask) {
+        var result = false;
+        result = (functionsLong & mask) == mask;
+        return result;
     }
 }
 
