@@ -812,9 +812,7 @@ var utils = {
             extendsStr += '<span class="map-window-btn" onclick="openVdeio(' + deviceid + ',' + devicename + ',' + activeSafety + ')">' + vRoot.$t('monitor.video') + '</span>'
         };
         if (extendsBtns.camera) {
-
             var devicename = "'" + track.devicename + "'";
-            // devicename = encodeURIComponent(devicename);
             extendsStr += '<span class="map-window-btn" onclick="openCamera(' + deviceid + ',' + devicename + ',' + activeSafety + ')">' + vRoot.$t('monitor.camera') + '</span>'
         };
 
@@ -850,55 +848,51 @@ var utils = {
         var deviceTypes = vRoot.$children[1].deviceTypes;
         var currentDeviceType = vRoot.$children[1].currentDeviceType;
 
-        var result1 = false;
-        var result2 = false;
-        var result3 = false;
-        var result4 = false;
-        var result5 = false;
-        var result6 = false;
-        var result7 = false;
-        var result8 = false;
+        var isShowRecordBtn = false;
+        var isShowBmsBtn = false;
+        var isShowObdBtn = false;
+        var isShowWeightBtn = false;
+        var isShowWatermeterBtn = false;
+        var isShowVideoBtn = false;
+        var isShowActiveSafetyBtn = false;
+        var isShowCamera = false;
 
-
-        var functions = deviceTypes[currentDeviceType].functions;
-
-        if (functions) {
-            if (functions.indexOf("audio") != -1) {
-                result1 = true;
-            };
-            if (functions.indexOf("bms") != -1) {
-                result2 = true;
-            };
-            if (functions.indexOf("obd") != -1) {
-                result3 = true;
-            };
-            if (functions.indexOf("weight") != -1) {
-                result4 = true;
-            };
-            if (functions.indexOf("watermeter") != -1) {
-                result5 = true;
-            };
-            if (functions.indexOf("video") != -1) {
-                result6 = true;
-            };
-            if (functions.indexOf("activesafety") != -1) {
-                result7 = true;
-            };
-            if (functions.indexOf("camera") != -1) {
-                result8 = true;
-            };
+        var functionslong = deviceTypes[currentDeviceType].functionslong;
+        if (utils.hasFunction(functionslong, recordSoundMask)) {
+            isShowRecordBtn = true;
+        };
+        // if (utils.hasFunction(functionslong, bmsMask)) {
+        //     isShowBmsBtn = true;
+        // };
+        if (utils.hasFunction(functionslong, obdMask)) {
+            isShowObdBtn = true;
+        };
+        // if (utils.hasFunction(functionslong, weightMask)) {
+        //     isShowWeightBtn = true;
+        // };
+        // if (utils.hasFunction(functionslong, waterMeterMask)) {
+        //     isShowWatermeterBtn = true;
+        // };
+        if (utils.hasFunction(functionslong, videoMask)) {
+            isShowVideoBtn = true;
+        };
+        if (utils.hasFunction(functionslong, activeSafetyMask)) {
+            isShowActiveSafetyBtn = true;
+        };
+        if (utils.hasFunction(functionslong, snapShotMask)) {
+            isShowCamera = true;
         };
 
 
         return {
-            audio: result1,
-            bms: result2,
-            obd: result3,
-            weight: result4,
-            watermeter: result5,
-            video: result6,
-            activesafety: result7,
-            camera: result8,
+            audio: isShowRecordBtn,
+            bms: isShowBmsBtn,
+            obd: isShowObdBtn,
+            weight: isShowWeightBtn,
+            watermeter: isShowWatermeterBtn,
+            video: isShowVideoBtn,
+            activesafety: isShowActiveSafetyBtn,
+            camera: isShowCamera,
         }
     },
     getMileage: function(totaldistance) {

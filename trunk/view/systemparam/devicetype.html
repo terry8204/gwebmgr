@@ -101,7 +101,6 @@
                         "typecode": null,
                         "typename": null,
                     },
-                    functions: [],
                     functionsCheck: [],
                     remark: "",
                     remarken: "",
@@ -225,9 +224,10 @@
                             'functionslong': this.getFunctionsLong(),
                         };
                     }
+
                     for (var key in data) {
                         if (data.hasOwnProperty(key)) {
-                            if (!data[key]) {
+                            if (data[key] == undefined) {
                                 lock = false;
                             }
                         }
@@ -236,9 +236,7 @@
                         this.$Message.error("参数都是必填的");
                         return;
                     }
-                    // if (this.functions && this.functions.length) {
-                    //     data.functions = this.functions.join(",");
-                    // }
+
 
                     if (this.remark !== "") {
                         data.remark = this.remark;
@@ -285,7 +283,6 @@
                     this.isEdit = true;
                     this.addDevTypeModal = true;
                     this.oldtypename = row.typename;
-                    // params.row.functions ? this.functions = params.row.functions.split(",") : this.functions = [];
                     this.remark = row.remark;
                     this.remarken = row.remarken;
                     this.defaultidlength = row.defaultidlength;

@@ -2851,7 +2851,6 @@ var monitor = {
                 group.devices.forEach(function(device) {
                     all++;
                     devCount++;
-
                     var devicename = device.devicename;
                     var devicetype = device.devicetype;
                     var deviceid = device.deviceid;
@@ -2859,19 +2858,13 @@ var monitor = {
                     device.isSelected = false;
                     device.firstLetter = __pinyin.getFirstLetter(devicename);
                     device.pinyin = __pinyin.getPinyin(devicename);
-                    // var deviceTypeName = me.getDeviceTypeName(devicetype);
-                    // if (deviceTypeName) {
-                    //     device.deviceTypeName = deviceTypeName;
-                    //     device.devicetitle = deviceTypeName + "-" + devicename;
-                    // } else {
-                    //     device.deviceTypeName = "";
-                    //     device.devicetitle = devicename;
-                    // }
+
                     device.devicetitle = devicename;
                     device.allDeviceIdTitle = device.devicetitle + "-" + deviceid;
-                    var functions = me.deviceTypes[devicetype].functions;
+                    var functionslong = me.deviceTypes[devicetype].functionslong;
+
                     device.videoChannels = [];
-                    if (functions && functions.indexOf('video') != -1) {
+                    if (utils.hasFunction(functionslong, videoMask)) {
                         for (var index = 1; index <= device.videochannelcount; index++) {
                             device.videoChannels.push({
                                 channel: index,
@@ -3384,48 +3377,42 @@ var monitor = {
         isShowRecordBtnByDeviceType: function() {
             var deviceTypes = this.deviceTypes;
             var isShowRecordBtn = false;
-            var result2 = false;
-            var result3 = false;
-            var result4 = false;
-            var result5 = false;
-            var result6 = false;
-            var result7 = false;
-            var result8 = false;
+            var isShowBmsBtn = false;
+            var isShowObdBtn = false;
+            var isShowWeightBtn = false;
+            var isShowWatermeterBtn = false;
+            var isShowVideoBtn = false;
+            var isShowActiveSafetyBtn = false;
 
-            var functions = deviceTypes[this.currentDeviceType].functions;
-            if (functions) {
-                if (functions.indexOf("audio") != -1) {
-                    isShowRecordBtn = true;
-                };
-                if (functions.indexOf("bms") != -1) {
-                    result2 = true;
-                };
-                if (functions.indexOf("obd") != -1) {
-                    result3 = true;
-                };
-                if (functions.indexOf("weight") != -1) {
-                    result4 = true;
-                };
-                if (functions.indexOf("watermeter") != -1) {
-                    result5 = true;
-                };
-                if (functions.indexOf("video") != -1) {
-                    result6 = true;
-                };
-                if (functions.indexOf("activesafety") != -1) {
-                    result7 = true;
-                };
-                if (functions.indexOf("camera") != -1) {
-                    result8 = true;
-                };
-            }
+            var functionslong = deviceTypes[this.currentDeviceType].functionslong;
+            if (utils.hasFunction(functionslong, recordSoundMask)) {
+                isShowRecordBtn = true;
+            };
+            if (utils.hasFunction(functionslong, bmsMask)) {
+                isShowBmsBtn = true;
+            };
+            if (utils.hasFunction(functionslong, obdMask)) {
+                isShowObdBtn = true;
+            };
+            if (utils.hasFunction(functionslong, weightMask)) {
+                isShowWeightBtn = true;
+            };
+            if (utils.hasFunction(functionslong, waterMeterMask)) {
+                isShowWatermeterBtn = true;
+            };
+            if (utils.hasFunction(functionslong, videoMask)) {
+                isShowVideoBtn = true;
+            };
+            if (utils.hasFunction(functionslong, activeSafetyMask)) {
+                isShowActiveSafetyBtn = true;
+            };
             this.isShowRecordBtn = isShowRecordBtn;
-            this.isShowBmsBtn = result2;
-            this.isShowObdBtn = result3;
-            this.isShowWeightBtn = result4;
-            this.isShowWatermeterBtn = result5;
-            this.isShowVideoBtn = result6;
-            this.isShowActiveSafetyBtn = result7;
+            this.isShowBmsBtn = isShowBmsBtn;
+            this.isShowObdBtn = isShowObdBtn;
+            this.isShowWeightBtn = isShowWeightBtn;
+            this.isShowWatermeterBtn = isShowWatermeterBtn;
+            this.isShowVideoBtn = isShowVideoBtn;
+            this.isShowActiveSafetyBtn = isShowActiveSafetyBtn;
         },
         getDeviceTypeName: function(deviceTypeId) {
             var typeName = "",
