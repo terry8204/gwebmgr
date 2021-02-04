@@ -288,7 +288,6 @@ var monitor = {
             isShowRecordBtn: false,
             isShowBmsBtn: false,
             isShowObdBtn: false,
-            isShowWeightBtn: false,
             isShowWatermeterBtn: false,
             isShowVideoBtn: false,
             isShowActiveSafetyBtn: false,
@@ -3375,7 +3374,6 @@ var monitor = {
             var isShowRecordBtn = false;
             var isShowBmsBtn = false;
             var isShowObdBtn = false;
-            var isShowWeightBtn = false;
             var isShowWatermeterBtn = false;
             var isShowVideoBtn = false;
             var isShowActiveSafetyBtn = false;
@@ -3390,9 +3388,7 @@ var monitor = {
             if (utils.hasFunction(functionslong, obdMask)) {
                 isShowObdBtn = true;
             };
-            if (utils.hasFunction(functionslong, weightMask)) {
-                isShowWeightBtn = true;
-            };
+ 
             if (utils.hasFunction(functionslong, waterMeterMask)) {
                 isShowWatermeterBtn = true;
             };
@@ -3405,7 +3401,6 @@ var monitor = {
             this.isShowRecordBtn = isShowRecordBtn;
             this.isShowBmsBtn = isShowBmsBtn;
             this.isShowObdBtn = isShowObdBtn;
-            this.isShowWeightBtn = isShowWeightBtn;
             this.isShowWatermeterBtn = isShowWatermeterBtn;
             this.isShowVideoBtn = isShowVideoBtn;
             this.isShowActiveSafetyBtn = isShowActiveSafetyBtn;
