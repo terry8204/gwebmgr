@@ -696,7 +696,7 @@ function posiReport(groupslist) {
                     item.devicename = "\t" + item.devicename;
                 });
                 this.$refs.lastTable.exportCsv({
-                    filename: isZh ? "位置报表" : "PosiReport",
+                    filename: vRoot.$t('reportForm.posiReport'),
                     original: false,
                     columns: columns,
                     data: tableData
@@ -8682,7 +8682,7 @@ var reportForm = {
             activeName: "reportNav",
             openedNames: [],
             reportNavList: [{
-                    title: isZh ? "报表导航" : "Report nav",
+                    title: me.$t("reportForm.menu"),
                     name: 'reportNav',
                     icon: 'ios-stats',
                 },
@@ -8700,7 +8700,7 @@ var reportForm = {
                         { title: me.$t("reportForm.voiceReport"), name: 'records', icon: 'md-volume-up' },
                         { title: me.$t("reportForm.messageReport"), name: 'messageRecords', icon: 'ios-book' },
                         { title: me.$t("reportForm.rotationStatistics"), name: 'rotateReport', icon: 'ios-aperture' },
-                        { title: isZh ? "IO报表" : "IO report", name: 'ioReport', icon: 'md-contrast' },
+                        { title: me.$t("reportForm.ioReport"), name: 'ioReport', icon: 'md-contrast' },
                     ]
                 },
                 {

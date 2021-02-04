@@ -2620,10 +2620,6 @@ var monitor = {
                                         item.g_lat = g_lon_and_g_lat[1];
                                         item.online = online;
                                         item.devicename = me.deviceInfos[deviceid] ? me.deviceInfos[deviceid].devicename : "";
-                                        //item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
-                                        // console.log("lastPositon", item.devicename, DateFormat.longToDateTimeStr(item.updatetime, 0));
-
-                                        // me.positionLastrecords[deviceid] = item;
                                         me.updateNewPositionLastValue(deviceid, item);
 
                                     }

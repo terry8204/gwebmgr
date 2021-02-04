@@ -2293,8 +2293,7 @@ var monitor = {
                                         item.g_lat = g_lon_and_g_lat[1];
                                         item.online = online;
                                         item.devicename = me.deviceInfos[deviceid] ? me.deviceInfos[deviceid].devicename : "";
-                                        //item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
-                                        // console.log("lastPositon", item.devicename, DateFormat.longToDateTimeStr(item.updatetime, 0));
+
                                         var oldPositionLast = me.positionLastrecords[deviceid];
                                         if (oldPositionLast == undefined) {
                                             me.positionLastrecords[deviceid] = item;
@@ -2802,8 +2801,6 @@ var monitor = {
                 item.g_lat = g_lon_and_g_lat[1];
                 item.online = online;
                 item.devicename = this.deviceInfos[deviceid].devicename;
-                // item.updatetimeStr = DateFormat.longToDateTimeStr(item.updatetime, 0);
-                //this.positionLastrecords[deviceid] = item;
                 var oldPositionLast = this.positionLastrecords[deviceid];
 
                 if (oldPositionLast == undefined) {
