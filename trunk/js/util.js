@@ -851,7 +851,6 @@ var utils = {
         var isShowRecordBtn = false;
         var isShowBmsBtn = false;
         var isShowObdBtn = false;
-        var isShowWeightBtn = false;
         var isShowWatermeterBtn = false;
         var isShowVideoBtn = false;
         var isShowActiveSafetyBtn = false;
@@ -867,9 +866,6 @@ var utils = {
         if (utils.hasFunction(functionslong, obdMask)) {
             isShowObdBtn = true;
         };
-        // if (utils.hasFunction(functionslong, weightMask)) {
-        //     isShowWeightBtn = true;
-        // };
         // if (utils.hasFunction(functionslong, waterMeterMask)) {
         //     isShowWatermeterBtn = true;
         // };
@@ -888,7 +884,6 @@ var utils = {
             audio: isShowRecordBtn,
             bms: isShowBmsBtn,
             obd: isShowObdBtn,
-            weight: isShowWeightBtn,
             watermeter: isShowWatermeterBtn,
             video: isShowVideoBtn,
             activesafety: isShowActiveSafetyBtn,
