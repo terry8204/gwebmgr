@@ -22,7 +22,7 @@
         #bmap {
             position: absolute;
             top: 0;
-            left: 460px;
+            left: 580px;
             bottom: 0;
             right: 0;
         }
@@ -32,7 +32,7 @@
             top: 0;
             left: 0;
             bottom: 0;
-            width: 460px;
+            width: 580px;
             border-right: 1px solid #A4D4F5;
             padding: 10px;
             box-sizing: border-box;
@@ -99,7 +99,7 @@
             position: absolute;
             width: 400px;
             top: 10px;
-            left: 470px;
+            left: 590px;
             border: 1px solid #A4D4F5;
             background-color: #ffffff;
             border-radius: 5px;
@@ -614,16 +614,19 @@
                     </i-col>
                 </Row>
                 <Row style="padding:0 0 10px 0">
-                    <i-col :span="6" style="text-align:center;">
-                        <i-button style="width:100px;" @click="drawCircular" icon="md-add">{{ isZh ? '圆' : 'Circle'}}</i-button>
+                    <i-col :span="4" style="text-align:center;">
+                        <i-button style="width:80px;" @click="drawCircular" icon="md-add">{{ isZh ? '圆' : 'Circle'}}</i-button>
                     </i-col>
-                    <i-col :span="6" style="text-align:center;">
+                    <i-col :span="5" style="text-align:center;">
                         <i-button style="width:100px;" @click="drawPolygon" icon="md-add">{{isZh ? '多边形' : 'Polygon'}}</i-button>
                     </i-col>
-                    <i-col :span="6" style="text-align:center;">
+                    <i-col :span="5" style="text-align:center;">
                         <i-button @click="areaModal" style="width:100px;" icon="md-add">{{isZh ? '行政区域' : 'Area'}}</i-button>
                     </i-col>
-                    <i-col :span="6" style="text-align:center;">
+                    <i-col :span="5" style="text-align:center;">
+                        <i-button @click="addRoutePlanningTip" style="width:100px;" icon="md-add">{{isZh ? '路线规划' : 'Route planning'}}</i-button>
+                    </i-col>
+                    <i-col :span="5" style="text-align:center;">
                         <i-button style="width:100px;" icon="md-add" @click="openDrawer">{{isZh ? '系统围栏' : 'sFence'}}</i-button>
                     </i-col>
                 </Row>
@@ -671,6 +674,26 @@
             </div>
         </transition>
         <transition name="el-zoom-in-top">
+            <div class="area-ctrl" v-show="isRoutePlanning">
+                <Row>
+                    <i-col v-if="isZh" :span="24" style="padding:10px;text-align:center;">
+                        <h3>{{ isEidt ? "编辑路线":"添加路线" }}</h3>
+                    </i-col>
+                    <i-col v-else :span="24" style="padding:10px;text-align:center;">
+                        <h3>{{ isEidt ? "Edit line":"Add line" }}</h3>
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col v-if="isZh" :span="22" offset="2" style="padding:10px 0 10px 0;">
+                        1 、 请在地图上点击选择起止点,绘制线路
+                    </i-col>
+                    <i-col v-else :span="22" offset="2" style="padding:10px 0 10px 0;">
+                        1 、 Please click on the map to select the starting and ending points and draw the route
+                    </i-col>
+                </Row>
+            </div>
+        </transition>
+        <transition name="el-zoom-in-top">
             <div class="area-ctrl" v-show="modal">
                 <Row>
                     <i-col :span="24" style="padding:10px;text-align:center;">
@@ -707,6 +730,44 @@
             </Row>
             <div slot="footer" style="text-align:center;">
                 <i-button style="width:80%;" @click="changeGeoName">{{isZh ? '确定' : 'confirm'}}</i-button>
+            </div>
+        </Modal>
+        <Modal v-model="addRoutePlanningModal" width="400" :mask-closable="false">
+            <p slot="header" style="color:#2D8CF0;text-align:center">
+                <Icon type="ios-hammer-outline"></Icon>
+                <span>{{isZh ? "添加路线" : "Add route"}}</span>
+            </p>
+            <Row style="padding: 10px">
+                <i-col :span="6" style="text-align:right;line-height:32px;">
+                    {{isZh ? '围栏名称' : 'Fence name'}}:
+                </i-col>
+                <i-col :span="16">
+                    <i-input v-model.trim="geoName"></i-input>
+                </i-col>
+            </Row>
+            <Row style="padding: 10px">
+                <i-col :span="6" style="text-align:right;line-height:32px;">
+                    {{isZh ? '偏离距离(米)' : '偏离距离(米)'}}:
+                </i-col>
+                <i-col :span="16">
+                    <input-number v-model.number="distance5" :min="0" style="width: 100%;"></input-number>
+                </i-col>
+            </Row>
+            <Row style="padding: 10px">
+                <i-col :span="6" style="text-align:right;line-height:32px;">
+                    {{isZh ? '报警类型' : '报警类型'}}:
+                </i-col>
+                <i-col :span="16">
+                    <i-select v-model="alarmtype5">
+                        <i-option value="1">偏离线路持续报警</i-option>
+                        <i-option value="2">驶入线路持续报警</i-option>
+                        <i-option value="3">偏离线路报警一次</i-option>
+                        <i-option value="4">驶入线路报警一次</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
+            <div slot="footer" style="text-align:center;">
+                <i-button style="width:80%;" @click="addRoutePlanning">{{isZh ? '确定' : 'confirm'}}</i-button>
             </div>
         </Modal>
         <Drawer :title="isZh?'添加系统围栏':'Add system fence'" width="400" v-model="drawerModal">
@@ -863,7 +924,6 @@
 
         (function() {
 
-
             Vue.component('selected-map', {
                 data: function() {
                     return {
@@ -979,6 +1039,9 @@
                     geoName: '',
                     geoNameModal: false,
                     drawerModal: false,
+                    addRoutePlanningModal: false,
+                    distance5: 20,
+                    alarmtype5: '1',
                     searchValue: '',
                     mapType: mapType, // BMap GMap AMap;
                     columns: [{
@@ -1007,6 +1070,9 @@
                                     break;
                                 case 4:
                                     type = isZh ? '系统围栏' : 'System fence'
+                                    break;
+                                case 5:
+                                    type = isZh ? '路线规划' : 'Route Planning'
                                     break;
                             }
                             return h('div', [h('span', {}, type)]);
@@ -1091,6 +1157,7 @@
                     loading: false,
                     isCircular: false,
                     isPolygon: false,
+                    isRoutePlanning: false,
                     markerIns: null,
                     radius: 0,
                     min: 200,
@@ -1103,6 +1170,28 @@
                     userType: localStorage.getItem('userType')
                 },
                 methods: {
+                    addRoutePlanning: function() {
+                        var me = this;
+                        var url = myUrls.addGeoRecord();
+                        var data = {
+                            name: this.geoName,
+                            deviceid: deviceid,
+                            distance5: this.distance5,
+                            alarmtype5: Number(this.alarmtype5),
+                            type: 5,
+                            points2: JSON.stringify(this.wgs84Points),
+                        }
+
+                        utils.sendAjax(url, data, function(resp) {
+                            if (resp.status === 0) {
+                                me.$Message.success(isZh ? "添加成功" : "Added successfully");
+                                me.addRoutePlanningModal = false;
+                                me.getFenceInfo();
+                            } else {
+                                me.$Message.error(isZh ? "添加失败" : "Added failed");
+                            }
+                        })
+                    },
                     jumpSystemFence: function() {
                         var url = 'setfencesystem.html?deviceid=' + deviceid + '&token=' + token;
                         window.open(url);
@@ -1282,6 +1371,48 @@
                             var lon_lat = wgs84togcj02(Number(lon), Number(lat));
                         }
 
+                        me.isLoadRoutePlanning = false;
+                        this.map.on('click', function(e) {
+                            if (me.isRoutePlanning && me.isLoadRoutePlanning == false) {
+                                if (me.startCoordinate == null) {
+                                    me.startCoordinate = e.coordinate;
+                                    me.startMarker = new maptalks.Marker(
+                                        [e.coordinate.x, e.coordinate.y], {
+                                            symbol: {
+                                                'markerFile': './images/map/marker_qidian.png',
+                                                'markerWidth': 30,
+                                                'markerHeight': 30,
+                                                'markerRotation': 0,
+                                                'markerDy': 0,
+                                                'markerDx': 0,
+                                            },
+                                        }
+                                    );
+                                    me.startMarker.addTo(me.routePlanning);
+                                } else if (me.endCoordinate == null) {
+                                    me.endCoordinate = e.coordinate;
+                                    me.endMarker = new maptalks.Marker(
+                                        [e.coordinate.x, e.coordinate.y], {
+                                            symbol: {
+                                                'markerFile': './images/map/marker_zhongdian.png',
+                                                'markerWidth': 30,
+                                                'markerHeight': 30,
+                                                'markerRotation': 0,
+                                                'markerDy': 0,
+                                                'markerDx': 0,
+                                            },
+                                        }
+                                    );
+                                    me.endMarker.addTo(me.routePlanning);
+                                }
+
+                                if (me.endCoordinate != null && me.endCoordinate != null) {
+
+                                    me.queryRoutePlanning();
+                                }
+                            }
+                        });
+
                         var carMarker = new maptalks.Marker(
                             lon_lat, {
                                 symbol: {
@@ -1299,6 +1430,9 @@
                         markerLayer.setZIndex(1111);
                         markerLayer.addTo(this.map);
 
+                        this.routePlanning = new maptalks.VectorLayer('routePlanning', []);
+                        this.routePlanning.setZIndex(1110);
+                        this.routePlanning.addTo(this.map);
 
                         var customPosition = new maptalks.control.Zoom({
                             'position': {
@@ -1311,13 +1445,15 @@
                         this.map.addControl(customPosition);
 
 
-
                         var layer = this.polygonLayer = new maptalks.VectorLayer('vector').addTo(this.map);
 
                         var drawTool = this.drawTool = new maptalks.DrawTool({
                             mode: 'Point',
                             symbol: symbol,
                         }).addTo(this.map).disable();
+
+
+
 
 
                         this.drawTool.on('mousemove', function(param) {
@@ -1594,12 +1730,31 @@
                         }
                     },
                     areaModal: function() {
+                        this.$refs.selection.selectAll(false);
                         this.polygonLayer.clear();
                         this.isCircular = false;
                         this.isPolygon = false;
+                        this.isRoutePlanning = false;
+                        this.startCoordinate = null;
+                        this.endCoordinate = null;
+                        this.routePlanning.clear();
                         this.type = 3;
                         this.modal = true;
                         this.isEidt = false;
+                        this.areaAddress = [];
+                    },
+                    addRoutePlanningTip: function() {
+                        this.$refs.selection.selectAll(false);
+                        this.polygonLayer.clear();
+                        this.routePlanning.clear();
+                        this.startCoordinate = null;
+                        this.endCoordinate = null;
+                        this.isCircular = false;
+                        this.isPolygon = false;
+                        this.type = 4;
+                        this.modal = false;
+                        this.isEidt = false;
+                        this.isRoutePlanning = true;
                         this.areaAddress = [];
                     },
                     getTreeItemData: function(categoryid) {
@@ -1617,9 +1772,12 @@
                         var isBMap = me.mapType == 'bMap';
                         this.modal = false;
                         this.isCircular = false;
+                        this.isRoutePlanning = false;
                         this.isPolygon = false;
                         this.polygonLayer.clear();
-
+                        this.routePlanning.clear();
+                        this.startCoordinate = null;
+                        this.endCoordinate = null;
                         if (selection.length) {
                             var points = []
                             for (var index = 0; index < selection.length; index++) {
@@ -1711,6 +1869,50 @@
                                             });
                                         }
                                         break;
+                                    case 5:
+                                        var mapPoints = me.convertWgs84PointsToMapPoints(JSON.parse(element.points2));
+                                        points = points.concat(mapPoints);
+                                        console.log('mapPoints', mapPoints);
+                                        new maptalks.LineString(
+                                            mapPoints, {
+                                                symbol: {
+                                                    'lineColor': {
+                                                        'type': 'linear',
+                                                        'colorStops': [
+                                                            [0.00, 'red'],
+                                                            [1.00, 'red']
+                                                        ]
+                                                    },
+                                                    'lineWidth': 4
+                                                }
+                                            }).addTo(me.polygonLayer);
+                                        var startCoordinate = mapPoints[0];
+                                        var endCoordinate = mapPoints[mapPoints.length - 1];
+                                        new maptalks.Marker(
+                                            [startCoordinate.x, startCoordinate.y], {
+                                                symbol: {
+                                                    'markerFile': './images/map/marker_qidian.png',
+                                                    'markerWidth': 30,
+                                                    'markerHeight': 30,
+                                                    'markerRotation': 0,
+                                                    'markerDy': 0,
+                                                    'markerDx': 0,
+                                                },
+                                            }
+                                        ).addTo(me.polygonLayer);
+                                        new maptalks.Marker(
+                                            [endCoordinate.x, endCoordinate.y], {
+                                                symbol: {
+                                                    'markerFile': './images/map/marker_zhongdian.png',
+                                                    'markerWidth': 30,
+                                                    'markerHeight': 30,
+                                                    'markerRotation': 0,
+                                                    'markerDy': 0,
+                                                    'markerDx': 0,
+                                                },
+                                            }
+                                        ).addTo(me.polygonLayer);
+                                        break;
                                 }
                             }
 
@@ -1723,22 +1925,28 @@
                         }
                     },
                     drawCircular: function() {
-
+                        this.startCoordinate = null;
+                        this.endCoordinate = null;
+                        this.routePlanning.clear();
                         this.polygonLayer.clear();
                         this.radius = 0;
                         this.isEidt = false;
                         this.isCircular = true;
                         this.isPolygon = false;
                         this.type = 1;
-
+                        this.isRoutePlanning = false;
                         this.drawTool.setMode('Circle').enable();
 
                     },
                     drawPolygon: function() {
+                        this.startCoordinate = null;
+                        this.endCoordinate = null;
+                        this.routePlanning.clear();
                         this.type = 2;
                         this.polygonLayer.clear();
                         this.isCircular = false;
                         this.modal = false;
+                        this.isRoutePlanning = false;
                         this.isPolygon = true;
                         this.isEidt = false;
 
@@ -1771,6 +1979,7 @@
                         this.isCircular = false;
                         this.isPolygon = false;
                         this.modal = false;
+                        this.isRoutePlanning = false;
                         this.drawerModal = true;
                     },
                     _queryGeoSystemRecords: function() {
@@ -1831,7 +2040,111 @@
                             vm.treeData = vm.originalData;
                         }
                     }, 500),
+                    queryRoutePlanning: function() {
+                        var me = this;
+                        me.isLoadRoutePlanning = true;
+                        var isBMap = this.mapType == 'bMap';
+                        if (isBMap) {
+                            var startCoordinate = bd09togcj02(this.startCoordinate.x, this.startCoordinate.y);
+                            var endCoordinate = bd09togcj02(this.endCoordinate.x, this.endCoordinate.y);
+                        } else {
+                            var startCoordinate = [this.startCoordinate.x, this.startCoordinate.y];
+                            var endCoordinate = [this.endCoordinate.x, this.endCoordinate.y];
+                        }
+                        var url = 'https://restapi.amap.com/v3/direction/driving?origin=' + startCoordinate[0] + ',' + startCoordinate[1] + '&destination=' + endCoordinate[0] + ',' + endCoordinate[1] + '&output=json&key=7d965b1fc170725157ee74df02b7119a&platform=JS';
+
+                        $.ajax({
+                            url: url,
+                            type: 'get',
+                            success: function(result) {
+                                me.isLoadRoutePlanning = false;
+                                if (result.status == 1) {
+                                    var wgs84Points = me.convertAmapRouteJsonToPoints(result.route);
+                                    var mapPoints = me.convertWgs84PointsToMapPoints(wgs84Points);
+                                    me.wgs84Points = wgs84Points;
+                                    console.log('mapPoints', mapPoints);
+                                    new maptalks.LineString(
+                                        mapPoints, {
+                                            symbol: {
+                                                'lineColor': {
+                                                    'type': 'linear',
+                                                    'colorStops': [
+                                                        [0.00, 'red'],
+                                                        [1.00, 'red']
+                                                    ]
+                                                },
+                                                'lineWidth': 4
+                                            }
+                                        }).addTo(me.routePlanning);
+                                    me.geoName = '';
+                                    me.addRoutePlanningModal = true;
+                                } else {
+                                    me.$Message.error(isZh ? "没有查询到路线" : "No route found");
+                                    me.routePlanning.clear();
+                                    console.log("queryRoutePlanning from amap:", result);
+                                }
+                                me.startCoordinate = null;
+                                me.endCoordinate = null;
+                            },
+                            error: function(err) {
+                                me.$Message.error(isZh ? "添加路线失败" : "Failed to add route");
+                                me.routePlanning.clear();
+                                me.isLoadRoutePlanning = false;
+                                me.startCoordinate = null;
+                                me.endCoordinate = null;
+                            }
+                        });
+
+                    },
+                    convertAmapRouteJsonToPoints: function(amapRoute) {
+                        var points = [];
+                        var totalStepsStr = "";
+                        var paths = amapRoute.paths;
+                        if (paths) {
+                            var path = paths[0];
+                            if (path) {
+                                var steps = path.steps;
+                                if (steps) {
+                                    steps.forEach(function(stepStr) {
+                                        totalStepsStr += stepStr.polyline + ";";
+                                    })
+
+                                }
+                            }
+                        }
+
+                        if (totalStepsStr.length > 1) {
+                            var splitedSteps = totalStepsStr.split(";");
+                            splitedSteps.forEach(function(step) {
+                                if (step.length > 0) {
+                                    var onePoint = step.split(",");
+                                    var x = onePoint[0];
+                                    var y = onePoint[1];
+                                    var wgs84Ponts = gcj02towgs84(Number(x), Number(y));
+                                    points.push({
+                                        x: Number(wgs84Ponts[0].toFixed(6)),
+                                        y: Number(wgs84Ponts[1].toFixed(6)),
+                                    })
+                                }
+                            })
+                        }
+
+                        return points;
+                    },
+                    convertWgs84PointsToMapPoints: function(wgs84Ponts) {
+                        var isBMap = this.mapType = 'bMap';
+                        var mapPonts = [];
+                        wgs84Ponts.forEach(function(point) {
+                            var point = utils.getCurrentMapCoordinate(isBMap, [point.x, point.y]);
+                            mapPonts.push({
+                                x: point[0],
+                                y: point[1],
+                            })
+                        });
+                        return mapPonts;
+                    }
                 },
+
                 computed: {
                     areaTitle: function() {
                         if (this.isEidt) {
@@ -1861,6 +2174,13 @@
 
                         this.handleSelectChange(globalSelection);
 
+                    },
+                    addRoutePlanningModal: function(val) {
+                        if (val == false) {
+                            this.startMarker = null;
+                            this.endMarker = null;
+                            this.routePlanning.clear();
+                        }
                     }
                 },
                 mounted: function() {

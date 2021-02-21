@@ -3224,7 +3224,6 @@ var monitor = {
             var lon = point.x;
             var lat = point.y;
             var mSymbol = marker.getSymbol()[0];
-
             if (this.mapType == 'bMap') {
                 if (lon !== track.b_lon && lat !== track.b_lat) {
                     result = true;
@@ -3236,11 +3235,10 @@ var monitor = {
             }
 
             if (result == false) {
-                if (track.online !== mSymbol.online || track.course !== Math.abs(mSymbol.markerRotation)) {
+                if (track.online !== mSymbol.online || track.moving !== mSymbol.moving || track.course !== Math.abs(mSymbol.markerRotation)) {
                     result = true;
                 }
             }
-
             return result;
         },
         updateLastTracks: function(deviceid) {
@@ -3388,7 +3386,7 @@ var monitor = {
             if (utils.hasFunction(functionslong, obdMask)) {
                 isShowObdBtn = true;
             };
- 
+
             if (utils.hasFunction(functionslong, waterMeterMask)) {
                 isShowWatermeterBtn = true;
             };
@@ -3464,7 +3462,8 @@ var monitor = {
                     'markerHeight': 30,
                     'markerDy': 15,
                     'markerRotation': -track.course,
-                    'online': track.online
+                    'online': track.online,
+                    'moving': track.moving,
                 }, {
                     'textFaceName': 'sans-serif',
                     'textName': '{name}',
