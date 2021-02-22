@@ -4,7 +4,7 @@
     <div style="margin-top: 10px;" class="directive-type-wraper">
         <div class="device-type">
             <ul class="ivu-menu ivu-menu-light ivu-menu-vertical">
-                <template v-for="(item,index) in deviceTypeNavList" >
+                <template v-for="(item,index) in deviceTypeNavList">
                     <li class="ivu-menu-item" 
                         :key="item.name"
                         :class="{'ivu-menu-item-active':item.isSelected,'ivu-menu-item-selected':item.isSelected}" 
@@ -12,7 +12,7 @@
                             <Icon :type="item.icon" />
                             <span>{{ item.title}}</span>
                     </li> 
-                </template>  
+                </template>
             </ul>
         </div>
         <div class="directive-type">
@@ -26,7 +26,7 @@
                 <i-col span="8" style="padding:0 3px">
                     <i-select v-model="copyDirective">
                         <i-option v-for="item in copySelectedData" :value="item.cmdcode" :key="item.cmdcode">{{ item.cmdname }}</i-option>
-                    </i-select>   
+                    </i-select>
                 </i-col>
                 <i-col span="4" style="padding:0 3px">
                     <i-button @click="onCopyDirective">复制</i-button>
@@ -34,7 +34,7 @@
             </Row>
         </div>
     </div>
-    <Modal v-model="sortModal" width="360" class-name="vertical-center-modal">
+    <Modal v-model="sortModal" width="360" class-name="vertical-center-modal" :mask-closable="false">
         <p slot="header" style="color:#f60;text-align:center">
             <Icon type="information-circled"></Icon>
             <span>指令排序</span>
@@ -52,7 +52,7 @@
         </div>
     </Modal>
 
-    <Modal v-model="editDirectiveModal" width="700" class-name="vertical-center-modal" title="编辑指令">
+    <Modal v-model="editDirectiveModal" width="700" class-name="vertical-center-modal" title="编辑指令" :mask-closable="false">
         <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                 <i style="color: red;display: inline-block;">*</i>&nbsp;设备类型 : &nbsp;</i-col>
@@ -60,7 +60,7 @@
                 <i-select v-model="deviceType">
                     <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                 </i-select>
-            </i-col>  
+            </i-col>
         </Row>
 
         <Row style="margin: 10px 0">
@@ -84,7 +84,7 @@
                 </div>
             </i-col>
         </Row>
-       
+
         <Row style="margin: 10px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否同步 : &nbsp;</i-col>
             <i-col span="20" style="height: 100%;line-height:32px;">
@@ -102,7 +102,7 @@
                     <i-option value="remind">闹钟</i-option>
                     <i-option value="time">时间</i-option>
                     <i-option value="weektime">星期时间</i-option>
-                </i-select> 
+                </i-select>
             </i-col>
         </Row>
 
@@ -165,7 +165,7 @@
                         {{item.title}} : &nbsp;
                     </i-col>
                     <i-col span="15">
-                        <i-input v-model.trim="item.value"></i-input>    
+                        <i-input v-model.trim="item.value"></i-input>
                     </i-col>
                 </Row>
             </i-col>
@@ -182,81 +182,84 @@
                 <Row style="margin: 5px 0">
                     <i-col span="15" offset="5">
                         <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                            {{item.title}} : &nbsp;  <Time-Picker format="HH:mm"  type="timerange" :value="item.formatVlaue" placeholder="选择时间段"></Time-Picker>
+                            {{item.title}} : &nbsp;
+                            <Time-Picker format="HH:mm" type="timerange" :value="item.formatVlaue" placeholder="选择时间段"></Time-Picker>
                         </p>
                     </i-col>
                 </Row>
             </i-col>
             <i-col span="20" v-if="selectParamType==='remind'">
-                    <Row style="margin: 5px 0">
-                        <i-col span="15" offset="5">
-                                <Row>
-                                        <i-col span="16">
-                                            <Time-Picker format="HH:mm" placeholder="选择时间"></Time-Picker>
-                                        </i-col>    
-                                        <i-col span="8" style="height: 100%;line-height:32px;">
-                                            <i-switch />
-                                        </i-col>    
-                                    </Row>
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="16">
-                                            <Radio-Group>
-                                                <Radio label="1"> <span>一次</span></Radio>
-                                                <Radio label="2"> <span>每天</span></Radio>
-                                                <Radio label="3"><span>每周</span></Radio>
-                                            </Radio-Group>
-                                        </i-col>       
-                                    </Row>
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="24">
-                                            <CheckboxGroup>
-                                                <Checkbox label="一"><span>一</span></Checkbox>
-                                                <Checkbox label="二"><span>二</span></Checkbox>
-                                                <Checkbox label="三"><span>三</span></Checkbox>
-                                                <Checkbox label="四"><span>四</span></Checkbox>
-                                                <Checkbox label="五"><span>五</span></Checkbox>
-                                                <Checkbox label="六"><span>六</span></Checkbox>
-                                                <Checkbox label="日"><span>日</span></Checkbox>
-                                            </CheckboxGroup>
-                                        </i-col>       
-                                    </Row>
-                        </i-col>
-                    </Row>
+                <Row style="margin: 5px 0">
+                    <i-col span="15" offset="5">
+                        <Row>
+                            <i-col span="16">
+                                <Time-Picker format="HH:mm" placeholder="选择时间"></Time-Picker>
+                            </i-col>
+                            <i-col span="8" style="height: 100%;line-height:32px;">
+                                <i-switch />
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="16">
+                                <Radio-Group>
+                                    <Radio label="1"> <span>一次</span></Radio>
+                                    <Radio label="2"> <span>每天</span></Radio>
+                                    <Radio label="3"><span>每周</span></Radio>
+                                </Radio-Group>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="24">
+                                <CheckboxGroup>
+                                    <Checkbox label="一"><span>一</span></Checkbox>
+                                    <Checkbox label="二"><span>二</span></Checkbox>
+                                    <Checkbox label="三"><span>三</span></Checkbox>
+                                    <Checkbox label="四"><span>四</span></Checkbox>
+                                    <Checkbox label="五"><span>五</span></Checkbox>
+                                    <Checkbox label="六"><span>六</span></Checkbox>
+                                    <Checkbox label="日"><span>日</span></Checkbox>
+                                </CheckboxGroup>
+                            </i-col>
+                        </Row>
+                    </i-col>
+                </Row>
             </i-col>
             <i-col span="20" v-if="selectParamType==='time'">
-                    <Row style="margin: 5px 0">
-                        <i-col span="15" offset="5">
-                            <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                                {{item.title}} : &nbsp;  <Time-Picker format="HH:mm"  type="time" :value="item.value" placeholder="选择时间"></Time-Picker>
-                            </p>
-                        </i-col>
-                    </Row>
+                <Row style="margin: 5px 0">
+                    <i-col span="15" offset="5">
+                        <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
+                            {{item.title}} : &nbsp;
+                            <Time-Picker format="HH:mm" type="time" :value="item.value" placeholder="选择时间"></Time-Picker>
+                        </p>
+                    </i-col>
+                </Row>
             </i-col>
             <i-col span="20" v-if="selectParamType==='weektime'">
-                    <Row style="margin: 5px 0">
-                        <i-col span="15" offset="5">
-                            <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                                    <Row style="margin: 10px 0">
-                                        <i-col span="24">
-                                            {{item.title}} &nbsp; <Time-Picker format="HH:mm"  type="time" placeholder="选择时间" v-model="item.time"></Time-Picker>
-                                        </i-col>       
-                                    </Row>                                                 
-                                    <Row style="margin: 10px 0">
-                                            <i-col span="24">
-                                                <CheckboxGroup v-model="item.weekselected">
-                                                    <Checkbox label="一"><span>一</span></Checkbox>
-                                                    <Checkbox label="二"><span>二</span></Checkbox>
-                                                    <Checkbox label="三"><span>三</span></Checkbox>
-                                                    <Checkbox label="四"><span>四</span></Checkbox>
-                                                    <Checkbox label="五"><span>五</span></Checkbox>
-                                                    <Checkbox label="六"><span>六</span></Checkbox>
-                                                    <Checkbox label="日"><span>日</span></Checkbox>
-                                                </CheckboxGroup>
-                                            </i-col>       
-                                    </Row>   
-                            </p>
-                        </i-col>
-                    </Row>
+                <Row style="margin: 5px 0">
+                    <i-col span="15" offset="5">
+                        <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
+                            <Row style="margin: 10px 0">
+                                <i-col span="24">
+                                    {{item.title}} &nbsp;
+                                    <Time-Picker format="HH:mm" type="time" placeholder="选择时间" v-model="item.time"></Time-Picker>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
+                                <i-col span="24">
+                                    <CheckboxGroup v-model="item.weekselected">
+                                        <Checkbox label="一"><span>一</span></Checkbox>
+                                        <Checkbox label="二"><span>二</span></Checkbox>
+                                        <Checkbox label="三"><span>三</span></Checkbox>
+                                        <Checkbox label="四"><span>四</span></Checkbox>
+                                        <Checkbox label="五"><span>五</span></Checkbox>
+                                        <Checkbox label="六"><span>六</span></Checkbox>
+                                        <Checkbox label="日"><span>日</span></Checkbox>
+                                    </CheckboxGroup>
+                                </i-col>
+                            </Row>
+                        </p>
+                    </i-col>
+                </Row>
             </i-col>
         </Row>
         <div slot="footer" style="text-align: center;">
@@ -264,258 +267,257 @@
         </div>
     </Modal>
     <script>
-       vueInstanse = new Vue({
+        vueInstanse = new Vue({
             el: "#directive-wraper",
-            data: function () {
+            data: function() {
                 var me = this;
                 return {
-                    activeTab:'zh',
-                    editDirectiveModal:false,
-                    theme:"light",
-                    sortNumber:"",
-                    sortModal:false,
+                    activeTab: 'zh',
+                    editDirectiveModal: false,
+                    theme: "light",
+                    sortNumber: "",
+                    sortModal: false,
                     directiveObj: {},
-                    copySelectedData:[],
-                    selectedDeviceType:null,
-                    copyDevType:"",
-                    copyDirective:"",
-                    columns: [
-                        {
-                            title: '序号',
-                            key: 'cmdlevel',
-                            width: 80,
-                        },
-                        {
-                            title: '指令名称',
-                            key: 'cmdname'
-                        },
-                        {
-                            title: '描述',
-                            key: 'cmddescr'
-                        },
-                        {
-                            title:'是否同步',
-                            render:function(h,params){
-                                var item = params.row;
-                                return h('span',{},item.sync==0?"异步":"同步")
-                            }
-                        },
-                        {
-                            title: '操作',
-                            key: 'action',
-                            width: 180,
-                            render: function (h, params) {
-                                return h('div', [
+                    copySelectedData: [],
+                    selectedDeviceType: null,
+                    copyDevType: "",
+                    copyDirective: "",
+                    columns: [{
+                        title: '序号',
+                        key: 'cmdlevel',
+                        width: 80,
+                    }, {
+                        title: '指令名称',
+                        key: 'cmdname'
+                    }, {
+                        title: '描述',
+                        key: 'cmddescr'
+                    }, {
+                        title: '是否同步',
+                        render: function(h, params) {
+                            var item = params.row;
+                            return h('span', {}, item.sync == 0 ? "异步" : "同步")
+                        }
+                    }, {
+                        title: '操作',
+                        key: 'action',
+                        width: 180,
+                        render: function(h, params) {
+                            return h('div', [
                                 h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            click: function () {
-                                                editObject = params.row;
-                                                me.index = params.index;
-                                                me.sortNumber = editObject.cmdlevel;
-                                                me.sortModal = true;
-                                            }
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            editObject = params.row;
+                                            me.index = params.index;
+                                            me.sortNumber = editObject.cmdlevel;
+                                            me.sortModal = true;
                                         }
-                                    }, '排序'),
+                                    }
+                                }, '排序'),
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            editObject = params.row;
+                                            // me.getListCmdAction();
+                                            me.setValue(editObject);
+                                            me.editDirectiveModal = true;
+                                            // var pagePath = null
+                                            // if (myUrls.host.indexOf('gpsserver') != -1) {
+                                            //     pagePath = myUrls.host + 'view/systemparam/editdirective.html'
+                                            // } else {
+                                            //     pagePath = '../view/systemparam/editdirective.html'
+                                            // }  
+                                            // me.$Loading.start();
+                                            // $("#system-view").load(pagePath,function(){
+                                            //     me.$Loading.finish();
+                                            // });
+                                        }
+                                    }
+                                }, '修改'),
+
+                                h('Poptip', {
+                                    props: {
+                                        confirm: true,
+                                        title: '确定要删除吗?'
+                                    },
+                                    on: {
+                                        'on-ok': function() {
+                                            me.handleDelDirective(params);
+                                        }
+                                    }
+                                }, [
                                     h('Button', {
                                         props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            click: function () {
-                                                editObject = params.row;
-                                                // me.getListCmdAction();
-                                                me.setValue(editObject);
-                                                me.editDirectiveModal = true;
-                                                // var pagePath = null
-                                                // if (myUrls.host.indexOf('gpsserver') != -1) {
-                                                //     pagePath = myUrls.host + 'view/systemparam/editdirective.html'
-                                                // } else {
-                                                //     pagePath = '../view/systemparam/editdirective.html'
-                                                // }  
-                                                // me.$Loading.start();
-                                                // $("#system-view").load(pagePath,function(){
-                                                //     me.$Loading.finish();
-                                                // });
-                                            }
-                                        }
-                                    }, '修改'),
-                                    
-                                    h('Poptip', {
-                                        props: {
-                                            confirm: true,
-                                            title: '确定要删除吗?'
-                                        },
-                                        on: {
-                                            'on-ok': function () {
-                                               me.handleDelDirective(params);
-                                            }
-                                        }
-                                    },[
-                                    h('Button', {
-                                            props: {
                                             type: 'error',
                                             size: 'small'
-                                            }
-                                        },"删除") 
-                                    ]) 
-                                ]);
-                            }
+                                        }
+                                    }, "删除")
+                                ])
+                            ]);
                         }
-                    ],
+                    }],
                     rowIndex: null,
                     tableData: [],
-                    deviceTypeNavList:[],
-                    allDirectiveList:[],
+                    deviceTypeNavList: [],
+                    allDirectiveList: [],
                     loading: false,
-                    index:null,
+                    index: null,
 
-                    iconState:"ios-arrow-down",       
+                    iconState: "ios-arrow-down",
                     cmdCode: null,
-                    deviceType:null,
+                    deviceType: null,
                     cmdname: "",
                     cmdnameen: "",
                     cmdnametw: "",
-                    cmdpwd:"",
+                    cmdpwd: "",
                     cmddescr: null,
                     cmddescren: "",
                     cmddescrtw: "",
-                    common:0,
+                    common: 0,
                     params: null,
                     paramsen: null,
                     paramstw: null,
-                    previewObjList:[],
-                    isShowMatchDev:false,
-                    isPublic:false,
-                    isSync:false,
-                    kong:"",
-                    deviceTypeList:[],
-                    listCmdAction:[],
-                    selectParamType:'',
-                    preview:null,
-                    timeoutIns:null,
-                    cmdCodeName:"",
-                    cmdList:[]
+                    previewObjList: [],
+                    isShowMatchDev: false,
+                    isPublic: false,
+                    isSync: false,
+                    kong: "",
+                    deviceTypeList: [],
+                    listCmdAction: [],
+                    selectParamType: '',
+                    preview: null,
+                    timeoutIns: null,
+                    cmdCodeName: "",
+                    cmdList: []
                 }
             },
             methods: {
-                onClickTabs:function(lang){
+                onClickTabs: function(lang) {
                     this.activeTab = lang;
                     // this.previewParams(editObject);
                     this.previewObjList = [];
-                    if(this.activeTab == 'zh'){
+                    if (this.activeTab == 'zh') {
                         var params = editObject.params;
-                        if( params.trim() && this.checkFormatCorrect(params.trim())){
-                            var paramszh = "<params>"+ params +"</params>";
-                            var parser=new DOMParser(); 
-                            var xmlDoc=parser.parseFromString(paramszh,"text/xml"); 
+                        if (params.trim() && this.checkFormatCorrect(params.trim())) {
+                            var paramszh = "<params>" + params + "</params>";
+                            var parser = new DOMParser();
+                            var xmlDoc = parser.parseFromString(paramszh, "text/xml");
                             this.parseXML(xmlDoc);
-                        }else{
+                        } else {
                             console.log('没有解析params - :', params);
                         }
-                    }else if(this.activeTab == 'en'){
+                    } else if (this.activeTab == 'en') {
                         var params = editObject.paramsen;
-                        if( params.trim() && this.checkFormatCorrect(params.trim())){
-                            var paramsen = "<params>"+ this.paramsen +"</params>";
-                            var parser=new DOMParser(); 
-                            var xmlDoc=parser.parseFromString(paramsen,"text/xml"); 
+                        if (params.trim() && this.checkFormatCorrect(params.trim())) {
+                            var paramsen = "<params>" + this.paramsen + "</params>";
+                            var parser = new DOMParser();
+                            var xmlDoc = parser.parseFromString(paramsen, "text/xml");
                             this.parseXML(xmlDoc);
-                        }else{
+                        } else {
                             console.log('没有解析params - :', params);
                         }
                     }
                 },
-                onCopyDirective:function(){
-                    var directiveInfo =  null , me = this;
-                    this.copySelectedData.forEach(function (item) { 
-                        if(item.cmdcode == me.copyDirective){
+                onCopyDirective: function() {
+                    var directiveInfo = null,
+                        me = this;
+                    this.copySelectedData.forEach(function(item) {
+                        if (item.cmdcode == me.copyDirective) {
                             directiveInfo = item;
                         }
-                    });    
+                    });
 
-                    if(directiveInfo){
+                    if (directiveInfo) {
                         var url = myUrls.addCmd();
                         var cloneObj = deepClone(directiveInfo);
-                        cloneObj.devicetype =  this.selectedDeviceType.name;
-                        utils.sendAjax(url, cloneObj, function (resp) {
+                        cloneObj.devicetype = this.selectedDeviceType.name;
+                        utils.sendAjax(url, cloneObj, function(resp) {
                             if (resp.status == 0) {
                                 cloneObj.predictcmdid = resp.predictcmdid;
                                 cloneObj.cmdlevel = me.tableData.length + 1;
                                 me.tableData.push(cloneObj);
                                 me.allDirectiveList.push(cloneObj);
                                 me.$Message.success("复制成功");
-                            }else{
+                            } else {
                                 me.$Message.error(resp.cause);
                             };
-                        });    
+                        });
                     };
                 },
-                handleSortFn:function(){
+                handleSortFn: function() {
                     var me = this;
-                    if(this.sortNumber != ""){
+                    if (this.sortNumber != "") {
                         var url = myUrls.editCmd();
-                        var cmdlevel = Number(this.sortNumber) ;
+                        var cmdlevel = Number(this.sortNumber);
                         editObject.cmdlevel = cmdlevel;
-                        utils.sendAjax(url, editObject , function (resp) {
+                        utils.sendAjax(url, editObject, function(resp) {
                             if (resp.status == 0) {
                                 me.tableData[me.index].cmdlevel = cmdlevel;
-                                me.tableData.sort(function (a,b) { 
+                                me.tableData.sort(function(a, b) {
                                     return a.cmdlevel - b.cmdlevel;
                                 });
                                 me.$Message.success("排序成功");
                                 me.sortModal = false;
 
-                            }else{
+                            } else {
                                 me.$Message.error(resp.cause);
                             };
                         });
-                    }else{
+                    } else {
                         me.$Message.error("序号不能为空!");
                     }
                 },
-                handleClickDevType:function(type){
+                handleClickDevType: function(type) {
                     var me = this;
                     var tableData = [];
-                    this.deviceTypeNavList.forEach(function (item) { 
+                    this.deviceTypeNavList.forEach(function(item) {
                         item.isSelected = false;
                     });
 
-                    this.allDirectiveList.forEach(function (item) { 
-                        if(item.devicetype == type.name){
+                    this.allDirectiveList.forEach(function(item) {
+                        if (item.devicetype == type.name) {
                             tableData.push(item)
                         }
-                    });   
-                    tableData.sort(function (a,b) { 
+                    });
+                    tableData.sort(function(a, b) {
                         return a.cmdlevel - b.cmdlevel;
                     });
                     me.tableData = tableData;
                     type.isSelected = true;
                     this.selectedDeviceType = type;
                 },
-                onSelectedDeviceType:function(){
-                    var data = [], me = this;
-                    this.allDirectiveList.forEach(function (item) { 
-                        if(item.devicetype == me.copyDevType){
+                onSelectedDeviceType: function() {
+                    var data = [],
+                        me = this;
+                    this.allDirectiveList.forEach(function(item) {
+                        if (item.devicetype == me.copyDevType) {
                             data.push(item)
                         }
                     });
                     this.copySelectedData = data;
                 },
-                handleDelDirective: function (params) {
+                handleDelDirective: function(params) {
                     var me = this;
                     var url = myUrls.deleteCmd();
-                    var data = { cmdcode: String(params.row.cmdcode) , devicetype:params.row.devicetype };
-                    utils.sendAjax(url, data, function (resp) {
+                    var data = {
+                        cmdcode: String(params.row.cmdcode),
+                        devicetype: params.row.devicetype
+                    };
+                    utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
                             me.$Message.success("删除成功");
                             me.deleteSingleCmd(params.row);
@@ -525,81 +527,92 @@
                         }
                     });
                 },
-                deleteSingleCmd:function(info){
-                    var idx = null ;
-                    for(var i = 0 ; this.allDirectiveList.length ; i++){
+                deleteSingleCmd: function(info) {
+                    var idx = null;
+                    for (var i = 0; this.allDirectiveList.length; i++) {
                         var cmd = this.allDirectiveList[i];
-                        if(cmd.devicetype == info.devicetype && cmd.cmdcode == info.cmdcode){
+                        if (cmd.devicetype == info.devicetype && cmd.cmdcode == info.cmdcode) {
                             idx = i;
                             break;
                         }
                     }
-                    if(idx!==null){
-                        this.allDirectiveList.splice(idx,1);
+                    if (idx !== null) {
+                        this.allDirectiveList.splice(idx, 1);
                     }
                 },
-                queryCmdList: function () {
+                queryCmdList: function() {
                     var me = this;
                     var url = myUrls.queryCmd();
                     var data = {
                         "offset": 0,
                         "pagesize": 10
                     };
-                    utils.sendAjax(url, data, function (resp) {
+                    utils.sendAjax(url, data, function(resp) {
                         if (resp.status === 0) {
                             // resp.records.forEach(function (item) { 
-                            
+
                             // })
                             me.allDirectiveList = resp.records;
                             me.getDeviceType();
                         }
                     });
                 },
-                getDeviceType:function () {
+                getDeviceType: function() {
                     var me = this;
                     var url = myUrls.queryDeviceTypeByUser();
-                    utils.sendAjax(url,{},function (resp) { 
-                        if(resp.status == 0 && resp.devicetypes!=null){
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0 && resp.devicetypes != null) {
                             var firstType = null;
-                            resp.devicetypes.forEach(function (item,index) { 
+                            resp.devicetypes.forEach(function(item, index) {
                                 var title = item.typename;
-                                if(item.remark){
-                                    title += "(" + item.remark +  ")";
-                                };   
-                                var type = {name:item.devicetypeid,title:title,icon:"ios-ionitron",isSelected:false,typename:item.typename};
-                                if(index==0){firstType = type };
+                                if (item.remark) {
+                                    title += "(" + item.remark + ")";
+                                };
+                                var type = {
+                                    name: item.devicetypeid,
+                                    title: title,
+                                    icon: "ios-ionitron",
+                                    isSelected: false,
+                                    typename: item.typename
+                                };
+                                if (index == 0) {
+                                    firstType = type
+                                };
                                 me.deviceTypeNavList.push(type);
-                                me.deviceTypeList.push({value:item.devicetypeid,label:item.typename});
+                                me.deviceTypeList.push({
+                                    value: item.devicetypeid,
+                                    label: item.typename
+                                });
                             })
                             me.handleClickDevType(firstType);
                         }
-                    }); 
-                    
+                    });
+
                 },
 
-                selectedCmd:function(item){
+                selectedCmd: function(item) {
                     var me = this;
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.isShowMatchDev = false;
                         me.cmdCodeName = item.label;
                         me.cmdCode = item.value;
                     }, 300)
                 },
-                filterMethod:function(value){
+                filterMethod: function(value) {
                     var list = [];
                     value = value.toLowerCase();
-                    this.listCmdAction.forEach(function (itme) { 
-                        if(
-                            itme.label.indexOf(value)!=-1 ||
-                            itme.firstLetter.indexOf(value)!=-1 ||
-                            itme.pinyin.indexOf(value)!=-1 
-                        ){
+                    this.listCmdAction.forEach(function(itme) {
+                        if (
+                            itme.label.indexOf(value) != -1 ||
+                            itme.firstLetter.indexOf(value) != -1 ||
+                            itme.pinyin.indexOf(value) != -1
+                        ) {
                             list.push(itme);
                         }
                     })
                     this.cmdList = list;
                 },
-                sosoValueChange:function(){
+                sosoValueChange: function() {
                     var me = this;
                     var value = this.cmdCodeName;
 
@@ -612,114 +625,121 @@
                         return;
                     }
 
-                    this.timeoutIns = setTimeout(function () {
+                    this.timeoutIns = setTimeout(function() {
                         me.filterMethod(value);
                     }, 300);
                 },
-                focus: function () {
+                focus: function() {
                     this.isShowMatchDev = true;
                 },
-                blur: function () {
+                blur: function() {
                     var me = this
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.isShowMatchDev = false;
                     }, 300)
                 },
-                handleEditDirective:function(){
-          
+                handleEditDirective: function() {
+
                     var me = this;
                     var url = myUrls.editCmd();
                     var data = {
                         cmdname: this.cmdname,
-                        cmdnameen:this.cmdnameen,
-                        cmdnametw:this.cmdnametw,
+                        cmdnameen: this.cmdnameen,
+                        cmdnametw: this.cmdnametw,
                         cmdcode: this.cmdCode,
                         paramsen: "",
                         paramstw: "",
                         cmddescren: "",
                         cmddescrtw: "",
-                        cmdlevel:editObject.cmdlevel,
-                        devicetype:this.deviceType,
-                        sync:this.isSync?1:0,
-                        predictcmdid:editObject.predictcmdid
+                        cmdlevel: editObject.cmdlevel,
+                        devicetype: this.deviceType,
+                        sync: this.isSync ? 1 : 0,
+                        predictcmdid: editObject.predictcmdid
                     };
-                
-                    if(this.cmddescr){
+
+                    if (this.cmddescr) {
                         data.cmddescr = this.cmddescr;
                     };
-                    if(this.cmddescren){
+                    if (this.cmddescren) {
                         data.cmddescren = this.cmddescren;
                     };
-                    
-                    if(this.params){
-                        if(this.checkFormatCorrect(this.params.trim())){
+
+                    if (this.params) {
+                        if (this.checkFormatCorrect(this.params.trim())) {
                             data.params = this.params;
-                        }else{
+                        } else {
                             this.$Message.error("参数格式错误");
                             return;
                         }
                     };
 
-                    if(this.paramsen){
-                        if(this.checkFormatCorrect(this.paramsen.trim())){
+                    if (this.paramsen) {
+                        if (this.checkFormatCorrect(this.paramsen.trim())) {
                             data.paramsen = this.paramsen;
-                        }else{
+                        } else {
                             this.$Message.error("参数格式错误");
                             return;
                         }
                     };
 
-                    if(this.selectParamType){
+                    if (this.selectParamType) {
                         data.cmdtype = this.selectParamType;
                     };
-                    
-                    data.cmdpwd = this.cmdpwd;
-                    
 
-                    utils.sendAjax(url, data, function (resp) {
+                    data.cmdpwd = this.cmdpwd;
+
+
+                    utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
-                            me.allDirectiveList.forEach(function (item) { 
-                                if(item.devicetype == data.devicetype &&item.predictcmdid === data.predictcmdid){
-                                    Object.assign(item,data)
+                            me.allDirectiveList.forEach(function(item) {
+                                if (item.devicetype == data.devicetype && item.predictcmdid === data.predictcmdid) {
+                                    Object.assign(item, data)
                                 }
-                            }); 
-                            me.tableData.forEach(function (item) { 
-                                if(item.devicetype == data.devicetype &&item.predictcmdid === data.predictcmdid){
-                                    Object.assign(item,data);
+                            });
+                            me.tableData.forEach(function(item) {
+                                if (item.devicetype == data.devicetype && item.predictcmdid === data.predictcmdid) {
+                                    Object.assign(item, data);
                                 }
                             });
                             me.$Message.success("编辑成功");
                             me.editDirectiveModal = false;
-                        }else{
+                        } else {
                             me.$Message.error(resp.cause);
                         };
                     });
                 },
-                checkFormatCorrect:function (str){
-                      if(str)
-                    str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g,"");
+                checkFormatCorrect: function(str) {
+                    if (str)
+                        str = str.replace(/^<[\s\S]*>[\s\S]*<\/[\s\S]*>$/g, "");
                     return str == "" ? true : false;
                 },
-                parseXML:function(xmlDoc){
+                parseXML: function(xmlDoc) {
                     // <ha><param size="small" type="password">确认密码</param></ha>
-                    var parent =  xmlDoc.children[0];
+                    var parent = xmlDoc.children[0];
                     var children = parent.children;
                     var previewObjList = []
                     for (var i = 0; i < children.length; i++) {
                         var item = children[i]
                         var title = item.innerHTML;
                         var value = item.getAttribute("value");
-                        var type = item.getAttribute("type") , previewObj = null;
-        
+                        var type = item.getAttribute("type"),
+                            previewObj = null;
+
 
                         if (type) {
-                            if(this.selectParamType === 'timeperiod'){
+                            if (this.selectParamType === 'timeperiod') {
                                 value = value || "00:00-00:00";
                                 var formatVlaue = value.split("-");
-                                previewObj = { type: type, value: value , title:title ,formatVlaue:formatVlaue};
-                            }else if(this.selectParamType === 'weektime'){
+                                previewObj = {
+                                    type: type,
+                                    value: value,
+                                    title: title,
+                                    formatVlaue: formatVlaue
+                                };
+                            } else if (this.selectParamType === 'weektime') {
                                 var formatVlaue = value.split("-");
-                                var weekStr = formatVlaue[1] , weekselected = [];
+                                var weekStr = formatVlaue[1],
+                                    weekselected = [];
                                 var week1 = weekStr.charAt(0) == 1 ? '一' : false;
                                 var week2 = weekStr.charAt(1) == 1 ? '二' : false;
                                 var week3 = weekStr.charAt(2) == 1 ? '三' : false;
@@ -735,163 +755,172 @@
                                 week5 && weekselected.push(week5);
                                 week6 && weekselected.push(week6);
                                 week7 && weekselected.push(week7);
-                                previewObj = { type: type , time: formatVlaue[0],weekselected:weekselected, title:title };
-                            }else{
-                                previewObj = { type: type, value:(value?value:" ") , title:title };
+                                previewObj = {
+                                    type: type,
+                                    time: formatVlaue[0],
+                                    weekselected: weekselected,
+                                    title: title
+                                };
+                            } else {
+                                previewObj = {
+                                    type: type,
+                                    value: (value ? value : " "),
+                                    title: title
+                                };
                             }
                             previewObjList.push(previewObj);
                         }
-                    }   
-   
+                    }
+
                     this.previewObjList = previewObjList;
                 },
-                getCmdCodeName:function(cmdcode){
+                getCmdCodeName: function(cmdcode) {
                     var cmdCodeName = "";
-                    this.cmdList.forEach(function (item) { 
-                        if(item.value === cmdcode){
+                    this.cmdList.forEach(function(item) {
+                        if (item.value === cmdcode) {
                             cmdCodeName = item.label;
                             return false;
                         }
                     })
                     return cmdCodeName;
                 },
-                setValue:function(data){
+                setValue: function(data) {
                     this.cmdCodeName = this.getCmdCodeName(data.cmdcode);
-                    this.cmdCode=data.cmdcode; 
+                    this.cmdCode = data.cmdcode;
                     this.deviceType = data.devicetype;
-                    this.cmdname=data.cmdname ;
-                    this.cmdnameen=data.cmdnameen;
-                    this.cmdnametw=data.cmdnametw;
+                    this.cmdname = data.cmdname;
+                    this.cmdnameen = data.cmdnameen;
+                    this.cmdnametw = data.cmdnametw;
 
-                    this.cmddescr=data.cmddescr;
-                    this.cmddescren=data.cmddescren;
-                    this.cmddescrtw=data.cmddescrtw;
+                    this.cmddescr = data.cmddescr;
+                    this.cmddescren = data.cmddescren;
+                    this.cmddescrtw = data.cmddescrtw;
 
                     this.common = data.common;
-                    this.isSync = data.sync == 1 ? true :false
-                    
+                    this.isSync = data.sync == 1 ? true : false
+
                     this.cmdpwd = data.cmdpwd;
 
-                    this.selectParamType = data.cmdtype; 
+                    this.selectParamType = data.cmdtype;
 
                     // this.previewParams(data);
 
                     this.params = data.params;
                     this.paramsen = data.paramsen;
                 },
-                previewParams:function(data){
-                    if(this.activeTab == 'zh'){
+                previewParams: function(data) {
+                    if (this.activeTab == 'zh') {
                         this.params = "";
-                        if(data.params){
+                        if (data.params) {
                             var paramsArr = data.params.split('\n');
-                            if(
-                                data.cmdtype !== 'text' 
-                                && data.cmdtype !== 'list' 
-                                && data.cmdtype !== 'timeperiod' 
-                                && data.cmdtype !== 'remind'
-                                && data.cmdtype !== 'time'
-                                && data.cmdtype !== 'weektime'  
-                            ){
+                            if (
+                                data.cmdtype !== 'text' &&
+                                data.cmdtype !== 'list' &&
+                                data.cmdtype !== 'timeperiod' &&
+                                data.cmdtype !== 'remind' &&
+                                data.cmdtype !== 'time' &&
+                                data.cmdtype !== 'weektime'
+                            ) {
                                 this.params = data.params;
-                            }else{
-                                this.params=paramsArr.join("\n");
+                            } else {
+                                this.params = paramsArr.join("\n");
                             }
-                        } 
-                    }else if(this.activeTab == 'en'){
+                        }
+                    } else if (this.activeTab == 'en') {
                         this.paramsen = "";
-                        if(data.paramsen){
+                        if (data.paramsen) {
                             var paramsArr = data.paramsen.split('\n');
-                            if(
-                                data.cmdtype !== 'text' 
-                                && data.cmdtype !== 'list' 
-                                && data.cmdtype !== 'timeperiod' 
-                                && data.cmdtype !== 'remind'
-                                && data.cmdtype !== 'time'
-                                && data.cmdtype !== 'weektime'  
-                            ){
+                            if (
+                                data.cmdtype !== 'text' &&
+                                data.cmdtype !== 'list' &&
+                                data.cmdtype !== 'timeperiod' &&
+                                data.cmdtype !== 'remind' &&
+                                data.cmdtype !== 'time' &&
+                                data.cmdtype !== 'weektime'
+                            ) {
                                 this.paramsen = data.paramsen;
-                            }else{
-                                this.paramsen=paramsArr.join("\n");
-                    
+                            } else {
+                                this.paramsen = paramsArr.join("\n");
+
                             }
-                        } 
-                    }else if(this.activeTab == 'tw'){
-                        if(data.paramstw){
+                        }
+                    } else if (this.activeTab == 'tw') {
+                        if (data.paramstw) {
                             var paramsArr = data.paramstw.split('\n');
-                            if(
-                                data.cmdtype !== 'text' 
-                                && data.cmdtype !== 'list' 
-                                && data.cmdtype !== 'timeperiod' 
-                                && data.cmdtype !== 'remind'
-                                && data.cmdtype !== 'time'
-                                && data.cmdtype !== 'weektime'  
-                            ){
+                            if (
+                                data.cmdtype !== 'text' &&
+                                data.cmdtype !== 'list' &&
+                                data.cmdtype !== 'timeperiod' &&
+                                data.cmdtype !== 'remind' &&
+                                data.cmdtype !== 'time' &&
+                                data.cmdtype !== 'weektime'
+                            ) {
                                 this.paramstw = data.paramstw;
-                            }else{
-                                this.paramstw=paramsArr.join("\n");
+                            } else {
+                                this.paramstw = paramsArr.join("\n");
                             }
-                        }else{
-                            this.paramstw = ""; 
-                        };  
+                        } else {
+                            this.paramstw = "";
+                        };
                     }
                 },
-                getListCmdAction:function(){
+                getListCmdAction: function() {
                     var me = this;
                     var url = myUrls.listCmdAction();
-                    utils.sendAjax(url,{},function (resp) { 
-                        if(resp.status == 0){
-                            resp.cmds.forEach(function (item) { 
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0) {
+                            resp.cmds.forEach(function(item) {
                                 var cmdName = item.cmdName;
                                 var firstLetter = __pinyin.getFirstLetter(cmdName);
                                 var pinyin = __pinyin.getPinyin(cmdName);
                                 me.listCmdAction.push({
-                                    value:item.cmdCode,
-                                    label:cmdName,
-                                    firstLetter:firstLetter,
-                                    pinyin:pinyin
+                                    value: item.cmdCode,
+                                    label: cmdName,
+                                    firstLetter: firstLetter,
+                                    pinyin: pinyin
                                 });
                             })
                             me.cmdList = me.listCmdAction;
                         }
-                    });  
+                    });
                 }
             },
             watch: {
-                copyDevType:function(){
+                copyDevType: function() {
                     this.copyDirective = "";
                     this.onSelectedDeviceType();
                 },
-                params:function (params) { 
+                params: function(params) {
                     this.previewObjList = [];
-                    if( params.trim() && this.checkFormatCorrect(this.params.trim())){
-                        var paramszh = "<params>"+ this.params +"</params>";
-                        var parser=new DOMParser(); 
-                        var xmlDoc=parser.parseFromString(paramszh,"text/xml"); 
+                    if (params.trim() && this.checkFormatCorrect(this.params.trim())) {
+                        var paramszh = "<params>" + this.params + "</params>";
+                        var parser = new DOMParser();
+                        var xmlDoc = parser.parseFromString(paramszh, "text/xml");
                         this.parseXML(xmlDoc);
-                    }else{
+                    } else {
                         console.log('没有解析params - :', params);
                     }
                 },
-                paramsen:function (params) { 
+                paramsen: function(params) {
                     this.previewObjList = [];
-                    if( params.trim() && this.checkFormatCorrect(this.paramsen.trim())){
-                        var paramsen = "<params>"+ this.paramsen +"</params>";
-                        var parser=new DOMParser(); 
-                        var xmlDoc=parser.parseFromString(paramsen,"text/xml"); 
+                    if (params.trim() && this.checkFormatCorrect(this.paramsen.trim())) {
+                        var paramsen = "<params>" + this.paramsen + "</params>";
+                        var parser = new DOMParser();
+                        var xmlDoc = parser.parseFromString(paramsen, "text/xml");
                         this.parseXML(xmlDoc);
-                    }else{
+                    } else {
                         console.log('没有解析params - :', params);
                     }
                 },
-                isShowMatchDev:function(){
-                    if(!this.isShowMatchDev){
+                isShowMatchDev: function() {
+                    if (!this.isShowMatchDev) {
                         this.iconState = "ios-arrow-down";
-                    }else{
+                    } else {
                         this.iconState = "ios-arrow-up";
                     }
                 }
             },
-            mounted: function () {
+            mounted: function() {
                 this.queryCmdList();
                 this.getListCmdAction();
             }
