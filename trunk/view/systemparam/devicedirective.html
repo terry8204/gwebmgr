@@ -17,7 +17,7 @@
         </div>
         <div class="directive-type">
             <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
-            <Row style="margin: 10px 0">
+            <Row style="margin: 5px 0">
                 <i-col span="4" style="padding:0 3px">
                     <i-select v-model="copyDevType">
                         <i-option v-for="item in deviceTypeNavList" :value="item.name" :key="item.name">{{ item.typename }}</i-option>
@@ -40,7 +40,7 @@
             <span>指令排序</span>
         </p>
         <div style="text-align:center">
-            <Row style="margin: 10px 0">
+            <Row style="margin: 5px 0">
                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">序号 : &nbsp;</i-col>
                 <i-col span="16">
                     <i-input v-model.trim="sortNumber"></i-input>
@@ -53,7 +53,7 @@
     </Modal>
 
     <Modal v-model="editDirectiveModal" width="700" class-name="vertical-center-modal" title="编辑指令" :mask-closable="false">
-        <Row style="margin: 10px 0">
+        <Row style="margin: 5px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                 <i style="color: red;display: inline-block;">*</i>&nbsp;设备类型 : &nbsp;</i-col>
             <i-col span="20">
@@ -63,7 +63,7 @@
             </i-col>
         </Row>
 
-        <Row style="margin: 10px 0">
+        <Row style="margin: 5px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                 <i style="color: red;display: inline-block;">*</i>&nbsp;指令类型 : &nbsp;</i-col>
             <i-col span="20">
@@ -85,14 +85,14 @@
             </i-col>
         </Row>
 
-        <Row style="margin: 10px 0">
+        <Row style="margin: 5px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;是否同步 : &nbsp;</i-col>
             <i-col span="20" style="height: 100%;line-height:32px;">
                 <Checkbox v-model="isSync">(选中为同步)</Checkbox>
             </i-col>
         </Row>
 
-        <Row style="margin: 10px 0">
+        <Row style="margin: 5px 0">
             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">参数类型 : &nbsp;</i-col>
             <i-col span="20">
                 <i-select v-model="selectParamType">
@@ -115,49 +115,49 @@
 
         <Tabs :value="activeTab" :animated="true" @on-click="onClickTabs">
             <Tab-Pane label="中文" name="zh">
-                <Row style="margin: 10px 0">
+                <Row style="margin: 5px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令名称 : &nbsp;</i-col>
                     <i-col span="20">
                         <i-input v-model.trim="cmdname"></i-input>
                     </i-col>
                 </Row>
-                <Row style="margin: 10px 0">
+                <Row style="margin: 5px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
                     <i-col span="20">
                         <i-input v-model.trim="cmddescr"></i-input>
                     </i-col>
                 </Row>
-                <Row style="margin: 10px 0">
+                <Row style="margin: 5px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
                         参数 : &nbsp;</i-col>
                     <i-col span="20">
-                        <i-input v-model.trim="params" type="textarea" :rows="8" />
+                        <i-input v-model.trim="params" type="textarea" :rows="4" />
                     </i-col>
                 </Row>
             </Tab-Pane>
             <Tab-Pane label="英文" name="en">
-                <Row style="margin: 10px 0">
+                <Row style="margin: 5px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令名称 : &nbsp;</i-col>
                     <i-col span="20">
                         <i-input v-model.trim="cmdnameen"></i-input>
                     </i-col>
                 </Row>
-                <Row style="margin: 10px 0">
+                <Row style="margin: 5px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">指令描述 : &nbsp;</i-col>
                     <i-col span="20">
                         <i-input v-model.trim="cmddescren"></i-input>
                     </i-col>
                 </Row>
-                <Row style="margin: 10px 0">
+                <Row style="margin: 5px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">
                         参数 : &nbsp;</i-col>
                     <i-col span="20">
-                        <i-input v-model.trim="paramsen" type="textarea" :rows="8" />
+                        <i-input v-model.trim="paramsen" type="textarea" :rows="4" />
                     </i-col>
                 </Row>
             </Tab-Pane>
         </Tabs>
-        <Row style="margin: 10px 0;padding:10px 0;border: 1px solid #e3e3e3;">
+        <Row style="margin: 5px 0;padding:10px 0;border: 1px solid #e3e3e3;">
             <i-col span="4" style="height: 100%;text-align:right;line-height:100%;">预览 : &nbsp;</i-col>
             <i-col span="20" v-if="selectParamType==='text'">
                 <Row style="margin: 5px 0" v-for="item in previewObjList" :key="item.text">
@@ -199,7 +199,7 @@
                                 <i-switch />
                             </i-col>
                         </Row>
-                        <Row style="margin: 10px 0">
+                        <Row style="margin: 5px 0">
                             <i-col span="16">
                                 <Radio-Group>
                                     <Radio label="1"> <span>一次</span></Radio>
@@ -208,7 +208,7 @@
                                 </Radio-Group>
                             </i-col>
                         </Row>
-                        <Row style="margin: 10px 0">
+                        <Row style="margin: 5px 0">
                             <i-col span="24">
                                 <CheckboxGroup>
                                     <Checkbox label="一"><span>一</span></Checkbox>
@@ -238,13 +238,13 @@
                 <Row style="margin: 5px 0">
                     <i-col span="15" offset="5">
                         <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="24">
                                     {{item.title}} &nbsp;
                                     <Time-Picker format="HH:mm" type="time" placeholder="选择时间" v-model="item.time"></Time-Picker>
                                 </i-col>
                             </Row>
-                            <Row style="margin: 10px 0">
+                            <Row style="margin: 5px 0">
                                 <i-col span="24">
                                     <CheckboxGroup v-model="item.weekselected">
                                         <Checkbox label="一"><span>一</span></Checkbox>
