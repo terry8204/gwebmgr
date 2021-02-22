@@ -1378,14 +1378,26 @@
                                     me.startCoordinate = e.coordinate;
                                     me.startMarker = new maptalks.Marker(
                                         [e.coordinate.x, e.coordinate.y], {
-                                            symbol: {
+                                            symbol: [{
                                                 'markerFile': './images/map/marker_qidian.png',
                                                 'markerWidth': 30,
                                                 'markerHeight': 30,
                                                 'markerRotation': 0,
                                                 'markerDy': 0,
                                                 'markerDx': 0,
-                                            },
+                                            }, {
+                                                'textFaceName': 'sans-serif',
+                                                'textName': '起点',
+                                                'textSize': 12,
+                                                'textDy': 10,
+                                                'textFill': '#ffffff',
+                                                'textOpacity': 1,
+                                                'textHaloFill': '#00A8D4',
+                                                'textHaloRadius': 5,
+                                                'textWrapWidth': null,
+                                                'textWrapCharacter': '\n',
+                                                'textLineSpacing': 0,
+                                            }]
                                         }
                                     );
                                     me.startMarker.addTo(me.routePlanning);
@@ -1393,23 +1405,35 @@
                                     me.endCoordinate = e.coordinate;
                                     me.endMarker = new maptalks.Marker(
                                         [e.coordinate.x, e.coordinate.y], {
-                                            symbol: {
+                                            symbol: [{
                                                 'markerFile': './images/map/marker_zhongdian.png',
                                                 'markerWidth': 30,
                                                 'markerHeight': 30,
                                                 'markerRotation': 0,
                                                 'markerDy': 0,
                                                 'markerDx': 0,
-                                            },
+                                            }, {
+                                                'textFaceName': 'sans-serif',
+                                                'textName': '终点',
+                                                'textSize': 12,
+                                                'textDy': 10,
+                                                'textFill': '#ffffff',
+                                                'textOpacity': 1,
+                                                'textHaloFill': '#00A8D4',
+                                                'textHaloRadius': 5,
+                                                'textWrapWidth': null,
+                                                'textWrapCharacter': '\n',
+                                                'textLineSpacing': 0,
+                                            }]
                                         }
                                     );
                                     me.endMarker.addTo(me.routePlanning);
                                 }
 
                                 if (me.endCoordinate != null && me.endCoordinate != null) {
-
                                     me.queryRoutePlanning();
                                 }
+
                             }
                         });
 
@@ -1890,26 +1914,51 @@
                                         var endCoordinate = mapPoints[mapPoints.length - 1];
                                         new maptalks.Marker(
                                             [startCoordinate.x, startCoordinate.y], {
-                                                symbol: {
+                                                symbol: [{
                                                     'markerFile': './images/map/marker_qidian.png',
                                                     'markerWidth': 30,
                                                     'markerHeight': 30,
                                                     'markerRotation': 0,
                                                     'markerDy': 0,
                                                     'markerDx': 0,
-                                                },
+                                                }, {
+                                                    'textFaceName': 'sans-serif',
+                                                    'textName': '起点',
+                                                    'textSize': 12,
+                                                    'textDy': 10,
+                                                    'textFill': '#ffffff',
+                                                    'textOpacity': 1,
+                                                    'textHaloFill': '#00A8D4',
+                                                    'textHaloRadius': 5,
+                                                    'textWrapWidth': null,
+                                                    'textWrapCharacter': '\n',
+                                                    'textLineSpacing': 0,
+                                                }]
+
                                             }
                                         ).addTo(me.polygonLayer);
                                         new maptalks.Marker(
                                             [endCoordinate.x, endCoordinate.y], {
-                                                symbol: {
+                                                symbol: [{
                                                     'markerFile': './images/map/marker_zhongdian.png',
                                                     'markerWidth': 30,
                                                     'markerHeight': 30,
                                                     'markerRotation': 0,
                                                     'markerDy': 0,
                                                     'markerDx': 0,
-                                                },
+                                                }, {
+                                                    'textFaceName': 'sans-serif',
+                                                    'textName': '终点',
+                                                    'textSize': 12,
+                                                    'textDy': 10,
+                                                    'textFill': '#ffffff',
+                                                    'textOpacity': 1,
+                                                    'textHaloFill': '#00A8D4',
+                                                    'textHaloRadius': 5,
+                                                    'textWrapWidth': null,
+                                                    'textWrapCharacter': '\n',
+                                                    'textLineSpacing': 0,
+                                                }]
                                             }
                                         ).addTo(me.polygonLayer);
                                         break;
@@ -2062,7 +2111,7 @@
                                     var wgs84Points = me.convertAmapRouteJsonToPoints(result.route);
                                     var mapPoints = me.convertWgs84PointsToMapPoints(wgs84Points);
                                     me.wgs84Points = wgs84Points;
-                                    console.log('mapPoints', mapPoints);
+
                                     new maptalks.LineString(
                                         mapPoints, {
                                             symbol: {
@@ -2076,6 +2125,33 @@
                                                 'lineWidth': 4
                                             }
                                         }).addTo(me.routePlanning);
+
+                                    var paths = result.route.paths;
+                                    var totalDistance = 0;
+                                    paths.forEach(function(path) {
+                                        totalDistance += Number(path.distance);
+                                    });
+                                    me.totalDistance = totalDistance;
+                                    me.endMarker.setSymbol([{
+                                        'markerFile': './images/map/marker_zhongdian.png',
+                                        'markerWidth': 30,
+                                        'markerHeight': 30,
+                                        'markerRotation': 0,
+                                        'markerDy': 0,
+                                        'markerDx': 0,
+                                    }, {
+                                        'textFaceName': 'sans-serif',
+                                        'textName': '总里程:' + totalDistance + '米',
+                                        'textSize': 12,
+                                        'textDy': 10,
+                                        'textFill': '#ffffff',
+                                        'textOpacity': 1,
+                                        'textHaloFill': '#00A8D4',
+                                        'textHaloRadius': 5,
+                                        'textWrapWidth': null,
+                                        'textWrapCharacter': '\n',
+                                        'textLineSpacing': 0,
+                                    }]);
                                     me.geoName = '';
                                     me.addRoutePlanningModal = true;
                                 } else {

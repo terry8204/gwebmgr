@@ -354,11 +354,11 @@ var monitor = {
             loading: false,
             selectedTypeVal: null,
             cacheColumns: [
-                { title: isZh ? '编号' : 'index', key: "index", width: 90, align: 'center', sortable: true },
-                { title: isZh ? '设备序号' : 'Device Number', key: 'deviceid' },
-                { title: isZh ? '指令名称' : 'Cmd name', key: 'cmdname', sortable: true },
+                { title: isZh ? '编号' : 'index', key: "index", width: 80, align: 'center', sortable: true },
+                { title: isZh ? '设备序号' : 'Device Number', key: 'deviceid', width: 153.5 },
+                { title: isZh ? '指令名称' : 'Cmd name', key: 'cmdname', sortable: true, width: 153.5 },
                 { title: isZh ? '发送时间' : 'Send date', key: 'sendtimeStr', width: 170, sortable: true },
-                { title: isZh ? '发送参数' : 'Send parmas', key: 'cmdparams', sortable: true },
+                { title: isZh ? '发送参数' : 'Send parmas', key: 'cmdparams', sortable: true, width: 153.5 },
                 {
                     title: isZh ? '操作' : "Action",
                     key: 'action',
@@ -400,12 +400,12 @@ var monitor = {
                 }
             ],
             sendColumns: [
-                { title: isZh ? '编号' : 'index', key: "index", width: 90, align: 'center', sortable: true },
-                { title: isZh ? '设备序号' : '', key: 'deviceid' },
-                { title: isZh ? '指令名称' : 'Cmd name', key: 'cmdname', sortable: true },
+                { title: isZh ? '编号' : 'index', key: "index", width: 80, align: 'center', sortable: true },
+                { title: isZh ? '设备序号' : '', key: 'deviceid', width: 139.5 },
+                { title: isZh ? '指令名称' : 'Cmd name', key: 'cmdname', sortable: true, width: 139.5 },
                 { title: isZh ? '发送时间' : 'Send date', key: 'sendtimeStr', width: 170, sortable: true },
-                { title: isZh ? '发送参数' : 'Send Params ', key: 'cmdparams', sortable: true },
-                { title: isZh ? '结果' : 'Result', key: 'result', sortable: true },
+                { title: isZh ? '发送参数' : 'Send Params ', key: 'cmdparams', sortable: true, width: 139.5 },
+                { title: isZh ? '结果' : 'Result', key: 'result', sortable: true, width: 139.5 },
             ],
             cacheTableData: [],
             sendTableData: [],
@@ -1735,6 +1735,8 @@ var monitor = {
             var me = this;
             switch (name) {
                 case 'cmdrecord':
+                    this.cacheTableData = [];
+                    this.sendTableData = [];
                     this.directiveReportModal = true;
                     this.queryAllCmdRecords();
                     break;
