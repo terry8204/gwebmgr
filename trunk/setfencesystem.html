@@ -114,10 +114,6 @@
             overflow-x: hidden;
         }
         
-        #container .ivu-icon {
-            margin-top: -3px;
-        }
-        
         #container .ivu-btn .ivu-icon,
         #container .ivu-input-wrapper .ivu-icon {
             margin-top: 0px;
@@ -254,14 +250,17 @@
             <div class="controller-inner">
                 <div style="height:41px">
                     <Row>
-                        <i-col :span="8" style="text-align:center;">
-                            <i-button style="width:100px;" @click="drawCircular" icon="md-add">圆</i-button>
+                        <i-col :span="6" style="text-align:center;">
+                            <i-button style="width:80px;" @click="drawCircular" icon="md-add">圆</i-button>
                         </i-col>
-                        <i-col :span="8" style="text-align:center;">
-                            <i-button style="width:100px;" @click="drawPolygon" icon="md-add">多边形</i-button>
+                        <i-col :span="6" style="text-align:center;">
+                            <i-button style="width:80px;" @click="drawPolygon" icon="md-add">多边形</i-button>
                         </i-col>
-                        <i-col :span="8" style="text-align:center;">
-                            <i-button style="width:100px;" icon="md-add" @click="openClassModal">分类</i-button>
+                        <i-col :span="6" style="text-align:center;">
+                            <i-button style="width:80px;" @click="addRoutePlanningTip" icon="md-add">路线</i-button>
+                        </i-col>
+                        <i-col :span="6" style="text-align:center;">
+                            <i-button style="width:80px;" icon="md-add" @click="openClassModal">分类</i-button>
                         </i-col>
                     </Row>
                 </div>
@@ -303,6 +302,71 @@
                 <Row>
                     <i-col :span="22" offset="2" style="padding:10px 0 10px 0;">
                         1 、 把鼠标移到 地图上单击开始绘制，双击结束绘制
+                    </i-col>
+                </Row>
+            </div>
+        </transition>
+
+        <transition name="el-zoom-in-top">
+            <div class="area-ctrl" v-show="isRoutePlanning">
+                <Row>
+                    <i-col v-if="isZh" :span="24" style="padding:10px;text-align:center;">
+                        <h3>{{ isEidt ? "编辑路线":"添加路线" }}</h3>
+                    </i-col>
+                    <i-col v-else :span="24" style="padding:10px;text-align:center;">
+                        <h3>{{ isEidt ? "Edit line":"Add line" }}</h3>
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col v-if="isZh" :span="22" offset="2" style="padding:10px 0 10px 0;">
+                        1 、 请在地图上点击选择起止点,绘制线路
+                    </i-col>
+                    <i-col v-else :span="22" offset="2" style="padding:10px 0 10px 0;">
+                        1 、 Please click on the map to select the starting and ending points and draw the route
+                    </i-col>
+                </Row>
+                <Row style="padding: 10px">
+                    <i-col :span="6" style="text-align:right;line-height:32px;">
+                        {{isZh ? '围栏名称' : 'Fence name'}}:
+                    </i-col>
+                    <i-col :span="16">
+                        <i-input v-model.trim="geoName"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="padding: 10px" v-if="!isEidt">
+                    <i-col :span="6" style="text-align:right;line-height:32px;">
+                        选择类型:
+                    </i-col>
+                    <i-col :span="16">
+                        <i-select v-model="classId" style="width: 100%;">
+                            <i-option :value="item.value" v-for="item in selectTypeList" :key="item.categoryid">{{item.label}}</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+                <Row style="padding: 10px">
+                    <i-col :span="6" style="text-align:right;line-height:32px;">
+                        {{isZh ? '偏离距离(米)' : '偏离距离(米)'}}:
+                    </i-col>
+                    <i-col :span="16">
+                        <input-number v-model.number="distance5" :min="0" style="width: 100%;"></input-number>
+                    </i-col>
+                </Row>
+                <Row style="padding: 10px">
+                    <i-col :span="6" style="text-align:right;line-height:32px;">
+                        {{isZh ? '报警类型' : '报警类型'}}:
+                    </i-col>
+                    <i-col :span="16">
+                        <i-select v-model="alarmtype5">
+                            <i-option value="1">偏离线路持续报警</i-option>
+                            <i-option value="2">驶入线路持续报警</i-option>
+                            <i-option value="3">偏离线路报警一次</i-option>
+                            <i-option value="4">驶入线路报警一次</i-option>
+                        </i-select>
+                    </i-col>
+                </Row>
+                <Row style="text-align:center;padding-bottom: 20px">
+                    <i-col :span="24">
+                        <i-button style="width:80%;" @click="addRoutePlanning">{{isZh ? '确定' : 'confirm'}}</i-button>
                     </i-col>
                 </Row>
             </div>
@@ -466,7 +530,6 @@
             var root = params.root,
                 node = params.node,
                 data = params.data;
-
             return h('span', {
                 style: {
                     display: 'inline-block',
@@ -509,6 +572,32 @@
                         }
                     },
                     data.title),
+                h('Button', {
+                    props: {
+                        type: 'info',
+                        size: 'small',
+                        disabled: data.type != 5,
+                    },
+                    style: {
+                        marginRight: '5px',
+                        marginTop: '-2px',
+                    },
+                    on: {
+                        click: function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            rowData = data;
+                            vRoot.isRoutePlanning = true;
+                            vRoot.isCircular = false;
+                            vRoot.modal = false;
+                            vRoot.isPolygon = false;
+                            vRoot.isEidt = true;
+                            vRoot.geoName = data.name;
+                            vRoot.distance5 = data.distance5;
+                            vRoot.alarmtype5 = String(data.alarmtype5);
+                        }
+                    }
+                }, isZh ? "编辑" : "Edit"),
                 h('Icon', {
                     props: {
                         size: 18,
@@ -517,7 +606,8 @@
                     style: {
                         border: "1px solid #DEE1E6",
                         borderRadius: "50%",
-                        color: "#DEE1E6"
+                        color: "#DEE1E6",
+                        marginTop: "-1px"
                     },
                     on: {
                         click: function(e) {
@@ -538,7 +628,7 @@
                             return false;
                         }
                     }
-                }, '')
+                }, ''),
             ]);
         }
         (function() {
@@ -654,10 +744,13 @@
                     typeName: '',
                     classId: "",
                     geoName: "",
+                    distance5: 20,
+                    alarmtype5: "1",
                     addClassModal: false,
                     addPolygonModal: false,
                     isCircular: false,
                     isPolygon: false,
+                    isRoutePlanning: false,
                     radius: 2000,
                     min: 200,
                     max: 100000,
@@ -669,6 +762,62 @@
                     mapType: mapType,
                 },
                 methods: {
+                    addRoutePlanning: function() {
+                        var me = this;
+                        if (me.isEidt) {
+                            var url = myUrls.editGeoSystemRecord();
+                            var data = deepClone(rowData);
+                            data.name = this.geoName;
+                            data.distance5 = this.distance5;
+                            data.alarmtype5 = this.alarmtype5;
+                            utils.sendAjax(url, data, function(resp) {
+                                if (resp.status === 0) {
+                                    rowData.name = data.name;
+                                    rowData.title = data.name;
+                                    rowData.distance5 = data.distance5;
+                                    rowData.alarmtype5 = data.alarmtype5;
+                                    me.$Message.success(isZh ? "编辑成功" : "Edited successfully");
+                                } else {
+                                    me.$Message.error(isZh ? "编辑失败" : "Edited failed");
+                                }
+                            })
+                        } else {
+                            if (me.wgs84Points == null) {
+                                me.$Message.error(isZh ? "查询路线还没返回" : "Added failed");
+                                return;
+                            }
+                            if (this.classId == "") {
+                                me.$Message.error(isZh ? "请选择分类" : "Please select category");
+                                return;
+                            }
+                            var url = myUrls.addGeoSystemRecord();
+                            var data = {
+                                name: this.geoName,
+                                categoryid: this.classId,
+                                distance5: this.distance5,
+                                alarmtype5: Number(this.alarmtype5),
+                                type: 5,
+                                totaldistance5: this.totalDistance,
+                                totalduration5: this.totalDuration,
+                                points2: JSON.stringify(this.wgs84Points),
+                            }
+                            utils.sendAjax(url, data, function(resp) {
+                                if (resp.status === 0) {
+                                    me.$Message.success(isZh ? "添加成功" : "Added successfully");
+                                    me.originalData.forEach(function(item) {
+                                        if (data.categoryid === item.categoryid) {
+                                            resp.record.title = resp.record.name;
+                                            resp.record.categoryid = data.categoryid;
+                                            resp.record.render = treeChilrenRender;
+                                            item.children.push(resp.record);
+                                        }
+                                    })
+                                } else {
+                                    me.$Message.error(isZh ? "添加失败" : "Added failed");
+                                }
+                            })
+                        }
+                    },
                     onSelectMap: function(item) {
                         this.mapType = item.mapType;
                         this.setMapType(item);
@@ -839,6 +988,76 @@
                         });
 
 
+                        me.isLoadRoutePlanning = false;
+                        me.startCoordinate = null;
+                        me.endCoordinate = null;
+                        this.map.on('click', function(e) {
+                            if (me.isRoutePlanning && me.isLoadRoutePlanning == false && me.isEidt == false) {
+                                if (me.startCoordinate == null) {
+                                    me.polygonLayer.clear();
+                                    me.startCoordinate = e.coordinate;
+                                    me.startMarker = new maptalks.Marker(
+                                        [e.coordinate.x, e.coordinate.y], {
+                                            symbol: [{
+                                                'markerFile': './images/map/marker_qidian.png',
+                                                'markerWidth': 30,
+                                                'markerHeight': 30,
+                                                'markerRotation': 0,
+                                                'markerDy': 0,
+                                                'markerDx': 0,
+                                            }, {
+                                                'textFaceName': 'sans-serif',
+                                                'textName': '起点',
+                                                'textSize': 12,
+                                                'textDy': 10,
+                                                'textFill': '#ffffff',
+                                                'textOpacity': 1,
+                                                'textHaloFill': '#00A8D4',
+                                                'textHaloRadius': 5,
+                                                'textWrapWidth': null,
+                                                'textWrapCharacter': '\n',
+                                                'textLineSpacing': 0,
+                                            }]
+                                        }
+                                    );
+                                    me.startMarker.addTo(me.polygonLayer);
+                                } else if (me.endCoordinate == null) {
+                                    me.endCoordinate = e.coordinate;
+                                    me.endMarker = new maptalks.Marker(
+                                        [e.coordinate.x, e.coordinate.y], {
+                                            symbol: [{
+                                                'markerFile': './images/map/marker_zhongdian.png',
+                                                'markerWidth': 30,
+                                                'markerHeight': 30,
+                                                'markerRotation': 0,
+                                                'markerDy': 0,
+                                                'markerDx': 0,
+                                            }, {
+                                                'textFaceName': 'sans-serif',
+                                                'textName': '终点',
+                                                'textSize': 12,
+                                                'textDy': 10,
+                                                'textFill': '#ffffff',
+                                                'textOpacity': 1,
+                                                'textHaloFill': '#00A8D4',
+                                                'textHaloRadius': 5,
+                                                'textWrapWidth': null,
+                                                'textWrapCharacter': '\n',
+                                                'textLineSpacing': 0,
+                                            }]
+                                        }
+                                    );
+                                    me.endMarker.addTo(me.polygonLayer);
+                                }
+
+                                if (me.endCoordinate != null && me.endCoordinate != null) {
+                                    me.queryRoutePlanning();
+                                }
+
+                            }
+                        });
+
+
                         var customPosition = new maptalks.control.Zoom({
                             'position': {
                                 'bottom': '10',
@@ -910,6 +1129,155 @@
                         this.addClassModal = true;
                         this.drawTool.disable();
                     },
+                    queryRoutePlanning: function() {
+                        var me = this;
+                        me.isLoadRoutePlanning = true;
+                        me.wgs84Points = null;
+                        var isBMap = this.mapType == 'bMap';
+                        if (isBMap) {
+                            var startCoordinate = bd09togcj02(this.startCoordinate.x, this.startCoordinate.y);
+                            var endCoordinate = bd09togcj02(this.endCoordinate.x, this.endCoordinate.y);
+                        } else {
+                            var startCoordinate = [this.startCoordinate.x, this.startCoordinate.y];
+                            var endCoordinate = [this.endCoordinate.x, this.endCoordinate.y];
+                        }
+                        var url = 'https://restapi.amap.com/v3/direction/driving?origin=' + startCoordinate[0] + ',' + startCoordinate[1] + '&destination=' + endCoordinate[0] + ',' + endCoordinate[1] + '&output=json&key=7d965b1fc170725157ee74df02b7119a&platform=JS';
+
+                        $.ajax({
+                            url: url,
+                            type: 'get',
+                            success: function(result) {
+                                me.isLoadRoutePlanning = false;
+                                if (result.status == 1) {
+                                    var wgs84Points = me.convertAmapRouteJsonToPoints(result.route);
+                                    var mapPoints = me.convertWgs84PointsToMapPoints(wgs84Points);
+                                    me.wgs84Points = wgs84Points;
+
+                                    new maptalks.LineString(
+                                        mapPoints, {
+                                            symbol: {
+                                                'lineColor': {
+                                                    'type': 'linear',
+                                                    'colorStops': [
+                                                        [0.00, 'red'],
+                                                        [1.00, 'red']
+                                                    ]
+                                                },
+                                                'lineWidth': 4
+                                            }
+                                        }).addTo(me.polygonLayer);
+
+                                    var paths = result.route.paths;
+                                    var totalDistance = 0;
+                                    var totalDuration = 0;
+                                    paths.forEach(function(path) {
+                                        totalDistance += Number(path.distance);
+                                        totalDuration += Number(path.duration);
+                                    });
+                                    me.totalDistance = totalDistance;
+                                    me.totalDuration = totalDuration;
+                                    me.endMarker.setSymbol([{
+                                        'markerFile': './images/map/marker_zhongdian.png',
+                                        'markerWidth': 30,
+                                        'markerHeight': 30,
+                                        'markerRotation': 0,
+                                        'markerDy': 0,
+                                        'markerDx': 0,
+                                    }, {
+                                        'textFaceName': 'sans-serif',
+                                        'textName': '总里程:' + (totalDistance / 1000).toFixed(2) + '公里,时长:' + me.timeStamp(totalDuration * 1000),
+                                        'textSize': 12,
+                                        'textDy': 10,
+                                        'textFill': '#ffffff',
+                                        'textOpacity': 1,
+                                        'textHaloFill': '#00A8D4',
+                                        'textHaloRadius': 5,
+                                        'textWrapWidth': null,
+                                        'textWrapCharacter': '\n',
+                                        'textLineSpacing': 0,
+                                    }]);
+                                    me.geoName = '';
+                                } else {
+                                    me.$Message.error(isZh ? "没有查询到路线" : "No route found");
+                                    me.polygonLayer.clear();
+                                    me.totalDistance = 0;
+                                    me.totalDuration = 0;
+                                    console.log("queryRoutePlanning from amap:", result);
+                                }
+                                me.startCoordinate = null;
+                                me.endCoordinate = null;
+                            },
+                            error: function(err) {
+                                me.$Message.error(isZh ? "查询路线失败" : "Failed to query route");
+                                me.polygonLayer.clear();
+                                me.isLoadRoutePlanning = false;
+                                me.startCoordinate = null;
+                                me.endCoordinate = null;
+                            }
+                        });
+                    },
+                    timeStamp: function(mss) {
+                        var strTime = '';
+                        var days = parseInt(mss / (1000 * 60 * 60 * 24));
+                        var hours = parseInt((mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        var minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
+                        var seconds = parseInt((mss % (1000 * 60)) / 1000);
+                        if (days > 0) {
+                            strTime = days ? (strTime += days + (isZh ? '天' : 'day')) : '';
+                        } else {
+                            hours ? (strTime += hours + (isZh ? '小时' : 'h')) : '';
+                            minutes ? (strTime += minutes + (isZh ? '分' : 'm')) : '';
+                            seconds ? (strTime += seconds + (isZh ? '秒' : 's')) : '';
+                        }
+                        return strTime == '' ? '0' + (isZh ? '分' : 'm') : strTime;
+                    },
+                    convertAmapRouteJsonToPoints: function(amapRoute) {
+                        var points = [];
+                        var totalStepsStr = "";
+                        var paths = amapRoute.paths;
+                        if (paths) {
+                            var path = paths[0];
+                            if (path) {
+                                var steps = path.steps;
+                                if (steps) {
+                                    steps.forEach(function(stepStr) {
+                                        totalStepsStr += stepStr.polyline + ";";
+                                    })
+
+                                }
+                            }
+                        }
+
+                        if (totalStepsStr.length > 1) {
+                            var splitedSteps = totalStepsStr.split(";");
+                            splitedSteps.forEach(function(step) {
+                                if (step.length > 0) {
+                                    var onePoint = step.split(",");
+                                    var x = onePoint[0];
+                                    var y = onePoint[1];
+                                    var wgs84Ponts = gcj02towgs84(Number(x), Number(y));
+                                    points.push({
+                                        x: Number(wgs84Ponts[0].toFixed(6)),
+                                        y: Number(wgs84Ponts[1].toFixed(6)),
+                                    })
+                                }
+                            })
+                        }
+
+                        return points;
+                    },
+                    convertWgs84PointsToMapPoints: function(wgs84Ponts) {
+                        var isBMap = this.mapType = 'bMap';
+                        var mapPonts = [];
+                        wgs84Ponts.forEach(function(point) {
+                            var point = utils.getCurrentMapCoordinate(isBMap, [point.x, point.y]);
+                            mapPonts.push({
+                                x: point[0],
+                                y: point[1],
+                            })
+                        });
+                        return mapPonts;
+                    },
                     handleAddType: function() {
                         if (this.typeName) {
                             var url = myUrls.addGeoSystemCategory(),
@@ -963,9 +1331,6 @@
                         }
 
                     }, 500),
-                    claerPolygon: function() {
-
-                    },
                     deleteTreeItem: function(data) {
                         var url = myUrls.delGeoSystemCategory(),
                             me = this;
@@ -1069,21 +1434,31 @@
                         this.isEidt = false;
                         this.isCircular = true;
                         this.isPolygon = false;
+                        this.isRoutePlanning = false;
                         this.type = 1;
                         this.radius = 0;
                         this.geoName = "";
                         this.drawTool.setMode('Circle').enable();
-
                     },
                     drawPolygon: function() {
                         this.type = 2;
                         this.isCircular = false;
                         this.isPolygon = true;
                         this.isEidt = false;
+                        this.isRoutePlanning = false;
                         this.geoName = "";
                         this.cancelSelected();
                         this.drawTool.setMode('Polygon').enable();
-
+                    },
+                    addRoutePlanningTip: function() {
+                        this.type = 5;
+                        this.isCircular = false;
+                        this.isPolygon = false;
+                        this.isEidt = false;
+                        this.isRoutePlanning = true;
+                        this.geoName = "";
+                        this.cancelSelected();
+                        this.drawTool.disable();
                     },
                     handleAddPolygon: function() {
                         if (this.selectTypeList.length === 0) {
@@ -1191,6 +1566,77 @@
                                         new maptalks.Polygon(lon_lat_s, {
                                             symbol: symbol
                                         }).addTo(me.polygonLayer);
+                                        break;
+                                    case 5:
+
+                                        var mapPoints = me.convertWgs84PointsToMapPoints(JSON.parse(element.points2));
+                                        points = points.concat(mapPoints);
+                                        new maptalks.LineString(
+                                            mapPoints, {
+                                                symbol: {
+                                                    'lineColor': {
+                                                        'type': 'linear',
+                                                        'colorStops': [
+                                                            [0.00, 'red'],
+                                                            [1.00, 'red']
+                                                        ]
+                                                    },
+                                                    'lineWidth': 4
+                                                }
+                                            }).addTo(me.polygonLayer);
+                                        var startCoordinate = mapPoints[0];
+                                        var endCoordinate = mapPoints[mapPoints.length - 1];
+                                        new maptalks.Marker(
+                                            [startCoordinate.x, startCoordinate.y], {
+                                                symbol: [{
+                                                    'markerFile': './images/map/marker_qidian.png',
+                                                    'markerWidth': 30,
+                                                    'markerHeight': 30,
+                                                    'markerRotation': 0,
+                                                    'markerDy': 0,
+                                                    'markerDx': 0,
+                                                }, {
+                                                    'textFaceName': 'sans-serif',
+                                                    'textName': '起点',
+                                                    'textSize': 12,
+                                                    'textDy': 10,
+                                                    'textFill': '#ffffff',
+                                                    'textOpacity': 1,
+                                                    'textHaloFill': '#00A8D4',
+                                                    'textHaloRadius': 5,
+                                                    'textWrapWidth': null,
+                                                    'textWrapCharacter': '\n',
+                                                    'textLineSpacing': 0,
+                                                }]
+
+                                            }
+                                        ).addTo(me.polygonLayer);
+                                        var totalDistance = element.totaldistance5;
+                                        var totalDuration = element.totalduration5;
+                                        new maptalks.Marker(
+                                            [endCoordinate.x, endCoordinate.y], {
+                                                symbol: [{
+                                                    'markerFile': './images/map/marker_zhongdian.png',
+                                                    'markerWidth': 30,
+                                                    'markerHeight': 30,
+                                                    'markerRotation': 0,
+                                                    'markerDy': 0,
+                                                    'markerDx': 0,
+                                                }, {
+                                                    'textFaceName': 'sans-serif',
+                                                    'textName': '总里程:' + (totalDistance / 1000).toFixed(2) + '公里,时长:' + me.timeStamp(totalDuration * 1000),
+                                                    'textSize': 12,
+                                                    'textDy': 10,
+                                                    'textFill': '#ffffff',
+                                                    'textOpacity': 1,
+                                                    'textHaloFill': '#00A8D4',
+                                                    'textHaloRadius': 5,
+                                                    'textWrapWidth': null,
+                                                    'textWrapCharacter': '\n',
+                                                    'textLineSpacing': 0,
+                                                }]
+                                            }
+                                        ).addTo(me.polygonLayer);
                                         break;
                                 }
 
