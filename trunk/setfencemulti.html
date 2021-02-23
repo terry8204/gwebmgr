@@ -701,10 +701,13 @@
                 </Row>
                 <Row style="padding: 10px">
                     <i-col :span="6" style="text-align:right;line-height:32px;">
-                        {{isZh ? '偏离距离(米)' : '偏离距离(米)'}}:
+                        {{isZh ? '偏离距离' : '偏离距离'}}:
                     </i-col>
                     <i-col :span="16">
                         <input-number v-model.number="distance5" :min="0" style="width: 100%;"></input-number>
+                    </i-col>
+                    <i-col :span="2" style="line-height:32px;">
+                        米
                     </i-col>
                 </Row>
                 <Row style="padding: 10px">
