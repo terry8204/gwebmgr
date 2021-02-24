@@ -683,12 +683,15 @@
                         <h3>{{ isEidt ? "Edit line":"Add line" }}</h3>
                     </i-col>
                 </Row>
-                <Row>
-                    <i-col v-if="isZh" :span="22" offset="2" style="padding:10px 0 10px 0;">
+                <Row v-show="!isEidt">
+                    <i-col v-if="isZh" :span="18" offset="2" style="padding:10px 0 10px 0;">
                         1 、 请在地图上点击选择起止点,绘制线路
                     </i-col>
-                    <i-col v-else :span="22" offset="2" style="padding:10px 0 10px 0;">
+                    <i-col v-else :span="18" offset="2" style="padding:10px 0 10px 0;">
                         1 、 Please click on the map to select the starting and ending points and draw the route
+                    </i-col>
+                    <i-col span="4" style="text-align: center;line-height: 38px;">
+                        <i-button size="small" type="error" @click="queryRoutePlanning">结束</i-button>
                     </i-col>
                 </Row>
                 <Row style="padding: 10px">
@@ -1415,9 +1418,13 @@
                         }
 
                         me.isLoadRoutePlanning = false;
+                        me.routePlanningCoordinates = [];
                         this.map.on('click', function(e) {
                             if (me.isRoutePlanning && me.isLoadRoutePlanning == false && me.isEidt == false) {
                                 if (me.startCoordinate == null) {
+                                    me.wgs84Points == null
+                                    me.routePlanningCoordinates = [];
+                                    me.routePlanningCoordinates.push(e.coordinate);
                                     me.routePlanning.clear();
                                     me.startCoordinate = e.coordinate;
                                     me.startMarker = new maptalks.Marker(
@@ -1445,12 +1452,13 @@
                                         }
                                     );
                                     me.startMarker.addTo(me.routePlanning);
-                                } else if (me.endCoordinate == null) {
+                                } else {
                                     me.endCoordinate = e.coordinate;
+                                    me.routePlanningCoordinates.push(e.coordinate);
                                     me.endMarker = new maptalks.Marker(
                                         [e.coordinate.x, e.coordinate.y], {
                                             symbol: [{
-                                                'markerFile': './images/map/marker_zhongdian.png',
+                                                'markerFile': './images/stop_red_32.png',
                                                 'markerWidth': 30,
                                                 'markerHeight': 30,
                                                 'markerRotation': 0,
@@ -1458,7 +1466,7 @@
                                                 'markerDx': 0,
                                             }, {
                                                 'textFaceName': 'sans-serif',
-                                                'textName': '终点',
+                                                'textName': '经过',
                                                 'textSize': 12,
                                                 'textDy': 10,
                                                 'textFill': '#ffffff',
@@ -1474,9 +1482,9 @@
                                     me.endMarker.addTo(me.routePlanning);
                                 }
 
-                                if (me.endCoordinate != null && me.endCoordinate != null) {
-                                    me.queryRoutePlanning();
-                                }
+                                // if (me.endCoordinate != null && me.endCoordinate != null) {
+                                //     me.queryRoutePlanning();
+                                // }
 
                             }
                         });
@@ -2212,15 +2220,43 @@
                         me.isLoadRoutePlanning = true;
                         me.wgs84Points = null;
                         var isBMap = this.mapType == 'bMap';
-                        if (isBMap) {
-                            var startCoordinate = bd09togcj02(this.startCoordinate.x, this.startCoordinate.y);
-                            var endCoordinate = bd09togcj02(this.endCoordinate.x, this.endCoordinate.y);
-                        } else {
-                            var startCoordinate = [this.startCoordinate.x, this.startCoordinate.y];
-                            var endCoordinate = [this.endCoordinate.x, this.endCoordinate.y];
-                        }
-                        var url = 'https://restapi.amap.com/v3/direction/driving?origin=' + startCoordinate[0] + ',' + startCoordinate[1] + '&destination=' + endCoordinate[0] + ',' + endCoordinate[1] + '&output=json&key=7d965b1fc170725157ee74df02b7119a&platform=JS';
+                        var routePlanningCoordinates = null;
 
+                        if (isBMap) {
+                            routePlanningCoordinates = me.routePlanningCoordinates.map(function(item) {
+                                var point = bd09togcj02(item.x, item.y);
+                                return {
+                                    x: Number(point[0].toFixed(6)),
+                                    y: Number(point[1].toFixed(6)),
+                                }
+                            });
+                        } else {
+                            routePlanningCoordinates = me.routePlanningCoordinates.map(function(item) {
+                                return {
+                                    x: Number(item.x.toFixed(6)),
+                                    y: Number(item.y.toFixed(6)),
+                                }
+                            });
+
+                        }
+                        var startCoordinate = routePlanningCoordinates.shift();
+                        var endCoordinate = routePlanningCoordinates.pop();
+
+
+                        var url = 'https://restapi.amap.com/v3/direction/driving?origin=' + startCoordinate.x + ',' + startCoordinate.y + '&destination=' + endCoordinate.x + ',' + endCoordinate.y + '&output=json&key=7d965b1fc170725157ee74df02b7119a&platform=JS';
+
+                        if (routePlanningCoordinates.length > 0) {
+                            var waypoints = "";
+                            var length = routePlanningCoordinates.length - 1;
+                            routePlanningCoordinates.forEach(function(item, index) {
+                                if (length == index) {
+                                    waypoints += item.x + "," + item.y;
+                                } else {
+                                    waypoints += item.x + "," + item.y + ";";
+                                }
+                            })
+                            url = url + "&waypoints=" + waypoints;
+                        }
                         $.ajax({
                             url: url,
                             type: 'get',
@@ -2345,7 +2381,7 @@
                         return points;
                     },
                     convertWgs84PointsToMapPoints: function(wgs84Ponts) {
-                        var isBMap = this.mapType = 'bMap';
+                        var isBMap = this.mapType == 'bMap';
                         var mapPonts = [];
                         wgs84Ponts.forEach(function(point) {
                             var point = utils.getCurrentMapCoordinate(isBMap, [point.x, point.y]);
@@ -2388,13 +2424,6 @@
                         this.handleSelectChange(globalSelection);
 
                     },
-                    // addRoutePlanningModal: function(val) {
-                    //     if (val == false) {
-                    //         this.startMarker = null;
-                    //         this.endMarker = null;
-                    //         this.routePlanning.clear();
-                    //     }
-                    // }
                 },
                 mounted: function() {
                     this.initMap();

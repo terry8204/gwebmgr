@@ -317,12 +317,15 @@
                         <h3>{{ isEidt ? "Edit line":"Add line" }}</h3>
                     </i-col>
                 </Row>
-                <Row>
-                    <i-col v-if="isZh" :span="22" offset="2" style="padding:10px 0 10px 0;">
+                <Row v-show="!isEidt">
+                    <i-col v-if="isZh" :span="18" offset="2" style="padding:10px 0 10px 0;">
                         1 、 请在地图上点击选择起止点,绘制线路
                     </i-col>
-                    <i-col v-else :span="22" offset="2" style="padding:10px 0 10px 0;">
+                    <i-col v-else :span="18" offset="2" style="padding:10px 0 10px 0;">
                         1 、 Please click on the map to select the starting and ending points and draw the route
+                    </i-col>
+                    <i-col span="4" style="text-align: center;line-height: 38px;">
+                        <i-button size="small" type="error" @click="queryRoutePlanning">结束</i-button>
                     </i-col>
                 </Row>
                 <Row style="padding: 10px">
@@ -994,9 +997,13 @@
                         me.isLoadRoutePlanning = false;
                         me.startCoordinate = null;
                         me.endCoordinate = null;
+                        me.routePlanningCoordinates = [];
                         this.map.on('click', function(e) {
                             if (me.isRoutePlanning && me.isLoadRoutePlanning == false && me.isEidt == false) {
                                 if (me.startCoordinate == null) {
+                                    me.wgs84Points == null
+                                    me.routePlanningCoordinates = [];
+                                    me.routePlanningCoordinates.push(e.coordinate);
                                     me.polygonLayer.clear();
                                     me.startCoordinate = e.coordinate;
                                     me.startMarker = new maptalks.Marker(
@@ -1024,12 +1031,13 @@
                                         }
                                     );
                                     me.startMarker.addTo(me.polygonLayer);
-                                } else if (me.endCoordinate == null) {
+                                } else {
                                     me.endCoordinate = e.coordinate;
+                                    me.routePlanningCoordinates.push(e.coordinate);
                                     me.endMarker = new maptalks.Marker(
                                         [e.coordinate.x, e.coordinate.y], {
                                             symbol: [{
-                                                'markerFile': './images/map/marker_zhongdian.png',
+                                                'markerFile': './images/stop_red_32.png',
                                                 'markerWidth': 30,
                                                 'markerHeight': 30,
                                                 'markerRotation': 0,
@@ -1037,7 +1045,7 @@
                                                 'markerDx': 0,
                                             }, {
                                                 'textFaceName': 'sans-serif',
-                                                'textName': '终点',
+                                                'textName': '经过',
                                                 'textSize': 12,
                                                 'textDy': 10,
                                                 'textFill': '#ffffff',
@@ -1052,11 +1060,6 @@
                                     );
                                     me.endMarker.addTo(me.polygonLayer);
                                 }
-
-                                if (me.endCoordinate != null && me.endCoordinate != null) {
-                                    me.queryRoutePlanning();
-                                }
-
                             }
                         });
 
@@ -1134,90 +1137,125 @@
                     },
                     queryRoutePlanning: function() {
                         var me = this;
-                        me.isLoadRoutePlanning = true;
-                        me.wgs84Points = null;
-                        var isBMap = this.mapType == 'bMap';
-                        if (isBMap) {
-                            var startCoordinate = bd09togcj02(this.startCoordinate.x, this.startCoordinate.y);
-                            var endCoordinate = bd09togcj02(this.endCoordinate.x, this.endCoordinate.y);
-                        } else {
-                            var startCoordinate = [this.startCoordinate.x, this.startCoordinate.y];
-                            var endCoordinate = [this.endCoordinate.x, this.endCoordinate.y];
-                        }
-                        var url = 'https://restapi.amap.com/v3/direction/driving?origin=' + startCoordinate[0] + ',' + startCoordinate[1] + '&destination=' + endCoordinate[0] + ',' + endCoordinate[1] + '&output=json&key=7d965b1fc170725157ee74df02b7119a&platform=JS';
+                        if (me.routePlanningCoordinates.length > 1) {
+                            me.isLoadRoutePlanning = true;
+                            me.wgs84Points = null;
+                            var isBMap = this.mapType == 'bMap';
+                            var routePlanningCoordinates = null;
 
-                        $.ajax({
-                            url: url,
-                            type: 'get',
-                            success: function(result) {
-                                me.isLoadRoutePlanning = false;
-                                if (result.status == 1) {
-                                    var wgs84Points = me.convertAmapRouteJsonToPoints(result.route);
-                                    var mapPoints = me.convertWgs84PointsToMapPoints(wgs84Points);
-                                    me.wgs84Points = wgs84Points;
+                            if (isBMap) {
+                                routePlanningCoordinates = me.routePlanningCoordinates.map(function(item) {
+                                    var point = bd09togcj02(item.x, item.y);
+                                    return {
+                                        x: Number(point[0].toFixed(6)),
+                                        y: Number(point[1].toFixed(6)),
+                                    }
+                                });
+                            } else {
+                                routePlanningCoordinates = me.routePlanningCoordinates.map(function(item) {
+                                    return {
+                                        x: Number(item.x.toFixed(6)),
+                                        y: Number(item.y.toFixed(6)),
+                                    }
+                                });
 
-                                    new maptalks.LineString(
-                                        mapPoints, {
-                                            symbol: {
-                                                'lineColor': {
-                                                    'type': 'linear',
-                                                    'colorStops': [
-                                                        [0.00, 'red'],
-                                                        [1.00, 'red']
-                                                    ]
-                                                },
-                                                'lineWidth': 4
-                                            }
-                                        }).addTo(me.polygonLayer);
-
-                                    var paths = result.route.paths;
-                                    var totalDistance = 0;
-                                    var totalDuration = 0;
-                                    paths.forEach(function(path) {
-                                        totalDistance += Number(path.distance);
-                                        totalDuration += Number(path.duration);
-                                    });
-                                    me.totalDistance = totalDistance;
-                                    me.totalDuration = totalDuration;
-                                    me.endMarker.setSymbol([{
-                                        'markerFile': './images/map/marker_zhongdian.png',
-                                        'markerWidth': 30,
-                                        'markerHeight': 30,
-                                        'markerRotation': 0,
-                                        'markerDy': 0,
-                                        'markerDx': 0,
-                                    }, {
-                                        'textFaceName': 'sans-serif',
-                                        'textName': '总里程:' + (totalDistance / 1000).toFixed(2) + '公里,时长:' + me.timeStamp(totalDuration * 1000),
-                                        'textSize': 12,
-                                        'textDy': 10,
-                                        'textFill': '#ffffff',
-                                        'textOpacity': 1,
-                                        'textHaloFill': '#00A8D4',
-                                        'textHaloRadius': 5,
-                                        'textWrapWidth': null,
-                                        'textWrapCharacter': '\n',
-                                        'textLineSpacing': 0,
-                                    }]);
-                                    me.geoName = '';
-                                } else {
-                                    me.$Message.error(isZh ? "没有查询到路线" : "No route found");
-                                    me.polygonLayer.clear();
-                                    me.totalDistance = 0;
-                                    me.totalDuration = 0;
-                                    console.log("queryRoutePlanning from amap:", result);
-                                }
-                                me.startCoordinate = null;
-                                me.endCoordinate = null;
-                            },
-                            error: function(err) {
-                                me.$Message.error(isZh ? "查询路线失败" : "Failed to query route");
-                                me.polygonLayer.clear();
-                                me.isLoadRoutePlanning = false;
-                                me.startCoordinate = null;
-                                me.endCoordinate = null;
                             }
-                        });
+                            var startCoordinate = routePlanningCoordinates.shift();
+                            var endCoordinate = routePlanningCoordinates.pop();
+
+
+                            var url = 'https://restapi.amap.com/v3/direction/driving?origin=' + startCoordinate.x + ',' + startCoordinate.y + '&destination=' + endCoordinate.x + ',' + endCoordinate.y + '&output=json&key=7d965b1fc170725157ee74df02b7119a&platform=JS';
+
+                            if (routePlanningCoordinates.length > 0) {
+                                var waypoints = "";
+                                var length = routePlanningCoordinates.length - 1;
+                                routePlanningCoordinates.forEach(function(item, index) {
+                                    if (length == index) {
+                                        waypoints += item.x + "," + item.y;
+                                    } else {
+                                        waypoints += item.x + "," + item.y + ";";
+                                    }
+                                })
+                                url = url + "&waypoints=" + waypoints;
+                            }
+
+
+                            $.ajax({
+                                url: url,
+                                type: 'get',
+                                success: function(result) {
+                                    me.isLoadRoutePlanning = false;
+                                    if (result.status == 1) {
+                                        var wgs84Points = me.convertAmapRouteJsonToPoints(result.route);
+                                        var mapPoints = me.convertWgs84PointsToMapPoints(wgs84Points);
+                                        me.wgs84Points = wgs84Points;
+
+                                        new maptalks.LineString(
+                                            mapPoints, {
+                                                symbol: {
+                                                    'lineColor': {
+                                                        'type': 'linear',
+                                                        'colorStops': [
+                                                            [0.00, 'red'],
+                                                            [1.00, 'red']
+                                                        ]
+                                                    },
+                                                    'lineWidth': 4
+                                                }
+                                            }).addTo(me.polygonLayer);
+
+                                        var paths = result.route.paths;
+                                        var totalDistance = 0;
+                                        var totalDuration = 0;
+                                        paths.forEach(function(path) {
+                                            totalDistance += Number(path.distance);
+                                            totalDuration += Number(path.duration);
+                                        });
+                                        me.totalDistance = totalDistance;
+                                        me.totalDuration = totalDuration;
+                                        me.endMarker.setSymbol([{
+                                            'markerFile': './images/map/marker_zhongdian.png',
+                                            'markerWidth': 30,
+                                            'markerHeight': 30,
+                                            'markerRotation': 0,
+                                            'markerDy': 0,
+                                            'markerDx': 0,
+                                        }, {
+                                            'textFaceName': 'sans-serif',
+                                            'textName': '总里程:' + (totalDistance / 1000).toFixed(2) + '公里,时长:' + me.timeStamp(totalDuration * 1000),
+                                            'textSize': 12,
+                                            'textDy': 10,
+                                            'textFill': '#ffffff',
+                                            'textOpacity': 1,
+                                            'textHaloFill': '#00A8D4',
+                                            'textHaloRadius': 5,
+                                            'textWrapWidth': null,
+                                            'textWrapCharacter': '\n',
+                                            'textLineSpacing': 0,
+                                        }]);
+                                        me.geoName = '';
+                                    } else {
+                                        me.$Message.error(isZh ? "没有查询到路线" : "No route found");
+                                        me.polygonLayer.clear();
+                                        me.totalDistance = 0;
+                                        me.totalDuration = 0;
+                                        console.log("queryRoutePlanning from amap:", result);
+                                    }
+                                    me.startCoordinate = null;
+                                    me.endCoordinate = null;
+                                },
+                                error: function(err) {
+                                    me.$Message.error(isZh ? "查询路线失败" : "Failed to query route");
+                                    me.polygonLayer.clear();
+                                    me.isLoadRoutePlanning = false;
+                                    me.startCoordinate = null;
+                                    me.endCoordinate = null;
+                                }
+                            });
+                        } else {
+                            me.$Message.error('请最少添加2个坐标点');
+                        }
+
                     },
                     timeStamp: function(mss) {
                         var strTime = '';
@@ -1270,7 +1308,7 @@
                         return points;
                     },
                     convertWgs84PointsToMapPoints: function(wgs84Ponts) {
-                        var isBMap = this.mapType = 'bMap';
+                        var isBMap = this.mapType == 'bMap';
                         var mapPonts = [];
                         wgs84Ponts.forEach(function(point) {
                             var point = utils.getCurrentMapCoordinate(isBMap, [point.x, point.y]);
@@ -1740,22 +1778,56 @@
                         geometries.forEach(function(geometrie) {
                             var points = geometrie.getCoordinates();
                             if (points instanceof Array) {
-                                var newPoint = [];
+                                var newPoints = [];
                                 points.forEach(function(items) {
                                     var newItems = [];
-                                    items.forEach(function(point) {
+                                    if (items.forEach) {
+                                        items.forEach(function(point) {
+                                            var newPoint = null;
+                                            if (newVal == 'bMap') {
+                                                var lon_lat = gcj02tobd09(point.x, point.y);
+                                                newPoint = {
+                                                    x: lon_lat[0],
+                                                    y: lon_lat[1]
+                                                };
+                                            } else if (newVal == 'gMap') {
+                                                if (oldVal == 'aMap') {
+                                                    newPoint = point;
+                                                } else {
+                                                    var lon_lat = bd09togcj02(point.x, point.y);
+                                                    var newPoint = {
+                                                        x: lon_lat[0],
+                                                        y: lon_lat[1]
+                                                    };
+                                                }
+                                            } else if (newVal == 'aMap') {
+                                                if (oldVal == 'gMap') {
+                                                    newPoint = point;
+                                                } else {
+                                                    var lon_lat = bd09togcj02(point.x, point.y);
+                                                    newPoint = {
+                                                        x: lon_lat[0],
+                                                        y: lon_lat[1]
+                                                    };
+                                                }
+                                            }
+
+                                            newItems.push(newPoint);
+                                        })
+                                        newPoints.push(newItems);
+                                    } else {
                                         var newPoint = null;
                                         if (newVal == 'bMap') {
-                                            var lon_lat = gcj02tobd09(point.x, point.y);
+                                            var lon_lat = gcj02tobd09(items.x, items.y);
                                             newPoint = {
                                                 x: lon_lat[0],
                                                 y: lon_lat[1]
                                             };
                                         } else if (newVal == 'gMap') {
                                             if (oldVal == 'aMap') {
-                                                newPoint = point;
+                                                newPoint = items;
                                             } else {
-                                                var lon_lat = bd09togcj02(point.x, point.y);
+                                                var lon_lat = bd09togcj02(items.x, items.y);
                                                 var newPoint = {
                                                     x: lon_lat[0],
                                                     y: lon_lat[1]
@@ -1763,21 +1835,19 @@
                                             }
                                         } else if (newVal == 'aMap') {
                                             if (oldVal == 'gMap') {
-                                                newPoint = point;
+                                                newPoint = items;
                                             } else {
-                                                var lon_lat = bd09togcj02(point.x, point.y);
+                                                var lon_lat = bd09togcj02(items.x, items.y);
                                                 newPoint = {
                                                     x: lon_lat[0],
                                                     y: lon_lat[1]
                                                 };
                                             }
                                         }
-
-                                        newItems.push(newPoint);
-                                    })
-                                    newPoint.push(newItems);
+                                        newPoints.push(newPoint);
+                                    }
                                 });
-                                geometrie.setCoordinates(newPoint);
+                                geometrie.setCoordinates(newPoints);
                             } else {
                                 var newPoint = null;
                                 if (newVal == 'bMap') {

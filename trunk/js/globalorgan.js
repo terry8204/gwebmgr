@@ -51,6 +51,7 @@
            });
        } else {
            if (callback) {
+               console.log('callback', this.globalOrganData);
                callback(this.globalOrganData);
            }
        }

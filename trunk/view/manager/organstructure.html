@@ -578,15 +578,13 @@
                             globalUserList.push(data.username);
                             GlobalOrgan.getInstance().addUser(data);
                             me.currentPageUserLists.push(data.username);
+                            me.reloadTreeData(true);
                         } else {
-                            if (me.oldCreater !== data.creater) {
-                                me.refreshzTree();
-                            }
-
                             GlobalOrgan.getInstance().editUser(me.oldCreater, data);
+                            if (me.oldCreater !== data.creater) {
+                                me.reloadTreeData(true);
+                            }
                         }
-
-                        me.reloadTreeData(true);
 
                         me.$Message.success(me.$t(isEditUser ? "message.changeSucc" : "message.addSucc"));
                     } else {
