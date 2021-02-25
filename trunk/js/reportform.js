@@ -8753,7 +8753,7 @@ var reportForm = {
                     name: 'temperatureConsumption',
                     icon: 'ios-color-wand-outline',
                     children: [
-                        { title: me.$t("reportForm.tempReport"), name: 'temperature', icon: 'ios-stopwatch-outline' },
+                        { title: me.$t("reportForm.temperatureChart"), name: 'temperature', icon: 'ios-stopwatch-outline' },
                     ]
                 },
                 {

@@ -431,7 +431,7 @@ Vue.component('my-video', {
                     vRoot.$Message.error('该浏览器不支持视频播放,请换谷歌浏览器');
                 }
             } else {
-                if (this.playUrl == url) {
+                if (false && this.playUrl == url) {
                     var video = this.$refs.player;
                     if (video.buffered.length && video.buffered.length > 0) {
                         var end = video.buffered.end(0);

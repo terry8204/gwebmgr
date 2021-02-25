@@ -814,7 +814,7 @@
                                     <span>静止:{{areaStaticCount}}</span>
                                     <span>离线:{{areaOfflineCount}}</span>
                                 </li>
-                                <li style="padding-top:6px;margin:0 0 0 10px;">
+                                <li style="padding-top:6px;margin:0 0 0 10px;" v-if="isZh">
                                     <Poptip trigger="click" :title="$t('monitor.regionSelection')">
                                         <i-button size="small"> {{$t("monitor.regionSelection")}} </i-button>
                                         <div slot="content" style="width:300px;padding:5px 0;">
@@ -836,10 +836,10 @@
                                         </div>
                                     </Poptip>
                                 </li>
-                                <li style="padding-top:6px;">
+                                <li style="padding-top:6px;" v-if="isZh">
                                     <i-button size="small" @click="echartsMapPage"> {{$t("monitor.screenDisplay")}} </i-button>
                                 </li>
-                                <li style="padding-top:6px;">
+                                <li style="padding-top:6px;" v-if="isZh">
                                     <i-button size="small" @click="smartKanbanPage"> {{$t("monitor.smartKanban")}} </i-button>
                                 </li>
                                 <li class="full-map-wraper">
@@ -2493,7 +2493,7 @@
                 <div class="msg_header">
                     <ul>
                         <li :class="{selected:index == 4}" @click="changeComponent(4)">{{$t("alarm.emergencyAlarm")}}</li>
-                        <li :class="{selected:index == 1}" @click="changeComponent(1)">{{$t("alarm.alarmMsg")}}</li>
+                        <li :class="{selected:index == 1}" @click="changeComponent(1)">{{$t("alarm.allAlarms")}}</li>
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">{{$t("alarm.devMsg")}}</li>
                         <li :class="{selected:index == 5}" @click="changeComponent(5)">{{$t("alarm.mediaFiles")}}</li>
                         <li :class="{selected:index == 3}" @click="changeComponent(3)">{{$t("alarm.expirationInfo")}}({{overdueinfolist.length}})</li>
@@ -2648,7 +2648,7 @@
             <transition name="fade">
                 <div class="search-item-wrapper" v-show="isShowCheckbox">
                     <div>
-                        <Checkbox v-model="isAll" @on-change="onChange"><span>全部</span></Checkbox>
+                        <Checkbox v-model="isAll" @on-change="onChange"><span>{{$t('monitor.all')}}</span></Checkbox>
                     </div>
                     <CheckboxGroup v-model="checkboxList">
                         <div v-for="(item , index) in ioCount">

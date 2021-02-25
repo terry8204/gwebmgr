@@ -6,7 +6,7 @@
         <Row style="margin: 5px 0">
             <i-col span="9" style="height: 320px;overflow-y: auto;">
                 <div v-for="(item,index) in alarmTypeList" :key="index">
-                    <Checkbox v-model="checkboxObj[index]">{{item.alarmname}}</Checkbox>
+                    <Checkbox v-model="checkboxObj[index]">{{isZh ? item.alarmname : item.alarmnameen}}</Checkbox>
                 </div>
             </i-col>
             <i-col span="15" style="height: 320px;">
@@ -108,10 +108,11 @@
     </div>
 
     <script>
-       vueInstanse = new Vue({
+        vueInstanse = new Vue({
             el: "#linkage-alarm",
             i18n: utils.getI18n(),
             data: {
+                isZh: isZh,
                 ruleName: '',
                 piccount: 1,
                 isReportalarm: false,
@@ -134,7 +135,7 @@
                     title: vRoot.$t('rule.ruleName'),
                     key: 'rulename'
                 }, {
-                    title: vRoot.$t('rule.photographCount'),  
+                    title: vRoot.$t('rule.photographCount'),
                     key: 'piccount'
                 }, {
                     title: vRoot.$t('rule.camera'),

@@ -156,7 +156,7 @@ var bgManager = {
         getAllNavList: function name() {
             var me = this;
             return [{
-                    title: isZh ? "管理导航" : "Manager nav",
+                    title: isZh ? "管理导航" : "Menu",
                     name: 'bgNav',
                     icon: 'ios-stats',
                     maxShowUserType: 99,
@@ -239,13 +239,13 @@ var bgManager = {
                     ]
                 },
                 {
-                    title: '转发管理',
+                    title: me.$t("bgMgr.manageDataTransfer"),
                     name: 'forward809',
                     icon: 'ios-laptop',
                     maxShowUserType: 99,
                     children: [
-                        { title: "接入平台列表", name: 'accessPlatformList', icon: 'md-git-merge', maxShowUserType: 99 },
-                        { title: "转发设置", name: 'forwardingSetting', icon: 'md-git-merge', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.referredPlatformList"), name: 'accessPlatformList', icon: 'md-git-merge', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.setTransferRules"), name: 'forwardingSetting', icon: 'md-git-merge', maxShowUserType: 99 },
                     ]
 
                 },
