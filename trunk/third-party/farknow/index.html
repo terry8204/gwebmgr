@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="免费车载定位平台,gps51,无忧定位平台,EX平台,微信查车,报表,终端定位,油耗,obd,车务通,部标,公务车,云oa,商砼车,渣土车,公交车,北斗,GPS,车辆,定位,监控,加油,客户端,手机查车,电子围栏,Gserver,业务通,网上查车,第三方平台接口,个人定位,人员定位,车载终端,模拟调度,回传间隔,连续拍照,二次开发接口,基站定位,基站,iPhone手机查车,苹果手机查车,安卓手机查车, Android手机查车,iPhone,iPad,lbs,查车,手机查车"
+    />
+    <meta name="keywords" content="免费车载定位平台,gps51,无忧定位平台,EX平台,微信查车,报表,终端定位,油耗,obd,车务通,部标,公务车,云oa,商砼车,渣土车,公交车,北斗,GPS,车辆,定位,监控,加油,客户端,手机查车,电子围栏,Gserver,业务通,网上查车,第三方平台接口,个人定位,人员定位,车载终端,模拟调度,回传间隔,连续拍照,二次开发接口,基站定位,基站,iPhone手机查车,苹果手机查车,安卓手机查车, Android手机查车,iPhone,iPad,lbs,查车,手机查车"
+    />
+    <title></title>
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/icon/iconfont.css">
+    <script src="js/config.js"></script>
+</head>
+
+<body>
+    <div id="login-wraper" v-cloak>
+        <div class="header">
+            <div class="center">
+                <div class="logo-wrap">
+                    <img src="./custom/login_logo.png">
+                </div>
+                <div class="language">
+                    <div :class="{active:language == 'zh'}" @click="changeLang('zh')">
+                        <i class="icon iconfont icon-fuhao-zhongwen" style="width:16px;height:16px;vertical-align: middle"></i> {{$t("login.chinese")}}
+                    </div>
+                    <b style="color: black;">/</b>
+                    <div :class="{active:language == 'en'}" @click="changeLang('en')">
+                        <i class="icon iconfont icon-fuhao-yingwen" style="width:16px;height:16px;vertical-align: middle"></i> {{$t("login.english")}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main" class="noselect" v-bind:style="bgImgStyle">
+            <div class="center">
+                    <div class="login-form-box">
+                        <div class="login-form-left-top"></div>
+                        <div class="login-form-right-top"></div>
+                        <div class="login-form-left-bottom"></div>
+                        <div class="login-form-right-bottom"></div>
+                        <Card>
+                            <p slot="title">
+                                <i-row>
+                                    <i-col span="12" style="text-align:center;border-right: 1px solid #9190F3">
+                                        <span @click="selectdAccount(0)" class="cursor" :class="{active:account == 0}">
+                                            <Icon type="md-person"></Icon>{{$t("login.companyLogin")}}
+                                        </span>
+                                    </i-col>
+                                    <i-col span="12" style="text-align:center;">
+                                        <span @click="selectdAccount(1)" class="cursor" :class="{active:account == 1}">
+                                            <Icon type="md-phone-portrait"></Icon>{{$t("login.deviceLogin")}}
+                                        </span>
+                                    </i-col>
+                                </i-row>
+                            </p>
+                            <div class="inputs">
+                                <p>
+                                    <i-input type="text" v-model.trim="username" :placeholder="placeholder">
+                                        <Icon type="ios-person" slot="prepend" v-show="account == 0"></Icon>
+                                        <Icon type="md-tablet-portrait" slot="prepend" v-show="account == 1"></Icon>
+                                    </i-input>
+                                </p>
+                                <p>
+                                    <i-input type="password" v-model.trim="password" :placeholder="pwdPlaceholder">
+                                        <Icon type="ios-lock" slot="prepend"></Icon>
+                                    </i-input>
+                                </p>
+                                <p style="line-height:21px;">
+                                    <Checkbox v-model="keepPass"><span style="color:#ffffff;">{{$t("login.pememberPwd")}}</span></Checkbox>
+                                    <a style="font-size:12px;float: right;text-decoration:underline;color:#ffffff;" @click="experienced">{{$t("login.experience")}}</a>
+                                </p>
+                                <p>
+                                    <i-button type="primary" @click="handleSubmit" style="width: 100%" :loading="loading">{{$t("login.logining")}}</i-button>
+                                </p>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            
+        </div>
+        <div class="footer">
+            <div class="beian">
+                <a href="https://beian.miit.gov.cn/">Copyright © 2019 <b>FarKnow</b> All rights reserved</a>
+            </div>
+        </div>
+    </div>
+    <script src="js/dateformat.js"></script>
+    <script src="dist/vue.min.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/vue-i18n.min.js"></script>
+    <script src="js/language.js"></script>
+    <script src="custom/languageex.js"></script>
+    <script src="js/gps51-jquery.js"></script>
+    <script src="js/gps51-jquery.md5.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/login.js"></script>
+</body>
+
+</html>

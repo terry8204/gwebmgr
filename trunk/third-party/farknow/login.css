@@ -1,0 +1,273 @@
+﻿#login-wraper {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    min-width: 1300px;
+    min-height: 580px;
+    /* background-image: url('../custom/login_bg.jpg'); */
+
+}
+
+.center {
+    margin: 0 auto;
+    width: 1280px;
+    position: relative;
+
+}
+
+.cursor {
+    cursor: pointer;
+    color: #ffffff;
+}
+
+#login-wraper .active {
+    color: #3ABBDD;
+}
+
+
+/* 头部开始 */
+
+div.header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 70px;
+    width: 100%;
+    color: #ffffff;
+}
+
+div.logo-wrap {
+    line-height: 70px;
+    height: 70px;
+    padding-top: 10px;
+    float: left;
+}
+
+div.language {
+    line-height: 70px;
+    height: 70px;
+    float: right;
+}
+
+div.language>div {
+    display: inline-block;
+    padding: 0 10px;
+    cursor: pointer;
+    color: #000000;
+}
+
+span.logo {
+    font-size: 40px;
+    margin-left: 15px;
+}
+
+span.logo-title {
+    font-size: 21px;
+    vertical-align: top;
+}
+
+div.logo-wrap b {
+    margin: 0px 10px;
+    vertical-align: top;
+    display: inline-block;
+    font-size: 21px;
+    margin-top: -2px;
+}
+
+span.version {
+    vertical-align: top;
+}
+
+
+/* 头部结束 */
+
+
+/* main开始 */
+
+div.main {
+    position: absolute;
+    left: 0;
+    top: 70px;
+    bottom: 60px;
+    width: 100%;
+    /* border-top: 1px solid #433CCA;
+    border-bottom: 1px solid #433CCA; */
+    min-height: 352px;
+    
+    background-size: auto 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+div.main>div.center {
+    height: 100%;
+}
+
+div.main>div.center{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+
+
+#login-wraper .ivu-input-group-prepend,
+#login-wraper .ivu-input {
+    background-color: #6363DB;
+    color: #ffffff;
+}
+
+#login-wraper .ivu-checkbox-inner {
+    background-color: transparent;
+}
+
+div.login-form-box {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 350px;
+    height: 277px;
+    margin: auto;
+}
+
+div.login-form-left-top {
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    width: 50px;
+    height: 50px;
+    border-radius: 5px 0 0 0;
+    border-top: 1px solid #9190F3;
+    border-left: 1px solid #9190F3;
+    z-index: 999;
+}
+
+div.login-form-right-top {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    width: 50px;
+    height: 50px;
+    border-radius: 0 5px 0 0;
+    border-top: 1px solid #9190F3;
+    border-right: 1px solid #9190F3;
+    z-index: 999;
+}
+
+div.login-form-left-bottom {
+    position: absolute;
+    left: -5px;
+    bottom: -6px;
+    width: 50px;
+    height: 50px;
+    border-radius: 0 0 0 5px;
+    border-bottom: 1px solid #9190F3;
+    border-left: 1px solid #9190F3;
+    z-index: 999;
+}
+
+div.login-form-right-bottom {
+    position: absolute;
+    right: -5px;
+    bottom: -6px;
+    width: 50px;
+    height: 50px;
+    border-radius: 0 0 5px 0;
+    border-bottom: 1px solid #9190F3;
+    border-right: 1px solid #9190F3;
+    z-index: 999;
+}
+
+div.login-form-box .ivu-card {
+    background-color: rgba(98, 138, 223, 0.6);
+    /* background-color: rgba(56, 94, 177, 0.6); */
+}
+
+div.login-form-box .ivu-card-head {
+    border-bottom: 1px solid #9190F3;
+}
+
+div.login-form-box .ivu-card-bordered {
+    border: 1px solid #9190F3;
+}
+
+.ivu-card-head .ivu-icon {
+    margin-top: -3px;
+}
+
+div.inputs p {
+    margin: 15px;
+}
+
+.qr-code-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 140px;
+    bottom: 0px;
+}
+
+.qr-code-inner-wrap {
+    width: 900px;
+    height: 140px;
+    margin: 0 auto;
+}
+
+.qr-code-inner-wrap>div {
+    float: left;
+    width: 50%;
+    height: 140px;
+    padding: 10px 10px 0 10px;
+    text-align: center;
+}
+
+.qr-code-inner-wrap>div>div {
+    /* float: left; */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.desc {
+    color: #ffffff;
+    height: 100%;
+    margin-left: 10px;
+}
+
+.desc h3 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.desc ul li {
+    list-style-type: disc;
+    margin-left: 15px;
+    text-align: left;
+}
+
+
+/* 底部开始 */
+
+div.footer {
+    position: absolute;
+    left: 0;
+    bottom: 0px;
+    height: 60px;
+    width: 100%;
+}
+
+.beian {
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+    line-height: 45px;
+}
+
+.beian a {
+    text-decoration: none;
+}
+
+
+/* 底部结束 */
