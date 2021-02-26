@@ -8,8 +8,9 @@ const waterMeterMask = 0x0040; //6. 水表
 const videoMask = 0x0080; //7. 视频
 const activeSafetyMask = 0x0100; //8. 主动安全
 const oilDectectorMask = 0x0200; //9. 油耗
-const tempHumiMask = 0x0400; //10. 温湿度
-
+const tempHumiMask = 0x0400; //10. 温湿度 
+const accMask = 0x0800; //acc
+const rotateMask = 0x1000; //正反转
 var utils = {
     deviceInfos: {},
     allSubgroups: {},
@@ -712,59 +713,62 @@ var utils = {
         var thirdoil = track.thirdoil / 100;
         var fourthoil = track.fourthoil / 100;
 
-        if ((totalOil > 0) ||
-            (masteroil > 0) ||
-            (auxoil > 0) ||
-            (thirdoil > 0) ||
-            (fourthoil > 0)) {
-            var isNotFirst = false;
-            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ';
-            var srcAdStr = "";
-            if (totalOil > 0) {
-                oilStr += totalOil.toFixed(0) + "LT";
-                isNotFirst = true;
-            }
-            if (masteroil > 0) {
-                if (isNotFirst) {
+        if (extendsBtns.oil) {
+            if ((totalOil > 0) ||
+                (masteroil > 0) ||
+                (auxoil > 0) ||
+                (thirdoil > 0) ||
+                (fourthoil > 0)) {
+                var isNotFirst = false;
+                oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ';
+                var srcAdStr = "";
+                if (totalOil > 0) {
+                    oilStr += totalOil.toFixed(0) + "LT";
                     isNotFirst = true;
-                    oilStr += '/';
                 }
-                oilStr += masteroil.toFixed(0) + "L1";
-            }
-
-            if (auxoil > 0) {
-                if (isNotFirst) {
-                    isNotFirst = true;
-                    oilStr += '/';
+                if (masteroil > 0) {
+                    if (isNotFirst) {
+                        isNotFirst = true;
+                        oilStr += '/';
+                    }
+                    oilStr += masteroil.toFixed(0) + "L1";
                 }
-                oilStr += auxoil.toFixed(0) + "L2";
 
-            }
-            if (thirdoil > 0) {
-                if (isNotFirst) {
-                    isNotFirst = true;
-                    oilStr += '/';
+                if (auxoil > 0) {
+                    if (isNotFirst) {
+                        isNotFirst = true;
+                        oilStr += '/';
+                    }
+                    oilStr += auxoil.toFixed(0) + "L2";
 
                 }
-                oilStr += thirdoil.toFixed(0) + "L3";
+                if (thirdoil > 0) {
+                    if (isNotFirst) {
+                        isNotFirst = true;
+                        oilStr += '/';
 
-            }
-
-            if (fourthoil > 0) {
-                if (isNotFirst) {
-                    isNotFirst = true;
-                    oilStr += '/';
+                    }
+                    oilStr += thirdoil.toFixed(0) + "L3";
 
                 }
-                oilStr += fourthoil.toFixed(0) + "L4";
 
-            }
-            srcAdStr = srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
-            oilStr += '(' + srcAdStr + ")";
-        } else if (srcad0 > 0 || srcad1 > 0 || srcad2 > 0 || srcad3 > 0) {
-            //没设置油杆的时候显示原始ad值
-            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
-        };
+                if (fourthoil > 0) {
+                    if (isNotFirst) {
+                        isNotFirst = true;
+                        oilStr += '/';
+
+                    }
+                    oilStr += fourthoil.toFixed(0) + "L4";
+
+                }
+                srcAdStr = srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
+                oilStr += '(' + srcAdStr + ")";
+            } else if (srcad0 > 0 || srcad1 > 0 || srcad2 > 0 || srcad3 > 0) {
+                //没设置油杆的时候显示原始ad值
+                oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
+            };
+        }
+
         var loadstatusStr = null;
         if (track.loadstatus >= 0) {
             loadstatusStr = this.getLoadStatus(track);
@@ -782,7 +786,7 @@ var utils = {
             '<p><span class="window_title">' + (isZh ? '定位时间' : 'Posi time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +
             '<p><span class="window_title">' + (isZh ? '当日里程' : 'Mileage') + '</span>: ' + currentDayMileage + (isZh ? ' 总里程数: ' : ' Mileage: ') + this.getMileage(track.totaldistance) + '</p>' +
-            (temp ? temp : '') +
+            (temp && extendsBtns.humi ? temp : '') +
             '<p><span class="window_title">' + (isZh ? '停留时长' : 'Park Duration') + '</span>: ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
             (oilStr !== '' ? '<p>' + oilStr + '</p>' : '') +
@@ -855,20 +859,22 @@ var utils = {
         var isShowVideoBtn = false;
         var isShowActiveSafetyBtn = false;
         var isShowCamera = false;
+        var isShowHumi = false;
+        var isShowoilDectector = false;
 
         var functionslong = deviceTypes[currentDeviceType].functionslong;
         if (utils.hasFunction(functionslong, recordSoundMask)) {
             isShowRecordBtn = true;
         };
-        // if (utils.hasFunction(functionslong, bmsMask)) {
-        //     isShowBmsBtn = true;
-        // };
+        if (utils.hasFunction(functionslong, tempHumiMask)) {
+            isShowHumi = true;
+        };
         if (utils.hasFunction(functionslong, obdMask)) {
             isShowObdBtn = true;
         };
-        // if (utils.hasFunction(functionslong, waterMeterMask)) {
-        //     isShowWatermeterBtn = true;
-        // };
+        if (utils.hasFunction(functionslong, oilDectectorMask)) {
+            isShowoilDectector = true;
+        };
         if (utils.hasFunction(functionslong, videoMask)) {
             isShowVideoBtn = true;
         };
@@ -880,6 +886,7 @@ var utils = {
         };
 
 
+
         return {
             audio: isShowRecordBtn,
             bms: isShowBmsBtn,
@@ -888,6 +895,8 @@ var utils = {
             video: isShowVideoBtn,
             activesafety: isShowActiveSafetyBtn,
             camera: isShowCamera,
+            humi: isShowHumi,
+            oil: isShowoilDectector,
         }
     },
     getMileage: function(totaldistance) {
