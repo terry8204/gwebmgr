@@ -1,7 +1,13 @@
 <div id="charge-mgr">
     <div style="margin:10px;height: 32px;">
         <input type="file" id="file" style="display: none;" />
-        <div style="float: left;position: relative;width: 210px;line-height:32px;">
+        <div style="margin-right:10px;float: left;line-height: 32px;position: relative;width: 90px;">
+            <i-select v-model="selectType">
+                <i-option value="user">账号查询</i-option>
+                <i-option value="device">设备查询</i-option>
+            </i-select>
+        </div>
+        <div style="float: left;position: relative;width: 210px;line-height:32px;" v-if="selectType == 'user'">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
                 <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                 <transition name="fade">
@@ -11,14 +17,14 @@
                 </transition>
             </div>
         </div>
-        <div style="margin-left:10px;float: left;line-height: 32px;position: relative;width: 90px;">
+        <div style="margin-left:10px;float: left;line-height: 32px;position: relative;width: 90px;" v-if="selectType == 'user'">
             <i-select v-model="maturityType">
                 <i-option value="2">{{$t("charge.all")}}</i-option>
                 <i-option value="0">{{$t("charge.expired")}}</i-option>
                 <i-option value="1">{{$t("charge.unexpired")}}</i-option>
             </i-select>
         </div>
-        <div style="margin-left:10px;float: left;height: 32px;position: relative;">
+        <div style="margin-left:10px;float: left;height: 32px;position: relative;" v-if="selectType == 'user'">
             <div style="float: left;height: 32px;line-height: 32px;">
                 {{$t("charge.days")}}:
             </div>
@@ -26,8 +32,11 @@
                 <input-number v-model.number="dayNumbers" :min="1" style="width: 100%;"></input-number>
             </div>
         </div>
-        <div style="margin-left:10px;float: left;line-height: 32px;">
+        <div style="margin-left:10px;float: left;line-height: 32px;" v-if="selectType == 'user'">
             <Checkbox v-model="isIncludeSub">{{$t("charge.includeSub")}}</Checkbox>
+        </div>
+        <div style="float: left;position: relative;width: 210px;line-height:32px;" v-if="selectType == 'device'">
+            <i-input v-model.trim="deviceid" icon="ios-search-outline"></i-input>
         </div>
         <div style="margin-left:10px;float: left;">
             <i-button :loading="loading" type="info" @click="queryChargeDeviceList">{{$t("reportForm.query")}}</i-button>
@@ -178,7 +187,9 @@
                 importModal: false,
                 jindou: 0,
                 deviceids: '',
+                deviceid: '',
                 errorTips: '',
+                selectType: 'user',
                 isIncludeSub: true,
                 modal: false,
                 adminModal: false,
@@ -358,17 +369,25 @@
                     this.selectionArray = [];
                     var me = this;
                     var url = myUrls.queryChargeDeviceList();
-                    var overduedays = this.dayNumbers;
-                    if (this.maturityType == '0') {
-                        overduedays = -overduedays;
-                    } else if (this.maturityType == '2') {
-                        overduedays = 0;
-                    };
-                    var data = {
-                        username: this.createrToUser, // 需要查询的账号
-                        isquerysubaccount: this.isIncludeSub, //true 是包含下级账号 false 不包含
-                        overduedays: overduedays //负数 代表过期多少天 正数代表还有多少天过期
-                    };
+                    if (this.selectType == 'user') {
+                        var overduedays = this.dayNumbers;
+                        if (this.maturityType == '0') {
+                            overduedays = -overduedays;
+                        } else if (this.maturityType == '2') {
+                            overduedays = 0;
+                        };
+                        var data = {
+                            querytype: 0,
+                            username: this.createrToUser, // 需要查询的账号
+                            isquerysubaccount: this.isIncludeSub, //true 是包含下级账号 false 不包含
+                            overduedays: overduedays //负数 代表过期多少天 正数代表还有多少天过期
+                        };
+                    } else if (this.selectType == 'device') {
+                        var data = {
+                            querytype: 1,
+                            keyword: this.deviceid
+                        };
+                    }
                     utils.sendAjax(url, data, function(respData) {
                         me.loading = false;
                         var deviceTypeMap = vRoot.$store.state.deviceTypes;
