@@ -2,7 +2,7 @@
     <div style="margin:10px;height: 32px;">
         <div style="float: left;position: relative;width: 250px;line-height:32px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="searchValueChange" @on-blur="blur" @on-focus="focus" :disabled="disabled" @on-click="focus" :placeholder="placeholder"></i-input>
                 <transition name="fade">
                     <div class="search-item-wrapper" v-show="isShowMatchDev">
                         <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
@@ -29,7 +29,7 @@
             <i-button @click="queryInsures" :loading="loading">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="margin-left:20px;float: left;">
-            <i-input v-model.trim="exactValue" :placeholder="$t('reportForm.insurePlaceholder')"></i-input>  
+            <i-input v-model.trim="exactValue" :placeholder="$t('reportForm.insurePlaceholder')"></i-input>
         </div>
         <div style="margin-left:10px;float: left;">
             <i-button @click="exactQueryInsures" :loading="loading">{{$t("reportForm.exactSearch")}}</i-button>
@@ -51,7 +51,7 @@
         </p>
         <div style="text-align:center">
             <Row style="margin:10px 0;">
-                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("reportForm.name")}} : &nbsp;</i-col> 
+                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("reportForm.name")}} : &nbsp;</i-col>
                 <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
                     <i-input v-model.trim="editObjectRow.name" style="width: 100%;"></i-input>
                 </i-col>

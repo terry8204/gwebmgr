@@ -70,13 +70,9 @@ var treeMixin = {
             this.isShowMatchDev = true;
         },
         sosoValueChange: function() {
-            var me = this;
-            var value = this.sosoValue;
-            this.filterMethod(this.sosoValue);
+            this.filterMethod(this.sosoValue.toLowerCase());
         },
         filterMethod: function(value) {
-            value = value.toLowerCase();
-
             if (value === '') {
                 this.treeDeviceList[0].open = true;
                 this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
@@ -97,7 +93,6 @@ var treeMixin = {
             }
         },
         variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
-
             var childTemp = [];
             var that = this;
             for (var i = 0; i < treeDataFilter.length; i++) {
@@ -106,7 +101,7 @@ var treeMixin = {
                 if (item != null) {
 
                     var isFound = false;
-                    if (item.name.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                    if (item.name.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
                         copyItem = item;
                         copyItem.open = false;
                         isFound = true;
@@ -3581,26 +3576,61 @@ function insureRecords(groupslist) {
                 usernamephonenum: '',
                 isRecharge: false,
                 createtime: '',
-            }
+            },
+            disabled: true
         },
         methods: {
-            handleSelectdDate: function(dayNumber) {
-                this.dayNumberType = dayNumber;
-                var dayTime = 24 * 60 * 60 * 1000;
-                if (dayNumber == 0) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
-                } else if (dayNumber == 1) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime, timeDifference), DateFormat.longToDateStr(Date.now() - dayTime, timeDifference)];
-                } else if (dayNumber == 3) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 2, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
-                } else if (dayNumber == 7) {
-                    this.dateVal = [DateFormat.longToDateStr(Date.now() - dayTime * 6, timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)];
+            searchValueChange: function() {
+                if (this.groupslist !== null) {
+                    this.searchfilterMethod(this.sosoValue.toLowerCase());
+                } else {
+                    console.log('tree数据还未返回');
                 }
+            },
+            searchfilterMethod: function(value) {
+                this.treeData = [];
+                this.treeData = this.variableDeepSearchIview(this.groupslist, value, 0);
+                this.checkedDevice = [];
+                if (this.isShowMatchDev == false) {
+                    this.isShowMatchDev = true;
+                }
+            },
+            variableDeepSearchIview: function(treeDataFilter, searchWord, limitcount) {
+                var childTemp = [];
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var copyItem = null;
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        var isFound = false;
+                        if (item.title.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                            copyItem = deepClone(item);
+                            copyItem.expand = false;
+                            isFound = true;
+                        }
+                        if (isFound == false && item.children && item.children.length > 0) {
+                            var rs = that.variableDeepSearchIview(item.children, searchWord, limitcount);
+                            if (rs && rs.length > 0) {
+                                copyItem = deepClone(item);
+                                copyItem.children = rs;
+                                copyItem.expand = true;
+                                isFound = true;
+                            }
+                        }
+                        if (isFound == true) {
+                            limitcount++;
+                            childTemp.push(copyItem);
+                            if (limitcount > 10) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                return childTemp;
             },
             onChange: function(value) {
                 this.dateVal = value;
             },
-
             handleEditInsure: function() {
                 var url = myUrls.editInsure(),
                     me = this;
@@ -3671,6 +3701,7 @@ function insureRecords(groupslist) {
                     me = this;
                 utils.sendAjax(url, { username: userName }, function(respData) {
                     if (respData.status == 0 && respData.rootuser.user) {
+                        me.disabled = false;
                         callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
                     } else {
                         me.$Message.error(me.$t('monitor.queryFail'))
@@ -3971,8 +4002,57 @@ function salesRecord(groupslist) {
             tableHeight: 300,
             tableData: [],
             loading: false,
+            disabled: true
         },
         methods: {
+            searchValueChange: function() {
+                if (this.groupslist !== null) {
+                    this.searchfilterMethod(this.sosoValue.toLowerCase());
+                } else {
+                    console.log('tree数据还未返回');
+                }
+            },
+            searchfilterMethod: function(value) {
+                this.treeData = [];
+                this.treeData = this.variableDeepSearchIview(this.groupslist, value, 0);
+                this.checkedDevice = [];
+                if (this.isShowMatchDev == false) {
+                    this.isShowMatchDev = true;
+                }
+            },
+            variableDeepSearchIview: function(treeDataFilter, searchWord, limitcount) {
+                var childTemp = [];
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var copyItem = null;
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        var isFound = false;
+                        if (item.title.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                            copyItem = deepClone(item);
+                            copyItem.expand = false;
+                            isFound = true;
+                        }
+                        if (isFound == false && item.children && item.children.length > 0) {
+                            var rs = that.variableDeepSearchIview(item.children, searchWord, limitcount);
+                            if (rs && rs.length > 0) {
+                                copyItem = deepClone(item);
+                                copyItem.children = rs;
+                                copyItem.expand = true;
+                                isFound = true;
+                            }
+                        }
+                        if (isFound == true) {
+                            limitcount++;
+                            childTemp.push(copyItem);
+                            if (limitcount > 10) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                return childTemp;
+            },
             handleSelectdDate: function(dayNumber) {
                 this.dayNumberType = dayNumber;
                 var dayTime = 24 * 60 * 60 * 1000;
@@ -3994,6 +4074,7 @@ function salesRecord(groupslist) {
                     me = this;
                 utils.sendAjax(url, { username: userName }, function(respData) {
                     if (respData.status == 0 && respData.rootuser.user) {
+                        me.disabled = false;
                         callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
                     } else {
                         me.$Message.error(me.$t('monitor.queryFail'));
@@ -4170,7 +4251,7 @@ function salesRecord(groupslist) {
             });
             this.sosoValue = userName;
             this.calcTableHeight();
-            this.queryInsures();
+            // this.queryInsures();
             this.editDeviceIndex = null;
             this.insureRecords = [];
         },
