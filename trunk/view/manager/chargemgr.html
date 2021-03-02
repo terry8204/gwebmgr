@@ -3,8 +3,8 @@
         <input type="file" id="file" style="display: none;" />
         <div style="margin-right:10px;float: left;line-height: 32px;position: relative;width: 90px;">
             <i-select v-model="selectType">
-                <i-option value="user">账号查询</i-option>
-                <i-option value="device">设备查询</i-option>
+                <i-option value="user">{{$t("charge.userQuery")}}</i-option>
+                <i-option value="device">{{$t("charge.deviceQuery")}}</i-option>
             </i-select>
         </div>
         <div style="float: left;position: relative;width: 210px;line-height:32px;" v-if="selectType == 'user'">
@@ -12,7 +12,7 @@
                 <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                 <transition name="fade">
                     <div class="search-item-wrapper" v-show="isShowMatchDev">
-                        <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
+                        <Tree :data="treeData"></Tree>
                     </div>
                 </transition>
             </div>
@@ -275,9 +275,6 @@
                         return 'device-experience'
                     }
                     return 'device-normal';
-                },
-                onCheckedDevice: function(arr) {
-                    this.sosoValue = 121;
                 },
                 onClickOutside: function(e) {
                     this.readonly = false;

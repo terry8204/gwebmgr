@@ -1188,6 +1188,8 @@
                 downloadTips5: 'The end time cannot be greater than the end time of the file',
             },
             charge: {
+                userQuery: 'User Query',
+                deviceQuery: 'Device Query',
                 useState: "Use state",
                 normalUse: "Normal use",
                 experiencing: "Experiencing",
@@ -2399,6 +2401,8 @@
                 downloadTips5: '结束时间不能大于文件结束时间',
             },
             charge: {
+                userQuery: '账号查询',
+                deviceQuery: '设备查询',
                 useState: "使用状态",
                 normalUse: "正常使用",
                 experiencing: "正在体验",
