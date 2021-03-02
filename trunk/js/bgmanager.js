@@ -42,6 +42,9 @@ var bgManager = {
                 case 'batchAddDevice':
                     page = 'batchadddevice.html'
                     break
+                case 'deviceTypes':
+                    page = 'devicetypes.html'
+                    break
                 case 'queryDevice':
                     page = 'querydevice.html'
                     break
@@ -190,6 +193,7 @@ var bgManager = {
                     icon: 'md-phone-portrait',
                     maxShowUserType: 99,
                     children: [
+                        { title: me.$t("user.devType"), name: 'deviceTypes', icon: 'ios-keypad-outline', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add', maxShowUserType: 99 },

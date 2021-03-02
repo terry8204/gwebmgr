@@ -1,0 +1,275 @@
+<div class="pd-10 system" id="device-types-wraper">
+
+    <div>
+        <i-table :columns="columns" :data="tableData" :loading="loading" border :height="tableHeight"></i-table>
+    </div>
+
+    <script>
+        vueInstanse = new Vue({
+            el: "#device-types-wraper",
+            data: function() {
+                var me = this;
+                return {
+                    devTypeInfo: {
+                        "typecode": null,
+                        "typename": null,
+                    },
+                    functionsCheck: [],
+                    remark: "",
+                    remarken: "",
+                    defaultidlength: 11,
+                    deviceTypeList: [],
+                    deviceCode: "",
+                    cmdModal: false,
+                    rowIndex: null,
+                    oldtypename: null,
+                    tableHeight: 100,
+                    columns: [
+
+                        {
+                            title: '类型名称',
+                            key: 'typename',
+                            width: 120,
+                        }, {
+                            title: '通信协议',
+                            key: 'typecode',
+                            width: 120,
+                        }, {
+                            title: '序号长度',
+                            key: 'defaultidlength',
+                            width: 100,
+                        }, {
+                            title: '备注(中文)',
+                            key: 'remark',
+                        }, {
+                            title: '备注(英文)',
+                            key: 'remarken',
+                        }, {
+                            title: '功能',
+                            key: 'functions',
+                            render: function(h, params) {
+                                var children = [];
+                                var functionslong = params.row.functionslong;
+                                // var functionsLong = vueInstanse.setFunctionsLong(params.row.functionslong);
+                                vueInstanse.functionsDesc.forEach(function(item) {
+                                    if (utils.hasFunction(functionslong, item.mask)) {
+                                        children.push(h('Checkbox', {
+                                            props: {
+                                                label: item.mask,
+                                                value: true,
+                                            }
+                                        }, item.functionname))
+                                    }
+
+                                })
+                                return h('div', children);
+                            }
+                        }
+                    ],
+                    tableData: [],
+                    cmdList: [],
+                    checkboxCmdObj: {},
+                    loading: false,
+                    cmdRecords: [],
+                    functionsDesc: [],
+                }
+            },
+            methods: {
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.tableHeight = wHeight - 85;
+                },
+                setFunctionsLong: function(functionslong) {
+                    var functionsCheck = [];
+                    var functionsDesc = this.functionsDesc;
+                    for (var i = 0; i < functionsDesc.length; ++i) {
+                        var desc = functionsDesc[i];
+                        var mask = desc.mask;
+                        if ((mask & functionslong) == mask) {
+                            functionsCheck.push(mask);
+                        }
+                    }
+                    return functionsCheck;
+                },
+                getFunctionsLong: function() {
+                    var functionsLong = 0;
+                    this.functionsCheck.forEach(function(mask) {
+                        functionsLong = functionsLong | mask;
+                    })
+                    return functionsLong;
+                },
+                addInstructionsToDeviceTypes: function() {
+                    var url = myUrls.editDeviceTypeCmd();
+                    var data = this.getEditDeviceTypeCmdData();
+                    var me = this;
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            me.$Message.success("设置成功");
+                            me.cmdModal = false;
+                            me.tableData[me.rowIndex].cmds = data.datas[0].cmds;
+                            me.tableData[me.rowIndex].directiveCount = data.datas[0].cmds.length;
+                        } else {
+                            me.$Message.error(resp.cause);
+                        }
+                    })
+
+                },
+                getEditDeviceTypeCmdData: function() {
+                    var cmdList = this.cmdList;
+                    var selectedCmdObj = this.checkboxCmdObj;
+                    var cmds = [];
+                    for (var key in selectedCmdObj) {
+                        if (selectedCmdObj.hasOwnProperty(key) && selectedCmdObj[key]) {
+                            cmdList.forEach(function(children) {
+                                children.forEach(function(item) {
+                                    if (item.cmdcode == key) {
+                                        cmds.push(item);
+                                    };
+                                })
+                            })
+                        };
+                    };
+                    return {
+                        datas: [{
+                            devicetype: this.tableData[this.rowIndex].devicetypeid,
+                            cmds: cmds
+                        }]
+                    }
+                },
+                queryDevTypeList: function() {
+                    var me = this;
+                    var url = myUrls.queryDeviceTypeByUser();
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0) {
+                            resp.devicetypes.forEach(function(item) {
+                                if (item.cmds) {
+                                    item.directiveCount = item.cmds.length;
+                                } else {
+                                    item.directiveCount = 0;
+                                }
+                            })
+
+                            me.tableData = resp.devicetypes;
+
+                        }
+                    })
+                },
+                matchingCmd: function(deviceType) {
+                    var me = this;
+                    var index = 0;
+                    me.checkboxCmdObj = {};
+                    me.cmdList = [];
+                    this.cmdRecords.forEach(function(item) {
+                        if (item.devicetype == deviceType) {
+                            var idx = parseFloat(index / 3)
+                            if (index % 3 == 0) {
+                                var newArr = [];
+                                newArr.push(item)
+                                me.cmdList.push(newArr);
+                            } else {
+                                me.cmdList[me.cmdList.length - 1].push(item);
+                            }
+                            me.checkboxCmdObj[item.cmdcode] = false;
+                            index++;
+                        }
+                    });
+                },
+                querySelectedCmd: function() {
+                    var url = myUrls.queryDeviceTypeHadCmd();
+                    var data = {
+                        "devicetype": this.tableData[this.rowIndex].devicetypeid
+                    };
+                    utils.sendAjax(url, data, this.doQuerySelectedCmdFn);
+                },
+                doQuerySelectedCmdFn: function(resp) {
+                    var me = this;
+                    if (resp.status == 0) {
+                        this.tableData[me.rowIndex].cmds = resp.records;
+                        for (var key in me.checkboxCmdObj) {
+                            if (me.checkboxCmdObj.hasOwnProperty(key)) {
+                                me.checkboxCmdObj[key] = false;
+                            }
+                        };
+
+                        resp.records.forEach(function(item) {
+                            me.checkboxCmdObj[item.cmdcode] = true;
+                        });
+
+                        this.tableData = JSON.parse(JSON.stringify(this.tableData));
+                    }
+                },
+                queryCmdList: function() {
+                    var me = this;
+                    var url = myUrls.queryCmd();
+                    var data = {
+                        "offset": 0,
+                        "pagesize": 100
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status === 0) {
+                            var records = resp.records;
+                            me.cmdRecords = records;
+                        };
+                    });
+
+                },
+                queryDeviceTypeCode: function() {
+                    var me = this;
+                    var url = myUrls.listDeviceTypeCode();
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status === 0) {
+                            resp.types.forEach(function(item) {
+                                me.deviceTypeList.push({
+                                    label: item,
+                                    value: item
+                                });
+                            });
+                        }
+                    });
+                },
+                queryFunctionsDesc: function() {
+                    var me = this;
+                    var url = myUrls.queryFunctionsDesc();
+                    utils.sendAjax(url, {}, function(respData) {
+                        console.log('respData', respData);
+                        me.functionsDesc = respData.records;
+                        me.queryDevTypeList();
+                        me.queryCmdList();
+                        me.queryDeviceTypeCode();
+                    })
+                }
+            },
+            watch: {
+                addDevTypeModal: function() {
+                    if (!this.isEdit) {
+                        this.devTypeInfo = {
+                            "port": 0,
+                            "typecode": null,
+                            "typename": null,
+                            "enable": 1,
+                            "level": 0,
+                            "camera": 0,
+                            "lcd": 0,
+                            "led": 0,
+                            "phone": null,
+                            "tcpport": 0,
+                            "udpport": 0,
+                        }
+                        this.remark = "";
+                        this.remarken = "";
+                        this.defaultidlength = 11;
+                        this.functionsCheck = [];
+                    }
+                }
+            },
+            mounted: function() {
+                var me = this;
+                this.queryFunctionsDesc();
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            }
+        })
+    </script>
+</div>
