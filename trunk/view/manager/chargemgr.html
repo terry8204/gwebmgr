@@ -17,14 +17,14 @@
                 </transition>
             </div>
         </div>
-        <div style="margin-left:10px;float: left;line-height: 32px;position: relative;width: 90px;" v-if="selectType == 'user'">
+        <div style="margin-left:10px;float: left;line-height: 32px;position: relative;width: 150px;" v-if="selectType == 'user'">
             <i-select v-model="maturityType">
                 <i-option value="2">{{$t("charge.all")}}</i-option>
                 <i-option value="0">{{$t("charge.expired")}}</i-option>
                 <i-option value="1">{{$t("charge.unexpired")}}</i-option>
             </i-select>
         </div>
-        <div style="margin-left:10px;float: left;height: 32px;position: relative;" v-if="selectType == 'user'">
+        <div style="margin-left:10px;float: left;height: 32px;position: relative;" v-if="selectType == 'user'&& maturityType!= '2'">
             <div style="float: left;height: 32px;line-height: 32px;">
                 {{$t("charge.days")}}:
             </div>
