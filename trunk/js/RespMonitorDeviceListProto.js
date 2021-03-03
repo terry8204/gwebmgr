@@ -97,7 +97,11 @@ var monitorListProtoJson = {
                         "icon": {
                             "type": "sint32",
                             "id": 13
-                        }
+                        },
+                        "loginname": {
+                            "type": "string",
+                            "id": 14
+                        },
                     }
                 }
             }
