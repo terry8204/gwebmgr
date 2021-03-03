@@ -2763,6 +2763,7 @@ var monitor = {
                     me.deviceInfos[data.deviceid].simnum = sendData.simnum;
                     me.deviceInfos[data.deviceid].remark = sendData.remark;
                     me.deviceInfos[data.deviceid].expirenotifytime = data.expirenotifytime;
+                    me.deviceInfos[data.deviceid].loginname = sendData.loginname;
 
                     var record = me.getSingleDeviceInfo(data.deviceid);
                     if (record) {
@@ -2770,6 +2771,8 @@ var monitor = {
 
                         me.updateMarkerLabel(record, sendData);
                     };
+                } else if ((resp.status == 1)) {
+                    me.$Message.error(me.$t("message.loginNameOccupied"))
                 } else if ((resp.status == -1)) {
                     me.$Message.error(me.$t("message.changeFail"))
                 }
@@ -2798,7 +2801,6 @@ var monitor = {
             this.editDevData.devicename = deviceInfo.devicename;
             this.editDevData.simnum = deviceInfo.simnum;
             this.editDevData.loginname = deviceInfo.loginname;
-            console.log('deviceInfo', deviceInfo);
             this.editDevData.deviceid = deviceid;
             this.editDevData.remark = deviceInfo.remark;
             this.editDevData.disabled = disabled;
