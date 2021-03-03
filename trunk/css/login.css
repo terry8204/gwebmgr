@@ -163,7 +163,7 @@ div.login-form-right-top {
 div.login-form-left-bottom {
     position: absolute;
     left: -5px;
-    bottom: -5px;
+    bottom: -6px;
     width: 50px;
     height: 50px;
     border-radius: 0 0 0 5px;
@@ -175,7 +175,7 @@ div.login-form-left-bottom {
 div.login-form-right-bottom {
     position: absolute;
     right: -5px;
-    bottom: -5px;
+    bottom: -6px;
     width: 50px;
     height: 50px;
     border-radius: 0 0 5px 0;

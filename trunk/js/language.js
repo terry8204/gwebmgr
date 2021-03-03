@@ -306,6 +306,7 @@
                 deviceDisabled: " [<span style='color:red;'>已禁用</span>] ",
                 deviceExpiration: " [<span style='color:red;'>设备到期</span>] ",
                 deviceExpired: " [<span style='color:red;'>设备过期</span>] ",
+                loginName: 'Login Name'
             },
             video: {
                 accOpen: 'ACC open,',
@@ -1518,6 +1519,7 @@
                 deviceDisabled: " [<span style='color:red;'>已禁用</span>] ",
                 deviceExpiration: " [<span style='color:red;'>设备到期</span>] ",
                 deviceExpired: " [<span style='color:red;'>设备过期</span>] ",
+                loginName: '登录名称'
             },
             video: {
                 accOpen: 'ACC开,',

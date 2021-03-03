@@ -328,6 +328,7 @@ var monitor = {
                 simnum: '',
                 deviceid: '',
                 remark: '',
+                loginname: '',
             },
             ownerInfoModal: false,
             cameraModal: false,
@@ -2738,6 +2739,7 @@ var monitor = {
                 deviceid: data.deviceid,
                 devicename: data.devicename,
                 remark: data.remark,
+                loginname: data.loginname,
                 expirenotifytime: new Date(this.expirenotifytime).getTime()
             };
             var url = myUrls.editDeviceSimple();
@@ -2795,6 +2797,8 @@ var monitor = {
 
             this.editDevData.devicename = deviceInfo.devicename;
             this.editDevData.simnum = deviceInfo.simnum;
+            this.editDevData.loginname = deviceInfo.loginname;
+            console.log('deviceInfo', deviceInfo);
             this.editDevData.deviceid = deviceid;
             this.editDevData.remark = deviceInfo.remark;
             this.editDevData.disabled = disabled;

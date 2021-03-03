@@ -1981,6 +1981,12 @@
                                 </i-col>
                             </Row>
                             <Row style="margin: 10px 0">
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("monitor.loginName")}} : &nbsp;</i-col>
+                                <i-col span="16">
+                                    <i-input v-model.trim="editDevData.loginname"></i-input>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0">
                                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("monitor.phoneNumber")}} : &nbsp;</i-col>
                                 <i-col span="16">
                                     <i-input v-model.trim="editDevData.simnum" :disabled="editDevData.disabled"></i-input>
