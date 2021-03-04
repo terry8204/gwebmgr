@@ -638,6 +638,7 @@
         var icon = utils.getParameterByName("icon");
         var deviceid = utils.getParameterByName("deviceid");
         var devicename = utils.getParameterByName("devicename");
+        var functionslong = utils.getParameterByName("functionslong");
         var vRoot = null;
         var currentTrack = null;
         Vue.use(iview);
@@ -1326,6 +1327,7 @@
                                 data: [dis, speed, recorderspeed, totalOil, usoil1, usoil2, , usoil3, usoil4, weight],
                                 selected: {
                                     [recorderspeed]: false,
+                                    [totalOil]: utils.hasFunction(Number(functionslong), 0x0200),
                                     [usoil1]: false,
                                     [usoil2]: false,
                                     [usoil3]: false,

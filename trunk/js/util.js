@@ -1553,8 +1553,12 @@ var mixIn = {
 
 // 轨迹回放
 function playBack(deviceid) {
+    var deviceTypes = vRoot.$children[1].deviceTypes;
+    var currentDeviceType = vRoot.$children[1].currentDeviceType;
+    var functionslong = deviceTypes[currentDeviceType].functionslong;
+
     var devicename = getDeviceNameByDeviceid(deviceid);
-    window.open('playbackv2.html?deviceid=' + deviceid + '&icon=' + carIconTypes[deviceid] + '&devicename=' + devicename + '&token=' + token);
+    window.open('playbackv2.html?deviceid=' + deviceid + '&icon=' + carIconTypes[deviceid] + '&devicename=' + devicename + '&functionslong=' + functionslong + '&token=' + token);
 }
 
 // 跟踪
