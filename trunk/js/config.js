@@ -870,6 +870,9 @@ var myUrls = {
     queryFunctionsDesc: function() {
         return this.apihosts + 'webapi?action=queryfunctionsdesc&token=' + token;
     },
+    poiBatch: function() {
+        return 'https://www.gps51.com/webapi?action=poibatch&token=' + token;
+    },
 }
 
 

@@ -632,6 +632,7 @@
     <script src="./maptalks/maptalks.min.js"></script>
     <script src="./js/en-US.js"></script>
     <script src="./js/zh-CN.js"></script>
+    <script src="./js/underscore.min.js"></script>
     <script>
         var timeDifference = DateFormat.getOffset();
         var token = utils.getParameterByName("token");
@@ -1641,7 +1642,7 @@
                                 me.setTableData();
                                 if (me.getTypeRecords().length > 0) {
                                     me.initMapView();
-                                    me.getAllNoLoginTracksAddress();
+                                    me.getAllNoLoadingTracksAddress();
                                 } else {
                                     me.$Message.error(isZh ? "没有轨迹" : "No Tracks");
                                     me.removeAllLayer();
@@ -2064,51 +2065,45 @@
                             }
                         }
                     },
-                    getAllNoLoginTracksAddress: function() {
+                    getAllNoLoadingTracksAddress: function() {
                         var me = this;
                         var maxLen = this.currentTracksLenth;
                         if (maxLen == 0) return;
-                        this.idx = 0;
                         var tracks = this.getTypeRecords();
-                        var hasQueryedLatLon = {};
+                        var filterTracks = [];
+                        var unionPoints = [];
+
                         tracks.forEach(function(track) {
-                            var callon = track.callon;
-                            var callat = track.callat;
                             var address = LocalCacheMgr.getAddress(track.callon, track.callat);
                             if (address == null) {
-                                var key = callat + "|" + callon;
-                                if (hasQueryedLatLon[key] == null) {
-                                    hasQueryedLatLon[key] = true;
-                                    (function(track) {
-                                        utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
-                                            if (resp && resp.address) {
-                                                track.address = resp.address;
-                                                LocalCacheMgr.setAddress(track.callon, track.callat, track.address);
-                                            }
-                                            me.idx = me.idx + 1;
-                                            if (me.idx >= maxLen) {
-                                                me.readLocalAddress(tracks);
-                                            }
-                                        }, function(e) {
-                                            me.idx = me.idx + 1;
-                                            if (me.idx >= maxLen) {
-                                                me.readLocalAddress(tracks);
-                                            }
-                                        });
-                                    })(track);
-                                } else {
-                                    me.idx = me.idx + 1;
-                                    if (me.idx >= maxLen) {
-                                        me.readLocalAddress(tracks);
-                                    }
-                                }
-                            } else {
-                                me.idx = me.idx + 1;
-                                if (me.idx >= maxLen) {
-                                    me.readLocalAddress(tracks);
-                                }
+                                filterTracks.push({
+                                    lat: track.callat,
+                                    lon: track.callon,
+                                })
                             }
                         });
+
+                        unionPoints = this.unionLonLat(filterTracks);
+                        if (unionPoints.length) {
+                            var url = myUrls.poiBatch();
+                            utils.sendAjax(url, {
+                                points: unionPoints
+                            }, function(respData) {
+                                console.log(respData);
+                            });
+                        }
+                        console.log(unionPoints);
+                    },
+                    unionLonLat: function(arr) {
+                        for (var i = 0; i < arr.length - 1; i++) {
+                            for (var j = i + 1; j < arr.length; j++) {
+                                if (arr[i].lat == arr[j].lat && arr[i].lon == arr[j].lon) {
+                                    arr.splice(j, 1);
+                                    j--;
+                                }
+                            }
+                        }
+                        return arr;
                     },
                     getAllTracksAddress: function() {
                         var me = this;
