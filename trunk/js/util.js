@@ -490,8 +490,10 @@ var utils = {
             group.devices.forEach(function(device) {
                 if (device.deviceid == deviceid) {
                     if (device.devicename != devicename) {
+                        var nameArr = device.devicetitle.split(" ");
+                        nameArr[0] = devicename;
                         device.devicename = devicename;
-                        device.devicetitle = device.devicetitle.split("-")[0] + "-" + devicename;
+                        device.devicetitle = nameArr.join(" ");
                         device.allDeviceIdTitle = device.devicetitle + "-" + deviceid;
                         device.firstLetter = __pinyin.getFirstLetter(devicename)
                         device.pinyin = __pinyin.getPinyin(devicename)
