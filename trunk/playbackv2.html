@@ -584,7 +584,7 @@
         <div class="demo-spin-container" v-if="queryLoading">
             <Spin fix>
                 <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-                <div>查询进度:{{idx}}/{{currentTracksLenth+1}}</div>
+                <!-- <div>查询进度:{{idx}}/{{currentTracksLenth+1}}</div> -->
             </Spin>
         </div>
     </div>
@@ -1639,9 +1639,11 @@
                                 me.filtertracks(records ? records : []);
                                 me.redrawCharts();
                                 me.setTableData();
+                                setTimeout(function() {
+                                    me.getAllNoLoadingTracksAddress();
+                                }, 300)
                                 if (me.getTypeRecords().length > 0) {
                                     me.initMapView();
-                                    me.getAllNoLoadingTracksAddress();
                                 } else {
                                     me.$Message.error(isZh ? "没有轨迹" : "No Tracks");
                                     me.removeAllLayer();
@@ -2074,24 +2076,35 @@
 
                         tracks.forEach(function(track) {
                             var address = LocalCacheMgr.getAddress(track.callon, track.callat);
-                            if (address == null) {
+                            if (address == null || track.address == "点击一键获取" || track.address == 'Click query address') {
                                 filterTracks.push({
                                     lat: track.callat,
                                     lon: track.callon,
                                 })
+                            } else {
+                                track.address = address;
                             }
                         });
 
                         unionPoints = this.unionLonLat(filterTracks);
                         if (unionPoints.length) {
+                            me.queryLoading = true;
                             var url = myUrls.poiBatch();
                             utils.sendAjax(url, {
                                 points: unionPoints
                             }, function(respData) {
-                                console.log(respData);
+                                me.queryLoading = false;
+                                if (respData.status == 0) {
+                                    var points = respData.points;
+                                    points.forEach(function(point) {
+                                        LocalCacheMgr.setAddress(point.lon, point.lat, point.address);
+                                    });
+                                    me.readLocalAddress(tracks);
+                                }
+                            }, function() {
+                                me.queryLoading = false;
                             });
                         }
-                        console.log(unionPoints);
                     },
                     unionLonLat: function(arr) {
                         for (var i = 0; i < arr.length - 1; i++) {
@@ -2105,62 +2118,71 @@
                         return arr;
                     },
                     getAllTracksAddress: function() {
+                        this.getAllNoLoadingTracksAddress();
                         var me = this;
-                        var maxLen = this.currentTracksLenth;
-                        if (maxLen == 0) return;
-                        this.queryLoading = true;
-                        this.idx = 0;
-                        var tracks = this.getTypeRecords();
-                        var hasQueryedLatLon = {};
-                        tracks.forEach(function(track) {
-                            var callon = track.callon;
-                            var callat = track.callat;
-                            var address = LocalCacheMgr.getAddress(track.callon, track.callat);
-                            if (address == null) {
-                                var key = callat + "|" + callon;
-                                if (hasQueryedLatLon[key] == null) {
-                                    hasQueryedLatLon[key] = true;
-                                    (function(track) {
-                                        utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
-                                            if (resp && resp.address) {
-                                                track.address = resp.address;
-                                                LocalCacheMgr.setAddress(track.callon, track.callat, track.address);
-                                            }
-                                            me.idx = me.idx + 1;
-                                            if (me.idx >= maxLen) {
-                                                me.queryLoading = false;
-                                                me.readLocalAddress(tracks);
-                                            }
-                                        }, function(e) {
-                                            me.idx = me.idx + 1;
-                                            if (me.idx >= maxLen) {
-                                                me.queryLoading = false;
-                                                me.readLocalAddress(tracks);
-                                            }
-                                        });
-                                    })(track);
-                                } else {
-                                    me.idx = me.idx + 1;
-                                    if (me.idx >= maxLen) {
-                                        me.queryLoading = false;
-                                        me.readLocalAddress(tracks);
-                                    }
-                                }
-                            } else {
-                                me.idx = me.idx + 1;
-                                if (me.idx >= maxLen) {
-                                    me.queryLoading = false;
-                                    me.readLocalAddress(tracks);
-                                }
-                            }
-                        });
+                        // var maxLen = this.currentTracksLenth;
+                        // if (maxLen == 0) return;
+                        // this.queryLoading = true;
+                        // this.idx = 0;
+                        // var tracks = this.getTypeRecords();
+                        // var hasQueryedLatLon = {};
+                        // tracks.forEach(function(track) {
+                        //     var callon = track.callon;
+                        //     var callat = track.callat;
+                        //     var address = LocalCacheMgr.getAddress(track.callon, track.callat);
+                        //     if (address == null) {
+                        //         var key = callat + "|" + callon;
+                        //         if (hasQueryedLatLon[key] == null) {
+                        //             hasQueryedLatLon[key] = true;
+                        //             (function(track) {
+                        //                 utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
+                        //                     if (resp && resp.address) {
+                        //                         track.address = resp.address;
+                        //                         LocalCacheMgr.setAddress(track.callon, track.callat, track.address);
+                        //                     }
+                        //                     me.idx = me.idx + 1;
+                        //                     if (me.idx >= maxLen) {
+                        //                         me.queryLoading = false;
+                        //                         me.readLocalAddress(tracks);
+                        //                     }
+                        //                 }, function(e) {
+                        //                     me.idx = me.idx + 1;
+                        //                     if (me.idx >= maxLen) {
+                        //                         me.queryLoading = false;
+                        //                         me.readLocalAddress(tracks);
+                        //                     }
+                        //                 });
+                        //             })(track);
+                        //         } else {
+                        //             me.idx = me.idx + 1;
+                        //             if (me.idx >= maxLen) {
+                        //                 me.queryLoading = false;
+                        //                 me.readLocalAddress(tracks);
+                        //             }
+                        //         }
+                        //     } else {
+                        //         me.idx = me.idx + 1;
+                        //         if (me.idx >= maxLen) {
+                        //             me.queryLoading = false;
+                        //             me.readLocalAddress(tracks);
+                        //         }
+                        //     }
+                        // });
                     },
                     readLocalAddress: function(tracks) {
+                        this.tableData.forEach(function(track) {
+                            var callon = track.callon;
+                            var callat = track.callat;
+                            var address = LocalCacheMgr.getAddress(callon, callat);
+                            if (track.address == "点击一键获取" || track.address == 'Click query address') {
+                                track.address = address;
+                            }
+                        });
                         tracks.forEach(function(track) {
                             var callon = track.callon;
                             var callat = track.callat;
                             var address = LocalCacheMgr.getAddress(callon, callat);
-                            if (!track.address) {
+                            if (track.address == "点击一键获取" || track.address == 'Click query address') {
                                 track.address = address;
                             }
                         });
