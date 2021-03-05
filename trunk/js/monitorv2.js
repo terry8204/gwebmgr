@@ -3302,19 +3302,29 @@ var monitor = {
             }
 
         },
-        setIntervalReqRecords: function() {
-            var me = this
-            this.intervalInstanse = setInterval(function() {
-                //dorefreshUI
+        timeoutRefreshMapUI: function() {
+            var me = this;
+            clearTimeout(this.timerTimeout);
+            this.timerTimeout = setTimeout(function() {
                 me.intervalTime % 2 == 0 && me.dorefreshMapUI();
-                me.intervalTime--;
-                if (me.intervalTime <= 0) {
-                    me.intervalTime = me.stateIntervalTime;
+                if (me.intervalTime == me.stateIntervalTime) {
                     me.getLastPosition([], function() {
                         me.dorefreshMapUI();
                     }, function(error) {});
                 }
                 me.intervalTime % 5 == 0 && me.stopVideoPlayer();
+            }, 10);
+        },
+        setIntervalReqRecords: function() {
+            var me = this
+            this.intervalInstanse = setInterval(function() {
+                //dorefreshUI
+                me.intervalTime--;
+                if (me.intervalTime <= 0) {
+                    me.intervalTime = me.stateIntervalTime;
+                }
+                me.timeoutRefreshMapUI();
+
             }, 1000);
         },
         onMousemoveMap: function(e) {
