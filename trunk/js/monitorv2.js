@@ -3473,13 +3473,14 @@ var monitor = {
             );
         },
         getMarkerSymbol: function(track, isShowLabel) {
+
             if (isShowLabel) {
                 return [{
                     'markerFile': this.getCarMarkerImgSrc(track),
                     'markerWidth': 30,
                     'markerHeight': 30,
                     'markerDy': 15,
-                    'markerRotation': -track.course,
+                    'markerRotation': 360 - (track.course || 0),
                     'online': track.online,
                     'moving': track.moving,
                 }, {
@@ -3501,8 +3502,10 @@ var monitor = {
                     'markerWidth': 30,
                     'markerHeight': 30,
                     'markerDy': 15,
-                    'markerRotation': -track.course,
-                    'online': track.online
+                    // 'markerDx': 15,
+                    'markerRotation': 360 - (track.course || 0),
+                    'online': track.online,
+                    'moving': track.moving,
                 }];
             }
         },
@@ -3543,6 +3546,7 @@ var monitor = {
             for (var key in this.positionLastrecords) {
                 var track = this.positionLastrecords[key];
                 var marker = this.createMarker(track).on('mousedown', this.onClickMarker);
+
                 marker.deviceid = key;
                 this.mapAllMarkers[key] = marker;
                 markers.push(marker);
