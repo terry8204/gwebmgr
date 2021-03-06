@@ -3501,11 +3501,13 @@ var monitor = {
                     'markerFile': this.getCarMarkerImgSrc(track),
                     'markerWidth': 30,
                     'markerHeight': 30,
-                    'markerDy': 15,
+                    // 'markerDy': 15,
                     // 'markerDx': 15,
                     'markerRotation': 360 - (track.course || 0),
                     'online': track.online,
                     'moving': track.moving,
+                    "markerHorizontalAlignment": "middle",
+                    "markerVerticalAlignment": "middle",
                 }];
             }
         },
