@@ -1094,22 +1094,23 @@
                             this.carMarker.setSymbol(this.getMarkerSymbol('./images/carstate/0_green_0.png', track.course, 15));
 
                             var sContent = this.getInfoWindowContent(track);
-                            this.carMarker.setInfoWindow({
-                                'content': sContent,
-                                'width': 330,
-                                'autoOpenOn': 'click', //set to null if not to open when clicking on marker
-                                'autoCloseOn': false, //set to null if not to open when clicking on marker
-                                'animation': false,
-                                'autoPan': false,
-                                'animationDuration': 0,
-                            });
+                            this.globalInfoWindow.setContent(sContent);
+                            // this.carMarker.setInfoWindow({
+                            //     'content': sContent,
+                            //     'width': 330,
+                            //     'autoOpenOn': 'click', //set to null if not to open when clicking on marker
+                            //     'autoCloseOn': false, //set to null if not to open when clicking on marker
+                            //     'animation': false,
+                            //     'autoPan': false,
+                            //     'animationDuration': 0,
+                            // });
 
                             if (this.isShowBubble) {
-                                this.carMarker.openInfoWindow();
+                                this.globalInfoWindow.show(point);
+                                // this.carMarker.openInfoWindow();
                             } else {
-                                this.carMarker.closeInfoWindow()
+                                this.globalInfoWindow.hide();
                             }
-
 
 
                             var isOut = this.isOut(point, this.map.getExtent());
@@ -1128,8 +1129,10 @@
                             'markerWidth': 30,
                             'markerHeight': 30,
                             'markerRotation': -markerRotation,
-                            'markerDy': markerDy,
-                            'markerDx': 0,
+                            // 'markerDy': markerDy,
+                            // 'markerDx': 0,
+                            "markerHorizontalAlignment": "middle",
+                            "markerVerticalAlignment": "middle",
                         };
                     },
                     onClickDate(item) {
@@ -1722,6 +1725,7 @@
                         this.carMarker = this.createMarker(tracks[this.currentMarkerIndex], true, './images/carstate/0_green_0.png', 15);
                         this.startMarker = this.createMarker(tracks[0], false, './images/map/marker_qidian.png', 0);
                         this.endMarker = this.createMarker(tracks[tracks.length - 1], false, './images/map/marker_zhongdian.png', 0);
+                        this.carMarker.setZIndex(5555);
 
                         // 创建marker图层并添加到地图    
                         this.markerLayer = new maptalks.VectorLayer('marker', [this.startMarker, this.endMarker, this.carMarker]);
@@ -1736,20 +1740,23 @@
 
 
                         var sContent = this.getInfoWindowContent(tracks[0]);
-                        this.carMarker.setInfoWindow({
-                            'content': sContent,
-                            'width': 330,
-                            'autoOpenOn': 'click', //set to null if not to open when clicking on marker
-                            'autoCloseOn': false, //set to null if not to open when clicking on marker
-                            'animation': false,
-                            'autoPan': false,
-                            'animationDuration': 0,
-                        });
+                        this.globalInfoWindow.setContent(sContent);
+                        // this.carMarker.setInfoWindow({
+                        //     'content': sContent,
+                        //     'width': 330,
+                        //     'autoOpenOn': 'click', //set to null if not to open when clicking on marker
+                        //     'autoCloseOn': false, //set to null if not to open when clicking on marker
+                        //     'animation': false,
+                        //     'autoPan': false,
+                        //     'animationDuration': 0,
+                        // });
 
                         if (this.isShowBubble) {
-                            this.carMarker.openInfoWindow();
+                            // this.carMarker.openInfoWindow();
+                            this.globalInfoWindow.show(this.carMarker.getCoordinates());
                         } else {
-                            this.carMarker.closeInfoWindow()
+                            this.globalInfoWindow.hide();
+                            // this.carMarker.closeInfoWindow()
                         }
 
 
@@ -1824,6 +1831,22 @@
                             satelliteMap: false
                         });
 
+
+                        if (!this.globalInfoWindow) {
+                            var options = {
+                                'content': "<div></div>",
+                                'width': 320,
+                                'autoOpenOn': null,
+                                'autoCloseOn': false,
+                                'animation': false,
+                                'autoPan': false,
+                                'animationDuration': 0,
+                                // 'dx': this.isShowLabel ? -5 : 0,
+                                "dy": -15,
+                            };
+                            this.globalInfoWindow = new maptalks.ui.InfoWindow(options);
+                            this.globalInfoWindow.addTo(this.map);
+                        }
 
 
                         this.lineLayer = new maptalks.VectorLayer('line').addTo(this.map);

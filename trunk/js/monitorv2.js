@@ -1384,6 +1384,23 @@ var monitor = {
             this.map.addControl(customPosition);
             this.addDistanceTool();
 
+
+            if (!this.globalInfoWindow) {
+                var options = {
+                    'content': "<div></div>",
+                    'width': 360,
+                    'autoOpenOn': null,
+                    'autoCloseOn': false,
+                    'animation': false,
+                    'autoPan': false,
+                    'animationDuration': 0,
+                    // 'dx': this.isShowLabel ? -5 : 0,
+                    "dy": -15,
+                };
+                this.globalInfoWindow = new maptalks.ui.InfoWindow(options);
+                this.globalInfoWindow.addTo(this.map);
+            }
+
         },
         addDistanceTool: function() {
             this.distanceTool = new maptalks.DistanceTool({
@@ -2478,28 +2495,25 @@ var monitor = {
             this.currentDeviceType = device.devicetype;
             globalDeviceName = this.currentDeviceName;
             if (track && marker) {
-
                 me.$store.commit('currentDeviceRecord', track);
                 me.map.setCenter(marker.getCoordinates());
                 me.map.setZoom(18);
                 var address = me.getAddress(track, marker);
                 var sContent = me.getInfoWindowContent(track, address);
-                marker.setInfoWindow(sContent);
-                marker.openInfoWindow();
+
+                me.showMapInfoWindow(sContent, marker.getCoordinates());
                 if (globalDeviceId) {
                     var oldMarker = me.mapAllMarkers[globalDeviceId];
                     oldMarker && oldMarker.setZIndex(111);
                 }
                 marker.setZIndex(999);
 
-
                 this.queryCurrentDevReportMileageDetail(deviceid, function(currentDayMileage, track) {
                     if (track.deviceid == globalDeviceId) {
                         track.currentDayMileage = currentDayMileage;
                         var address = me.getAddress(track, marker);
                         var sContent = me.getInfoWindowContent(track, address);
-                        marker.setInfoWindow(sContent);
-                        marker.openInfoWindow();
+                        me.showMapInfoWindow(sContent, marker.getCoordinates());
                     }
                 });
             } else {
@@ -3277,22 +3291,22 @@ var monitor = {
                     }
                     if (deviceid === key) {
                         var copyMarker = marker;
-                        var infoWindow = marker.getInfoWindow();
+                        var infoWindow = this.globalInfoWindow;
                         if (infoWindow && infoWindow.isVisible && infoWindow.isVisible()) {
 
                             var address = me.getAddress(track, marker)
                             var sContent = me.getInfoWindowContent(track, address);
-                            marker.setInfoWindow(sContent);
+                            // marker.setInfoWindow(sContent);
                             marker.setZIndex(999);
-                            marker.openInfoWindow();
+                            // marker.openInfoWindow();
+                            me.showMapInfoWindow(sContent, copyMarker.getCoordinates());
 
                             this.queryCurrentDevReportMileageDetail(deviceid, function(currentDayMileage, track) {
                                 if (track.deviceid == globalDeviceId) {
                                     track.currentDayMileage = currentDayMileage;
                                     var address = me.getAddress(track, copyMarker);
                                     var sContent = me.getInfoWindowContent(track, address);
-                                    copyMarker.setInfoWindow(sContent);
-                                    copyMarker.openInfoWindow();
+                                    me.showMapInfoWindow(sContent, copyMarker.getCoordinates());
                                 }
                             })
                         }
@@ -3599,17 +3613,20 @@ var monitor = {
             this.map.addLayer(this.clusterLayer);
         },
         onClickMarker: function(e) {
+
             var me = this;
             var marker = e.target;
             var deviceid = marker.deviceid;
             var point = marker.getCoordinates();
+
             var track = this.getSingleDeviceInfo(deviceid);
             me.currentDeviceType = vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicetype : 1;
             me.map.setCenter(point);
             var address = me.getAddress(track, marker);
             var sContent = me.getInfoWindowContent(track, address);
-            marker.setInfoWindow(sContent);
-            marker.openInfoWindow();
+
+            me.showMapInfoWindow(sContent, point);
+
             if (globalDeviceId) {
                 var oldMarker = me.mapAllMarkers[globalDeviceId];
                 oldMarker && oldMarker.setZIndex(111);
@@ -3623,26 +3640,16 @@ var monitor = {
                     track.currentDayMileage = currentDayMileage;
                     var address = me.getAddress(track, marker);
                     var sContent = me.getInfoWindowContent(track, address);
-                    marker.setInfoWindow(sContent);
-                    marker.openInfoWindow();
+                    me.showMapInfoWindow(sContent, marker.getCoordinates());
                 }
             });
         },
         getInfoWindowContent: function(track, address) {
             var sContent = utils.getWindowContent(track, address);
-            return {
-                'content': sContent,
-                'width': 360,
-                'autoOpenOn': 'click',
-                'autoCloseOn': false,
-                'animation': false,
-                'autoPan': false,
-                'animationDuration': 0,
-                'dx': this.isShowLabel ? -5 : 0,
-            }
+            return sContent;
         },
         getAddress: function(track, marker) {
-            var that = this;
+            var me = this;
             var callon = track.callon;
             var callat = track.callat;
             var address = LocalCacheMgr.getAddress(callon, callat);
@@ -3658,15 +3665,18 @@ var monitor = {
                 } else if (resp.status == 0 && address) {
 
                     LocalCacheMgr.setAddress(callon, callat, address);
-                    var sContent = that.getInfoWindowContent(track, address);
-                    marker.setInfoWindow(sContent);
-                    marker.openInfoWindow();
+                    var sContent = me.getInfoWindowContent(track, address);
+                    me.showMapInfoWindow(sContent, marker.getCoordinates());
                 } else {
                     console.log('getJiuHuAddressSyn 查询地址失败')
                 }
             });
 
             return "地址正在解析...";
+        },
+        showMapInfoWindow: function(sContent, coordinate) {
+            this.globalInfoWindow.setContent(sContent);
+            this.globalInfoWindow.show(coordinate);
         },
         wsCallback: function(resp) {
             var action = resp.action;
