@@ -1770,3 +1770,9 @@ div.icon_example>span {
 #new-equipment-report .ivu-card-head {
     padding: 6px 16px;
 }
+
+.nowrap {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
