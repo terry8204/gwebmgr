@@ -5266,36 +5266,147 @@ function deviceMonthOnlineDaily(groupslist) {
 function newEquipmentReport() {
     new Vue({
         el: "#new-equipment-report",
+        i18n: utils.getI18n(),
         data: {
             loading: false,
-            columns: [],
+            columns: [{
+                key: 'index',
+                title: '#',
+                width: 80,
+            }, {
+                title: vRoot.$t("alarm.devName"),
+                key: 'devicename',
+            }, {
+                title: vRoot.$t("alarm.devNum"),
+                key: 'deviceid'
+            }, {
+                title: vRoot.$t("user.devType"),
+                key: 'devtype'
+            }, {
+                title: vRoot.$t("bgMgr.addTime"),
+                key: 'createtimestr'
+            }, {
+                title: vRoot.$t("bgMgr.creater"),
+                key: 'creater',
+            }],
             tableData: [],
             tableHeight: 300,
             days: '7',
+            recordRankingArr: [],
+            total: 0,
+            currentIndex: 1,
+        },
+        watch: {
+            days: function() {
+                this.queryAddDevices();
+            }
         },
         methods: {
+            changePage: function(index) {
+                var offset = index * 10;
+                var start = (index - 1) * 10;
+                this.currentPageIndex = index;
+                this.tableData = this.allTableData.slice(start, offset);
+            },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.tableHeight = wHeight - 315;
+                this.tableHeight = wHeight - 360;
             },
-            queryAddDevices: function(params) {
+            setRecordRankingArr: function(recordRanking) {
+                var recordRankingArr = [];
+                for (var key in recordRanking) {
+                    recordRankingArr.push({
+                        creater: key,
+                        count: recordRanking[key]
+                    })
+                }
+                recordRankingArr.sort(function(a, b) {
+                    return b.count - a.count;
+                });
+                if (recordRankingArr.length > 5) {
+                    recordRankingArr.length = 5;
+                }
+                this.recordRankingArr = recordRankingArr;
+            },
+            queryAddDevices: function() {
+                var me = this;
                 var url = myUrls.queryAddDevices();
+                var dates = this.getLatestDate();
                 var data = {
                     offset: timeDifference,
                     days: Number(this.days),
                 };
+                this.loading = true;
+                this.allTableData = [];
+                this.tableData = [];
+                this.recordRankingArr = [];
+                this.currentIndex = 1;
+                this.total = 0;
                 utils.sendAjax(url, data, function(respData) {
-                    console.log(respData);
-                })
+                    me.loading = false;
+                    var devices = respData.devices;
+                    var seriesData = [];
+                    var tableData = [];
+                    var recordRanking = {};
+                    if (respData.status === 0 && devices.length) {
+                        devices.forEach(function(dev, idx) {
+                            var creater = dev.creater;
+                            if (recordRanking[creater]) {
+                                recordRanking[creater] = recordRanking[creater] + 1;
+                            } else {
+                                recordRanking[creater] = 1;
+                            }
+                            tableData.push({
+                                index: idx + 1,
+                                devtype: me.getDevType(dev.devicetype),
+                                createtimestr: DateFormat.longToDateTimeStr(dev.createtime, timeDifference),
+                                devicename: dev.devicename,
+                                deviceid: dev.deviceid,
+                                creater: creater,
+                            })
+                        })
+                        me.total = tableData.length;
+                        me.allTableData = tableData;
+                        if (me.total > 10) {
+                            me.tableData = tableData.slice(0, 10);
+                        } else {
+                            me.tableData = tableData;
+                        }
+                        me.setRecordRankingArr(recordRanking);
+                        dates.forEach(function(date) {
+                            var count = 0;
+                            devices.forEach(function(dev) {
+                                var dateStr = DateFormat.longToDateStr(dev.createtime, timeDifference);
+                                if (date == dateStr) {
+                                    count++;
+                                }
+                            })
+                            seriesData.push(count);
+                        });
+                        me.charts.setOption(me.getChartsOption(dates, seriesData));
+                    }
+                }, function() {
+                    me.loading = false;
+                });
+            },
+            getDevType: function(devicetype) {
+                var devType = "";
+                var item = vstore.state.deviceTypes[devicetype];
+                var label = item.typename;
+                if (item.remark) {
+                    label += "(" + item.remark + ")";
+                }
+                devType = label;
+                return devType;
             },
             initCharts: function() {
                 this.charts = echarts.init(document.getElementById('charts'));
-                this.charts.setOption(this.getChartsOption([]));
+                this.charts.setOption(this.getChartsOption(this.getLatestDate(), []));
             },
-            getChartsOption: function(seriesData) {
+            getChartsOption: function(dates, seriesData) {
                 return {
                     title: {
-                        text: "日新增设备"
+                        text: ""
                     },
                     tooltip: {
                         trigger: 'axis'
@@ -5318,7 +5429,7 @@ function newEquipmentReport() {
                     xAxis: {
                         type: 'category',
                         boundaryGap: false,
-                        data: this.getLatestDate()
+                        data: dates
                     },
                     yAxis: {
                         type: 'value'
@@ -5340,17 +5451,18 @@ function newEquipmentReport() {
                     var dateStr = DateFormat.format(date, 'yyyy-MM-dd');
                     dates.push(dateStr);
                 }
-                console.log(dates);
                 return dates;
             },
         },
         mounted: function() {
             var me = this;
+            this.allTableData = [];
             this.initCharts();
             this.queryAddDevices();
             this.calcTableHeight();
             window.onresize = function() {
                 me.calcTableHeight();
+                me.charts.resize();
             }
         }
     })
@@ -9136,4 +9248,4 @@ var reportForm = {
             me.selectditem('reportNav');
         }
     }
-}
+};

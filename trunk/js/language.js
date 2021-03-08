@@ -326,6 +326,11 @@
                 notSupportCanvas: "Your browser does not support canvas at this time",
             },
             reportForm: {
+                newEquipment: "New added ",
+                qitian: "Seven days",
+                yigeyue: "One month",
+                sangeyue: "Three months",
+                liugeyue: "Six months",
                 ioReport: 'I/O Status Report',
                 menu: 'Menu',
                 selected: 'Selected',
@@ -1541,6 +1546,11 @@
                 notSupportCanvas: "您的浏览器暂不支持canvas",
             },
             reportForm: {
+                newEquipment: "新增设备",
+                qitian: "七天内",
+                yigeyue: "一个月",
+                sangeyue: "三个月",
+                liugeyue: "六个月",
                 ioReport: 'IO报表',
                 menu: '报表导航',
                 selected: '已选中',

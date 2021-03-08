@@ -3,17 +3,40 @@
     <Row style="margin:10px;height: 35px;text-align: center;">
         <i-Col span="24">
             <Radio-Group v-model="days" type="button">
-                <Radio label="7">七天内</Radio>
-                <Radio label="30">一个月</Radio>
-                <Radio label="90">三个月</Radio>
-                <Radio label="180">六个月</Radio>
+                <Radio label="7">{{$t("reportForm.qitian")}}</Radio>
+                <Radio label="30">{{$t("reportForm.yigeyue")}}</Radio>
+                <Radio label="90">{{$t("reportForm.sangeyue")}}</Radio>
+                <Radio label="180">{{$t("reportForm.liugeyue")}}</Radio>
             </Radio-Group>
         </i-Col>
     </Row>
     <div style="width:100%;height: 180px;position: relative;">
-        <div id="charts" style="height: 180px;width: 100%;"></div>
+        <div style="position: absolute;left: 0px;right: 200px;top: 0px;bottom: 0px;">
+            <div id="charts" style="height: 180px;width: 100%;"></div>
+        </div>
+        <div style="position: absolute;;right: 10px;top: 0px;bottom: 0px;width: 190px;">
+            <Card>
+                <p slot="title">{{$t("reportForm.newEquipment")}}Top5</p>
+                <div style="height: 115px;">
+                    <Row v-for="(item,index) in recordRankingArr" style="height: 23px;line-height: 23px;">
+                        <i-Col span="2">
+                            <b>{{index+1}}</b>
+                        </i-Col>
+                        <i-Col span="14">
+                            <span v-text="item.creater"></span>
+                        </i-Col>
+                        <i-Col span="8">
+                            <span v-text="item.count"></span>
+                        </i-Col>
+                    </Row>
+                </div>
+            </Card>
+        </div>
     </div>
     <div style="margin:10px;">
         <i-table ref="totalTable" :columns="columns" :data="tableData" :height="tableHeight" :loading="loading"></i-table>
+    </div>
+    <div style="padding-right:10px;">
+        <Page :total="total" show-total @on-change="changePage" :page-size="10" :current="currentIndex" />
     </div>
 </div>

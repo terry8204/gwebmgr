@@ -1766,3 +1766,7 @@ div.icon_example>span {
     display: inline-block;
     vertical-align: middle;
 }
+
+#new-equipment-report .ivu-card-head {
+    padding: 6px 16px;
+}
