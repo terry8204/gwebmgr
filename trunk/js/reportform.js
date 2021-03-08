@@ -5262,6 +5262,99 @@ function deviceMonthOnlineDaily(groupslist) {
     })
 }
 
+//新增车辆
+function newEquipmentReport() {
+    new Vue({
+        el: "#new-equipment-report",
+        data: {
+            loading: false,
+            columns: [],
+            tableData: [],
+            tableHeight: 300,
+            days: '7',
+        },
+        methods: {
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 315;
+            },
+            queryAddDevices: function(params) {
+                var url = myUrls.queryAddDevices();
+                var data = {
+                    offset: timeDifference,
+                    days: Number(this.days),
+                };
+                utils.sendAjax(url, data, function(respData) {
+                    console.log(respData);
+                })
+            },
+            initCharts: function() {
+                this.charts = echarts.init(document.getElementById('charts'));
+                this.charts.setOption(this.getChartsOption([]));
+            },
+            getChartsOption: function(seriesData) {
+                return {
+                    title: {
+                        text: "日新增设备"
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    // legend: {
+                    //     data: ['新增设备']
+                    // },
+                    grid: {
+                        top: '8%',
+                        left: '4%',
+                        right: '4%',
+                        bottom: '4%',
+                        containLabel: true
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: this.getLatestDate()
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: '新增设备',
+                        type: 'line',
+                        stack: '总量',
+                        data: seriesData
+                    }]
+                };
+            },
+            getLatestDate: function() {
+                var days = Number(this.days);
+                var dates = [];
+                var firstDate = DateFormat.format(new Date(Date.now() - (days - 1) * 24 * 3600 * 1000), 'yyyy-MM-dd');
+                for (var i = 0; i < days; i++) {
+                    var date = DateFormat.addDay(new Date(firstDate), i);
+                    var dateStr = DateFormat.format(date, 'yyyy-MM-dd');
+                    dates.push(dateStr);
+                }
+                console.log(dates);
+                return dates;
+            },
+        },
+        mounted: function() {
+            var me = this;
+            this.initCharts();
+            this.queryAddDevices();
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        }
+    })
+}
 
 function timeWeightConsumption(groupslist) {
     vueInstanse = new Vue({
@@ -8807,6 +8900,7 @@ var reportForm = {
                         { title: me.$t("reportForm.dailyVehicleOnlineRate"), name: 'deviceOnlineDaily', icon: 'md-bulb' },
                         { title: me.$t("reportForm.dailyFleetOnlineRate"), name: 'groupsOnlineDaily', icon: 'md-contacts' },
                         { title: me.$t("reportForm.monthlyVehicleOnlineRate"), name: 'deviceMonthOnlineDaily', icon: 'md-contrast' },
+                        { title: me.$t("reportForm.newAddedDeviceReport"), name: 'newEquipmentReport', icon: 'md-add' },
                     ]
                 },
                 {
@@ -8947,6 +9041,9 @@ var reportForm = {
                         break;
                     case 'devicemonthonlinedaily.html':
                         deviceMonthOnlineDaily(groupslist);
+                        break;
+                    case 'newequipmentreport.html':
+                        newEquipmentReport();
                         break;
                     case 'timeoilconsumption.html':
                         timeOilConsumption(groupslist);

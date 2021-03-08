@@ -873,6 +873,9 @@ var myUrls = {
     poiBatch: function() {
         return 'https://www.gps51.com/webapi?action=poibatch&token=' + token;
     },
+    queryAddDevices: function() {
+        return 'https://www.gps51.com/webapi?action=queryadddevices&token=' + token;
+    },
 }
 
 
