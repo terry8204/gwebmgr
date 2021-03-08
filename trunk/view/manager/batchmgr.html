@@ -157,11 +157,11 @@
                 </i-col>
             </Row>
             <Row v-if="showBatchModalType == 4">
-                <i-col span="4" offset="4" style="line-height: 32px;">
+                <i-col span="4" offset="2" style="line-height: 32px;">
                     {{$t('user.devType')}}:
                 </i-col>
-                <i-col span="12">
-                    <i-select v-model="deviceType">
+                <i-col span="16">
+                    <i-select v-model="deviceType" style="width: 100%;">
                         <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
                     </i-select>
                 </i-col>
@@ -918,7 +918,7 @@
                             }
                             me.deviceTypeList.push({
                                 value: item.devicetypeid,
-                                label: item.typename
+                                label: item.typename + "(" + item.remark + ")"
                             });
                         })
 
