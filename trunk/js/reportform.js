@@ -5363,8 +5363,12 @@ function newEquipmentReport() {
                                 devicename: dev.devicename,
                                 deviceid: dev.deviceid,
                                 creater: creater,
+                                createtime: dev.createtime,
                             })
-                        })
+                        });
+                        tableData.sort(function(a, b) {
+                            return b.createtime - a.createtime;
+                        });
                         me.total = tableData.length;
                         me.allTableData = tableData;
                         if (me.total > 10) {
@@ -5438,7 +5442,8 @@ function newEquipmentReport() {
                         name: '新增设备',
                         type: 'line',
                         stack: '总量',
-                        data: seriesData
+                        data: seriesData,
+                        smooth: true,
                     }]
                 };
             },
