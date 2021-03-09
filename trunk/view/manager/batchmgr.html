@@ -25,10 +25,10 @@
         <Row>
             <i-col span="6" style="padding: 10px;">
                 <div class="icon_example">
-                    <span class="user_icon"></span><span>用户</span>
-                    <span class="group_icon"></span><span>分组</span>
-                    <span class="device_icon"></span><span>普通设备</span>
-                    <span class="video_icon"></span><span>视频设备</span>
+                    <span class="user_icon"></span><span>{{$t("bgMgr.user")}}</span>
+                    <span class="group_icon"></span><span>{{$t("bgMgr.group")}}</span>
+                    <span class="device_icon"></span><span>{{$t("bgMgr.ordinaryDev")}}</span>
+                    <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span> 
                 </div>
                 <div style="height: 35px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>

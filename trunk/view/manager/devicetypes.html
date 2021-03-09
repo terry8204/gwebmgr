@@ -25,32 +25,30 @@
                     oldtypename: null,
                     tableHeight: 100,
                     columns: [
-
                         {
-                            title: '类型名称',
+                            title: vRoot.$t("bgMgr.typename"),
                             key: 'typename',
                             width: 120,
                         }, {
-                            title: '通信协议',
+                            title: vRoot.$t("bgMgr.typecode"),
                             key: 'typecode',
                             width: 120,
                         }, {
-                            title: '序号长度',
+                            title: vRoot.$t("bgMgr.idLength"),
                             key: 'defaultidlength',
                             width: 100,
                         }, {
-                            title: '备注(中文)',
+                            title: vRoot.$t("bgMgr.remarkzh"),
                             key: 'remark',
                         }, {
-                            title: '备注(英文)',
+                            title: vRoot.$t("bgMgr.remarken"),
                             key: 'remarken',
                         }, {
-                            title: '功能',
+                            title: vRoot.$t("bgMgr.functions"),
                             key: 'functions',
                             render: function(h, params) {
                                 var children = [];
                                 var functionslong = params.row.functionslong;
-                                // var functionsLong = vueInstanse.setFunctionsLong(params.row.functionslong);
                                 vueInstanse.functionsDesc.forEach(function(item) {
                                     if (utils.hasFunction(functionslong, item.mask)) {
                                         children.push(h('Checkbox', {
@@ -58,7 +56,7 @@
                                                 label: item.mask,
                                                 value: true,
                                             }
-                                        }, item.functionname))
+                                        }, isZh ? item.functionname :item.functionnameen ))
                                     }
 
                                 })

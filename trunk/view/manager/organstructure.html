@@ -9,10 +9,10 @@
         <div style="position: absolute;top:30px;left:0;right: 0px;bottom: 0px;border: 1px solid #e3e3e3;">
             <div style="position: absolute;top:0px;left:0;bottom: 0px;width: 300px;border-right: 1px solid #e3e3e3;">
                 <div class="icon_example" style="margin-top:5px;text-align: center;">
-                    <span class="user_icon"></span><span>用户</span>
-                    <span class="group_icon"></span><span>分组</span>
-                    <span class="device_icon"></span><span>普通设备</span>
-                    <span class="video_icon"></span><span>视频设备</span>
+                    <span class="user_icon"></span><span>{{$t("bgMgr.user")}}</span>
+                    <span class="group_icon"></span><span>{{$t("bgMgr.group")}}</span>
+                    <span class="device_icon"></span><span>{{$t("bgMgr.ordinaryDev")}}</span>
+                    <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span> 
                 </div>
                 <div style="padding: 0 5px 5px 5px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
