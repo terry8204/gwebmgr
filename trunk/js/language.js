@@ -738,6 +738,10 @@
                 remarkzh: 'Remark(ZH)',
                 remarken: 'Remark(EN)',
                 functions: 'Functions',
+                deleteUser: 'Delete User',
+                deleteGroup: 'Delete Group',
+                deleteDevice: 'Delete Device',
+                refreshArchitecture: 'Refresh',
             },
             customer: {
                 kehuName: "Customer name",
@@ -1259,7 +1263,7 @@
                 deleteSucc: "删除成功",
                 deleteFail: "删除失败",
                 noAuthority: "没有权限",
-                confirmDel: "确定要删除吗?",
+                confirmDel: "确定要删除吗?",  
                 confirmDelHintCharge: "重新添加需重新续费,确定要删除吗?",
                 selectCustomersTip: "请选择所属客户",
                 fillGroupNameTip: "填写分组名称",
@@ -1970,7 +1974,10 @@
                 remarkzh: '备注(中文)',
                 remarken: '备注(英文)',
                 functions: '功能',
-
+                deleteUser: '删除用户',
+                deleteGroup: '删除分组',
+                deleteDevice: '删除设备',
+                refreshArchitecture: '刷新架构',
             },
             customer: {
                 kehuName: "客户名称",

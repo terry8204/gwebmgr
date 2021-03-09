@@ -23,7 +23,7 @@
             </div>
             <div style="position: absolute;top:0px;left:300px;bottom: 0px;right: 0px;">
                 <div v-if="selectType =='user'">
-                    <div style="margin-left: 20px;width: 700px;">
+                    <div style="margin-left: 20px;width: 740px;">
                         <Row style="margin: 10px 0">
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
                                 <i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
@@ -158,7 +158,7 @@
                     </Row>
                 </div>
                 <div v-if="selectType =='device'">
-                    <div style="width:700px;margin-left: 20px;">
+                    <div style="width:740px;margin-left: 20px;">
                         <Row style="margin: 10px 0" v-if="userType < 4">
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
                             <i-col span="8">
@@ -326,24 +326,24 @@
                 </div>
                 <div style="position: absolute;bottom:0px;left:0px;right: 0px;height: 45px;border-top: 1px solid #e3e3e3;">
                     <div style="width: 100%;height: 100%;line-height: 45px;display: flex;justify-content: center;align-items: center;" v-show="selectType =='user'">
-                        <i-button type="primary" @click="addUser" style="margin: 0 10px;">添加用户</i-button>
-                        <i-button type="primary" @click="addGroup" style="margin: 0 10px;">添加分组</i-button>
-                        <Poptip trigger="click" title="确定要删除吗?" confirm @on-ok="deleteUser">
-                            <i-button type="error" style="margin: 0 10px;">删除用户</i-button>
+                        <i-button type="primary" @click="addUser" style="margin: 0 10px;">{{$t("bgMgr.addUser")}}</i-button>
+                        <i-button type="primary" @click="addGroup" style="margin: 0 10px;">{{$t("bgMgr.addGroup")}}</i-button>
+                        <Poptip trigger="click" :title="$t('message.confirmDel')" confirm @on-ok="deleteUser">
+                            <i-button type="error" style="margin: 0 10px;">{{$t("bgMgr.deleteUser")}}</i-button>  
                         </Poptip>
-                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">刷新架构</i-button>
+                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">{{$t("bgMgr.refreshArchitecture")}}</i-button>  
                     </div>
                     <div style="width: 100%;height: 100%;line-height: 45px;display: flex;justify-content: center;align-items: center;" v-show="selectType =='group'">
-                        <Poptip trigger="click" title="确定要删除吗?" confirm @on-ok="deleteGroup">
-                            <i-button :disabled="selectedGroupId==0" type="error" style="margin: 0 10px;">删除分组</i-button>
+                        <Poptip trigger="click" :title="$t('message.confirmDel')" confirm @on-ok="deleteGroup">
+                            <i-button :disabled="selectedGroupId==0" type="error" style="margin: 0 10px;">{{$t("bgMgr.deleteGroup")}}</i-button>
                         </Poptip>
-                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">刷新架构</i-button>
+                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">{{$t("bgMgr.refreshArchitecture")}}</i-button>
                     </div>
                     <div style="width: 100%;height: 100%;line-height: 45px;display: flex;justify-content: center;align-items: center;" v-show="selectType =='device'">
-                        <Poptip trigger="click" title="确定要删除吗?" confirm @on-ok="deleteDevice">
-                            <i-button type="error" style="margin: 0 10px;">删除设备</i-button>
+                        <Poptip trigger="click" :title="$t('message.confirmDel')" confirm @on-ok="deleteDevice">
+                            <i-button type="error" style="margin: 0 10px;">{{$t("bgMgr.deleteDevice")}}</i-button>
                         </Poptip>
-                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">刷新架构</i-button>
+                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">{{$t("bgMgr.refreshArchitecture")}}</i-button>
                     </div>
                 </div>
             </div>
