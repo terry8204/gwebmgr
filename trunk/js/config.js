@@ -876,6 +876,9 @@ var myUrls = {
     queryAddDevices: function() {
         return this.apihosts + 'webapi?action=queryadddevices&token=' + token;
     },
+    queryOnlineStatisticsDay: function() {
+        return this.apihosts + 'webapi?action=queryonlinestatisticsday&token=' + token;
+    },
 }
 
 

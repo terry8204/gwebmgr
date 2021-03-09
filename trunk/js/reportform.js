@@ -5590,6 +5590,91 @@ function deviceTypeDistribution(groupslist){
     })
 }
 
+
+function onlineStatisticsDay(){
+    new Vue({
+        el:"#online-statistics-day",
+        methods:{
+            queryOnlineStatisticsDay:function(){
+                var me = this;
+                var url = myUrls.queryOnlineStatisticsDay();
+                var data = {};
+                utils.sendAjax(url,data,function(respData){
+                    console.log('respData',respData);
+                    if(respData.status == 0){
+                        me.initCharts(respData.records);
+                    }else{
+                        me.initCharts([]);
+                    }
+                },function(){
+                    me.initCharts([]);
+                })
+            },
+            getChartsOption: function(dates, seriesData) {
+                return {
+                    title: {
+                        text: vRoot.$t("reportForm.onlineStatisticsDay")
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    // legend: {
+                    //     data: ['新增设备']
+                    // },
+                    grid: {
+                        top: '8%',
+                        left: '4%',
+                        right: '4%',
+                        bottom: '4%',
+                        containLabel: true
+                    },
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: dates
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: '上线设备',
+                        type: 'line',
+                        stack: '总量',
+                        data: seriesData,
+                        smooth: true,
+                    }]
+                };
+            },
+            initCharts:function(records){
+                var me = this;
+                var datas = [];
+                var seriesData = [];
+
+                records.forEach(function(record){
+                    datas.push(record.statisticsday);
+                    seriesData.push(record.count);
+                });
+
+                this.charts = echarts.init(document.getElementById('statistics-charts'));
+                this.charts.setOption(this.getChartsOption(datas, seriesData));
+
+                window.onresize = function() {
+                    me.charts.resize();
+                }
+            }
+        },
+        mounted:function(){
+     
+            this.queryOnlineStatisticsDay();
+        },
+    })
+}
+
 function timeWeightConsumption(groupslist) {
     vueInstanse = new Vue({
         el: "#time-weight-consumption",
@@ -9136,6 +9221,7 @@ var reportForm = {
                         { title: me.$t("reportForm.monthlyVehicleOnlineRate"), name: 'deviceMonthOnlineDaily', icon: 'md-contrast' },
                         { title: me.$t("reportForm.newAddedDeviceReport"), name: 'newEquipmentReport', icon: 'md-add' },
                         { title: me.$t("reportForm.deviceTypeDistribution"), name: 'deviceTypeDistribution', icon: 'ios-git-merge' },
+                        { title: me.$t("reportForm.onlineStatisticsDay"), name: 'onlineStatisticsDay', icon: 'ios-trending-up' }, 
                     ]  
                 },
                 {
@@ -9282,6 +9368,9 @@ var reportForm = {
                         break;
                     case 'devicetypedistribution.html':
                         deviceTypeDistribution(groupslist);
+                        break;
+                    case 'onlinestatisticsday.html':
+                        onlineStatisticsDay(groupslist);
                         break;
                     case 'timeoilconsumption.html':
                         timeOilConsumption(groupslist);
