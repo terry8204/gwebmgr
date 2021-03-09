@@ -5476,11 +5476,8 @@ function newEquipmentReport() {
 function deviceTypeDistribution(groupslist){
     new Vue({
         el:"#distribution",
-        data:{
-
-        },
         methods:{
-            getChartsOption: function() {
+            getChartsOption: function(data) {
                 var option = {
                     title: {
                         text: vRoot.$t("reportForm.deviceTypeDistribution"),
@@ -5490,8 +5487,13 @@ function deviceTypeDistribution(groupslist){
                         trigger: 'item'
                     },
                     legend: {
+                        type: 'scroll',
                         orient: 'vertical',
-                        left: 'right',
+                        right: 10,
+                        top: 20,
+                        bottom: 20,
+                        data: data.legendData,
+
                     },
                     grid: {
                         top: 5,
@@ -5502,7 +5504,7 @@ function deviceTypeDistribution(groupslist){
                     series: [{
                         type: 'pie',
                         radius: '70%',
-                        data: this.getSeriesData(),
+                        data: data.seriesData,
                         emphasis: {
                             itemStyle: {
                                 shadowBlur: 10,
@@ -5528,14 +5530,21 @@ function deviceTypeDistribution(groupslist){
                 });
 
                 var seriesData = [];
+                var legendData = [];
+
                 for(var key in totalDeviceCountObj){
+                    var name = this.getDevType(key);
                     seriesData.push({
                         value:totalDeviceCountObj[key],
-                        name:this.getDevType(key),
+                        name:name,
                     })
+                    legendData.push(name);
                 }
 
-                return seriesData;
+                return {
+                    seriesData:seriesData,
+                    legendData:legendData,
+                };
             },
             getDevType: function(devicetype) {
                 var devType = "";
@@ -5549,7 +5558,7 @@ function deviceTypeDistribution(groupslist){
             },
             initCharts:function(){
                 this.charts = echarts.init(document.getElementById('distribution'));
-                this.charts.setOption(this.getChartsOption());
+                this.charts.setOption(this.getChartsOption(this.getSeriesData()));
             },
         },
         mounted:function(){
