@@ -18,17 +18,13 @@
             <Card>
                 <p slot="title">{{$t("reportForm.newEquipment")}}Top5</p>
                 <div style="height: 115px;">
-                    <Row v-for="(item,index) in recordRankingArr" style="height: 23px;line-height: 23px;">
-                        <i-Col span="2">
-                            <b>{{index+1}}</b>
-                        </i-Col>
-                        <i-Col span="14">
-                            <span v-text="item.creater" class="nowrap"></span>
-                        </i-Col>
-                        <i-Col span="8">
-                            <span v-text="item.count"></span>
-                        </i-Col>
-                    </Row>
+                    <table border="0" cellspacing="0" style="width: 100%;" bordercolor="#CCCCCC">
+                        <tr v-for="(item,index) in recordRankingArr" style="height: 23px;line-height: 23px;">
+                            <td>{{index + 1}}</td>
+                            <td v-text="item.creater" class="nowrap"></td>
+                            <td v-text="item.count"></td>
+                        </tr>
+                    </table>
                 </div>
             </Card>
         </div>

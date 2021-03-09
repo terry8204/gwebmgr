@@ -1135,6 +1135,18 @@
                             "markerVerticalAlignment": "middle",
                         };
                     },
+                    getPrakMarkerSymbol: function(markerFile, markerRotation, markerDy) {
+                        return {
+                            'markerFile': markerFile,
+                            'markerWidth': 30,
+                            'markerHeight': 30,
+                            'markerRotation': -markerRotation,
+                            'markerDy': markerDy,
+                            'markerDx': 0,
+                            // "markerHorizontalAlignment": "middle",
+                            // "markerVerticalAlignment": "middle",
+                        };
+                    },
                     onClickDate(item) {
                         if (!item.isTheMonth) return;
                         this.date = item.day;
@@ -2014,7 +2026,7 @@
 
                         return new maptalks.Marker(
                             pointArr, {
-                                symbol: this.getMarkerSymbol(markerFile, isRotate ? track.course : 0, markerRotation),
+                                symbol: isRotate ? this.getMarkerSymbol(markerFile, track.course, markerRotation) :this.getPrakMarkerSymbol(markerFile, 0, markerRotation),
                             }
                         );
                     },
