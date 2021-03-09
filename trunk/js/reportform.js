@@ -5473,6 +5473,95 @@ function newEquipmentReport() {
     })
 }
 
+function deviceTypeDistribution(groupslist){
+    new Vue({
+        el:"#distribution",
+        data:{
+
+        },
+        methods:{
+            getChartsOption: function() {
+                var option = {
+                    title: {
+                        text: vRoot.$t("reportForm.deviceTypeDistribution"),
+                        bottom: 'auto'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'right',
+                    },
+                    grid: {
+                        top: 5,
+                        left: 5,
+                        right: 5,
+                        bottom: 5,
+                    },
+                    series: [{
+                        type: 'pie',
+                        radius: '70%',
+                        data: this.getSeriesData(),
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }]
+                };
+                return option
+            },   
+            getSeriesData:function(){
+                var totalDeviceCountObj = {};
+                groupslist.forEach(function(group){
+                    group.devices.forEach(function(device){
+                        var devicetype = device.devicetype;
+                        if(totalDeviceCountObj[devicetype]){
+                            totalDeviceCountObj[devicetype] += 1;
+                        }else{
+                            totalDeviceCountObj[devicetype] = 1;
+                        }
+                    });
+                });
+
+                var seriesData = [];
+                for(var key in totalDeviceCountObj){
+                    seriesData.push({
+                        value:totalDeviceCountObj[key],
+                        name:this.getDevType(key),
+                    })
+                }
+
+                return seriesData;
+            },
+            getDevType: function(devicetype) {
+                var devType = "";
+                var item = vstore.state.deviceTypes[devicetype];
+                var label = item.typename;
+                if (item.remark) {
+                    label += "(" + item.remark + ")";
+                }
+                devType = label;
+                return devType;
+            },
+            initCharts:function(){
+                this.charts = echarts.init(document.getElementById('distribution'));
+                this.charts.setOption(this.getChartsOption());
+            },
+        },
+        mounted:function(){
+            var me = this;
+            this.initCharts();
+            window.onresize = function() {
+                me.charts.resize();
+            }
+        },
+    })
+}
+
 function timeWeightConsumption(groupslist) {
     vueInstanse = new Vue({
         el: "#time-weight-consumption",
@@ -9018,7 +9107,8 @@ var reportForm = {
                         { title: me.$t("reportForm.dailyFleetOnlineRate"), name: 'groupsOnlineDaily', icon: 'md-contacts' },
                         { title: me.$t("reportForm.monthlyVehicleOnlineRate"), name: 'deviceMonthOnlineDaily', icon: 'md-contrast' },
                         { title: me.$t("reportForm.newAddedDeviceReport"), name: 'newEquipmentReport', icon: 'md-add' },
-                    ]
+                        { title: me.$t("reportForm.deviceTypeDistribution"), name: 'deviceTypeDistribution', icon: 'ios-git-merge' },
+                    ]  
                 },
                 {
                     title: me.$t("reportForm.oilReport"),
@@ -9161,6 +9251,9 @@ var reportForm = {
                         break;
                     case 'newequipmentreport.html':
                         newEquipmentReport();
+                        break;
+                    case 'devicetypedistribution.html':
+                        deviceTypeDistribution(groupslist);
                         break;
                     case 'timeoilconsumption.html':
                         timeOilConsumption(groupslist);
