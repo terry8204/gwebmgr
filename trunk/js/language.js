@@ -164,6 +164,7 @@
                 retain: 'Retain',
             },
             monitor: {
+                notRealtime:"Not Realtime", 
                 camera: 'Take Photo',
                 resolvingPower: 'Resolving power',
                 cameraChannel: 'Capture channel',
@@ -1384,6 +1385,7 @@
                 retain: '保留',
             },
             monitor: {
+                notRealtime:"非实时",
                 camera: '抓拍',
                 resolvingPower: '分辨率',
                 cameraChannel: '抓拍通道',
