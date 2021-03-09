@@ -5487,12 +5487,14 @@ function deviceTypeDistribution(groupslist){
                         trigger: 'item'
                     },
                     legend: {
-                        type: 'scroll',
+                        // type: 'scroll',
+                        // orient: 'vertical',
+                        // right: 10,
+                        // top: 20,
+                        // bottom: 20,
+                        // data: data.legendData,
                         orient: 'vertical',
-                        right: 10,
-                        top: 20,
-                        bottom: 20,
-                        data: data.legendData,
+                        left: 'right',
 
                     },
                     grid: {
@@ -5533,24 +5535,33 @@ function deviceTypeDistribution(groupslist){
                 var legendData = [];
 
                 for(var key in totalDeviceCountObj){
-                    var name = this.getDevType(key);
+                    var nameRemark = this.getDevType(key,true);
                     seriesData.push({
                         value:totalDeviceCountObj[key],
-                        name:name,
+                        name:nameRemark,
                     })
-                    legendData.push(name);
                 }
+
+                seriesData.sort(function(a,b){
+                    return b.value - a.value;
+                })
+
+                seriesData.forEach(function(series){
+                    legendData.push(series.name);
+                });
+
+
 
                 return {
                     seriesData:seriesData,
                     legendData:legendData,
                 };
             },
-            getDevType: function(devicetype) {
+            getDevType: function(devicetype,isShowMarker) {
                 var devType = "";
                 var item = vstore.state.deviceTypes[devicetype];
                 var label = item.typename;
-                if (item.remark) {
+                if (isShowMarker && item.remark) {
                     label += "(" + item.remark + ")";
                 }
                 devType = label;
