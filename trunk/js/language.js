@@ -305,9 +305,9 @@
                 deviceOffline: 'Device offline',
                 deviceNotVideo: 'The device is not a video player',
                 notEnabled: " [Store] ",
-                deviceDisabled: " [<span style='color:red;'>已禁用</span>] ",
-                deviceExpiration: " [<span style='color:red;'>设备到期</span>] ",
-                deviceExpired: " [<span style='color:red;'>设备过期</span>] ",
+                deviceDisabled: " [<span style='color:red;'>Disabled</span>] ",
+                deviceExpiration: " [<span style='color:red;'>Expire</span>] ",
+                deviceExpired: " [<span style='color:red;'>Overdue</span>] ",
                 loginName: 'Login Name'
             },
             video: {
