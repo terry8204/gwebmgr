@@ -5484,18 +5484,20 @@ function deviceTypeDistribution(groupslist){
                         bottom: 'auto'
                     },
                     tooltip: {
-                        trigger: 'item'
+                        trigger: 'item',
+                        formatter:function(name){
+                            return name.data.name + '<br/>' +  name.data.value + '<br/>' +  name.data.remark;
+                        }
                     },
                     legend: {
-                        // type: 'scroll',
-                        // orient: 'vertical',
-                        // right: 10,
-                        // top: 20,
-                        // bottom: 20,
-                        // data: data.legendData,
+                        type: 'scroll',
                         orient: 'vertical',
-                        left: 'right',
-
+                        right: 10,
+                        top: 20,
+                        bottom: 20,
+                        data: data.legendData,
+                        // orient: 'vertical',
+                        // left: 'right',
                     },
                     grid: {
                         top: 5,
@@ -5535,10 +5537,11 @@ function deviceTypeDistribution(groupslist){
                 var legendData = [];
 
                 for(var key in totalDeviceCountObj){
-                    var nameRemark = this.getDevType(key,true);
+                    var nameObj = this.getDevType(key);
                     seriesData.push({
                         value:totalDeviceCountObj[key],
-                        name:nameRemark,
+                        name: nameObj.name,
+                        remark:nameObj.remark
                     })
                 }
 
@@ -5557,15 +5560,18 @@ function deviceTypeDistribution(groupslist){
                     legendData:legendData,
                 };
             },
-            getDevType: function(devicetype,isShowMarker) {
-                var devType = "";
+            getDevType: function(devicetype) {
                 var item = vstore.state.deviceTypes[devicetype];
-                var label = item.typename;
-                if (isShowMarker && item.remark) {
-                    label += "(" + item.remark + ")";
+                var typename = item.typename;
+                var remark = "";
+                if (item.remark) {
+                    remark=  item.remark ;
                 }
-                devType = label;
-                return devType;
+
+                return {
+                    name:typename,
+                    remark:remark,
+                };
             },
             initCharts:function(){
                 this.charts = echarts.init(document.getElementById('distribution'));
