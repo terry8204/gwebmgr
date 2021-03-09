@@ -5357,7 +5357,6 @@ function newEquipmentReport() {
                                 recordRanking[creater] = 1;
                             }
                             tableData.push({
-                                index: idx + 1,
                                 devtype: me.getDevType(dev.devicetype),
                                 createtimestr: DateFormat.longToDateTimeStr(dev.createtime, timeDifference),
                                 devicename: dev.devicename,
@@ -5368,6 +5367,9 @@ function newEquipmentReport() {
                         });
                         tableData.sort(function(a, b) {
                             return b.createtime - a.createtime;
+                        });                           
+                        tableData.forEach(function(item,idx){
+                            item.index = idx + 1;
                         });
                         me.total = tableData.length;
                         me.allTableData = tableData;
