@@ -1888,7 +1888,11 @@ var monitor = {
                 } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                     that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
+                    var device = vstore.state.deviceInfos[globalDeviceId];
                     resp.overdueDateStr = DateFormat.longToDateStr(resp.expirenotifytime, timeDifference);
+                    resp.deviceTypeStr = that.getDeviceTypeStr(device.devicetype);
+                    resp.creater = device.creater;
+                    resp.groupname = utils.getGroupName(that.groups,globalDeviceId);  
                     that.deviceBaseInfo = resp;
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                     that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
@@ -1900,6 +1904,16 @@ var monitor = {
                 that.loading = false;
                 that.$Message.error(that.$t('monitor.queryFail'));
             })
+        },
+        getDeviceTypeStr:function(devicetype){
+            var devType = "";
+            var item = vstore.state.deviceTypes[devicetype];
+            var label = item.typename;
+            if (item.remark) {
+                label += "(" + item.remark + ")";
+            }
+            devType = label;
+            return devType;
         },
         handleClickTransferDeviceGroup: function(groupid) {
             var url = myUrls.batchOperate(),

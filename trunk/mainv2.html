@@ -2139,7 +2139,7 @@
                             <Row>
                                 <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.customer")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.companyname}}
+                                    {{deviceBaseInfo.creater}}
                                 </i-col>
                             </Row>
                             <Row>
@@ -2158,6 +2158,12 @@
                                 <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.devName")}} : &nbsp;</i-col>
                                 <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
                                     {{deviceBaseInfo.devicename}}
+                                </i-col>
+                            </Row>
+                            <Row>
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.platformType")}} : &nbsp;</i-col>
+                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                    {{deviceBaseInfo.deviceTypeStr}}
                                 </i-col>
                             </Row>
                             <Row>
