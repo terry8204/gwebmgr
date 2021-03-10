@@ -140,6 +140,7 @@
             height: 32px;
             position: relative;
             padding: 0 11px;
+            overflow: hidden;
         }
         
         div.selected-map-list {
@@ -429,16 +430,16 @@
             </div>
             <div class="map-selector-popup" v-show="isShowMapList" :style="mapSelectorPopupSty">
                 <div v-if="false" class="MapSelector_item_193IR" :class="{'map_icon_xiansu_off':!isShowXianSu,'map_icon_xiansu_on':isShowXianSu}" style="width:35px" @click="isShowXianSu=!isShowXianSu">
-                    <div class="map_selector_icon_text no_selected_icon">限速</div>
+                    <div class="map_selector_icon_text no_selected_icon">{{speed}}</div>
                 </div>
                 <div class="MapSelector_item_193IR" :class="{'map_icon_traffic_off':!isShowTraffic,'map_icon_traffic_on':isShowTraffic}" style="width:35px" @click="isShowTraffic=!isShowTraffic">
-                    <div class="map_selector_icon_text no_selected_icon">路况</div>
+                    <div class="map_selector_icon_text no_selected_icon">{{traffic}}</div>
                 </div>
                 <div class="MapSelector_item_193IR normal-map" @click="isSatelliteMap=false">
-                    <div class="map_selector_icon_text" :class="{'selected_icon':!isSatelliteMap,'no_selected_icon':isSatelliteMap}">地图</div>
+                    <div class="map_selector_icon_text" :class="{'selected_icon':!isSatelliteMap,'no_selected_icon':isSatelliteMap}">{{map}}</div>
                 </div>
                 <div class="MapSelector_item_193IR satellite-map" @click="isSatelliteMap=true">
-                    <div class="map_selector_icon_text" :class="{'selected_icon':isSatelliteMap,'no_selected_icon':!isSatelliteMap}">卫星</div>
+                    <div class="map_selector_icon_text" :class="{'selected_icon':isSatelliteMap,'no_selected_icon':!isSatelliteMap}">{{satellite}}</div>
                 </div>
             </div>
         </div>
@@ -654,9 +655,13 @@
                             label: isZh ? "谷歌地图" : "GoogleMap",
                             value: "gMap"
                         }, {
-                            label: isZh ? "高德地图" : "AlibabaMap",
+                            label: isZh ? "高德地图" : "AMap",
                             value: "aMap"
                         }, ],
+                        speed: isZh ? "限速" : "Speed",
+                        traffic: isZh ? "路况" : "Traffic",
+                        map: isZh ? "地图" : "Map",
+                        satellite: isZh ? "卫星" : "Satellite",
                         currentMapIndex: 0,
                         mapType: mapType
                     }

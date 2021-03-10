@@ -199,8 +199,12 @@ Vue.component('selected-map', {
             mapSelectorList: [
                 { label: isZh ? "百度地图" : "BaiduMap", value: "bMap" },
                 { label: isZh ? "谷歌地图" : "GoogleMap", value: "gMap" },
-                { label: isZh ? "高德地图" : "AlibabaMap", value: "aMap" },
+                { label: isZh ? "高德地图" : "AMap", value: "aMap" },
             ],
+            speed: isZh ? "限速" : "Speed",
+            traffic: isZh ? "路况" : "Traffic",
+            map: isZh ? "地图" : "Map",
+            satellite: isZh ? "卫星" : "Satellite",
             currentMapIndex: 0,
         }
     },

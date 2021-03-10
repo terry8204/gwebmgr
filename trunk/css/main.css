@@ -365,6 +365,7 @@ div.selected-map-inner {
     height: 32px;
     position: relative;
     padding: 0 11px;
+    overflow: hidden;
 }
 
 div.selected-map-list {

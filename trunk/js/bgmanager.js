@@ -283,6 +283,9 @@ var bgManager = {
         filterNavFunctions: function name(currentUserType) {
             var filterNavList = [];
             var allNavList = this.getAllNavList();
+            if(!isZh){
+                allNavList.pop();
+            };
             allNavList.forEach(function name(category) {
                 var copyCategory = deepClone(category);
                 if (category.children) {
@@ -303,6 +306,7 @@ var bgManager = {
         }
     },
     mounted: function() {
+       
         this.userType = Number(vstore.state.userType);
         this.filterNavFunctions(this.userType);
         this.selectditem('bgNav');

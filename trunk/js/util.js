@@ -721,7 +721,6 @@ var utils = {
                 //没设置油杆的时候显示原始ad值
                 oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
             };
-        console.log('oilStr',oilStr);
         return oilStr;
     },
     getWindowContent: function(track, b_address) {
