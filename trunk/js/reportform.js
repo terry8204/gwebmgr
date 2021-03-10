@@ -5594,13 +5594,17 @@ function deviceTypeDistribution(groupslist){
 function onlineStatisticsDay(){
     new Vue({
         el:"#online-statistics-day",
+        data:{
+            isSpin:false,
+        },
         methods:{
             queryOnlineStatisticsDay:function(){
                 var me = this;
                 var url = myUrls.queryOnlineStatisticsDay();
                 var data = {};
+                me.isSpin = true;
                 utils.sendAjax(url,data,function(respData){
-                    console.log('respData',respData);
+                    me.isSpin = false;
                     if(respData.status == 0){
                         me.initCharts(respData.records);
                     }else{
@@ -5608,6 +5612,8 @@ function onlineStatisticsDay(){
                     }
                 },function(){
                     me.initCharts([]);
+                    me.isSpin = false;
+                    me.$Message.error(vRoot.$t("monitor.queryFail"));
                 })
             },
             getChartsOption: function(dates, seriesData) {

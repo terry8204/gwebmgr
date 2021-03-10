@@ -1401,7 +1401,7 @@
                 impactRollover: '碰撞侧翻报警触发',
                 retain: '保留',
             },
-            monitor: {
+            monitor: {  
                 notRealtime:"非实时",
                 camera: '抓拍',
                 resolvingPower: '分辨率',
