@@ -2177,55 +2177,6 @@
                     },
                     getAllTracksAddress: function() {
                         this.getAllNoLoadingTracksAddress(true);
-                        var me = this;
-                        // var maxLen = this.currentTracksLenth;
-                        // if (maxLen == 0) return;
-                        // this.queryLoading = true;
-                        // this.idx = 0;
-                        // var tracks = this.getTypeRecords();
-                        // var hasQueryedLatLon = {};
-                        // tracks.forEach(function(track) {
-                        //     var callon = track.callon;
-                        //     var callat = track.callat;
-                        //     var address = LocalCacheMgr.getAddress(track.callon, track.callat);
-                        //     if (address == null) {
-                        //         var key = callat + "|" + callon;
-                        //         if (hasQueryedLatLon[key] == null) {
-                        //             hasQueryedLatLon[key] = true;
-                        //             (function(track) {
-                        //                 utils.getJiuHuAddressSyn(track.callon, track.callat, function(resp) {
-                        //                     if (resp && resp.address) {
-                        //                         track.address = resp.address;
-                        //                         LocalCacheMgr.setAddress(track.callon, track.callat, track.address);
-                        //                     }
-                        //                     me.idx = me.idx + 1;
-                        //                     if (me.idx >= maxLen) {
-                        //                         me.queryLoading = false;
-                        //                         me.readLocalAddress(tracks);
-                        //                     }
-                        //                 }, function(e) {
-                        //                     me.idx = me.idx + 1;
-                        //                     if (me.idx >= maxLen) {
-                        //                         me.queryLoading = false;
-                        //                         me.readLocalAddress(tracks);
-                        //                     }
-                        //                 });
-                        //             })(track);
-                        //         } else {
-                        //             me.idx = me.idx + 1;
-                        //             if (me.idx >= maxLen) {
-                        //                 me.queryLoading = false;
-                        //                 me.readLocalAddress(tracks);
-                        //             }
-                        //         }
-                        //     } else {
-                        //         me.idx = me.idx + 1;
-                        //         if (me.idx >= maxLen) {
-                        //             me.queryLoading = false;
-                        //             me.readLocalAddress(tracks);
-                        //         }
-                        //     }
-                        // });
                     },
                     readLocalAddress: function(tracks) {
                         this.tableData.forEach(function(track) {
@@ -2318,6 +2269,11 @@
                             posiType += "(" + info.gpsvalidnum + ")";
                         };
 
+                        var oilStr = '';
+                        if(utils.hasFunction(Number(functionslong), 0x0200)){
+                            oilStr = utils.getOilStr(info);
+                        };
+
                         var deviceid = "'" + this.deviceid + "'";
                         var speed = info.speed == 0 ? "0km/h" : (info.speed / 1000).toFixed(2) + "km/h";
                         var recorderspeed = info.recorderspeed == 0 ? "0km/h" : (info.recorderspeed / 1000).toFixed(2) + "km/h";
@@ -2331,6 +2287,7 @@
                             '<p><span class="window_title">' + (isZh ? '总里程数' : 'Mileage') + '</span>: ' + (info.totaldistance == 0 ? 0 : info.totaldistance) + 'km</p>' +
                             '<p><span class="window_title">' + (isZh ? '最后时间' : 'Last time') + '</span>: ' + DateFormat.longToDateTimeStr(info.updatetime, timeDifference) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
+                            (oilStr !== '' ? '<p>' + oilStr + '</p>' : '') +
                             (parkingTime > 60 * 1000 * 5 ? '<p><span class="window_title">' + (isZh ? '停留时间' : 'Parking time') + '</span>: ' + utils.timeStamp(parkingTime) + '</p>' : '') +
                             '<p class="last-address"> ' + address + '</p>' +
                             '<p>' +

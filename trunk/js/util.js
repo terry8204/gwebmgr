@@ -654,55 +654,7 @@ var utils = {
 
         return statusStr + " " + (weight / 10) + 'Kg(' + srcWeightAd0 + ')';
     },
-    getWindowContent: function(track, b_address) {
-        var strstatus = '';
-        var posiType = this.getPosiType(track);
-        if (isZh) {
-            var stralarm = track.stralarm;
-            strstatus = track.strstatus ? track.strstatus : '';
-            if (stralarm) {
-                strstatus += '<span style="color:red;">' + stralarm + '</span>';
-            }
-        } else {
-            var stralarmen = track.stralarmen;
-            strstatus = track.strstatusen ? track.strstatusen : '';
-            if (stralarm) {
-                strstatus += '<span style="color:red;">' + stralarmen + '</span>';
-            }
-        }
-        if (track.radius > 0) {
-            var radiuDesc = null;
-            if (isZh) {
-                radiuDesc = ' (误差范围:' + track.radius + '米)';
-            } else {
-                radiuDesc = ' (Error range:' + track.radius + 'm)';
-            }
-            posiType += radiuDesc;
-        };
-        if (track.gotsrc === 'gps' && track.gpsvalidnum) {
-            posiType += "(" + track.gpsvalidnum + ")";
-
-        };
-
-        var status = track.status; //status&0x04 代表定位有效
-        if ((status & 0x04) != 0x04) {
-            if (track.gotsrc === 'gps') {
-                posiType += " <span style='color:#515A6E; display: inline-block;height:18px;padding:0 2px; background:#FFF9E6;border:1px solid #FFD77A;border-radius: 3px;'>"+vRoot.$t('monitor.notRealtime')+"<span>"
-            }
-        }
-
-        if (isZh) {
-            var isOnineStr = utils.getIsOnline(track) ? "在线" : "离线" + utils.timeStampNoSecond(Date.now() - track.updatetime);
-        } else {
-            var isOnineStr = utils.getIsOnline(track) ? "online" : "offline" + utils.timeStampNoSecond(Date.now() - track.updatetime);
-        };
-        var speed = track.speed <= 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
-        var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
-        var deviceid = "'" + track.deviceid + "'";
-        var extendsBtns = this.getIsAddExtendBtns(),
-            extendsStr = '',
-            videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
-        this.videoState = videoState;
+    getOilStr:function(track){
         var oilStr = '';
         var srcad0 = track.srcad0;
         var srcad1 = track.srcad1;
@@ -715,7 +667,7 @@ var utils = {
         var thirdoil = track.thirdoil / 100;
         var fourthoil = track.fourthoil / 100;
 
-        if (extendsBtns.oil) {
+  
             if ((totalOil > 0) ||
                 (masteroil > 0) ||
                 (auxoil > 0) ||
@@ -769,11 +721,71 @@ var utils = {
                 //没设置油杆的时候显示原始ad值
                 oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
             };
+        console.log('oilStr',oilStr);
+        return oilStr;
+    },
+    getWindowContent: function(track, b_address) {
+        var strstatus = '';
+        var posiType = this.getPosiType(track);
+        if (isZh) {
+            var stralarm = track.stralarm;
+            strstatus = track.strstatus ? track.strstatus : '';
+            if (stralarm) {
+                strstatus += '<span style="color:red;">' + stralarm + '</span>';
+            }
+        } else {
+            var stralarmen = track.stralarmen;
+            strstatus = track.strstatusen ? track.strstatusen : '';
+            if (stralarm) {
+                strstatus += '<span style="color:red;">' + stralarmen + '</span>';
+            }
         }
+        if (track.radius > 0) {
+            var radiuDesc = null;
+            if (isZh) {
+                radiuDesc = ' (误差范围:' + track.radius + '米)';
+            } else {
+                radiuDesc = ' (Error range:' + track.radius + 'm)';
+            }
+            posiType += radiuDesc;
+        };
+        if (track.gotsrc === 'gps' && track.gpsvalidnum) {
+            posiType += "(" + track.gpsvalidnum + ")";
+
+        };
+
+        var status = track.status; //status&0x04 代表定位有效
+        if ((status & 0x04) != 0x04) {
+            if (track.gotsrc === 'gps') {
+                posiType += " <span style='color:#515A6E; display: inline-block;height:18px;padding:0 2px; background:#FFF9E6;border:1px solid #FFD77A;border-radius: 3px;'>"+vRoot.$t('monitor.notRealtime')+"<span>"
+            }
+        }
+
+        var oilStr = '';
+
+       
+
+        if (isZh) {
+            var isOnineStr = utils.getIsOnline(track) ? "在线" : "离线" + utils.timeStampNoSecond(Date.now() - track.updatetime);
+        } else {
+            var isOnineStr = utils.getIsOnline(track) ? "online" : "offline" + utils.timeStampNoSecond(Date.now() - track.updatetime);
+        };
+        var speed = track.speed <= 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
+        var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
+        var deviceid = "'" + track.deviceid + "'";
+        var extendsBtns = this.getIsAddExtendBtns(),
+            extendsStr = '',
+            videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
+        this.videoState = videoState;
+        
 
         var loadstatusStr = null;
         if (track.loadstatus >= 0) {
             loadstatusStr = this.getLoadStatus(track);
+        }
+
+        if (extendsBtns.oil) {
+            oilStr = this.getOilStr(track);
         }
 
         var temp = this.getTemperature(isZh, track);

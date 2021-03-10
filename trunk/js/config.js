@@ -926,6 +926,7 @@ var baiduTextUrlTemplate = 'https://gps51.com/fbaidumap/tile/?qt=tile&x={x}&y={y
 // var googleSatelliteUrlTemplate = 'http://mt{s}.google.cn/vt?lyrs=y@186&hl=zh_CN&scale=2&gl=cn&x={x}&y={y}&z={z}';
 // var googleTrafficUrlTemplate = 'https://rtt2c.map.qq.com/rtt/?z={z}&x={x}&y={y}&times=1&time={time}';
 
+
 var googleNormalUrlTemplate = 'http://minigps.net/vt?lyrs=m@189&scale=2&gl=cn&x={x}&y={y}&z={z}';
 var googleSatelliteUrlTemplate = 'http://minigps.net/vt?lyrs=y@189&scale=2&gl=cn&x={x}&y={y}&z={z}';
 var googleTrafficUrlTemplate = 'https://rtt2c.map.qq.com/rtt/?z={z}&x={x}&y={y}&times=1&time={time}';
