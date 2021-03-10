@@ -814,7 +814,7 @@ var utils = {
             deviceid +
             ')">' + (isZh ? '跟踪' : 'Follow') + '</span><span class="map-window-btn" onclick="refreshPostion(' +
             deviceid +
-            ')">' + (isZh ? '刷新位置' : 'RefreshPosi') + '</span><span class="map-window-btn" onclick="openSim(' +
+            ')">' + (isZh ? '刷新位置' : 'Refresh') + '</span><span class="map-window-btn" onclick="openSim(' +
             deviceid +
             ')">SIM</span><span class="map-window-btn" onclick="setFence(' +
             deviceid +
