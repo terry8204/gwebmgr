@@ -2271,7 +2271,7 @@
 
                         var oilStr = '';
                         if(utils.hasFunction(Number(functionslong), 0x0200)){
-                            oilStr = utils.getOilStr(info);
+                            oilStr = this.getOilStr(info);
                         };
 
                         var deviceid = "'" + this.deviceid + "'";
@@ -2305,6 +2305,67 @@
                             '<p class="last-address"> ' + (isZh ? '详细地址' : 'Address') + ': ' + 'address' + '</p>' +
                             '</div>';
                         return sContent
+                    },
+                    getOilStr:function(track){
+                        var oilStr = '';
+  
+                        var totalOil = track.totalad / 100;
+                        var masteroil = track.ad0 / 100;
+                        var auxoil = track.ad1 / 100;
+                        var thirdoil = track.ad2 / 100;
+                        var fourthoil = track.ad3 / 100;
+
+                
+                            if ((totalOil > 0) ||
+                                (masteroil > 0) ||
+                                (auxoil > 0) ||
+                                (thirdoil > 0) ||
+                                (fourthoil > 0)) {
+                                var isNotFirst = false;
+                                oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ';
+                  
+                                if (totalOil > 0) {
+                                    oilStr += totalOil.toFixed(0) + "LT";
+                                    isNotFirst = true;
+                                }
+                                if (masteroil > 0) {
+                                    if (isNotFirst) {
+                                        isNotFirst = true;
+                                        oilStr += '/';
+                                    }
+                                    oilStr += masteroil.toFixed(0) + "L1";
+                                }
+
+                                if (auxoil > 0) {
+                                    if (isNotFirst) {
+                                        isNotFirst = true;
+                                        oilStr += '/';
+                                    }
+                                    oilStr += auxoil.toFixed(0) + "L2";
+
+                                }
+                                if (thirdoil > 0) {
+                                    if (isNotFirst) {
+                                        isNotFirst = true;
+                                        oilStr += '/';
+
+                                    }
+                                    oilStr += thirdoil.toFixed(0) + "L3";
+
+                                }
+
+                                if (fourthoil > 0) {
+                                    if (isNotFirst) {
+                                        isNotFirst = true;
+                                        oilStr += '/';
+
+                                    }
+                                    oilStr += fourthoil.toFixed(0) + "L4";
+
+                                }
+              
+                            }
+                        return oilStr;
                     },
                     addDistanceTool: function() {
                         this.distanceTool = new maptalks.DistanceTool({
