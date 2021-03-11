@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="./favicon.ico" />
-    <title>电子围栏</title>
+    <title>loading...</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <link rel="stylesheet" href="./maptalks/maptalks.css">
     <style>
@@ -610,8 +610,8 @@
             <div class="controller-inner">
                 <Row style="padding:0 0 10px 0">
                     <i-col :span="24">
-                        <span>设备名称:{{devicename}}</span> &nbsp;&nbsp;&nbsp;
-                        <span>设备序号:{{deviceid}}</span>
+                        <span>{{ isZh ? '设备名称' : 'Device Name'}}:{{devicename}}</span> &nbsp;&nbsp;&nbsp;
+                        <span>{{ isZh ? '设备序号' : 'ID'}}:{{deviceid}}</span>
                     </i-col>
                 </Row>
                 <div style="padding:0 0 10px 0;overflow: hidden;">
@@ -625,7 +625,7 @@
                         <i-button @click="areaModal" style="width:80px;" icon="md-add">{{isZh ? '区域' : 'Area'}}</i-button>
                     </div>
                     <div style="float: left;width: 20%;text-align:center;">
-                        <i-button @click="addRoutePlanningTip" style="width:80px;" icon="md-add">{{isZh ? '路线' : 'Route planning'}}</i-button>
+                        <i-button @click="addRoutePlanningTip" style="width:80px;" icon="md-add">{{isZh ? '路线' : 'Route'}}</i-button>
                     </div>
                     <div style="float: left;width: 20%;text-align:center;">
                         <i-button @click="openDrawer">{{isZh ? '系统围栏' : 'sFence'}}</i-button>
@@ -646,7 +646,7 @@
             <div class="area-ctrl" v-show="isCircular">
                 <Row>
                     <i-col v-if="isZh" :span="24" style="padding:10px;text-align:center;">
-                        <h3>{{isEidt?'编辑围栏':'新增围栏'}} - 半径:{{radius}}米</h3>
+                        <h3>{{isEidt?'编辑围栏':'新增围栏'}} - 半径:{{radius}}{{isZh ? '米':'m'}}</h3>
                     </i-col>
                     <i-col v-else :span="24" style="padding:10px;text-align:center;">
                         <h3>{{isEidt?'Edit fence':'Adit fence'}} - Radius:{{radius}}metre</h3>
@@ -692,7 +692,7 @@
                         1 、 Please click on the map to select the starting and ending points and draw the route
                     </i-col>
                     <i-col span="4" style="text-align: center;line-height: 38px;">
-                        <i-button size="small" type="error" @click="queryRoutePlanning">结束</i-button>
+                        <i-button size="small" type="error" @click="queryRoutePlanning">{{isZh?'结束':'End'}}</i-button>
                     </i-col>
                 </Row>
                 <Row style="padding: 10px">
@@ -705,25 +705,25 @@
                 </Row>
                 <Row style="padding: 10px">
                     <i-col :span="6" style="text-align:right;line-height:32px;">
-                        {{isZh ? '偏离距离' : '偏离距离'}}:
+                        {{isZh ? '偏离距离' : 'Deviation'}}:
                     </i-col>
                     <i-col :span="16">
                         <input-number v-model.number="distance5" :min="0" style="width: 100%;"></input-number>
                     </i-col>
                     <i-col :span="2" style="line-height:32px;">
-                        米
+                        {{isZh ? '米' : 'm'}}
                     </i-col>
                 </Row>
                 <Row style="padding: 10px">
                     <i-col :span="6" style="text-align:right;line-height:32px;">
-                        {{isZh ? '报警类型' : '报警类型'}}:
+                        {{isZh ? '报警类型' : 'Alarm Type'}}:
                     </i-col>
                     <i-col :span="16">
                         <i-select v-model="alarmtype5">
-                            <i-option value="1">偏离线路持续报警</i-option>
-                            <i-option value="2">驶入线路持续报警</i-option>
-                            <i-option value="3">偏离线路报警一次</i-option>
-                            <i-option value="4">驶入线路报警一次</i-option>
+                            <i-option value="1">{{isZh ? '偏离线路持续报警' : 'Deviation continuous alarm'}}</i-option>
+                            <i-option value="2">{{isZh ? '驶入线路持续报警' : 'Drive in continuous alarm'}}</i-option>
+                            <i-option value="3">{{isZh ? '偏离线路报警一次' : 'Deviation alarm once'}}</i-option>
+                            <i-option value="4">{{isZh ? '驶入线路报警一次' : 'Drive in the alarm once'}}</i-option>
                         </i-select>
                     </i-col>
                 </Row>
@@ -835,8 +835,8 @@
     <script src="./maptalks/maptalks.min.js"></script>
     <script>
         var isZh = utils.locale === 'zh';
+        document.title = isZh ? "电子围栏" : "Fence";
         iview.lang(isZh ? 'zh-CN' : 'en-US');
-
         var deviceid = utils.getParameterByName("deviceid");
         var token = utils.getParameterByName("token");
         var lat = utils.getParameterByName("lat");
@@ -921,7 +921,7 @@
                             return false;
                         }
                     }
-                }, "添加") : null,
+                }, isZh ? "添加" : "Add") : null,
             ]);
         }
 

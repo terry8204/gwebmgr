@@ -42,6 +42,9 @@
             background: url('./images/streetmap80.png') no-repeat;
             background-size: cover;
         }
+        div.anchorBL a{
+            display: none;
+        }
     </style>
 </head>
 
@@ -55,7 +58,8 @@
         var panorama = null;
         var lon = getParameterByName("lon");
         var lat = getParameterByName("lat");
-
+        var marker = null;
+        var panoramaService = new BMap.PanoramaService();
         function getParameterByName(name) {
             var url = location.search
             url = decodeURIComponent(url)
@@ -71,7 +75,7 @@
         };
 
         function setPanorama(lon, lat) {
-            var panoramaService = new BMap.PanoramaService();
+           
             panoramaService.getPanoramaByLocation(new BMap.Point(lon, lat), function(data) {
                 if (data == null) {
                     alert("该位置暂时没有街景");
@@ -102,6 +106,10 @@
             });
             mapInstance.addControl(mapTypeControl);
 
+
+            mapInstance.addEventListener('click', function (e) {
+                marker.setPosition(e.point);
+            });
         }
 
 
@@ -146,11 +154,8 @@
             divWrap.style.height = "35px";
             divWrap.className = "jiejing";
             divWrap.onclick = function(e) {
-                if (panorama !== null) {
-                    panorama.show();
-                } else {
-                    alert("该位置暂时没有街景");
-                }
+                
+                setPanorama(marker.point.lng,marker.point.lat)
 
             };
             mapInstance.getContainer().appendChild(divWrap);
@@ -167,7 +172,7 @@
 
         function addOverlay() {
             var point = new BMap.Point(lon, lat);
-            var marker = new BMap.Marker(point, {});
+            marker = new BMap.Marker(point, {});
             mapInstance.addOverlay(marker);
         }
 

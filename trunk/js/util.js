@@ -818,7 +818,7 @@ var utils = {
             deviceid +
             ')">SIM</span><span class="map-window-btn" onclick="setFence(' +
             deviceid +
-            ')">' + (isZh ? '设置围栏' : 'SetFence') + '</span>';
+            ')">' + (isZh ? '设置围栏' : 'Set Fence') + '</span>';
 
         // <span class="map-window-btn" onclick="setPanorama(' +deviceid + ')">' + (isZh ? '查看街景' : 'Panorama') + '</span>
 

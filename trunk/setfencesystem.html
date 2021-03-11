@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="./favicon.ico" />
-    <title>系统围栏</title>
+    <title>loading...</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
     <link rel="stylesheet" href="./maptalks/maptalks.css">
     <style>
@@ -242,33 +242,36 @@
         div.maptalks-attribution {
             display: none;
         }
+        [v-cloak]{
+            display: none;
+        }
     </style>
 </head>
 
 <body>
-    <div id="container">
+    <div id="container" v-cloak>
         <div id="controller">
             <div class="controller-inner">
                 <div style="height:41px">
                     <Row>
                         <i-col :span="6" style="text-align:center;">
-                            <i-button style="width:80px;" @click="drawCircular" icon="md-add">圆</i-button>
+                            <i-button style="width:80px;" @click="drawCircular" icon="md-add">{{isZh?"圆":"Circle"}}</i-button>
                         </i-col>
                         <i-col :span="6" style="text-align:center;">
-                            <i-button style="width:80px;" @click="drawPolygon" icon="md-add">多边形</i-button>
+                            <i-button style="width:80px;" @click="drawPolygon" icon="md-add">{{isZh?"多边形":"Polygon"}}</i-button>
                         </i-col>
                         <i-col :span="6" style="text-align:center;">
-                            <i-button style="width:80px;" @click="addRoutePlanningTip" icon="md-add">路线</i-button>
+                            <i-button style="width:80px;" @click="addRoutePlanningTip" icon="md-add">{{isZh?"路线":"Route"}}</i-button>
                         </i-col>
                         <i-col :span="6" style="text-align:center;">
-                            <i-button style="width:80px;" icon="md-add" @click="openClassModal">分类</i-button>
+                            <i-button style="width:80px;" icon="md-add" @click="openClassModal">{{isZh?"路线":"Classify"}}</i-button>
                         </i-col>
                     </Row>
                 </div>
                 <div class="search-box" style="width:100%">
                     <Row style="width:100%">
                         <i-col :span="24">
-                            <i-input style="width:100%;" v-model="searchValue" suffix="ios-search" placeholder="搜索"></i-input>
+                            <i-input style="width:100%;" v-model="searchValue" suffix="ios-search" :placeholder="isZh?'搜索':'Search'"></i-input>
                         </i-col>
                     </Row>
                 </div>
@@ -285,16 +288,21 @@
         </div>
         <transition name="el-zoom-in-top">
             <div class="area-ctrl" v-show="isCircular">
-                <Row>
+                <Row v-if="isZh">
                     <i-col :span="24" style="padding:10px;text-align:center;">
-                        <h3>{{isEidt?'编辑':'添加'}}圆 - 半径:{{radius}}米</h3>
+                        <h3>{{isEdit?'编辑':'添加'}}圆 - 半径:{{radius}}米</h3>
+                    </i-col>
+                </Row>
+                <Row v-else>
+                    <i-col :span="24" style="padding:10px;text-align:center;">
+                        <h3>{{isEdit?'Edit':'Add'}}Circle - radius:{{radius}}m</h3>
                     </i-col>
                 </Row>
             </div>
         </transition>
 
         <transition name="el-zoom-in-top">
-            <div class="area-ctrl" v-show="isPolygon">
+            <div v-if="isZh" class="area-ctrl" v-show="isPolygon">
                 <Row>
                     <i-col :span="24" style="padding:10px;text-align:center;">
                         <h3>添加多边形</h3>
@@ -306,19 +314,31 @@
                     </i-col>
                 </Row>
             </div>
+            <div v-else class="area-ctrl" v-show="isPolygon">
+                <Row>
+                    <i-col :span="24" style="padding:10px;text-align:center;">
+                        <h3>Add Polygon</h3>
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col :span="22" offset="2" style="padding:10px 0 10px 0;">
+                        1 、 Move the mouse to the map, click to start drawing, double-click to end drawing
+                    </i-col>
+                </Row>
+            </div>
         </transition>
 
         <transition name="el-zoom-in-top">
             <div class="area-ctrl" v-show="isRoutePlanning">
                 <Row>
                     <i-col v-if="isZh" :span="24" style="padding:10px;text-align:center;">
-                        <h3>{{ isEidt ? "编辑路线":"添加路线" }}</h3>
+                        <h3>{{ isEdit ? "编辑路线":"添加路线" }}</h3>
                     </i-col>
                     <i-col v-else :span="24" style="padding:10px;text-align:center;">
-                        <h3>{{ isEidt ? "Edit line":"Add line" }}</h3>
+                        <h3>{{ isEdit ? "Edit line":"Add line" }}</h3>
                     </i-col>
                 </Row>
-                <Row v-show="!isEidt">
+                <Row v-show="!isEdit">
                     <i-col v-if="isZh" :span="18" offset="2" style="padding:10px 0 10px 0;">
                         1 、 请在地图上点击选择起止点,绘制线路
                     </i-col>
@@ -326,7 +346,7 @@
                         1 、 Please click on the map to select the starting and ending points and draw the route
                     </i-col>
                     <i-col span="4" style="text-align: center;line-height: 38px;">
-                        <i-button size="small" type="error" @click="queryRoutePlanning">结束</i-button>
+                        <i-button size="small" type="error" @click="queryRoutePlanning">{{isZh ? "结束" : "End"}}</i-button>
                     </i-col>
                 </Row>
                 <Row style="padding: 10px">
@@ -337,9 +357,9 @@
                         <i-input v-model.trim="geoName"></i-input>
                     </i-col>
                 </Row>
-                <Row style="padding: 10px" v-if="!isEidt">
+                <Row style="padding: 10px" v-if="!isEdit">
                     <i-col :span="6" style="text-align:right;line-height:32px;">
-                        选择分类:
+                        {{isZh ? '选择分类' : 'Classify'}}:
                     </i-col>
                     <i-col :span="16">
                         <i-select v-model="classId" style="width: 100%;">
@@ -349,25 +369,25 @@
                 </Row>
                 <Row style="padding: 10px">
                     <i-col :span="6" style="text-align:right;line-height:32px;">
-                        {{isZh ? '偏离距离' : '偏离距离'}}:
+                        {{isZh ? '偏离距离' : 'Deviation'}}:
                     </i-col>
                     <i-col :span="16">
                         <input-number v-model.number="distance5" :min="0" style="width: 100%;"></input-number>
                     </i-col>
                     <i-col :span="2" style="line-height:32px;">
-                        米
+                        {{isZh ? '米' : 'm'}}
                     </i-col>
                 </Row>
                 <Row style="padding: 10px">
                     <i-col :span="6" style="text-align:right;line-height:32px;">
-                        {{isZh ? '报警类型' : '报警类型'}}:
+                        {{isZh ? '报警类型' : 'Alarm Type'}}:
                     </i-col>
                     <i-col :span="16">
                         <i-select v-model="alarmtype5">
-                            <i-option value="1">偏离线路持续报警</i-option>
-                            <i-option value="2">驶入线路持续报警</i-option>
-                            <i-option value="3">偏离线路报警一次</i-option>
-                            <i-option value="4">驶入线路报警一次</i-option>
+                            <i-option value="1">{{isZh ? '偏离线路持续报警' : 'Deviation continuous alarm'}}</i-option>
+                            <i-option value="2">{{isZh ? '驶入线路持续报警' : 'Drive in continuous alarm'}}</i-option>
+                            <i-option value="3">{{isZh ? '偏离线路报警一次' : 'Deviation alarm once'}}</i-option>
+                            <i-option value="4">{{isZh ? '驶入线路报警一次' : 'Drive in the alarm once'}}</i-option>
                         </i-select>
                     </i-col>
                 </Row>
@@ -379,24 +399,24 @@
             </div>
         </transition>
 
-        <Modal v-model="addClassModal" width="400" title="添加分类">
+        <Modal v-model="addClassModal" width="400" :title="isZh?'添加分类':'Add Classify'">
             <Row style="padding: 10px">
                 <i-col :span="6" style="text-align:center;line-height:32px;">
-                    类型名称:
+                    {{isZh ? '类型名称' : 'Classify Name'}}:
                 </i-col>
                 <i-col :span="16">
                     <i-input v-model.trim="typeName"></i-input>
                 </i-col>
             </Row>
             <div slot="footer" style="text-align:center;">
-                <i-button style="width:80%;" @click="handleAddType">确定</i-button>
+                <i-button style="width:80%;" @click="handleAddType">{{isZh ? '确定' : 'confirm'}}</i-button>
             </div>
         </Modal>
 
-        <Modal v-model="addPolygonModal" width="400" title="添加围栏" :mask-closable="false">
+        <Modal v-model="addPolygonModal" width="400" :title="isZh?'添加围栏':'Add Fence'" :mask-closable="false">
             <Row style="padding: 10px">
                 <i-col :span="6" style="text-align:center;line-height:32px;">
-                    围栏名称:
+                    {{isZh ? '围栏名称' : 'Fence Name'}}:
                 </i-col>
                 <i-col :span="16">
                     <i-input v-model.trim="geoName"></i-input>
@@ -404,7 +424,7 @@
             </Row>
             <Row style="padding: 10px">
                 <i-col :span="6" style="text-align:center;line-height:32px;">
-                    选择类型:
+                    {{isZh ? '选择类型' : 'Selected Type'}}:
                 </i-col>
                 <i-col :span="16">
                     <i-select v-model="classId" style="width: 100%;">
@@ -413,7 +433,7 @@
                 </i-col>
             </Row>
             <div slot="footer" style="text-align:center;">
-                <i-button style="width:80%;" @click="handleAddPolygon">确定</i-button>
+                <i-button style="width:80%;" @click="handleAddPolygon">{{isZh ? '确定' : 'confirm'}}</i-button>
             </div>
         </Modal>
     </div>
@@ -461,6 +481,7 @@
 
     <script>
         var isZh = utils.locale === 'zh';
+        document.title = isZh ? '系统围栏' : 'System Fence';
         iview.lang(isZh ? 'zh-CN' : 'en-US');
         var token = utils.getParameterByName("token");
         var map = null;
@@ -514,9 +535,14 @@
                         click: function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            var content = data.children ? "确定要删除分类吗?" : "确定要删除围栏吗?";
+                            var content =  "";
+                            if(data.children){
+                                content = isZh ? "确定要删除分类吗":"Are you sure you want to delete the category?";
+                            }else{
+                                content = isZh ? "确定要删除围栏吗":"Are you sure you want to delete the fence?";
+                            }
                             vRoot.$Modal.confirm({
-                                title: "温馨提示",
+                                title: isZh ? "温馨提示" : "Tips",
                                 content: content,
                                 onOk: function() {
                                     if (data.children) {
@@ -563,7 +589,7 @@
                                 // vRoot.cancelSelected();
                                 // rowData = data;
                                 // if (data.children) return;
-                                // vRoot.isEidt = true;
+                                // vRoot.isEdit = true;
 
                                 // switch (data.type) {
                                 //     case 1:
@@ -598,7 +624,7 @@
                             vRoot.isCircular = false;
                             vRoot.modal = false;
                             vRoot.isPolygon = false;
-                            vRoot.isEidt = true;
+                            vRoot.isEdit = true;
                             vRoot.geoName = data.name;
                             vRoot.distance5 = data.distance5;
                             vRoot.alarmtype5 = String(data.alarmtype5);
@@ -620,9 +646,14 @@
                         click: function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            var content = data.children ? "确定要删除分类吗?" : "确定要删除围栏吗?";
+                            var content =  "";
+                            if(data.children){
+                                content = isZh ? "确定要删除分类吗":"Are you sure you want to delete the category?";
+                            }else{
+                                content = isZh ? "确定要删除围栏吗":"Are you sure you want to delete the fence?";
+                            }
                             vRoot.$Modal.confirm({
-                                title: "温馨提示",
+                                title: isZh ? "温馨提示" : "Tips",
                                 content: content,
                                 onOk: function() {
                                     if (data.children) {
@@ -750,7 +781,7 @@
                 el: "#container",
                 data: {
                     searchValue: "",
-                    isEidt: false,
+                    isEdit: false,
                     map: null,
                     typeName: '',
                     classId: "",
@@ -775,7 +806,7 @@
                 methods: {
                     addRoutePlanning: function() {
                         var me = this;
-                        if (me.isEidt) {
+                        if (me.isEdit) {
                             var url = myUrls.editGeoSystemRecord();
                             var data = deepClone(rowData);
                             data.name = this.geoName;
@@ -1004,7 +1035,7 @@
                         me.endCoordinate = null;
                         me.routePlanningCoordinates = [];
                         this.map.on('click', function(e) {
-                            if (me.isRoutePlanning && me.isLoadRoutePlanning == false && me.isEidt == false) {
+                            if (me.isRoutePlanning && me.isLoadRoutePlanning == false && me.isEdit == false) {
                                 if (me.startCoordinate == null) {
                                     me.wgs84Points == null
                                     me.routePlanningCoordinates = [];
@@ -1258,7 +1289,7 @@
                                 }
                             });
                         } else {
-                            me.$Message.error('请最少添加2个坐标点');
+                            me.$Message.error(isZh?'请最少添加2个坐标点':'Please add at least 2 coordinate points');
                         }
 
                     },
@@ -1339,15 +1370,15 @@
                                     record.render = treeItemRender;
                                     me.originalData.push(record);
                                     me.treeData = me.originalData;
-                                    me.$Message.success("添加成功");
+                                    me.$Message.success(isZh?"添加成功":"Added successfully");
                                     me.addClassModal = false;
                                     me.typeName = '';
                                 } else {
-                                    me.$Message.error("添加失败");
+                                    me.$Message.error(isZh?"添加失败":"Add failed");
                                 }
                             });
                         } else {
-                            this.$Message.error("请填写类型名称");
+                            this.$Message.error(isZh?"请填写类型名称":"Please fill in the type name");
                         }
                     },
                     searchChange: utils.debounce(function(vm, value) {
@@ -1395,7 +1426,7 @@
                                 me.originalData.splice(index, 1);
                                 me.treeData = me.originalData;
                             } else if (resp.status === 1) {
-                                me.$Message.error("不能删除这个分类,还有围栏没删除");
+                                me.$Message.error(isZh?"不能删除这个分类,还有围栏没删除":"You can't delete this category. There are still fences");
                             }
                         })
                     },
@@ -1406,7 +1437,6 @@
                             categoryid: data.categoryid,
                             geosystemrecordid: data.geosystemrecordid
                         }, function(resp) {
-                            console.log('resp', resp)
                             if (resp.status === 0) {
                                 me.cancelSelected();
                                 me.originalData.forEach(function(item, idx) {
@@ -1421,7 +1451,7 @@
                                     }
                                 });
                             } else {
-                                me.$Message.error("删除失败");
+                                me.$Message.error(isZh?"删除失败":"Deletion failed");
                             }
                         })
                     },
@@ -1477,7 +1507,7 @@
                     drawCircular: function() {
                         this.drawTool.enable();
                         this.cancelSelected();
-                        this.isEidt = false;
+                        this.isEdit = false;
                         this.isCircular = true;
                         this.isPolygon = false;
                         this.isRoutePlanning = false;
@@ -1490,7 +1520,7 @@
                         this.type = 2;
                         this.isCircular = false;
                         this.isPolygon = true;
-                        this.isEidt = false;
+                        this.isEdit = false;
                         this.isRoutePlanning = false;
                         this.geoName = "";
                         this.cancelSelected();
@@ -1500,7 +1530,7 @@
                         this.type = 5;
                         this.isCircular = false;
                         this.isPolygon = false;
-                        this.isEidt = false;
+                        this.isEdit = false;
                         this.isRoutePlanning = true;
                         this.geoName = "";
                         this.cancelSelected();
@@ -1508,15 +1538,15 @@
                     },
                     handleAddPolygon: function() {
                         if (this.selectTypeList.length === 0) {
-                            this.$Message.error("请先添加分类");
+                            this.$Message.error(isZh?"请先添加分类":"Please add classification first");
                             return;
                         }
                         if (this.geoName == "") {
-                            this.$Message.error("请填写围栏名称");
+                            this.$Message.error(isZh?"请填写围栏名称":"Please fill in the name of the fence");
                             return;
                         }
                         if (!this.classId) {
-                            me.$Message.success("请选择类型")
+                            me.$Message.success(isZh?"请选择类型":"Please select type")
                             return;
                         }
                         if (this.isCircular) {
@@ -1540,11 +1570,11 @@
                                             item.children.push(resp.record);
                                         }
                                     })
-                                    me.$Message.success("添加成功");
+                                    me.$Message.success(isZh?"添加成功":"Added successfully");
                                     me.isPolygon = false;
                                     me.addPolygonModal = false;
                                 } else {
-                                    me.$Message.error("添加失败");
+                                    me.$Message.error(isZh?"添加失败":"Add failed");          me.$Message.success(isZh?"添加成功":"Added successfully");
                                 }
                             });
                         }
@@ -1736,10 +1766,10 @@
                                         }
                                     })
                                 }
-                                me.$Message.success("添加成功");
+                                me.$Message.success(isZh?"添加成功":"Added successfully");
                                 me.addPolygonModal = false;
                             } else {
-                                me.$Message.error("添加失败");
+                                me.$Message.error(isZh?"添加失败":"Add failed");  
                             }
                         });
                     },

@@ -108,7 +108,7 @@
                 </ul>
             </div>
 
-            <Modal v-model="modal" width="460">
+            <Modal v-model="modal" width="500">
                 <p slot="header" style="color:#2D8CF0;text-align:center">
                     <Icon type="ios-hammer-outline"></Icon>
                     <span>{{$t("header.setting")}}</span>
@@ -130,38 +130,38 @@
                 <div slot="footer" style="padding:12.5px 0;">
                     <div v-if="userType < 10">
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.name")}} : &nbsp;</i-col>
-                            <i-col span="16">
+                            <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.name")}} : &nbsp;</i-col>
+                            <i-col span="14">
                                 <i-input v-model.trim="nickname"></i-input>
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">QQ : &nbsp;</i-col>
-                            <i-col span="16">
+                            <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">QQ : &nbsp;</i-col>
+                            <i-col span="14">
                                 <i-input v-model.trim="qq"></i-input>
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.wechat")}} : &nbsp;</i-col>
-                            <i-col span="16">
+                            <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.wechat")}} : &nbsp;</i-col>
+                            <i-col span="14">
                                 <i-input v-model.trim="wechat"></i-input>
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.phone")}} : &nbsp;</i-col>
-                            <i-col span="16">
+                            <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.phone")}} : &nbsp;</i-col>
+                            <i-col span="14">
                                 <i-input v-model.trim="phone"></i-input>
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.email")}} : &nbsp;</i-col>
-                            <i-col span="16">
+                            <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.email")}} : &nbsp;</i-col>
+                            <i-col span="14">
                                 <i-input v-model.trim="email"></i-input>
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
-                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.multiSiteLanding")}} : &nbsp;</i-col>
-                            <i-col span="16">
+                            <i-col span="7" style="height: 100%;text-align:right;line-height:32px;">{{$t("header.multiSiteLanding")}} : &nbsp;</i-col>
+                            <i-col span="14">
                                 <i-select v-model="multilogin" style="text-align:center;">
                                     <i-option value="1" style="text-align:center;">{{$t("header.yes")}}</i-option>
                                     <i-option value="0" style="text-align:center;">{{$t("header.no")}}</i-option>
@@ -169,7 +169,7 @@
                             </i-col>
                         </Row>
                         <Row style="margin: 10px 0">
-                            <i-col span="16" :offset="5">
+                            <i-col span="14" :offset="7">
                                 <i-button type="primary" style="width:100%;" @click="handleEditMyInfo">{{$t("header.submit")}}</i-button>
                             </i-col>
                         </Row>
