@@ -61,7 +61,7 @@
                 experience: "Demo",
                 inputUsername: "Please enter username.",
                 inputDeviceNumber: "Please enter the device number.",
-                inputPassword: "Please enter device ID.",
+                inputPassword: "Please enter password.",
                 wechatApplet: "Wechat applet",
                 step1: "1.Search for gps51 applet",
                 step2: "2.Or scan QR Code",
