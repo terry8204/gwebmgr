@@ -785,7 +785,7 @@
                         var speed = track.speed == 0 ? "0km/h" : (track.speed / 1000).toFixed(2) + "km/h";
                         var rxlevel = track.rxlevel === 0 ? '' : ('(' + (isZh ? '信号' : 'Signal') + ':' + track.rxlevel + '%)');
                         var content =
-                            '<p><span class="window_title">' + (isZh ? '设备序号' : 'Device Number') + '</span>: ' + track.deviceid + "  " + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceName + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '设备序号' : 'Device ID') + '</span>: ' + track.deviceid + "  " + (isZh ? '设备名称' : 'Device Name') + ': ' + this.deviceName + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '经纬纬度' : 'Longitude and latitude') + '</span>: ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +

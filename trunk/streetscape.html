@@ -41,8 +41,19 @@
         .jiejing {
             background: url('./images/streetmap80.png') no-repeat;
             background-size: cover;
+            width: 35px;
+            height: 35px;
         }
-        div.anchorBL a{
+
+        .yuandian{
+            width: 35px;
+            height: 35px;
+            background: url('./images/car.png') no-repeat;
+            background-size: cover;
+            margin-top: 10px;
+        }
+        
+        a[target],div.anchorBL a{
             display: none;
         }
     </style>
@@ -60,6 +71,8 @@
         var lat = getParameterByName("lat");
         var marker = null;
         var panoramaService = new BMap.PanoramaService();
+
+
         function getParameterByName(name) {
             var url = location.search
             url = decodeURIComponent(url)
@@ -110,6 +123,7 @@
             mapInstance.addEventListener('click', function (e) {
                 marker.setPosition(e.point);
             });
+
         }
 
 
@@ -149,15 +163,30 @@
         JieJingControl.prototype = new BMap.Control();
 
         JieJingControl.prototype.initialize = function(map) {
-            var divWrap = document.createElement("div");
-            divWrap.style.width = "35px";
-            divWrap.style.height = "35px";
-            divWrap.className = "jiejing";
-            divWrap.onclick = function(e) {
-                
-                setPanorama(marker.point.lng,marker.point.lat)
 
-            };
+            var divWrap = document.createElement("div");
+            var divTop = document.createElement("div");
+            var divBottom = document.createElement("div");
+            divWrap.style.width = "35px";
+            divWrap.style.height = "80px";
+            divWrap.style.marginBottom = "-15px";
+            divWrap.style.position = "relative";
+            divTop.className = "jiejing";
+            divBottom.className = "yuandian";
+
+            divTop.onclick = function(e) {
+                setPanorama(marker.point.lng,marker.point.lat)
+            }
+
+            divBottom.onclick = function(e) {
+                var point = new BMap.Point(lon, lat);
+                marker.setPosition(point);
+                mapInstance.setCenter(point);
+
+            }
+
+            divWrap.appendChild(divTop);
+            divWrap.appendChild(divBottom);
             mapInstance.getContainer().appendChild(divWrap);
             return divWrap;
         }

@@ -356,7 +356,7 @@ var monitor = {
             selectedTypeVal: null,
             cacheColumns: [
                 { title: isZh ? '编号' : 'index', key: "index", width: 80, align: 'center', sortable: true },
-                { title: isZh ? '设备序号' : 'Device Number', key: 'deviceid', width: 153.5 },
+                { title: isZh ? '设备序号' : 'Device ID', key: 'deviceid', width: 153.5 },
                 { title: isZh ? '指令名称' : 'Cmd name', key: 'cmdname', sortable: true, width: 153.5 },
                 { title: isZh ? '发送时间' : 'Send date', key: 'sendtimeStr', width: 170, sortable: true },
                 { title: isZh ? '发送参数' : 'Send parmas', key: 'cmdparams', sortable: true, width: 153.5 },
@@ -1892,7 +1892,7 @@ var monitor = {
                     resp.overdueDateStr = DateFormat.longToDateStr(resp.expirenotifytime, timeDifference);
                     resp.deviceTypeStr = that.getDeviceTypeStr(device.devicetype);
                     resp.creater = device.creater;
-                    resp.groupname = utils.getGroupName(that.groups,globalDeviceId);  
+                    resp.groupname = utils.getGroupName(that.groups, globalDeviceId);
                     that.deviceBaseInfo = resp;
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                     that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
@@ -1905,14 +1905,21 @@ var monitor = {
                 that.$Message.error(that.$t('monitor.queryFail'));
             })
         },
-        getDeviceTypeStr:function(devicetype){
+        getDeviceTypeStr: function(devicetype) {
             var devType = "";
             var item = vstore.state.deviceTypes[devicetype];
             var label = item.typename;
-            if (item.remark) {
-                label += "(" + item.remark + ")";
+            if (isZh) {
+                if (item.remark) {
+                    label += "(" + item.remark + ")";
+                }
+                devType = label;
+            } else {
+                if (item.remarken) {
+                    label += "(" + item.remarken + ")";
+                }
+                devType = label;
             }
-            devType = label;
             return devType;
         },
         handleClickTransferDeviceGroup: function(groupid) {

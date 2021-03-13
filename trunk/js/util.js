@@ -654,7 +654,7 @@ var utils = {
 
         return statusStr + " " + (weight / 10) + 'Kg(' + srcWeightAd0 + ')';
     },
-    getOilStr:function(track){
+    getOilStr: function(track) {
         var oilStr = '';
         var srcad0 = track.srcad0;
         var srcad1 = track.srcad1;
@@ -667,60 +667,60 @@ var utils = {
         var thirdoil = track.thirdoil / 100;
         var fourthoil = track.fourthoil / 100;
 
-  
-            if ((totalOil > 0) ||
-                (masteroil > 0) ||
-                (auxoil > 0) ||
-                (thirdoil > 0) ||
-                (fourthoil > 0)) {
-                var isNotFirst = false;
-                oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ';
-                var srcAdStr = "";
-                if (totalOil > 0) {
-                    oilStr += totalOil.toFixed(0) + "LT";
+
+        if ((totalOil > 0) ||
+            (masteroil > 0) ||
+            (auxoil > 0) ||
+            (thirdoil > 0) ||
+            (fourthoil > 0)) {
+            var isNotFirst = false;
+            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ';
+            var srcAdStr = "";
+            if (totalOil > 0) {
+                oilStr += totalOil.toFixed(0) + "LT";
+                isNotFirst = true;
+            }
+            if (masteroil > 0) {
+                if (isNotFirst) {
                     isNotFirst = true;
+                    oilStr += '/';
                 }
-                if (masteroil > 0) {
-                    if (isNotFirst) {
-                        isNotFirst = true;
-                        oilStr += '/';
-                    }
-                    oilStr += masteroil.toFixed(0) + "L1";
+                oilStr += masteroil.toFixed(0) + "L1";
+            }
+
+            if (auxoil > 0) {
+                if (isNotFirst) {
+                    isNotFirst = true;
+                    oilStr += '/';
                 }
+                oilStr += auxoil.toFixed(0) + "L2";
 
-                if (auxoil > 0) {
-                    if (isNotFirst) {
-                        isNotFirst = true;
-                        oilStr += '/';
-                    }
-                    oilStr += auxoil.toFixed(0) + "L2";
-
-                }
-                if (thirdoil > 0) {
-                    if (isNotFirst) {
-                        isNotFirst = true;
-                        oilStr += '/';
-
-                    }
-                    oilStr += thirdoil.toFixed(0) + "L3";
+            }
+            if (thirdoil > 0) {
+                if (isNotFirst) {
+                    isNotFirst = true;
+                    oilStr += '/';
 
                 }
+                oilStr += thirdoil.toFixed(0) + "L3";
 
-                if (fourthoil > 0) {
-                    if (isNotFirst) {
-                        isNotFirst = true;
-                        oilStr += '/';
+            }
 
-                    }
-                    oilStr += fourthoil.toFixed(0) + "L4";
+            if (fourthoil > 0) {
+                if (isNotFirst) {
+                    isNotFirst = true;
+                    oilStr += '/';
 
                 }
-                srcAdStr = srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
-                oilStr += '(' + srcAdStr + ")";
-            } else if (srcad0 > 0 || srcad1 > 0 || srcad2 > 0 || srcad3 > 0) {
-                //没设置油杆的时候显示原始ad值
-                oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
-            };
+                oilStr += fourthoil.toFixed(0) + "L4";
+
+            }
+            srcAdStr = srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
+            oilStr += '(' + srcAdStr + ")";
+        } else if (srcad0 > 0 || srcad1 > 0 || srcad2 > 0 || srcad3 > 0) {
+            //没设置油杆的时候显示原始ad值
+            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
+        };
         return oilStr;
     },
     getWindowContent: function(track, b_address) {
@@ -756,13 +756,13 @@ var utils = {
         var status = track.status; //status&0x04 代表定位有效
         if ((status & 0x04) != 0x04) {
             if (track.gotsrc === 'gps') {
-                posiType += " <span style='color:#515A6E; display: inline-block;height:18px;padding:0 2px; background:#FFF9E6;border:1px solid #FFD77A;border-radius: 3px;'>"+vRoot.$t('monitor.notRealtime')+"<span>"
+                posiType += " <span style='color:#515A6E; display: inline-block;height:18px;padding:0 2px; background:#FFF9E6;border:1px solid #FFD77A;border-radius: 3px;'>" + vRoot.$t('monitor.notRealtime') + "<span>"
             }
         }
 
         var oilStr = '';
 
-       
+
 
         if (isZh) {
             var isOnineStr = utils.getIsOnline(track) ? "在线" : "离线" + utils.timeStampNoSecond(Date.now() - track.updatetime);
@@ -776,7 +776,7 @@ var utils = {
             extendsStr = '',
             videoState = isZh ? track.strvideoalarm : track.strvideoalarmen;
         this.videoState = videoState;
-        
+
 
         var loadstatusStr = null;
         if (track.loadstatus >= 0) {
@@ -792,7 +792,7 @@ var utils = {
         var currentDayMileage = track.currentDayMileage ? track.currentDayMileage : '- '
         var content =
             '<p><span class="window_title">' + (isZh ? '设备名称' : 'Device Name') + '</span>: ' + (track.devicename ? track.devicename : track.deviceid) + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px"></i><i id="stared" onclick="onStarDevice(' + track.deviceid + ')" class="ivu-icon ivu-icon-md-heart" style="font-size: 16px;cursor: pointer;float:right;margin-right:22px;color:' + ((device && device.stared == 1) ? '#e4393c' : '#c1c1c1') + ';"></i></p>' +
-            '<p><span class="window_title">' + (isZh ? '设备序号' : 'Device Number') + '</span>: ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px;"></i></p>' +
+            '<p><span class="window_title">' + (isZh ? '设备序号' : 'Device ID') + '</span>: ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px;"></i></p>' +
             '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
             '<p><span class="window_title">' + (isZh ? '经度纬度' : 'Longitude and latitude') + '</span>: ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
