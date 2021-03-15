@@ -1,8 +1,7 @@
-
-JSWebrtc.Player = (function () {
+JSWebrtc.Player = (function() {
     "use strict";
 
-    var Player = function (url, options) {
+    var Player = function(url, options) {
         this.srcURL = url;
         this.options = options || {};
 
@@ -27,46 +26,46 @@ JSWebrtc.Player = (function () {
         this.startLoading();
     };
 
-    Player.prototype.getURL = function(){
+    Player.prototype.getURL = function() {
         var url = null;
-        if(this.srcURL){
+        if (this.srcURL) {
             url = this.srcURL;
         }
         return url;
     }
 
 
-    Player.prototype.getStats = function(){
+    Player.prototype.getStats = function() {
         var bits = 0;
-        if(this.pc!=null){
-            bits=  this.pc.getStats() ; 
+        if (this.pc != null) {
+            bits = this.pc.getStats();
         }
         return bits;
     }
 
-    Player.prototype.startLoading = function () {
+    Player.prototype.startLoading = function() {
         var _self = this;
         if (_self.pc) {
             _self.pc.close();
         }
-        if(adapter.browserDetails.browser == 'chrome'){
+        if (adapter.browserDetails.browser == 'chrome') {
             _self.pc = new RTCPeerConnection(null);
-        }else{
+        } else {
             _self.pc = new RTCPeerConnection({
                 sdpSemantics: 'unified-plan'
-              });
+            });
 
-            //   _self.pc = new RTCPeerConnection({
+            // _self.pc = new RTCPeerConnection({
             //     sdpSemantics: 'plan-b'
-            //   }); 
-        }   
+            // });
+        }
 
-        
-   
-        _self.pc.ontrack = function (event) {
-            try{
+
+
+        _self.pc.ontrack = function(event) {
+            try {
                 _self.options.video['srcObject'] = event.streams[0];
-            }catch(e){
+            } catch (e) {
 
             }
         };
@@ -74,10 +73,10 @@ JSWebrtc.Player = (function () {
         _self.pc.addTransceiver("video", { direction: "recvonly" });
         // _self.pc._createTransceiver("video", { direction: "recvonly" });
 
-        _self.pc.createOffer().then(function (offer) {
-            return _self.pc.setLocalDescription(offer).then(function () { return offer; });
-        }).then(function (offer) {
-            return new Promise(function (resolve, reject) {
+        _self.pc.createOffer().then(function(offer) {
+            return _self.pc.setLocalDescription(offer).then(function() { return offer; });
+        }).then(function(offer) {
+            return new Promise(function(resolve, reject) {
                 var port = 82;
                 // var port = _self.urlParams.port || 1985;
 
@@ -96,20 +95,23 @@ JSWebrtc.Player = (function () {
 
                 // @see https://github.com/rtcdn/rtcdn-draft
                 var data = {
-                    api: url, streamurl: _self.urlParams.url, clientip: null, sdp: offer.sdp
+                    api: url,
+                    streamurl: _self.urlParams.url,
+                    clientip: null,
+                    sdp: offer.sdp
                 };
                 // console.log("offer: " + JSON.stringify(data));
 
-                JSWebrtc.HttpPost(url, JSON.stringify(data)).then(function (res) {
+                JSWebrtc.HttpPost(url, JSON.stringify(data)).then(function(res) {
                     // console.log("answer: " + JSON.stringify(res));
                     resolve(res.sdp);
-                }, function (rej) {
+                }, function(rej) {
                     reject(rej);
                 })
             });
-        }).then(function (answer) {
+        }).then(function(answer) {
             return _self.pc.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp: answer }));
-        }).catch(function (reason) {
+        }).catch(function(reason) {
             throw reason;
         });
 
@@ -118,7 +120,7 @@ JSWebrtc.Player = (function () {
         }
     };
 
-    Player.prototype.play = function (ev) {
+    Player.prototype.play = function(ev) {
         if (this.animationId) {
             return;
         }
@@ -127,7 +129,7 @@ JSWebrtc.Player = (function () {
         this.paused = false;
     };
 
-    Player.prototype.pause = function (ev) {
+    Player.prototype.pause = function(ev) {
         if (this.paused) {
             return;
         }
@@ -144,11 +146,11 @@ JSWebrtc.Player = (function () {
         }
     };
 
-    Player.prototype.stop = function (ev) {
+    Player.prototype.stop = function(ev) {
         this.pause();
     };
 
-    Player.prototype.destroy = function () {
+    Player.prototype.destroy = function() {
         this.pause();
         this.pc && this.pc.close() && this.pc.destroy();
         this.audioOut && this.audioOut.destroy();
@@ -156,7 +158,7 @@ JSWebrtc.Player = (function () {
         this.audioOut = null;
     };
 
-    Player.prototype.update = function () {
+    Player.prototype.update = function() {
         this.animationId = requestAnimationFrame(this.update.bind(this));
 
         if (this.options.video.readyState < 4) {

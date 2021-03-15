@@ -476,23 +476,23 @@ Vue.component('my-video', {
             })
             player.addEventListener('error', function() {
                 me.isSendAjaxState = false;
-                me.playerStateTips = me.$t('video.error');
+                me.playerStateTips = vRoot.$t('video.error');
             });
             player.addEventListener('play', function() {
-                me.playerStateTips = me.$t('video.play');
+                me.playerStateTips = vRoot.$t('video.play');
                 me.isPlaying = true;
             });
             player.addEventListener('playing', function() {
-                me.playerStateTips = me.$t('video.playing');
+                me.playerStateTips = vRoot.$t('video.playing');
                 me.isSendAjaxState = false;
             });
             player.addEventListener('pause', function() {
-                me.playerStateTips = me.isTimerStop ? me.$t('video.threeMinutes') : me.$t('video.pause');
+                me.playerStateTips = me.isTimerStop ? vRoot.$t('video.threeMinutes') : vRoot.$t('video.pause');
                 me.isTimerStop = false;
                 me.isPlaying = false;
             });
             player.addEventListener('waiting', function() {
-                me.playerStateTips = me.$t('video.waiting');
+                me.playerStateTips = vRoot.$t('video.waiting');
             });
         },
         caclBits: function() {
