@@ -7,7 +7,7 @@ var viewhost = null;
 var viewhosts = null;
 var apihost = null;
 var apihosts = null;
-var isWebrtcPlay = false;
+var isWebrtcPlay = true;
 
 var ishttps = 'https:' == document.location.protocol ? true : false;
 var lastIndex = location.pathname.lastIndexOf("/");

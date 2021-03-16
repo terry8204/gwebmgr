@@ -455,6 +455,7 @@ Vue.component('my-video', {
                             videoPlayer.unload();
                             videoPlayer.detachMediaElement();
                             videoPlayer.destroy();
+                            this.videoPlayer = null;
                         }
                     } catch (error) {
 
@@ -667,10 +668,10 @@ Vue.component('my-video', {
                 } else {
                     var player = this.videoPlayer;
                     this.videoPlayer.pause();
-                    // player.unload();
-                    // player.detachMediaElement();
-                    // player.destroy();
-                    // this.videoPlayer = null;
+                     player.unload();
+                     player.detachMediaElement();
+                     player.destroy();
+                     this.videoPlayer = null;
                 }
             } catch (error) {};
             this.isPlaying = false;
