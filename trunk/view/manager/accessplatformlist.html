@@ -18,7 +18,7 @@
             <i-table :columns="columnsList" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
         </div>
         <Drawer :title="drawerTitle" width="800" v-model="drawerModal">
-            <div  v-if="protocoltype > 3">
+            <div v-if="inputtype == 3">
                 <Row style="height: 35px;line-height: 35px;">
                     <i-col :span="4" style="text-align: right;">
                         <span style="color: red;">*</span>&nbsp;平台名称&nbsp;
@@ -148,7 +148,7 @@
                     </i-col>
                 </Row>
             </div>
-            <div v-if="protocoltype < 4">
+            <div v-else>
                 <Row style="height: 35px;line-height: 35px;">
                     <i-col :span="4" style="text-align: right;">
                         <span style="color: red;">*</span>&nbsp;平台名称&nbsp;
@@ -214,7 +214,7 @@
                 queryParameter: '',
                 taleHeight: 300,
                 tableData: [],
-                protocoltype: 1,
+                protocoltype: null,
                 servername: '',
                 uplinkversion: '1.0.0',
                 userid: '', //用户名' ,
@@ -379,12 +379,11 @@
                             }
                         }, str)
                     }
-                }, {  
+                }, {
                     title: '创建者',
                     key: 'creater',
                     width: 100,
-                }, 
-                {
+                }, {
                     title: '平台名称',
                     key: 'servername',
                     width: 120,
@@ -446,16 +445,18 @@
                     width: 120,
                 }],
                 protocols: [],
+                inputtype: 0,
             },
             methods: {
-                onChangeEncryptFlag:function(val){
-                    this.encryptflag = val?1:0;
+                onChangeEncryptFlag: function(val) {
+                    this.encryptflag = val ? 1 : 0;
                 },
                 handleSubmit: function() {
                     var url = '';
                     var me = this;
                     var data = {
                         protocoltype: Number(this.protocoltype),
+                        inputtype: Number(this.inputtype),
                         servername: this.servername,
                         uplinkversion: this.uplinkversion,
                         userid: Number(this.userid), //用户名' ,
@@ -465,22 +466,22 @@
                         uplinkport: Number(this.uplinkport), //主链路端口' ,
                         downlinkip: this.downlinkip, //从链ip' ,
                         downlinkport: Number(this.downlinkport), //从链端口' ,
-                 
+
                         realtimevideourl: this.realtimevideourl, //实时视频URL' ,
                         historyvideourl: this.historyvideourl, //视频回放URL' ,
                         videokey: this.videokey, //视频key' ,
                         remark: this.remark, //备注' ,
-                        encryptflag:this.encryptflag
+                        encryptflag: this.encryptflag
                     }
 
-                    if(this.protocoltype < 4){
+                    if (this.inputtype != 3) {
                         if (
                             this.servername == "" ||
-                            this.uplinkip == "" ) {
+                            this.uplinkip == "") {
                             this.$Message.error('红点的参数是必填的');
                             return;
                         }
-                    }else{
+                    } else {
                         if (
                             this.servername == "" ||
                             this.gnsscenterid == "" ||
@@ -493,13 +494,13 @@
                         }
                     }
 
-                    if(this.encryptflag == 1){
-                        if( 
-                        this.m1 == "" ||
-                        this.ia1 == "" ||
-                        this.ic1 == "" ){
+                    if (this.encryptflag == 1) {
+                        if (
+                            this.m1 == "" ||
+                            this.ia1 == "" ||
+                            this.ic1 == "") {
                             this.$Message.error('红点的参数是必填的');
-                        } 
+                        }
                         data.m1 = Number(this.m1); //密匙' ,
                         data.ia1 = Number(this.ia1); //密匙' ,
                         data.ic1 = Number(this.ic1); //密匙' ,
@@ -512,7 +513,7 @@
                         url = myUrls.createForwardParam();
                     }
 
-           
+
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
                             if (me.isEdit) {
@@ -594,6 +595,7 @@
                     var url = myUrls.queryForwardProtocols();
                     utils.sendAjax(url, {}, function(resp) {
                         me.protocols = resp.protocols;
+                        me.protocoltype = 1;
                     });
                 },
                 setForwardParamsStatus: function(row) {
@@ -628,10 +630,23 @@
                     })
                 }
             },
+            watch: {
+                protocoltype: function(protocoltype) {
+                    var inputtype = 0;
+                    for (var i = 0; i < this.protocols.length; i++) {
+                        var item = this.protocols[i];
+                        if (item.index === protocoltype) {
+                            inputtype = item.inputtype;
+                        }
+                    };
+                    this.inputtype = inputtype;
+                }
+            },
             computed: {
                 drawerTitle: function() {
                     return this.isEdit ? '编辑接入平台' : '新增接入平台';
-                }
+                },
+
             },
             mounted: function() {
                 var me = this;
