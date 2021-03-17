@@ -24,7 +24,7 @@
                     <span class="user_icon"></span><span>{{$t("bgMgr.user")}}</span>
                     <span class="group_icon"></span><span>{{$t("bgMgr.group")}}</span>
                     <span class="device_icon"></span><span>{{$t("bgMgr.ordinaryDev")}}</span>
-                    <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span> 
+                    <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span>
                 </div>
                 <div style="height: 35px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
@@ -75,7 +75,7 @@
                     </div>
                 </div>
                 <div style="float: right;overflow-y: auto;width: 600px;height: 366px;padding-top: 45px;">
-                    <div v-if="protocoltype > 3">
+                    <div v-if="inputtype == 3">
                         <Row style="height: 35px;line-height: 35px;">
                             <i-col :span="4" style="text-align: right;">
                                 &nbsp;平台名称&nbsp;
@@ -205,7 +205,7 @@
                             </i-col>
                         </Row>
                     </div>
-                    <div v-if="protocoltype < 4">
+                    <div v-else>
                         <Row style="height: 35px;line-height: 35px;">
                             <i-col :span="4" style="text-align: right;">
                                 &nbsp;平台名称&nbsp;
@@ -279,6 +279,7 @@
             showBatchModalType: 1, // 1批量地址  2
             batchModal: false,
             protocoltype: 1,
+            inputtype: 0,
             protocols: [],
             forwards: [],
             forwardtype: '',
@@ -888,6 +889,16 @@
             }
         },
         watch: {
+            protocoltype: function(protocoltype) {
+                var inputtype = 0;
+                for (var i = 0; i < this.protocols.length; i++) {
+                    var item = this.protocols[i];
+                    if (item.index === protocoltype) {
+                        inputtype = item.inputtype;
+                    }
+                };
+                this.inputtype = inputtype;
+            },
             searchDeviceVal: function(newVal) {
                 if (newVal === '') {
                     this.treeDeviceList[0].open = true;
