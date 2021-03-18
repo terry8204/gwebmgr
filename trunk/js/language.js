@@ -1244,6 +1244,7 @@
                 year5: '5',
                 surplusJindou: '剩余金豆',
                 consumeJindou: '消耗金豆',
+                lastactivetime: 'Last time',
                 deviceList: "设备列表",
                 see: "See",
             }
@@ -2484,6 +2485,7 @@
                 year5: '5年',
                 surplusJindou: '剩余金豆',
                 consumeJindou: '消耗金豆',
+                lastactivetime: '最后在线时间',
                 deviceList: "设备列表",
                 see: "查看",
             }
