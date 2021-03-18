@@ -115,6 +115,15 @@
                     0
                 </i-col>
             </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">{{$t("charge.freelife")}}:</i-col>
+                <i-col span="12" style="height: 100%;line-height:32px;">
+                    <i-select v-model="showfreelife">
+                        <i-option value="1">{{$t('header.yes')}}</i-option>
+                        <i-option value="0">{{$t('header.no')}}</i-option>
+                    </i-select>
+                </i-col>
+            </Row>
         </div>
         <div slot="footer" style="padding:6.5px 15px;">
             <i-button style="width:100%;" type="primary" @click="handlerChargeDevices">{{$t("header.submit")}}</i-button>
@@ -187,6 +196,7 @@
                 importModal: false,
                 jindou: 0,
                 deviceids: '',
+                showfreelife: '0',
                 deviceid: '',
                 errorTips: '',
                 selectType: 'user',
@@ -242,6 +252,9 @@
                                 break;
                             case 5:
                                 str = vRoot.$t("charge.deviceExpired")
+                                break;
+                            case 6:
+                                str = vRoot.$t("charge.freelife")
                                 break;
                         }
                         return h('span', {}, str)
@@ -478,6 +491,7 @@
                         me = this;
                     var data = {
                         deviceids: [],
+                        showfreelife: Number(this.showfreelife)
                     }
 
                     if (vRoot.$store.state.userType == 0) {
