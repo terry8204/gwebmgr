@@ -12,7 +12,7 @@
                     <span class="user_icon"></span><span>{{$t("bgMgr.user")}}</span>
                     <span class="group_icon"></span><span>{{$t("bgMgr.group")}}</span>
                     <span class="device_icon"></span><span>{{$t("bgMgr.ordinaryDev")}}</span>
-                    <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span> 
+                    <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span>
                 </div>
                 <div style="padding: 0 5px 5px 5px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
@@ -329,9 +329,9 @@
                         <i-button type="primary" @click="addUser" style="margin: 0 10px;">{{$t("bgMgr.addUser")}}</i-button>
                         <i-button type="primary" @click="addGroup" style="margin: 0 10px;">{{$t("bgMgr.addGroup")}}</i-button>
                         <Poptip trigger="click" :title="$t('message.confirmDel')" confirm @on-ok="deleteUser">
-                            <i-button type="error" style="margin: 0 10px;">{{$t("bgMgr.deleteUser")}}</i-button>  
+                            <i-button type="error" style="margin: 0 10px;">{{$t("bgMgr.deleteUser")}}</i-button>
                         </Poptip>
-                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">{{$t("bgMgr.refreshArchitecture")}}</i-button>  
+                        <i-button type="info" @click="refreshzTree" style="margin: 0 10px;">{{$t("bgMgr.refreshArchitecture")}}</i-button>
                     </div>
                     <div style="width: 100%;height: 100%;line-height: 45px;display: flex;justify-content: center;align-items: center;" v-show="selectType =='group'">
                         <Poptip trigger="click" :title="$t('message.confirmDel')" confirm @on-ok="deleteGroup">
@@ -739,6 +739,7 @@
                             data.groupid = resp.groupid;
                             data.devices = [];
                             GlobalOrgan.getInstance().addGroup(data.creater, data);
+                            me.groupsList = GlobalOrgan.getInstance().getGroupListByUserName(data.creater);
                             me.reloadTreeData(false);
                             me.$Message.success(me.$t("message.addSucc"));
                         } else {
@@ -848,27 +849,10 @@
             },
             queryGroupsByUserName: function(userName) {
                 var me = this;
-                // var foundGroupId = false;
-                // var groupid = editObject.groupid;
                 me.groupsList = GlobalOrgan.getInstance().getGroupListByUserName(userName);
-                // me.groupsList.forEach(function(group) {
-                //     if (group.groupid == groupid) {
-                //         foundGroupId = true;
-                //         return false;
-                //     }
-                // })
-
-                // // me.groupid = editObject.groupid;
-                // if (foundGroupId) {
-                //     me.groupid = editObject.groupid;
-                // } else {
-                //     me.groupid = 0;
-                // }
-                // console.log('me.groupsList', me.groupsList);
                 if (me.groupid === undefined) {
                     me.groupid = editObject.groupid;
                 }
-                // console.log(me.groupid);
             },
             filterMethod: function(value) {
                 var list = []
