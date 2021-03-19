@@ -660,7 +660,7 @@
                         me.zTreeObj.reAsyncChildNodes(me.parentNode, 'refresh', false);
                         me.$Message.success(me.$t("message.changeSucc"));
                         GlobalOrgan.getInstance().editDevice(me.selectedUserName, me.selectedGroupId, data);
-                        if (me.oldCreater !== data.creater) {
+                        if (me.oldCreater !== data.creater || data.groupid !== editObject.groupid) {
                             me.refreshzTree();
                         }
                     } else if (resp.status = -1) {
