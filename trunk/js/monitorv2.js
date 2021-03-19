@@ -1364,6 +1364,8 @@ var monitor = {
                 scaleControl: true,
                 dragRotate: false,
                 dragPitch: false,
+                zoomAnimation:false,
+                panAnimation:false,
             });
 
             this.setMapType({
@@ -3358,7 +3360,13 @@ var monitor = {
                 if (me.intervalTime <= 0) {
                     me.intervalTime = me.stateIntervalTime;
                 }
-                me.timeoutRefreshMapUI();
+                me.intervalTime % 2 == 0 && me.dorefreshMapUI();
+                if (me.intervalTime == me.stateIntervalTime) {
+                    me.getLastPosition([], function() {
+                        me.dorefreshMapUI();
+                    }, function(error) {});
+                }
+                me.intervalTime % 5 == 0 && me.stopVideoPlayer();
 
             }, 1000);
         },
@@ -3590,6 +3598,7 @@ var monitor = {
             }
 
             this.clusterLayer = new maptalks.ClusterLayer('cluster', markers, {
+            	'animation':false,
                 'noClusterWithOneMarker': true,
                 'maxClusterZoom': 16,
                 'symbol': {
