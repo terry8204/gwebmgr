@@ -2045,7 +2045,6 @@ var monitor = {
                         } else if (cmdInfo.cmdtype === 'weektime') {
                             me.cmdParams[param.type] = me.parserToWeekTimeJson(param.value);
                         } else if (cmdInfo.cmdtype === 'weekperiod') {
-                            // me.$set(me.cmdParams, param.typem, me.parserToWeekPeriodJson(param));
                             me.cmdParams[param.type] = me.parserToWeekPeriodJson(param);
                         } else {
                             me.cmdParams[param.type] = param.value;
@@ -2057,7 +2056,7 @@ var monitor = {
 
                 (cmdInfo.cmdtype !== 'text' || cmdInfo.cmdtype === 'timeperiod') ? this.selectedTypeVal = (cmdVal ? cmdVal[0] : ""): '';
             };
-            console.log('cmdParams', this.cmdParams);
+            console.log('cmdParams', me.cmdParams);
             this.dispatchDirectiveModal = true;
         },
         parserToWeekTimeJson: function(value) {
@@ -2087,7 +2086,7 @@ var monitor = {
         },
         parserToWeekPeriodJson: function(param, value) {
             if (param.type == 'week') {
-                var weekselected = []
+                var weekselected = [];
                 if (value) {
                     var weekStr = value;
                 } else {
@@ -2164,7 +2163,6 @@ var monitor = {
             return resultArr;
         },
         encodeWeekPeriodParams(paramsObj) {
-            console.log('paramsObj', paramsObj);
             var copyParamsObj = deepClone(paramsObj);
             var resultArr = [];
             var weekStr = "",
@@ -2181,7 +2179,7 @@ var monitor = {
             delete copyParamsObj.week;
 
             for (var i = 1; i < 4; i++) {
-                var key = 'period' + 1;
+                var key = 'period' + i;
                 resultArr.push(copyParamsObj[key].join('-'));
             }
 
