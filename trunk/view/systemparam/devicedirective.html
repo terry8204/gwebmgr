@@ -102,6 +102,7 @@
                     <i-option value="remind">闹钟</i-option>
                     <i-option value="time">时间</i-option>
                     <i-option value="weektime">星期时间</i-option>
+                    <i-option value="weekperiod">星期时间段</i-option>
                 </i-select>
             </i-col>
         </Row>
@@ -183,7 +184,7 @@
                     <i-col span="15" offset="5">
                         <p v-for="item in previewObjList" :key="item.type" style="margin: 5px 0">
                             {{item.title}} : &nbsp;
-                            <Time-Picker format="HH:mm" type="timerange" :value="item.formatVlaue" placeholder="选择时间段"></Time-Picker>
+                            <Time-Picker format="HH:mm" type="timerange" :value="item.formatValue" placeholder="选择时间段"></Time-Picker>
                         </p>
                     </i-col>
                 </Row>
@@ -246,7 +247,7 @@
                             </Row>
                             <Row style="margin: 5px 0">
                                 <i-col span="24">
-                                    <CheckboxGroup v-model="item.weekselected">
+                                    <Checkbox-Group v-model="item.weekselected">
                                         <Checkbox label="一"><span>一</span></Checkbox>
                                         <Checkbox label="二"><span>二</span></Checkbox>
                                         <Checkbox label="三"><span>三</span></Checkbox>
@@ -254,13 +255,41 @@
                                         <Checkbox label="五"><span>五</span></Checkbox>
                                         <Checkbox label="六"><span>六</span></Checkbox>
                                         <Checkbox label="日"><span>日</span></Checkbox>
-                                    </CheckboxGroup>
+                                    </Checkbox-Group>
                                 </i-col>
                             </Row>
                         </p>
                     </i-col>
                 </Row>
             </i-col>
+            <i-col span="20" v-if="selectParamType==='weekperiod'">
+                <Row style="margin: 5px 0">
+                    <i-col span="15" offset="5">
+                        <p v-for="item in previewObjList" :key="index" style="margin: 5px 0">
+                            <Row style="margin: 10px 0" v-if="item.type=='week'">
+                                <i-col span="24">
+                                    <Checkbox-Group v-model="item.weekselected">
+                                        <Checkbox label="一"><span>一</span></Checkbox>
+                                        <Checkbox label="二"><span>二</span></Checkbox>
+                                        <Checkbox label="三"><span>三</span></Checkbox>
+                                        <Checkbox label="四"><span>四</span></Checkbox>
+                                        <Checkbox label="五"><span>五</span></Checkbox>
+                                        <Checkbox label="六"><span>六</span></Checkbox>
+                                        <Checkbox label="日"><span>日</span></Checkbox>
+                                    </Checkbox-Group>
+                                </i-col>
+                            </Row>
+                            <Row style="margin: 10px 0" v-else :key="index">
+                                <i-col span="24">
+                                    {{item.title}} &nbsp;
+                                    <Time-Picker format="HH:mm" :value="item.time" type="timerange" placeholder="选择时间段"></Time-Picker>
+                                </i-col>
+                            </Row>
+                        </p>
+                    </i-col>
+                </Row>
+            </i-col>
+
         </Row>
         <div slot="footer" style="text-align: center;">
             <i-button icon="md-add" @click="handleEditDirective" style="width: 260px;">提交</i-button>
@@ -729,16 +758,16 @@
                         if (type) {
                             if (this.selectParamType === 'timeperiod') {
                                 value = value || "00:00-00:00";
-                                var formatVlaue = value.split("-");
+                                var formatValue = value.split("-");
                                 previewObj = {
                                     type: type,
                                     value: value,
                                     title: title,
-                                    formatVlaue: formatVlaue
+                                    formatValue: formatValue
                                 };
                             } else if (this.selectParamType === 'weektime') {
-                                var formatVlaue = value.split("-");
-                                var weekStr = formatVlaue[1],
+                                var formatValue = value.split("-");
+                                var weekStr = formatValue[1],
                                     weekselected = [];
                                 var week1 = weekStr.charAt(0) == 1 ? '一' : false;
                                 var week2 = weekStr.charAt(1) == 1 ? '二' : false;
@@ -757,10 +786,43 @@
                                 week7 && weekselected.push(week7);
                                 previewObj = {
                                     type: type,
-                                    time: formatVlaue[0],
+                                    time: formatValue[0],
                                     weekselected: weekselected,
                                     title: title
                                 };
+                            } else if (this.selectParamType === 'weekperiod') {
+
+                                if (type == 'week') {
+                                    var weekStr = value,
+                                        weekselected = [];
+                                    var week1 = weekStr.charAt(0) == 1 ? '一' : false;
+                                    var week2 = weekStr.charAt(1) == 1 ? '二' : false;
+                                    var week3 = weekStr.charAt(2) == 1 ? '三' : false;
+                                    var week4 = weekStr.charAt(3) == 1 ? '四' : false;
+                                    var week5 = weekStr.charAt(4) == 1 ? '五' : false;
+                                    var week6 = weekStr.charAt(5) == 1 ? '六' : false;
+                                    var week7 = weekStr.charAt(6) == 1 ? '日' : false;
+                                    week1 && weekselected.push(week1);
+                                    week2 && weekselected.push(week2);
+                                    week3 && weekselected.push(week3);
+                                    week4 && weekselected.push(week4);
+                                    week5 && weekselected.push(week5);
+                                    week6 && weekselected.push(week6);
+                                    week7 && weekselected.push(week7);
+                                    previewObj = {
+                                        type: type,
+                                        weekselected: weekselected,
+                                        title: title
+                                    };
+                                } else {
+                                    var formatValue = value.split("-");
+                                    previewObj = {
+                                        type: type,
+                                        time: formatValue,
+                                        title: title
+                                    };
+                                }
+
                             } else {
                                 previewObj = {
                                     type: type,
@@ -771,7 +833,7 @@
                             previewObjList.push(previewObj);
                         }
                     }
-
+                    console.log('previewObjList', previewObjList);
                     this.previewObjList = previewObjList;
                 },
                 getCmdCodeName: function(cmdcode) {
