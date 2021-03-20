@@ -1364,8 +1364,8 @@ var monitor = {
                 scaleControl: true,
                 dragRotate: false,
                 dragPitch: false,
-                zoomAnimation:false,
-                panAnimation:false,
+                zoomAnimation: false,
+                panAnimation: false,
             });
 
             this.setMapType({
@@ -2030,6 +2030,8 @@ var monitor = {
                             me.cmdParams[param.type] = me.parserToRemindJson(cmdVal[index]);
                         } else if (cmdInfo.cmdtype === 'weektime') {
                             me.cmdParams[param.type] = me.parserToWeekTimeJson(cmdVal[index]);
+                        } else if (cmdInfo.cmdtype === 'weekperiod') {
+                            me.cmdParams[param.type] = me.parserToWeekPeriodJson(param, cmdVal[index]);
                         } else {
                             me.cmdParams[param.type] = cmdVal[index];
                         }
@@ -2042,6 +2044,9 @@ var monitor = {
                             me.cmdParams[param.type] = remindJson;
                         } else if (cmdInfo.cmdtype === 'weektime') {
                             me.cmdParams[param.type] = me.parserToWeekTimeJson(param.value);
+                        } else if (cmdInfo.cmdtype === 'weekperiod') {
+                            // me.$set(me.cmdParams, param.typem, me.parserToWeekPeriodJson(param));
+                            me.cmdParams[param.type] = me.parserToWeekPeriodJson(param);
                         } else {
                             me.cmdParams[param.type] = param.value;
                         }
@@ -2052,7 +2057,7 @@ var monitor = {
 
                 (cmdInfo.cmdtype !== 'text' || cmdInfo.cmdtype === 'timeperiod') ? this.selectedTypeVal = (cmdVal ? cmdVal[0] : ""): '';
             };
-
+            console.log('cmdParams', this.cmdParams);
             this.dispatchDirectiveModal = true;
         },
         parserToWeekTimeJson: function(value) {
@@ -2079,6 +2084,36 @@ var monitor = {
             week7 && remindJson.weekselected.push(week7);
 
             return remindJson;
+        },
+        parserToWeekPeriodJson: function(param, value) {
+            if (param.type == 'week') {
+                var weekselected = []
+                if (value) {
+                    var weekStr = value;
+                } else {
+                    var weekStr = param.value;
+                }
+                var week1 = weekStr.charAt(0) == 1 ? '一' : false;
+                var week2 = weekStr.charAt(1) == 1 ? '二' : false;
+                var week3 = weekStr.charAt(2) == 1 ? '三' : false;
+                var week4 = weekStr.charAt(3) == 1 ? '四' : false;
+                var week5 = weekStr.charAt(4) == 1 ? '五' : false;
+                var week6 = weekStr.charAt(5) == 1 ? '六' : false;
+                var week7 = weekStr.charAt(6) == 1 ? '日' : false;
+
+                week1 && weekselected.push(week1);
+                week2 && weekselected.push(week2);
+                week3 && weekselected.push(week3);
+                week4 && weekselected.push(week4);
+                week5 && weekselected.push(week5);
+                week6 && weekselected.push(week6);
+                week7 && weekselected.push(week7);
+
+                return weekselected;
+            } else {
+                return value ? value.split('-') : param.value.split("-");
+            }
+
         },
         parserToRemindJson: function(value) {
             var valueArr = value.split("-"),
@@ -2126,6 +2161,30 @@ var monitor = {
                 weekArr.indexOf("日") !== -1 ? weekStr += '1' : weekStr += '0';
                 resultArr.push(item.time + "-" + weekStr);
             }
+            return resultArr;
+        },
+        encodeWeekPeriodParams(paramsObj) {
+            console.log('paramsObj', paramsObj);
+            var copyParamsObj = deepClone(paramsObj);
+            var resultArr = [];
+            var weekStr = "",
+                weekArr = copyParamsObj.week;
+
+            weekArr.indexOf("一") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("二") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("三") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("四") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("五") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("六") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("日") !== -1 ? weekStr += '1' : weekStr += '0';
+            resultArr.push(weekStr);
+            delete copyParamsObj.week;
+
+            for (var i = 1; i < 4; i++) {
+                var key = 'period' + 1;
+                resultArr.push(copyParamsObj[key].join('-'));
+            }
+
             return resultArr;
         },
         encodeRemindParams: function(paramsObj) {
@@ -2195,6 +2254,9 @@ var monitor = {
                     break;
                 case 'weektime':
                     params = this.encodeWeekTimeParams(this.cmdParams);
+                    break;
+                case 'weekperiod':
+                    params = this.encodeWeekPeriodParams(this.cmdParams);
                     break;
                 default:
                     params = [this.selectedTypeVal]
@@ -3598,7 +3660,7 @@ var monitor = {
             }
 
             this.clusterLayer = new maptalks.ClusterLayer('cluster', markers, {
-            	'animation':false,
+                'animation': false,
                 'noClusterWithOneMarker': true,
                 'maxClusterZoom': 16,
                 'symbol': {

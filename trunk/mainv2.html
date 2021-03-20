@@ -2117,6 +2117,39 @@
                                     </Row>
                                 </i-col>
                             </Row>
+
+                            <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'weekperiod'">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="24">
+                                            {{item.desc}} : &nbsp;
+                                        </i-col>
+                                    </Row>
+                                </i-col>
+                                <i-col span="20">
+                                    <Row style="margin: 10px 0" v-if="item.type=='week'">
+                                        <i-col span="24">
+                                            <Checkbox-Group v-model="cmdParams[item.type]">
+                                                <Checkbox label="一"><span>一</span></Checkbox>
+                                                <Checkbox label="二"><span>二</span></Checkbox>
+                                                <Checkbox label="三"><span>三</span></Checkbox>
+                                                <Checkbox label="四"><span>四</span></Checkbox>
+                                                <Checkbox label="五"><span>五</span></Checkbox>
+                                                <Checkbox label="六"><span>六</span></Checkbox>
+                                                <Checkbox label="日"><span>日</span></Checkbox>
+                                            </Checkbox-Group>
+                                        </i-col>
+                                    </Row>
+                                    <Row style="margin: 10px 0" v-else>
+                                        <i-col span="20">
+                                            {{item.title}} &nbsp;
+                                            <Time-Picker format="HH:mm" v-model="cmdParams[item.type]" type="timerange" placeholder="选择时间段"></Time-Picker>
+                                        </i-col>
+                                    </Row>
+                                </i-col>
+                            </Row>
+
+
                             <Row style="margin: 10px 0" v-show="selectedCmdInfo.cmdpwd">
                                 <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">密码 : &nbsp;</i-col>
                                 <i-col span="16">

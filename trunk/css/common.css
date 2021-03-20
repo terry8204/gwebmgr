@@ -205,6 +205,22 @@ div.maptalks-attribution {
     left: 0;
     width: 240px;
     bottom: 0;
+}
+
+#directive-wraper div.directive-type-wraper>div.device-type .directive-type-search {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 40px;
+}
+
+#directive-wraper div.directive-type-wraper>div.device-type .ivu-menu-directive {
+    position: absolute;
+    top: 40px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
     overflow-y: auto;
 }
 

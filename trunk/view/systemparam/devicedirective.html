@@ -3,17 +3,22 @@
     <h3 class="h3-title">所有设备指令</h3>
     <div style="margin-top: 10px;" class="directive-type-wraper">
         <div class="device-type">
-            <ul class="ivu-menu ivu-menu-light ivu-menu-vertical">
-                <template v-for="(item,index) in deviceTypeNavList">
-                    <li class="ivu-menu-item" 
-                        :key="item.name"
-                        :class="{'ivu-menu-item-active':item.isSelected,'ivu-menu-item-selected':item.isSelected}" 
-                        @click="handleClickDevType(item)">
-                            <Icon :type="item.icon" />
-                            <span>{{ item.title}}</span>
-                    </li> 
-                </template>
-            </ul>
+            <div class="directive-type-search">
+                <i-input v-model="searchDirective" icon="ios-search" style="width: 100%;" />
+            </div>
+            <div class="ivu-menu-directive">
+                <ul class="ivu-menu ivu-menu-light ivu-menu-vertical">
+                    <template v-for="(item,index) in deviceTypeNavListSerach">
+                        <li class="ivu-menu-item" 
+                            :key="item.name"
+                            :class="{'ivu-menu-item-active':item.isSelected,'ivu-menu-item-selected':item.isSelected}" 
+                            @click="handleClickDevType(item)">
+                                <Icon :type="item.icon" />
+                                <span>{{ item.title}}</span>
+                        </li> 
+                    </template>
+                </ul>
+            </div>
         </div>
         <div class="directive-type">
             <i-table border :columns="columns" :data="tableData" :loading="loading"></i-table>
@@ -301,6 +306,7 @@
             data: function() {
                 var me = this;
                 return {
+                    searchDirective: '',
                     activeTab: 'zh',
                     editDirectiveModal: false,
                     theme: "light",
@@ -402,6 +408,7 @@
                     rowIndex: null,
                     tableData: [],
                     deviceTypeNavList: [],
+                    deviceTypeNavListSerach: [],
                     allDirectiveList: [],
                     loading: false,
                     index: null,
@@ -612,6 +619,7 @@
                                     value: item.devicetypeid,
                                     label: item.typename + ' - ' + item.remark
                                 });
+                                me.deviceTypeNavListSerach = me.deviceTypeNavList;
                             })
                             me.handleClickDevType(firstType);
                         }
@@ -948,6 +956,15 @@
                 }
             },
             watch: {
+                searchDirective: function(newVal) {
+                    var deviceTypeNavListSerach = [];
+                    this.deviceTypeNavList.forEach(function(item) {
+                        if (item.title.indexOf(newVal) != -1) {
+                            deviceTypeNavListSerach.push(item)
+                        }
+                    });
+                    this.deviceTypeNavListSerach = deviceTypeNavListSerach;
+                },
                 copyDevType: function() {
                     this.copyDirective = "";
                     this.onSelectedDeviceType();
