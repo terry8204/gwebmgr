@@ -368,21 +368,31 @@ Vue.component('my-video', {
             this.$refs.player.play();
         },
         initFlvVideo: function(url, hasaudio) {
-            var videoPlayer = flvjs.createPlayer({
+            // var videoPlayer = flvjs.createPlayer({
+            //     type: 'flv',
+            //     url: url,
+            //     isLive: true,
+            //     hasAudio: hasaudio === 1,
+            //     hasVideo: true,
+            //     withCredentials: false,
+            //     // url: 'http://video.gps51.com:81/live/teststream.flv'
+            // }, {
+            //     enableWorker: false,
+            //     enableStashBuffer: false,
+            //     isLive: true,
+            //     lazyLoad: false,
+            //     // fixAudioTimestampGap: false,  //主要是这个配置，直播时音频的码率会被降低，直播游戏时背景音会有回响，但是说话声音没问题
+            // });
+            videoPlayer = mpegts.createPlayer({
                 type: 'flv',
-                url: url,
-                isLive: true,
-                hasAudio: hasaudio === 1,
-                hasVideo: true,
-                withCredentials: false,
-                // url: 'http://video.gps51.com:81/live/teststream.flv'
+                url: url
             }, {
-                enableWorker: false,
-                enableStashBuffer: false,
-                isLive: true,
-                lazyLoad: false,
-                // fixAudioTimestampGap: false,  //主要是这个配置，直播时音频的码率会被降低，直播游戏时背景音会有回响，但是说话声音没问题
+                enableWorker: true,
+                lazyLoadMaxDuration: 3 * 60,
+                seekType: 'range',
+                liveBufferLatencyChasing: false,
             });
+
             var me = this;
             videoPlayer.attachMediaElement(this.$refs.player);
             videoPlayer.load(); //加载
@@ -668,10 +678,10 @@ Vue.component('my-video', {
                 } else {
                     var player = this.videoPlayer;
                     this.videoPlayer.pause();
-                     player.unload();
-                     player.detachMediaElement();
-                     player.destroy();
-                     this.videoPlayer = null;
+                    player.unload();
+                    player.detachMediaElement();
+                    player.destroy();
+                    this.videoPlayer = null;
                 }
             } catch (error) {};
             this.isPlaying = false;
