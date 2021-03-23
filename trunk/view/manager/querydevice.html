@@ -273,7 +273,7 @@
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("alarm.devNum")}} : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-input v-model.trim="deviceid" disabled></i-input>
+                        <i-input v-model.trim="deviceid" :disabled="isfree==6"></i-input>
                     </i-col>
 
                 </Row>
@@ -2517,7 +2517,8 @@
                         return;
                     }
                     var data = {
-                        deviceid: this.deviceid,
+                        deviceid: editObject.deviceid,
+                        newdeviceid: this.deviceid,
                         devicetype: this.devicetype,
                         expirenotifytime: new Date(this.expirenotifytime).getTime(),
                         loginenable: Number(this.loginenable),
@@ -2572,10 +2573,14 @@
                             editObject.teltype = String(data.teltype);
                             var newData = Object.assign(editObject, data);
                             newData.expirenotifytimestr = DateFormat.longToDateTimeStr(data.expirenotifytime, timeDifference);
+                            newData.deviceid = data.newdeviceid;
+                            newData.deviceidkey = data.newdeviceid;
                             me.tableData[me.editDeviceIndex] = newData;
                             utils.changeSingleItemData(me.recordsList, newData, 'deviceid');
                             isNeedRefresh = true;
                             me.$Message.success(me.$t("message.changeSucc"));
+                        } else if (resp.status = 1) {
+                            me.$Message.error(me.$t("message.deviceIDrepeat"));
                         } else if (resp.status = -1) {
                             if (resp.cause !== null && resp.cause.indexOf("token") != -1) {
                                 window.location.href = "index.html";
