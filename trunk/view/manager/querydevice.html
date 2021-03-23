@@ -380,6 +380,12 @@
                     </i-col>
                 </Row>
                 <Row style="margin: 10px 0">
+                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("monitor.remarks")}} : &nbsp;</i-col>
+                    <i-col span="20">
+                        <i-input v-model.trim="remark" type="textarea" :rows="2"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0">
                     <i-col span="6" :offset="7">
                         <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
                     </i-col>
@@ -1580,6 +1586,7 @@
                 forwardurl: "",
                 allowedit: '0',
                 createrToUser: "",
+                remark: "",
                 userlists: [],
                 isShowMatchDev: false,
                 monitor: "",
@@ -2531,6 +2538,9 @@
                     if (this.devicename) {
                         data.devicename = this.devicename;
                     };
+                    if (this.remark) {
+                        data.remark = this.remark;
+                    };
                     if (this.teltype) {
                         data.teltype = Number(this.teltype);
                     };
@@ -2617,6 +2627,7 @@
                     me.totalpoint = editObject.totalpoint;
                     me.forwardurl = editObject.forwardurl;
                     me.isfree = editObject.isfree;
+                    me.remark = editObject.remark;
                     me.monitor = editObject.monitor;
                     me.timezone = String(editObject.timezone);
                     me.calmileageway = String(editObject.calmileageway);

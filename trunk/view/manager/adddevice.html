@@ -155,6 +155,11 @@
                         <i-option value="2">{{$t("device.platformCalc")}}</i-option>
                     </i-select>
                 </i-col>
+
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("monitor.remarks")}} : &nbsp;</i-col>
+                <i-col span="8">
+                    <i-input v-model.trim="remark" type="textarea" :rows="1"></i-input>
+                </i-col>
             </Row>
 
             <Row style="margin: 10px 0">
@@ -202,6 +207,7 @@
                 deviceid: "",
                 devicename: "",
                 devicetype: "",
+                remark: '',
                 simnum: "",
                 overduetime: "",
                 loginpwd: "",
@@ -297,6 +303,10 @@
 
                     if (this.monitor) {
                         data.monitor = this.monitor;
+                    }
+
+                    if (this.remark) {
+                        data.remark = this.remark;
                     }
 
                     if (this.loginpwd) {
