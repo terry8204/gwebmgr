@@ -3393,6 +3393,9 @@ var monitor = {
                                 }
                             })
                         }
+                        if (!this.isMapMode) {
+                            this.map.setCenter(copyMarker.getCoordinates());
+                        }
                     }
 
                 }
