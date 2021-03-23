@@ -317,6 +317,14 @@
                                 </i-select>
                             </i-col>
                         </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("monitor.remarks")}} : &nbsp;</i-col>
+                            <i-col span="20">
+                                <i-input v-model.trim="remark" type="textarea" :rows="2"></i-input>
+                            </i-col>
+                        </Row>
+
                         <Row style="margin: 10px 0">
                             <i-col span="12" :offset="7">
                                 <i-button style="width: 100%" @click="handleEditDevice">{{$t("bgMgr.submit")}}</i-button>
@@ -389,7 +397,7 @@
             calmileageway: '0',
             isfree: 0,
             forwardurl: "",
-
+            remark: '',
 
             userTypeList: [],
             username: "",
@@ -406,6 +414,7 @@
             multilogin: "",
             isEditUser: true,
             isEditGroup: true,
+
         },
         methods: {
             addUser: function() {
@@ -623,6 +632,9 @@
                 if (this.simnum !== "") {
                     data.simnum = this.simnum;
                 };
+                if (this.remark !== "") {
+                    data.remark = this.remark;
+                };
                 if (this.groupid !== "" && this.groupsList.length) {
                     data.groupid = this.groupid;
                 } else {
@@ -794,6 +806,7 @@
                 me.teltype = String(editObject.teltype);
                 me.allowedit = String(editObject.allowedit);
                 me.createrToUser = editObject.creater;
+                me.remark = editObject.remark;
                 this.oldCreater = me.createrToUser;
             },
             selectedCmd: function(item) {
