@@ -1,10 +1,46 @@
 (function(win) {
     "use strict";
+
     //定义一些常量
     var x_PI = 3.14159265358979324 * 3000.0 / 180.0;
     var PI = 3.1415926535897932384626;
     var a = 6378245.0;
     var ee = 0.00669342162296594323;
+    //https://github.com/zcsoft/ZCChinaLocation
+    var regionRectangle = [
+        { la1: 49.220400, lo1: 79.446200, la2: 42.889900, lo2: 96.330000 },
+        { la1: 54.141500, lo1: 109.687200, la2: 39.374200, lo2: 135.000200 },
+        { la1: 42.889900, lo1: 73.124600, la2: 29.529700, lo2: 124.143255 },
+        { la1: 29.529700, lo1: 82.968400, la2: 26.718600, lo2: 97.035200 },
+        { la1: 29.529700, lo1: 97.025300, la2: 20.414096, lo2: 124.367395 },
+        { la1: 20.414096, lo1: 107.975793, la2: 17.871542, lo2: 111.744104 },
+    ]; //范围矩形列表
+    var excludeRectangle = [
+        { la1: 22.284000, lo1: 101.865200, la2: 20.098800, lo2: 106.665000 },
+        { la1: 21.542200, lo1: 106.452500, la2: 20.487800, lo2: 108.051000 },
+        { la1: 55.817500, lo1: 109.032300, la2: 50.325700, lo2: 119.127000 },
+        { la1: 55.817500, lo1: 127.456800, la2: 49.557400, lo2: 137.022700 },
+        { la1: 44.892200, lo1: 131.266200, la2: 42.569200, lo2: 137.022700 },
+    ]; //范围内排除的矩形列表
+    //百度地图计算台湾不需要纠偏 Google 和 高德计算台湾需要纠偏
+    var TaiWanRect = { la1: 25.398623, lo1: 119.921265, la2: 21.785006, lo2: 122.497559 };
+    var excludeRectangleInCludeTaiWan = [
+        TaiWanRect,
+        { la1: 22.284000, lo1: 101.865200, la2: 20.098800, lo2: 106.665000 },
+        { la1: 21.542200, lo1: 106.452500, la2: 20.487800, lo2: 108.051000 },
+        { la1: 55.817500, lo1: 109.032300, la2: 50.325700, lo2: 119.127000 },
+        { la1: 55.817500, lo1: 127.456800, la2: 49.557400, lo2: 137.022700 },
+        { la1: 44.892200, lo1: 131.266200, la2: 42.569200, lo2: 137.022700 },
+    ]; //范围内排除的矩形列表
+    function InRectangle(rect, stdlat, stdlon) {
+        var result = false;
+        if (stdlat > rect.la2 && stdlat < rect.la1) {
+            if (stdlon > rect.lo1 && stdlon < rect.lo2) {
+                result = true;
+            }
+        }
+        return result;
+    }
     /**
      * 百度坐标系 (BD-09) 与 火星坐标系 (GCJ-02)的转换
      * 即 百度 转 谷歌、高德
@@ -30,7 +66,7 @@
      * @returns {*[]}
      */
     function gcj02tobd09(lng, lat) {
-        if (out_of_china(lng, lat)) {
+        if (out_of_china(lng, lat, true)) {
             return [lng, lat]
         } else {
             var z = Math.sqrt(lng * lng + lat * lat) + 0.00002 * Math.sin(lat * x_PI);
@@ -47,7 +83,7 @@
      * @returns {*[]}
      */
     function wgs84togcj02(lng, lat) {
-        if (out_of_china(lng, lat)) {
+        if (out_of_china(lng, lat, false)) {
             return [lng, lat]
         } else {
             var dlat = transformlat(lng - 105.0, lat - 35.0);
@@ -63,6 +99,7 @@
             return [mglng, mglat]
         }
     }
+
     /**
      * GCJ02 转换为 WGS84
      * @param lng
@@ -70,7 +107,7 @@
      * @returns {*[]}
      */
     function gcj02towgs84(lng, lat) {
-        if (out_of_china(lng, lat)) {
+        if (out_of_china(lng, lat, false)) {
             return [lng, lat]
         } else {
             var dlat = transformlat(lng - 105.0, lat - 35.0);
@@ -108,20 +145,62 @@
      * @param lat
      * @returns {boolean}
      */
-    function out_of_china(lng, lat) {
+    function out_of_china(lng, lat, isBaiDuMap) {
         //return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false);
-        var result = false;
-        if (lng < 72.004 || lng > 137.8347) {
-            result = true;
+        // return false;
+        // debugger;
+        // var result = false;
+        // if (lng < 72.004 || lng > 137.8347) {
+        //     result = true;
+        // }
+        // if (lat < 0.8293 || lat > 55.8271) {
+        //     result = true;
+        // }
+        // return result;
+        var realExcludeRectangle = excludeRectangle;
+        if (isBaiDuMap) {
+            realExcludeRectangle = excludeRectangleInCludeTaiWan;
         }
-        if (lat < 0.8293 || lat > 55.8271) {
-            result = true;
+        for (var i = 0; i < regionRectangle.length; i++) {
+            if (InRectangle(regionRectangle[i], lat, lng)) {
+                for (var j = 0; j < realExcludeRectangle.length; j++) {
+                    if (InRectangle(realExcludeRectangle[j], lat, lng)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
         }
-        return result;
+        return false;
+    }
+
+
+    /**
+     * WGS84转GCj02
+     * @param lng
+     * @param lat
+     * @returns {*[]}
+     */
+    function wgs84togcj02ForBaidu(lng, lat) {
+        if (out_of_china(lng, lat, true)) {
+            return [lng, lat]
+        } else {
+            var dlat = transformlat(lng - 105.0, lat - 35.0);
+            var dlng = transformlng(lng - 105.0, lat - 35.0);
+            var radlat = lat / 180.0 * PI;
+            var magic = Math.sin(radlat);
+            magic = 1 - ee * magic * magic;
+            var sqrtmagic = Math.sqrt(magic);
+            dlat = (dlat * 180.0) / ((a * (1 - ee)) / (magic * sqrtmagic) * PI);
+            dlng = (dlng * 180.0) / (a / sqrtmagic * Math.cos(radlat) * PI);
+            var mglat = lat + dlat;
+            var mglng = lng + dlng;
+            return [mglng, mglat]
+        }
     }
 
     function wgs84tobd09(lng, lat) {
-        var lng_lat_1 = wgs84togcj02(lng, lat);
+        var lng_lat_1 = wgs84togcj02ForBaidu(lng, lat);
         var lng_lat_2 = gcj02tobd09(lng_lat_1[0], lng_lat_1[1]);
         return lng_lat_2;
     }
