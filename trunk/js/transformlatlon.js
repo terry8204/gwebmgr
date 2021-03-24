@@ -159,9 +159,9 @@
         // return result;
 
         var realExcludeRectangle = excludeRectangle;
-//        if (isBaiDuMap) {
-//            realExcludeRectangle = excludeRectangleInCludeTaiWan;
-//        }
+        if (!isBaiDuMap) {
+            realExcludeRectangle = excludeRectangleInCludeTaiWan;
+        }
         for (var i = 0; i < regionRectangle.length; i++) {
             if (InRectangle(regionRectangle[i], lat, lng)) {
                 for (var j = 0; j < realExcludeRectangle.length; j++) {
