@@ -157,18 +157,19 @@
         //     result = true;
         // }
         // return result;
+
         var realExcludeRectangle = excludeRectangle;
-        if (isBaiDuMap) {
-            realExcludeRectangle = excludeRectangleInCludeTaiWan;
-        }
+//        if (isBaiDuMap) {
+//            realExcludeRectangle = excludeRectangleInCludeTaiWan;
+//        }
         for (var i = 0; i < regionRectangle.length; i++) {
             if (InRectangle(regionRectangle[i], lat, lng)) {
                 for (var j = 0; j < realExcludeRectangle.length; j++) {
                     if (InRectangle(realExcludeRectangle[j], lat, lng)) {
-                        return false;
+                        return true;
                     }
                 }
-                return true;
+                return false;
             }
         }
         return true;
