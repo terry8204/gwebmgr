@@ -663,18 +663,27 @@ var monitor = {
                 audioPlayer.destroy();
                 audioPlayer = null;
             };
-            audioPlayer = flvjs.createPlayer({
+            // audioPlayer = flvjs.createPlayer({
+            //     type: 'flv',
+            //     url: url,
+            //     isLive: true,
+            //     hasAudio: true,
+            //     hasVideo: false,
+            //     withCredentials: false,
+            // }, {
+            //     enableWorker: false,
+            //     enableStashBuffer: false,
+            //     isLive: true,
+            //     lazyLoad: false
+            // });
+            audioPlayer = mpegts.createPlayer({
                 type: 'flv',
-                url: url,
-                isLive: true,
-                hasAudio: true,
-                hasVideo: false,
-                withCredentials: false,
+                url: url
             }, {
-                enableWorker: false,
-                enableStashBuffer: false,
-                isLive: true,
-                lazyLoad: false
+                enableWorker: true,
+                lazyLoadMaxDuration: 3 * 60,
+                seekType: 'range',
+                liveBufferLatencyChasing: true,
             });
             var player = document.getElementById('audio-player');
             audioPlayer.attachMediaElement(player);

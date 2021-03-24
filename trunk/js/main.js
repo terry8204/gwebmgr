@@ -391,7 +391,7 @@ Vue.component('my-video', {
                 enableWorker: true,
                 lazyLoadMaxDuration: 3 * 60,
                 seekType: 'range',
-                liveBufferLatencyChasing: false,
+                liveBufferLatencyChasing: true,
             });
 
             var me = this;
