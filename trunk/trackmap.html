@@ -428,6 +428,9 @@
                         }, {
                             label: isZh ? "高德地图" : "AMap",
                             value: "aMap"
+                        }, {
+                            label: isZh ? "国内谷歌" : "gChinaMap",
+                            value: "gChinaMap"
                         }, ],
                         speed: isZh ? "限速" : "Speed",
                         traffic: isZh ? "路况" : "Traffic",
@@ -645,6 +648,11 @@
                             }
 
 
+                        } else if (newMapType == 'gChinaMap') {
+                            var baseOption = satelliteMap ? googleChinaSatelliteBaseOption : googleChinaNormaBaseOption;
+                            var layer = new maptalks.TileLayer('base', baseOption)
+                            me.map.setSpatialReference({})
+                            me.map.setBaseLayer(layer);
                         }
 
                         me.addTrafficLayer(traffic);
@@ -1038,31 +1046,6 @@
                         }
                     },
 
-                    getMapTypeLayer: function() {
-                        var layer = null;
-                        switch (this.mapType) {
-                            case 'bMap':
-                                layer = new maptalks.TileLayer('base', {
-                                    'urlTemplate': 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
-                                    'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                                    'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>'
-                                })
-                                break;
-                            case 'gMap':
-                                layer = new maptalks.TileLayer('base', {
-                                    urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&scale=2&gl=cn&src=app&x={x}&y={y}&z={z}&s=Gal",
-                                })
-                                break;
-                            case 'aMap':
-                                layer = new maptalks.TileLayer('base', {
-                                    urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
-                                })
-                                break;
-                            default:
-                                ;
-                        }
-                        return layer
-                    },
                 },
                 computed: {
                     token: function() {

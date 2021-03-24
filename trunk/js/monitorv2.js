@@ -1501,8 +1501,10 @@ var monitor = {
                     var textlayer = new maptalks.TileLayer('aliText', aliTextBaseOption)
                     me.map.addLayer(textlayer);
                 }
-
-
+            } else if (newMapType == 'gChinaMap') {
+                var layer = new maptalks.TileLayer('base', satelliteMap ? googleChinaSatelliteBaseOption : googleChinaNormaBaseOption)
+                me.map.setSpatialReference({})
+                me.map.setBaseLayer(layer);
             }
 
             me.addTrafficLayer(traffic);

@@ -547,7 +547,7 @@ var utils = {
                 type = isZh ? "卫星定位" : "Satellite positioning";
                 break;
             case 'wifi':
-                type = isZh ? "WIFI定位" : "WIFI Location";
+                type = isZh ? "WiFi定位" : "WiFi Location";
                 break;
             default:
                 type = isZh ? "未知" : "Unknown";
@@ -950,28 +950,24 @@ var utils = {
             map.setSpatialReference({
                 projection: 'baidu'
             });
-            var layer = new maptalks.TileLayer('base', {
-                'urlTemplate': 'https://maponline2.bdimg.com/tile/?qt=vtile&styles=pl&scaler=2&udt=20201217&from=jsapi2_0&x={x}&y={y}&z={z}',
-                'subdomains': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                'attribution': '&copy; <a target="_blank" href="http://map.baidu.com">Baidu</a>'
-            })
+            var layer = new maptalks.TileLayer('base', baiduNormaBaseOption)
             map.setBaseLayer(layer);
 
         } else if (newMapType == 'gMap') {
 
-            var layer = new maptalks.TileLayer('base', {
-                urlTemplate: "http://mt2.google.cn/vt?lyrs=m@180000000&hl=zh-CN&gl=cn&scale=2&src=app&x={x}&y={y}&z={z}&s=Gal",
-            })
+            var layer = new maptalks.TileLayer('base', googleNormaBaseOption)
             map.setSpatialReference({})
             map.setBaseLayer(layer);
 
         } else if (newMapType == 'aMap') {
-            var layer = new maptalks.TileLayer('base', {
-                urlTemplate: 'http://webrd04.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}',
-            })
+            var layer = new maptalks.TileLayer('base', aliNormaBaseOption)
             map.setSpatialReference({})
             map.setBaseLayer(layer);
 
+        } else if (newMapType == 'gChinaMap') {
+            var layer = new maptalks.TileLayer('base', googleChinaNormaBaseOption)
+            me.map.setSpatialReference({})
+            me.map.setBaseLayer(layer);
         }
 
         var customPosition = new maptalks.control.Zoom({

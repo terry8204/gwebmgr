@@ -931,9 +931,13 @@ var baiduTextUrlTemplate = 'https://gps51.com/fbaidumap/tile/?qt=tile&x={x}&y={y
 //hl=zh-CN&gl=cn
 //hl=en-US&gl=US
 
-var googleNormalUrlTemplate = 'http://minigps.net/vt?lyrs=m@189&scale=2&gl=cn&x={x}&y={y}&z={z}';
-var googleSatelliteUrlTemplate = 'http://minigps.net/vt?lyrs=y@189&scale=2&gl=cn&x={x}&y={y}&z={z}';
+var googleNormalUrlTemplate = 'http://mt{s}.google.cn/vt?lyrs=m@189&scale=2&gl=cn&x={x}&y={y}&z={z}';
+var googleSatelliteUrlTemplate = 'http://mt{s}.google.cn/vt?lyrs=y@189&scale=2&gl=cn&x={x}&y={y}&z={z}';
 var googleTrafficUrlTemplate = 'https://rtt2c.map.qq.com/rtt/?z={z}&x={x}&y={y}&times=1&time={time}';
+
+var googleChinaNormalUrlTemplate = 'http://minigps.net/vt?lyrs=m@189&scale=2&gl=cn&x={x}&y={y}&z={z}';
+var googleChinaSatelliteUrlTemplate = 'http://minigps.net/vt?lyrs=y@189&scale=2&gl=cn&x={x}&y={y}&z={z}';
+var googleChinaTrafficUrlTemplate = 'https://rtt2c.map.qq.com/rtt/?z={z}&x={x}&y={y}&times=1&time={time}';
 
 var aliNormalUrlTemplate = 'http://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&scale=2&style=8&x={x}&y={y}&z={z}';
 var aliSatelliteUrlTemplate = 'http://webst0{s}.is.autonavi.com/appmaptile?style=6&scale=2&x={x}&y={y}&z={z}';
@@ -982,6 +986,19 @@ var googleSatelliteBaseOption = {
     'urlTemplate': googleSatelliteUrlTemplate,
     'subdomains': [0, 1, 2, 3],
 }
+
+var googleChinaNormaBaseOption = {
+    'urlTemplate': googleChinaNormalUrlTemplate,
+    'subdomains': [0, 1, 2, 3],
+}
+
+var googleChinaSatelliteBaseOption = {
+    'urlTemplate': googleChinaSatelliteUrlTemplate,
+    'subdomains': [0, 1, 2, 3],
+}
+
+
+
 var aliNormaBaseOption = {
     'urlTemplate': aliNormalUrlTemplate,
     'subdomains': [1, 2, 3, 4],

@@ -943,6 +943,9 @@
                         }, {
                             label: isZh ? "高德地图" : "AMap",
                             value: "aMap"
+                        }, {
+                            label: isZh ? "国内谷歌" : "gChinaMap",
+                            value: "gChinaMap"
                         }, ],
                         speed: isZh ? "限速" : "Speed",
                         traffic: isZh ? "路况" : "Traffic",
@@ -1302,6 +1305,11 @@
                                 me.map.addLayer(textlayer);
                             }
 
+                        } else if (newMapType == 'gChinaMap') {
+                            var baseOption = satelliteMap ? googleChinaSatelliteBaseOption : googleChinaNormaBaseOption;
+                            var layer = new maptalks.TileLayer('base', baseOption)
+                            me.map.setSpatialReference({})
+                            me.map.setBaseLayer(layer);
                         }
 
                         me.addTrafficLayer(traffic);

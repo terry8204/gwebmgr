@@ -242,7 +242,8 @@
         div.maptalks-attribution {
             display: none;
         }
-        [v-cloak]{
+        
+        [v-cloak] {
             display: none;
         }
     </style>
@@ -535,11 +536,11 @@
                         click: function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            var content =  "";
-                            if(data.children){
-                                content = isZh ? "确定要删除分类吗":"Are you sure you want to delete the category?";
-                            }else{
-                                content = isZh ? "确定要删除围栏吗":"Are you sure you want to delete the fence?";
+                            var content = "";
+                            if (data.children) {
+                                content = isZh ? "确定要删除分类吗" : "Are you sure you want to delete the category?";
+                            } else {
+                                content = isZh ? "确定要删除围栏吗" : "Are you sure you want to delete the fence?";
                             }
                             vRoot.$Modal.confirm({
                                 title: isZh ? "温馨提示" : "Tips",
@@ -646,11 +647,11 @@
                         click: function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            var content =  "";
-                            if(data.children){
-                                content = isZh ? "确定要删除分类吗":"Are you sure you want to delete the category?";
-                            }else{
-                                content = isZh ? "确定要删除围栏吗":"Are you sure you want to delete the fence?";
+                            var content = "";
+                            if (data.children) {
+                                content = isZh ? "确定要删除分类吗" : "Are you sure you want to delete the category?";
+                            } else {
+                                content = isZh ? "确定要删除围栏吗" : "Are you sure you want to delete the fence?";
                             }
                             vRoot.$Modal.confirm({
                                 title: isZh ? "温馨提示" : "Tips",
@@ -688,6 +689,9 @@
                         }, {
                             label: isZh ? "高德地图" : "AMap",
                             value: "aMap"
+                        }, {
+                            label: isZh ? "国内谷歌" : "gChinaMap",
+                            value: "gChinaMap"
                         }, ],
                         speed: isZh ? "限速" : "Speed",
                         traffic: isZh ? "路况" : "Traffic",
@@ -915,6 +919,11 @@
                                 me.map.addLayer(textlayer);
                             }
 
+                        } else if (newMapType == 'gChinaMap') {
+                            var baseOption = satelliteMap ? googleChinaSatelliteBaseOption : googleChinaNormaBaseOption;
+                            var layer = new maptalks.TileLayer('base', baseOption)
+                            me.map.setSpatialReference({})
+                            me.map.setBaseLayer(layer);
                         }
 
                         me.addTrafficLayer(traffic);
@@ -1289,7 +1298,7 @@
                                 }
                             });
                         } else {
-                            me.$Message.error(isZh?'请最少添加2个坐标点':'Please add at least 2 coordinate points');
+                            me.$Message.error(isZh ? '请最少添加2个坐标点' : 'Please add at least 2 coordinate points');
                         }
 
                     },
@@ -1370,15 +1379,15 @@
                                     record.render = treeItemRender;
                                     me.originalData.push(record);
                                     me.treeData = me.originalData;
-                                    me.$Message.success(isZh?"添加成功":"Added successfully");
+                                    me.$Message.success(isZh ? "添加成功" : "Added successfully");
                                     me.addClassModal = false;
                                     me.typeName = '';
                                 } else {
-                                    me.$Message.error(isZh?"添加失败":"Add failed");
+                                    me.$Message.error(isZh ? "添加失败" : "Add failed");
                                 }
                             });
                         } else {
-                            this.$Message.error(isZh?"请填写类型名称":"Please fill in the type name");
+                            this.$Message.error(isZh ? "请填写类型名称" : "Please fill in the type name");
                         }
                     },
                     searchChange: utils.debounce(function(vm, value) {
@@ -1426,7 +1435,7 @@
                                 me.originalData.splice(index, 1);
                                 me.treeData = me.originalData;
                             } else if (resp.status === 1) {
-                                me.$Message.error(isZh?"不能删除这个分类,还有围栏没删除":"You can't delete this category. There are still fences");
+                                me.$Message.error(isZh ? "不能删除这个分类,还有围栏没删除" : "You can't delete this category. There are still fences");
                             }
                         })
                     },
@@ -1451,7 +1460,7 @@
                                     }
                                 });
                             } else {
-                                me.$Message.error(isZh?"删除失败":"Deletion failed");
+                                me.$Message.error(isZh ? "删除失败" : "Deletion failed");
                             }
                         })
                     },
@@ -1538,15 +1547,15 @@
                     },
                     handleAddPolygon: function() {
                         if (this.selectTypeList.length === 0) {
-                            this.$Message.error(isZh?"请先添加分类":"Please add classification first");
+                            this.$Message.error(isZh ? "请先添加分类" : "Please add classification first");
                             return;
                         }
                         if (this.geoName == "") {
-                            this.$Message.error(isZh?"请填写围栏名称":"Please fill in the name of the fence");
+                            this.$Message.error(isZh ? "请填写围栏名称" : "Please fill in the name of the fence");
                             return;
                         }
                         if (!this.classId) {
-                            me.$Message.success(isZh?"请选择类型":"Please select type")
+                            me.$Message.success(isZh ? "请选择类型" : "Please select type")
                             return;
                         }
                         if (this.isCircular) {
@@ -1570,11 +1579,12 @@
                                             item.children.push(resp.record);
                                         }
                                     })
-                                    me.$Message.success(isZh?"添加成功":"Added successfully");
+                                    me.$Message.success(isZh ? "添加成功" : "Added successfully");
                                     me.isPolygon = false;
                                     me.addPolygonModal = false;
                                 } else {
-                                    me.$Message.error(isZh?"添加失败":"Add failed");          me.$Message.success(isZh?"添加成功":"Added successfully");
+                                    me.$Message.error(isZh ? "添加失败" : "Add failed");
+                                    me.$Message.success(isZh ? "添加成功" : "Added successfully");
                                 }
                             });
                         }
@@ -1766,10 +1776,10 @@
                                         }
                                     })
                                 }
-                                me.$Message.success(isZh?"添加成功":"Added successfully");
+                                me.$Message.success(isZh ? "添加成功" : "Added successfully");
                                 me.addPolygonModal = false;
                             } else {
-                                me.$Message.error(isZh?"添加失败":"Add failed");  
+                                me.$Message.error(isZh ? "添加失败" : "Add failed");
                             }
                         });
                     },
@@ -1826,7 +1836,7 @@
                                                     y: lon_lat[1]
                                                 };
                                             } else if (newVal == 'gMap') {
-                                                if (oldVal == 'aMap') {
+                                                if (oldVal == 'aMap' || oldVal == "gMap" || oldVal == "gChinaMap") {
                                                     newPoint = point;
                                                 } else {
                                                     var lon_lat = bd09togcj02(point.x, point.y);
@@ -1835,16 +1845,8 @@
                                                         y: lon_lat[1]
                                                     };
                                                 }
-                                            } else if (newVal == 'aMap') {
-                                                if (oldVal == 'gMap') {
-                                                    newPoint = point;
-                                                } else {
-                                                    var lon_lat = bd09togcj02(point.x, point.y);
-                                                    newPoint = {
-                                                        x: lon_lat[0],
-                                                        y: lon_lat[1]
-                                                    };
-                                                }
+
+
                                             }
 
                                             newItems.push(newPoint);
@@ -1859,17 +1861,9 @@
                                                 y: lon_lat[1]
                                             };
                                         } else if (newVal == 'gMap') {
-                                            if (oldVal == 'aMap') {
-                                                newPoint = items;
-                                            } else {
-                                                var lon_lat = bd09togcj02(items.x, items.y);
-                                                var newPoint = {
-                                                    x: lon_lat[0],
-                                                    y: lon_lat[1]
-                                                };
-                                            }
-                                        } else if (newVal == 'aMap') {
-                                            if (oldVal == 'gMap') {
+
+
+                                            if (oldVal == 'aMap' || oldVal == "gMap" || oldVal == "gChinaMap") {
                                                 newPoint = items;
                                             } else {
                                                 var lon_lat = bd09togcj02(items.x, items.y);
@@ -1892,17 +1886,7 @@
                                         y: lon_lat[1]
                                     };
                                 } else if (newVal == 'gMap') {
-                                    if (oldVal == 'aMap') {
-                                        newPoint = points;
-                                    } else {
-                                        var lon_lat = bd09togcj02(points.x, points.y);
-                                        newPoint = {
-                                            x: lon_lat[0],
-                                            y: lon_lat[1]
-                                        };
-                                    }
-                                } else if (newVal == 'aMap') {
-                                    if (oldVal == 'gMap') {
+                                    if (oldVal == 'aMap' || oldVal == "gMap" || oldVal == "gChinaMap") {
                                         newPoint = points;
                                     } else {
                                         var lon_lat = bd09togcj02(points.x, points.y);

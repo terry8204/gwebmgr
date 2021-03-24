@@ -848,6 +848,9 @@
                         }, {
                             label: isZh ? "高德地图" : "AMap",
                             value: "aMap"
+                        }, {
+                            label: isZh ? "国内谷歌" : "gChinaMap",
+                            value: "gChinaMap"
                         }, ],
                         speed: isZh ? "限速" : "Speed",
                         traffic: isZh ? "路况" : "Traffic",
@@ -1929,6 +1932,11 @@
                                 me.map.addLayer(textlayer);
                             }
 
+                        } else if (newMapType == 'gChinaMap') {
+                            var baseOption = satelliteMap ? googleChinaSatelliteBaseOption : googleChinaNormaBaseOption;
+                            var layer = new maptalks.TileLayer('base', baseOption)
+                            me.map.setSpatialReference({})
+                            me.map.setBaseLayer(layer);
                         }
 
                         me.addTrafficLayer(traffic);
@@ -2031,7 +2039,7 @@
 
                         return new maptalks.Marker(
                             pointArr, {
-                                symbol: isRotate ? this.getMarkerSymbol(markerFile, track.course, markerRotation) :this.getPrakMarkerSymbol(markerFile, 0, markerRotation),
+                                symbol: isRotate ? this.getMarkerSymbol(markerFile, track.course, markerRotation) : this.getPrakMarkerSymbol(markerFile, 0, markerRotation),
                             }
                         );
                     },
@@ -2275,7 +2283,7 @@
                         };
 
                         var oilStr = '';
-                        if(utils.hasFunction(Number(functionslong), 0x0200)){
+                        if (utils.hasFunction(Number(functionslong), 0x0200)) {
                             oilStr = this.getOilStr(info);
                         };
 
@@ -2311,65 +2319,65 @@
                             '</div>';
                         return sContent
                     },
-                    getOilStr:function(track){
+                    getOilStr: function(track) {
                         var oilStr = '';
-  
+
                         var totalOil = track.totalad;
                         var masteroil = track.ad0;
                         var auxoil = track.ad1;
                         var thirdoil = track.ad2;
                         var fourthoil = track.ad3;
 
-                
-                            if ((totalOil > 0) ||
-                                (masteroil > 0) ||
-                                (auxoil > 0) ||
-                                (thirdoil > 0) ||
-                                (fourthoil > 0)) {
-                                var isNotFirst = false;
-                                oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ';
-                  
-                                if (totalOil > 0) {
-                                    oilStr += totalOil.toFixed(0) + "LT";
-                                    isNotFirst = true;
-                                }
-                                if (masteroil > 0) {
-                                    if (isNotFirst) {
-                                        isNotFirst = true;
-                                        oilStr += '/';
-                                    }
-                                    oilStr += masteroil.toFixed(0) + "L1";
-                                }
 
-                                if (auxoil > 0) {
-                                    if (isNotFirst) {
-                                        isNotFirst = true;
-                                        oilStr += '/';
-                                    }
-                                    oilStr += auxoil.toFixed(0) + "L2";
+                        if ((totalOil > 0) ||
+                            (masteroil > 0) ||
+                            (auxoil > 0) ||
+                            (thirdoil > 0) ||
+                            (fourthoil > 0)) {
+                            var isNotFirst = false;
+                            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ';
 
-                                }
-                                if (thirdoil > 0) {
-                                    if (isNotFirst) {
-                                        isNotFirst = true;
-                                        oilStr += '/';
-
-                                    }
-                                    oilStr += thirdoil.toFixed(0) + "L3";
-
-                                }
-
-                                if (fourthoil > 0) {
-                                    if (isNotFirst) {
-                                        isNotFirst = true;
-                                        oilStr += '/';
-
-                                    }
-                                    oilStr += fourthoil.toFixed(0) + "L4";
-
-                                }
-              
+                            if (totalOil > 0) {
+                                oilStr += totalOil.toFixed(0) + "LT";
+                                isNotFirst = true;
                             }
+                            if (masteroil > 0) {
+                                if (isNotFirst) {
+                                    isNotFirst = true;
+                                    oilStr += '/';
+                                }
+                                oilStr += masteroil.toFixed(0) + "L1";
+                            }
+
+                            if (auxoil > 0) {
+                                if (isNotFirst) {
+                                    isNotFirst = true;
+                                    oilStr += '/';
+                                }
+                                oilStr += auxoil.toFixed(0) + "L2";
+
+                            }
+                            if (thirdoil > 0) {
+                                if (isNotFirst) {
+                                    isNotFirst = true;
+                                    oilStr += '/';
+
+                                }
+                                oilStr += thirdoil.toFixed(0) + "L3";
+
+                            }
+
+                            if (fourthoil > 0) {
+                                if (isNotFirst) {
+                                    isNotFirst = true;
+                                    oilStr += '/';
+
+                                }
+                                oilStr += fourthoil.toFixed(0) + "L4";
+
+                            }
+
+                        }
                         return oilStr;
                     },
                     addDistanceTool: function() {

@@ -165,9 +165,9 @@ Vue.component('table-dropdown', {
                     // case 'carMaster':
                     //     vueInstanse.queryCarMasterInfo(this.params);
                     //     break;
-                case 'insure':
-                    vueInstanse.queryInsureInfo(this.params);
-                    break;
+                    // case 'insure':
+                    //     vueInstanse.queryInsureInfo(this.params);
+                    //     break;
                 case 'resetPass':
                     vueInstanse.resetDevicePwd(this.params.index);
                     break;
@@ -200,6 +200,7 @@ Vue.component('selected-map', {
                 { label: isZh ? "百度地图" : "BaiduMap", value: "bMap" },
                 { label: isZh ? "谷歌地图" : "GoogleMap", value: "gMap" },
                 { label: isZh ? "高德地图" : "AMap", value: "aMap" },
+                { label: isZh ? "国内谷歌" : "gChinaMap", value: "gChinaMap" },
             ],
             speed: isZh ? "限速" : "Speed",
             traffic: isZh ? "路况" : "Traffic",

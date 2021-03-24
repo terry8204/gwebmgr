@@ -42,65 +42,6 @@
             <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changeDevicePage"></Page>
         </div>
 
-        <Modal v-model="insureInfoModal" width="500" :mask-closable="false">
-            <p slot="header" style="color:#f60;text-align:center">
-                <Icon type="ios-create-outline"></Icon>
-                <span>{{$t('device.insureInfo')}}</span>
-            </p>
-            <div style="text-align:center">
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('alarm.devNum')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        {{insureInfoData.deviceid}}
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.securityNumber')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="insureInfoData.securitynum" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.vinno')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="insureInfoData.vin" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insureCompany')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="insureInfoData.insurecompany" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insurenum')}}: &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="insureInfoData.insurenum" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insuranceDate')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="insureInfoData.subinsuretime" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.effectiveDate')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="insureInfoData.effecttime" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insureRemarks')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="insureInfoData.insuremark" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-            </div>
-            <div slot="footer">
-                <i-button type="primary" style="width: 100%" @click="handleEditInsure">{{$t('header.submit')}}</i-button>
-            </div>
-        </Modal>
         <Modal v-model="chargeModal" width="700" :title="$t('bgMgr.renew')" :mask-closable="false">
             <div v-if="deviceChargeRecords.length > 0">
                 <Row style="border-top:1px solid #E8EAEC;border-left:1px solid #E8EAEC;">
@@ -357,7 +298,7 @@
                         </Row>
                     </div>
                 </Tab-Pane>
-                <Tab-Pane label="所有人信息" name="ownerInfo">
+                <Tab-Pane :label="$t('device.ownerInfo')" name="ownerInfo">
                     <div style="width:700px;height:432.67px;margin:10px auto">
                         <Row style="margin:10px 0;">
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.name')}} : &nbsp;</i-col>
@@ -406,7 +347,135 @@
                         </Row>
                     </div>
                 </Tab-Pane>
-                <Tab-Pane label="驾驶员信息" name="driverInfo"></Tab-Pane>
+                <Tab-Pane :label="$t('device.driverInfo')" name="driverInfo">
+                    <div style="width:700px;height:432.67px;margin:10px auto">
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"> {{$t('device.drivername')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="driverInfo.drivername"></i-input>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('device.gender')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model.sync="driverInfo.driversex">
+                                    <i-option value="1">{{$t('device.man')}}</i-option>
+                                    <i-option value="2">{{$t('device.girl')}}</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.driverbrith')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <date-picker type="date" v-model="driverInfo.driverbrith" style="width: 100%;"></date-picker>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('device.drivernationality')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="driverInfo.drivernationality"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.address')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="driverInfo.driveraddress"></i-input>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('device.driverphone')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="driverInfo.driverphone"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.driveridnumber')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="driverInfo.driveridnumber"></i-input>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('device.drivercertificatetype')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model.sync="driverInfo.drivercertificatetype">
+                                    <i-option value="1">{{$t('device.certificatetype1')}}</i-option>
+                                    <i-option value="2">{{$t('device.certificatetype2')}}</i-option>
+                                    <i-option value="0">{{$t('device.other')}} </i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('device.driverissuorganization')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="driverInfo.driverissuorganization"></i-input>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.driverrelatevehiclenum')}} :</i-col>
+                            <i-col span="8">
+                                <date-picker type="date" v-model="driverInfo.driverrelatevehiclenum" style="width: 100%;"></date-picker>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.driverinitialdate')}} :</i-col>
+                            <i-col span="8">
+                                <date-picker type="date" v-model="driverInfo.driverinitialdate" style="width: 100%;"></date-picker>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.drivereffectivedate')}} :</i-col>
+                            <i-col span="8">
+                                <date-picker type="date" v-model="driverInfo.drivereffectivedate" style="width: 100%;"></date-picker>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.drivercertificatenum')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="driverInfo.drivercertificatenum"></i-input>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('device.drivertype')}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="driverInfo.drivertype"></i-input>
+                            </i-col>
+                        </Row>
+                    </div>
+                </Tab-Pane>
+                <Tab-Pane :label="$t('device.insureInfo')" name="insureInfo">
+                    <div style="width:700px;height:432.67px;margin:10px auto">
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.securityNumber')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="insureInfoData.securitynum" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.vinno')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="insureInfoData.vin" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insureCompany')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="insureInfoData.insurecompany" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insurenum')}}: &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="insureInfoData.insurenum" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insuranceDate')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <date-picker type="date" v-model.trim="insureInfoData.subinsuretime" style="width: 100%;"></date-picker>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.effectiveDate')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <date-picker type="date" v-model.trim="insureInfoData.effecttime" style="width: 100%;"></date-picker>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.insureRemarks')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="insureInfoData.insuremark" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                    </div>
+                </Tab-Pane>
             </Tabs>
 
             <div slot="footer">
@@ -1632,18 +1701,34 @@
                     ownerremark: '',
                     address: ''
                 },
-                insureInfoModal: false,
+
                 insureInfoData: { //编辑的设备信息
                     deviceid: '',
                     securitynum: '', //防盗号
                     vin: '', //车架号
                     insurecompany: '', //保险公司
                     insurenum: '', //保单号
-                    subinsuretime: '', //投保日期
-                    effecttime: '', //生效日期
+                    subinsuretime: new Date(), //投保日期
+                    effecttime: new Date(), //生效日期
                     insuremark: '', //保险备注
                 },
                 deviceChargeRecords: [],
+                driverInfo: {
+                    drivername: "", //名字
+                    driversex: "1", //性别 1：男 2：女' ,
+                    driverbrith: new Date(), //生日 YYYY-MM-DD hh:mm:ss' ,
+                    drivernationality: "", //'国籍' ,
+                    driveraddress: "", //地址' ,
+                    driverphone: "", //电话' ,
+                    driveridnumber: "", //身份证' ,
+                    drivercertificatenum: "", //从业资格证号码' ,
+                    drivercertificatetype: "1", // '1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
+                    drivertype: "", // '准驾车型' ,
+                    driverinitialdate: new Date(), //'资格证初始领证日期' ,
+                    drivereffectivedate: new Date(), //'资格证有效起始日期' ,
+                    driverissuorganization: "", // '核发机关' ,
+                    driverrelatevehiclenum: new Date(), //'核发日期' ,
+                }
             },
             methods: {
                 clickOutside: function() {
@@ -1774,6 +1859,30 @@
                             vueInstanse.ownerInfoData.gender = String(resp.gender);
                             vueInstanse.ownerInfoData.ownerremark = resp.ownerremark;
                             vueInstanse.ownerInfoData.address = resp.address;
+
+                            vueInstanse.driverInfo.drivername = resp.drivername; //名字  
+                            vueInstanse.driverInfo.driversex = String(resp.driversex); //性别 1：男 2：女' ,
+                            vueInstanse.driverInfo.driverbrith = new Date(resp.driverbrith); //生日 YYYY-MM-DD hh:mm:ss' ,
+                            vueInstanse.driverInfo.drivernationality = resp.drivernationality; //'国籍' ,
+                            vueInstanse.driverInfo.driveraddress = resp.driveraddress; //地址' ,
+                            vueInstanse.driverInfo.driverphone = resp.driverphone; //电话' ,
+                            vueInstanse.driverInfo.driveridnumber = resp.driveridnumber; //身份证' ,
+                            vueInstanse.driverInfo.drivercertificatenum = resp.drivercertificatenum; //从业资格证号码' ,
+                            vueInstanse.driverInfo.drivercertificatetype = String(resp.drivercertificatetype); // '1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
+                            vueInstanse.driverInfo.drivertype = resp.drivertype // '准驾车型' ,
+                            vueInstanse.driverInfo.driverinitialdate = new Date(resp.driverinitialdate); //'资格证初始领证日期' ,
+                            vueInstanse.driverInfo.drivereffectivedate = new Date(resp.drivereffectivedate); //'资格证有效起始日期' ,
+                            vueInstanse.driverInfo.drivertype = resp.drivertype; // '核发机关' ,
+                            vueInstanse.driverInfo.driverrelatevehiclenum = new Date(resp.driverrelatevehiclenum); //'核发日期' ,
+
+                            vueInstanse.insureInfoData.securitynum = resp.securitynum;
+                            vueInstanse.insureInfoData.vin = resp.vin;
+                            vueInstanse.insureInfoData.insurecompany = resp.insurecompany;
+                            vueInstanse.insureInfoData.insurenum = resp.insurenum;
+                            vueInstanse.insureInfoData.subinsuretime = new Date(resp.subinsuretime);
+                            vueInstanse.insureInfoData.effecttime = new Date(resp.effecttime);
+                            vueInstanse.insureInfoData.insuremark = resp.insuremark;
+
                         } else {
                             vueInstanse.ownerInfoData.ownername = '';
                             vueInstanse.ownerInfoData.phonenum1 = '';
@@ -1782,6 +1891,32 @@
                             vueInstanse.ownerInfoData.gender = '';
                             vueInstanse.ownerInfoData.ownerremark = '';
                             vueInstanse.ownerInfoData.address = '';
+
+
+                            vueInstanse.driverInfo.drivername = ""; //名字  
+                            vueInstanse.driverInfo.driversex = "1"; //性别 1：男 2：女' ,
+                            vueInstanse.driverInfo.driverbrith = new Date(); //生日 YYYY-MM-DD hh:mm:ss' ,
+                            vueInstanse.driverInfo.drivernationality = ""; //'国籍' ,
+                            vueInstanse.driverInfo.driveraddress = ""; //地址' ,
+                            vueInstanse.driverInfo.driverphone = ""; //电话' ,
+                            vueInstanse.driverInfo.driveridnumber = ""; //身份证' ,
+                            vueInstanse.driverInfo.drivercertificatenum = ""; //从业资格证号码' ,
+                            vueInstanse.driverInfo.drivercertificatetype = "1"; // '1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
+                            vueInstanse.driverInfo.drivertype = ""; // '准驾车型' ,
+                            vueInstanse.driverInfo.driverinitialdate = new Date(); //'资格证初始领证日期' ,
+                            vueInstanse.driverInfo.drivereffectivedate = new Date(); //'资格证有效起始日期' ,
+                            vueInstanse.driverInfo.drivertype = ""; // '核发机关' ,
+                            vueInstanse.driverInfo.driverrelatevehiclenum = new Date(); //'核发日期' ,
+
+
+                            vueInstanse.insureInfoData.securitynum = '';
+                            vueInstanse.insureInfoData.vin = '';
+                            vueInstanse.insureInfoData.insurecompany = '';
+                            vueInstanse.insureInfoData.insurenum = '';
+                            vueInstanse.insureInfoData.subinsuretime = '';
+                            vueInstanse.insureInfoData.effecttime = '';
+                            vueInstanse.insureInfoData.insuremark = '';
+
                         }
                         // vueInstanse.ownerInfoModal = true;
                     });
@@ -1814,7 +1949,7 @@
                             vueInstanse.insureInfoData.effecttime = '';
                             vueInstanse.insureInfoData.insuremark = '';
                         }
-                        vueInstanse.insureInfoModal = true;
+
                     });
                 },
                 queryIoConfig: function(deviceid) {
@@ -2150,29 +2285,7 @@
                         this.taggingData4 = taggingData;
                     }
                 },
-                handleEditInsure: function() {
-                    var me = this;
-                    utils.editDeviceex('insure', me.ownerInfoData, function(resp) {
-                        if (resp.status === 0) {
-                            me.$Message.success(vRoot.$t('message.changeSucc'));
-                            me.ownerInfoModal = false;
-                        } else {
-                            me.$Message.error(vRoot.$t('message.changeFail'));
-                        }
-                    });
-                },
-                handleEditDeviceex: function() {
-                    var me = this;
-                    utils.editDeviceex('owner', me.ownerInfoData, function(resp) {
-                        console.log(resp);
-                        if (resp.status === 0) {
-                            me.$Message.success(vRoot.$t('message.changeSucc'));
-                            me.ownerInfoModal = false;
-                        } else {
-                            me.$Message.error(vRoot.$t('message.changeFail'));
-                        }
-                    });
-                },
+
                 handlerClickQuery() {
                     var self = this;
                     this.currentIndex = 1;
@@ -2548,6 +2661,18 @@
                         me.$Message.error(me.$t("message.plSelectTime"));
                         return;
                     }
+                    var driverInfo = deepClone(this.driverInfo);
+                    driverInfo.driversex = Number(driverInfo.driversex);
+                    driverInfo.drivercertificatetype = Number(driverInfo.drivercertificatetype);
+                    driverInfo.driverbrith = DateFormat.format(driverInfo.driverbrith, 'yyyy-MM-dd');
+                    driverInfo.driverinitialdate = DateFormat.format(driverInfo.driverinitialdate, 'yyyy-MM-dd');
+                    driverInfo.drivereffectivedate = DateFormat.format(driverInfo.drivereffectivedate, 'yyyy-MM-dd');
+                    driverInfo.driverrelatevehiclenum = DateFormat.format(driverInfo.driverrelatevehiclenum, 'yyyy-MM-dd');
+
+                    var insureInfoData = deepClone(this.insureInfoData);
+                    insureInfoData.subinsuretime = DateFormat.format(insureInfoData.subinsuretime, 'yyyy-MM-dd');
+                    insureInfoData.effecttime = DateFormat.format(insureInfoData.effecttime, 'yyyy-MM-dd');
+                    var extendinfo = Object.assign(deepClone(this.ownerInfoData), driverInfo, insureInfoData)
                     var data = {
                         baseinfo: {
                             deviceid: editObject.deviceid,
@@ -2560,7 +2685,7 @@
                             timezone: Number(this.timezone),
                             calmileageway: Number(this.calmileageway),
                         },
-                        extendinfo: this.ownerInfoData
+                        extendinfo: extendinfo
                     };
 
                     if (this.devicename) {
@@ -2595,7 +2720,7 @@
                     };
 
                     if (this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)) {
-                        data.reportedpoint = Number(this.reportedpoint);
+                        data.baseinfo.reportedpoint = Number(this.reportedpoint);
                     }
 
                     if (this.totalpoint && !isNaN(this.totalpoint)) {
