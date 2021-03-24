@@ -220,172 +220,239 @@
             </div>
         </Modal>
         <Modal v-model="modal" width="900" :title="$t('device.editDev')" :mask-closable="false">
-            <div style="width:700px;margin:10px auto">
-                <Row style="margin: 10px 0" v-if="userType < 4">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <div class="search-wrapper">
-                            <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
-                            <transition name="fade">
-                                <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
-                                    <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
-                                        <div :value="item" :key="item">
-                                            <span style="cursor: pointer;">{{ item }}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </transition>
-                        </div>
-                    </i-col>
-                </Row>
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-select v-model.sync="groupid">
-                            <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                        </i-select>
-                    </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">SIM : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim.number="simnum"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("bgMgr.expirenotifytime")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <date-picker type="date" v-model="expirenotifytime" :disabled="disabledOverdueTime"></date-picker>
-                    </i-col>
-
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim="devicename"></i-input>
-                    </i-col>
-
-                </Row>
-
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <!-- devicetype -->
-                        <i-select v-model="devicetype" :disabled="isfree!==2">
-                            <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-                        </i-select>
-                    </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("alarm.devNum")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim="deviceid" :disabled="isfree==6"></i-input>
-                    </i-col>
-
-                </Row>
-
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.networkType")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-select v-model="teltype">
-                            <i-option value="1">{{$t("reportForm.maxSignal")}}32(2G)</i-option>
-                            <i-option value="2">{{$t("reportForm.maxSignal")}}64(2G)</i-option>
-                            <i-option value="3">{{$t("reportForm.maxSignal")}}32(3G)</i-option>
-                            <i-option value="4">{{$t("reportForm.maxSignal")}}32(4G)</i-option>
-                        </i-select>
-                    </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.forwardAddress")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim="forwardurl" disabled></i-input>
-                    </i-col>
-                </Row>
-
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim="reportedpoint"></i-input>
-                    </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allReportCount")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim="totalpoint"></i-input>
-                    </i-col>
-                </Row>
-
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.isUse")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-select v-model="deviceenable">
-                            <i-option value="0">{{$t("user.ban")}}</i-option>
-                            <i-option value="1">{{$t("user.allow")}}</i-option>
-                        </i-select>
-                    </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.tutelageUser")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-input v-model.trim="monitor"></i-input>
-                    </i-col>
-                </Row>
 
 
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.subEeditor")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-select v-model="allowedit" :disabled="isAlloweditDisabled">
-                            <i-option value="0">{{$t("user.ban")}}</i-option>
-                            <i-option value="1">{{$t("user.allow")}}</i-option>
-                        </i-select>
-                    </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-select v-model="loginenable">
-                            <i-option value="0">{{$t("user.ban")}}</i-option>
-                            <i-option value="1">{{$t("user.allow")}}</i-option>
-                        </i-select>
-                    </i-col>
-                </Row>
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.timeZone")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-select v-model="timezone">
-                            <i-option value="99">{{$t("device.automatic")}}</i-option>
-                            <i-option value="-12">-12</i-option>
-                            <i-option value="-11">-11</i-option>
-                            <i-option value="-10">-10</i-option>
-                            <i-option value="-9">-9</i-option>
-                            <i-option value="-8">-8</i-option>
-                            <i-option value="-7">-7</i-option>
-                            <i-option value="-6">-6</i-option>
-                            <i-option value="-5">-5</i-option>
-                            <i-option value="-4">-4</i-option>
-                            <i-option value="-3">-3</i-option>
-                            <i-option value="-2">-2</i-option>
-                            <i-option value="-1">-1</i-option>
-                            <i-option value="0">0</i-option>
-                            <i-option value="1">+1</i-option>
-                            <i-option value="2">+2</i-option>
-                            <i-option value="3">+3</i-option>
-                            <i-option value="4">+4</i-option>
-                            <i-option value="5">+5</i-option>
-                            <i-option value="6">+6</i-option>
-                            <i-option value="7">+7</i-option>
-                            <i-option value="8">+8</i-option>
-                            <i-option value="9">+9</i-option>
-                            <i-option value="10">+10</i-option>
-                            <i-option value="11">+11</i-option>
-                            <i-option value="12">+12</i-option>
-                            <i-option value="13">+13</i-option>
-                            <i-option value="14">+14</i-option>
-                        </i-select>
-                    </i-col>
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.calmileageway")}} : &nbsp;</i-col>
-                    <i-col span="8">
-                        <i-select v-model="calmileageway">
-                            <i-option value="0">{{$t("device.automatic")}}</i-option>
-                            <i-option value="1">{{$t("device.devCalc")}}</i-option>
-                            <i-option value="2">{{$t("device.platformCalc")}}</i-option>
-                        </i-select>
-                    </i-col>
-                </Row>
-                <Row style="margin: 10px 0">
-                    <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("monitor.remarks")}} : &nbsp;</i-col>
-                    <i-col span="20">
-                        <i-input v-model.trim="remark" type="textarea" :rows="2"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin: 10px 0">
+            <Tabs :animated="false" v-model="tabActive">
+                <Tab-Pane label="基本信息" name="baseInfo">
+                    <div style="width:700px;margin:10px auto">
+                        <Row style="margin: 10px 0" v-if="userType < 4">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <div class="search-wrapper">
+                                    <i-input v-model.trim="createrToUser" :icon="iconState" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                                    <transition name="fade">
+                                        <ul class="search-item-wrapper" v-show="isShowMatchDev" style="cursor: pointer;">
+                                            <li v-for="item in userlists" style="padding:5px 10px;" @click="selectedCmd(item)" :class="{'ivu-select-item-focus':item == createrToUser}">
+                                                <div :value="item" :key="item">
+                                                    <span style="cursor: pointer;">{{ item }}</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </transition>
+                                </div>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("user.grouping")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model.sync="groupid">
+                                    <i-option v-for="item in groupsList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">SIM : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim.number="simnum"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("bgMgr.expirenotifytime")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <date-picker type="date" v-model="expirenotifytime" :disabled="disabledOverdueTime"></date-picker>
+                            </i-col>
+
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("alarm.devName")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="devicename"></i-input>
+                            </i-col>
+
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <!-- devicetype -->
+                                <i-select v-model="devicetype" :disabled="isfree!==2">
+                                    <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("alarm.devNum")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="deviceid" :disabled="isfree==6"></i-input>
+                            </i-col>
+
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.networkType")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="teltype">
+                                    <i-option value="1">{{$t("reportForm.maxSignal")}}32(2G)</i-option>
+                                    <i-option value="2">{{$t("reportForm.maxSignal")}}64(2G)</i-option>
+                                    <i-option value="3">{{$t("reportForm.maxSignal")}}32(3G)</i-option>
+                                    <i-option value="4">{{$t("reportForm.maxSignal")}}32(4G)</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.forwardAddress")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="forwardurl" disabled></i-input>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="reportedpoint"></i-input>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allReportCount")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="totalpoint"></i-input>
+                            </i-col>
+                        </Row>
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.isUse")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="deviceenable">
+                                    <i-option value="0">{{$t("user.ban")}}</i-option>
+                                    <i-option value="1">{{$t("user.allow")}}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.tutelageUser")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="monitor"></i-input>
+                            </i-col>
+                        </Row>
+
+
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.subEeditor")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="allowedit" :disabled="isAlloweditDisabled">
+                                    <i-option value="0">{{$t("user.ban")}}</i-option>
+                                    <i-option value="1">{{$t("user.allow")}}</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="loginenable">
+                                    <i-option value="0">{{$t("user.ban")}}</i-option>
+                                    <i-option value="1">{{$t("user.allow")}}</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.timeZone")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="timezone">
+                                    <i-option value="99">{{$t("device.automatic")}}</i-option>
+                                    <i-option value="-12">-12</i-option>
+                                    <i-option value="-11">-11</i-option>
+                                    <i-option value="-10">-10</i-option>
+                                    <i-option value="-9">-9</i-option>
+                                    <i-option value="-8">-8</i-option>
+                                    <i-option value="-7">-7</i-option>
+                                    <i-option value="-6">-6</i-option>
+                                    <i-option value="-5">-5</i-option>
+                                    <i-option value="-4">-4</i-option>
+                                    <i-option value="-3">-3</i-option>
+                                    <i-option value="-2">-2</i-option>
+                                    <i-option value="-1">-1</i-option>
+                                    <i-option value="0">0</i-option>
+                                    <i-option value="1">+1</i-option>
+                                    <i-option value="2">+2</i-option>
+                                    <i-option value="3">+3</i-option>
+                                    <i-option value="4">+4</i-option>
+                                    <i-option value="5">+5</i-option>
+                                    <i-option value="6">+6</i-option>
+                                    <i-option value="7">+7</i-option>
+                                    <i-option value="8">+8</i-option>
+                                    <i-option value="9">+9</i-option>
+                                    <i-option value="10">+10</i-option>
+                                    <i-option value="11">+11</i-option>
+                                    <i-option value="12">+12</i-option>
+                                    <i-option value="13">+13</i-option>
+                                    <i-option value="14">+14</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.calmileageway")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="calmileageway">
+                                    <i-option value="0">{{$t("device.automatic")}}</i-option>
+                                    <i-option value="1">{{$t("device.devCalc")}}</i-option>
+                                    <i-option value="2">{{$t("device.platformCalc")}}</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("monitor.remarks")}} : &nbsp;</i-col>
+                            <i-col span="20">
+                                <i-input v-model.trim="remark" type="textarea" :rows="2"></i-input>
+                            </i-col>
+                        </Row>
+                    </div>
+                </Tab-Pane>
+                <Tab-Pane label="车辆信息" name="vehicleInfo">
+                    <div style="width:700px;height:432.67px;margin:10px auto">
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.plateno")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="plateno"></i-input>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.cartagcolor")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="cartagcolor">
+                                    <i-option value="1">蓝色</i-option>
+                                    <i-option value="2">黄色</i-option>
+                                    <i-option value="3">黑色</i-option>
+                                    <i-option value="4">白色</i-option>
+                                    <i-option value="5">绿色</i-option>
+                                    <i-option value="9">其他</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+                        <Row style="margin: 10px 0">
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.carcolor")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-select v-model="carcolor">
+                                    <i-option value="1">蓝色</i-option>
+                                    <i-option value="2">黄色</i-option>
+                                    <i-option value="3">黑色</i-option>
+                                    <i-option value="4">白色</i-option>
+                                    <i-option value="5">绿色</i-option>
+                                    <i-option value="9">其他</i-option>
+                                </i-select>
+                            </i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.icon")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <div class="ivu-input-wrapper ivu-input-wrapper-default ivu-input-type search-wrapper" style="position: relative;" v-click-outside.capture="clickOutside">
+                                    <div class="ivu-input ivu-input-default" style="padding: 0px;line-height: 28px;" @click="clickIconWrapper">
+                                        <img :src="'./images/carstate/'+icon+'_green_0.png'" style="width: 28px;height: 28px;">
+                                    </div>
+                                    <transition name="fade">
+                                        <ul class="search-item-wrapper" v-show="isShowIcon" style="cursor: pointer;">
+                                            <li @click="selectedIcon(0)" :class="{'ivu-select-item-focus':icon == '0'}">
+                                                <div>
+                                                    <img :src="'./images/carstate/0_green_0.png'" style="width: 28px;height: 28px;">
+                                                </div>
+                                            </li>
+                                            <li @click="selectedIcon(1)" :class="{'ivu-select-item-focus':icon == '1'}">
+                                                <div>
+                                                    <img :src="'./images/carstate/1_green_0.png'" style="width: 28px;height: 28px;">
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </transition>
+                                </div>
+                            </i-col>
+                        </Row>
+                    </div>
+                </Tab-Pane>
+                <Tab-Pane label="所有人信息" name="ownerInfo"></Tab-Pane>
+                <Tab-Pane label="驾驶员信息" name="driverInfo"></Tab-Pane>
+            </Tabs>
+
+            <div slot="footer">
+                <Row>
                     <i-col span="6" :offset="7">
                         <i-button style="width: 100%" @click="handleSubmit">{{$t("bgMgr.submit")}}</i-button>
                     </i-col>
@@ -394,7 +461,6 @@
                     </i-col>
                 </Row>
             </div>
-            <div slot="footer" style="height:20px;"></div>
         </Modal>
         <Modal v-model="ioModal" width="650" :mask-closable="false">
             <p slot="header" style="color:#f60;text-align:center">
@@ -1120,6 +1186,7 @@
             el: "#querydev",
             i18n: utils.getI18n(),
             data: {
+                tabActive: 'baseInfo',
                 saveLoading: false,
                 ioModal: false,
                 ioCount: 0,
@@ -1590,6 +1657,12 @@
                 userlists: [],
                 isShowMatchDev: false,
                 monitor: "",
+                plateno: "",
+                cartagcolor: "9",
+                carcolor: "9",
+                icon: "0",
+                isShowIcon: false,
+
                 ownerInfoModal: false,
                 ownerInfoData: { //编辑的设备信息
                     deviceid: '',
@@ -1615,6 +1688,16 @@
                 deviceChargeRecords: [],
             },
             methods: {
+                clickOutside: function() {
+                    this.isShowIcon = false;
+                },
+                clickIconWrapper: function() {
+                    this.isShowIcon = true;
+                },
+                selectedIcon: function(icon) {
+                    this.icon = String(icon);
+                    this.isShowIcon = false;
+                },
                 queryChargeDeviceRecords: function(deviceid) {
                     var me = this;
                     var url = myUrls.queryChargeDeviceRecords();
@@ -2518,41 +2601,55 @@
                 },
                 handleSubmit: function() {
                     var me = this;
-                    var url = myUrls.editDevice();
+                    var url = myUrls.editDeviceAllInfo();
                     if (this.expirenotifytime == "") {
                         me.$Message.error(me.$t("message.plSelectTime"));
                         return;
                     }
                     var data = {
-                        deviceid: editObject.deviceid,
-                        newdeviceid: this.deviceid,
-                        devicetype: this.devicetype,
-                        expirenotifytime: new Date(this.expirenotifytime).getTime(),
-                        loginenable: Number(this.loginenable),
-                        deviceenable: Number(this.deviceenable),
-                        allowedit: Number(this.allowedit),
-                        timezone: Number(this.timezone),
-                        calmileageway: Number(this.calmileageway),
+                        baseinfo: {
+                            deviceid: editObject.deviceid,
+                            newdeviceid: this.deviceid,
+                            devicetype: this.devicetype,
+                            expirenotifytime: new Date(this.expirenotifytime).getTime(),
+                            loginenable: Number(this.loginenable),
+                            deviceenable: Number(this.deviceenable),
+                            allowedit: Number(this.allowedit),
+                            timezone: Number(this.timezone),
+                            calmileageway: Number(this.calmileageway),
+                        },
+                        extendinfo: {}
                     };
 
                     if (this.devicename) {
-                        data.devicename = this.devicename;
+                        data.baseinfo.devicename = this.devicename;
                     };
                     if (this.remark) {
-                        data.remark = this.remark;
+                        data.baseinfo.remark = this.remark;
                     };
                     if (this.teltype) {
-                        data.teltype = Number(this.teltype);
+                        data.baseinfo.teltype = Number(this.teltype);
                     };
-
+                    if (this.plateno) {
+                        data.baseinfo.plateno = this.plateno;
+                    };
+                    if (this.cartagcolor) {
+                        data.baseinfo.cartagcolor = Number(this.cartagcolor);
+                    };
+                    if (this.carcolor) {
+                        data.baseinfo.carcolor = Number(this.carcolor);
+                    };
+                    if (this.icon) {
+                        data.baseinfo.icon = Number(this.icon);
+                    };
 
                     if (this.simnum !== "") {
-                        data.simnum = this.simnum;
+                        data.baseinfo.simnum = this.simnum;
                     };
                     if (this.groupid !== "" && this.groupsList.length) {
-                        data.groupid = this.groupid;
+                        data.baseinfo.groupid = this.groupid;
                     } else {
-                        data.groupid = 0;
+                        data.baseinfo.groupid = 0;
                     };
 
                     if (this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)) {
@@ -2560,12 +2657,12 @@
                     }
 
                     if (this.totalpoint && !isNaN(this.totalpoint)) {
-                        data.totalpoint = Number(this.totalpoint);
+                        data.baseinfo.totalpoint = Number(this.totalpoint);
                     }
 
-                    data.monitor = this.monitor;
+                    data.baseinfo.monitor = this.monitor;
 
-                    this.forwardurl && (data.forwardurl = this.forwardurl);
+                    this.forwardurl && (data.baseinfo.forwardurl = this.forwardurl);
 
                     if (globalUserList.indexOf(this.createrToUser) == -1) {
                         me.$Message.error(me.$t("message.selectCorrectAccount"));
@@ -2573,18 +2670,19 @@
                     }
 
                     if (this.userType < 4) {
-                        data.creater = this.createrToUser;
+                        data.baseinfo.creater = this.createrToUser;
                     } else {
-                        data.creater = userName;
+                        data.baseinfo.creater = userName;
                     }
 
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
-                            editObject.teltype = String(data.teltype);
-                            var newData = Object.assign(editObject, data);
-                            newData.expirenotifytimestr = DateFormat.longToDateTimeStr(data.expirenotifytime, timeDifference);
-                            newData.deviceid = data.newdeviceid;
-                            newData.deviceidkey = data.newdeviceid;
+                            var baseinfo = data.baseinfo;
+                            editObject.teltype = String(baseinfo.teltype);
+                            var newData = Object.assign(editObject, baseinfo);
+                            newData.expirenotifytimestr = DateFormat.longToDateTimeStr(baseinfo.expirenotifytime, timeDifference);
+                            newData.deviceid = baseinfo.newdeviceid;
+                            newData.deviceidkey = baseinfo.newdeviceid;
                             me.tableData[me.editDeviceIndex] = newData;
                             utils.changeSingleItemData(me.recordsList, newData, 'deviceid');
                             isNeedRefresh = true;
@@ -2633,6 +2731,10 @@
                     me.calmileageway = String(editObject.calmileageway);
                     me.teltype = String(editObject.teltype);
                     me.allowedit = String(editObject.allowedit);
+                    me.plateno = editObject.plateno;
+                    me.cartagcolor = String(editObject.cartagcolor);
+                    me.carcolor = String(editObject.carcolor);
+                    me.icon = editObject.icon;
                 },
                 getDeviceType: function() {
                     var me = this;

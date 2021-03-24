@@ -966,7 +966,13 @@
                 addNewDeviceTip2: '续费规则：新添加设备从第一次上线算有10天体验期，体验期过后需要续费。',
                 addNewDeviceTip3: '到期提醒：主要用来通知最终用户服务到期了，管理员可以随意设置到期提醒日期。',
                 addNewDeviceTip4: '过期提醒：设备在系统平台到期，需要在会员系统里面续费。',
-                editDefaultGroupNameTip: 'The default group name cannot be edited'
+                editDefaultGroupNameTip: 'The default group name cannot be edited',
+                baseInfo: '基本信息',
+                vehicleInfo: '车辆信息',
+                plateno: '车牌号',
+                cartagcolor: '车牌颜色',
+                carcolor: '车辆颜色',
+                icon: '设备图标',
             },
             insure: {
                 templateDownload: 'Template download',
@@ -2207,8 +2213,13 @@
                 addNewDeviceTip2: '续费规则：新添加设备从第一次上线算有10天体验期，体验期过后需要续费。',
                 addNewDeviceTip3: '到期提醒：主要用来通知最终用户服务到期了，管理员可以随意设置到期提醒日期。',
                 addNewDeviceTip4: '过期提醒：设备在系统平台到期，需要在会员系统里面续费。',
-                editDefaultGroupNameTip: '默认组不可编辑名称'
-
+                editDefaultGroupNameTip: '默认组不可编辑名称',
+                baseInfo: '基本信息',
+                vehicleInfo: '车辆信息',
+                plateno: '车牌号',
+                cartagcolor: '车牌颜色',
+                carcolor: '车辆颜色',
+                icon: '设备图标',
             },
             insure: {
                 templateDownload: '模版下载',
