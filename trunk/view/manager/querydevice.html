@@ -42,69 +42,6 @@
             <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changeDevicePage"></Page>
         </div>
 
-        <Modal v-model="ownerInfoModal" width="500" :mask-closable="false">
-            <p slot="header" style="color:#f60;text-align:center">
-                <Icon type="ios-create-outline"></Icon>
-                <span>{{$t('monitor.ownerInfo')}}</span>
-            </p>
-            <div style="text-align:center">
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('alarm.devNum')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        {{ownerInfoData.deviceid}}
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.name')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="ownerInfoData.ownername" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.contact1')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="ownerInfoData.phonenum1" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.contact2')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="ownerInfoData.phonenum2" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.idNumber')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="ownerInfoData.idnum" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.gender')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-select v-model="ownerInfoData.gender">
-                            <i-option value="1">{{$t('device.man')}}</i-option>
-                            <i-option value="0">{{$t('device.girl')}}</i-option>
-                        </i-select>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.address')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="ownerInfoData.address" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-                <Row style="margin:10px 0;">
-                    <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('monitor.remarks')}} : &nbsp;</i-col>
-                    <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                        <i-input v-model.trim="ownerInfoData.ownerremark" style="width: 100%;"></i-input>
-                    </i-col>
-                </Row>
-            </div>
-            <div slot="footer">
-                <i-button type="primary" style="width: 100%" @click="handleEditDeviceex">{{$t('header.submit')}}</i-button>
-            </div>
-        </Modal>
-
         <Modal v-model="insureInfoModal" width="500" :mask-closable="false">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
@@ -162,33 +99,6 @@
             </div>
             <div slot="footer">
                 <i-button type="primary" style="width: 100%" @click="handleEditInsure">{{$t('header.submit')}}</i-button>
-            </div>
-        </Modal>
-        <Modal v-model="editCarIconModal" width="400" :mask-closable="false">
-            <p slot="header" style="color:#f60;text-align:center">
-                <Icon type="ios-create-outline"></Icon>
-                <span>{{$t('device.editCarIcon')}} - {{devicename}}</span>
-            </p>
-            <Row>
-                <i-col span="6" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('device.currentIcon')}} : &nbsp;</i-col>
-                <i-col span="16">
-                    <img :src="carIconSrc" style="width: 30px;height: 30px;">
-                </i-col>
-            </Row>
-            <Row>
-                <i-col span="6" class="col-car-wrap">
-                    <div @click="setCarIconType(0)">
-                        <img src="./images/carstate/0_green_0.png" style="width: 30px;height: 30px;">
-                    </div>
-                </i-col>
-                <i-col span="6" class="col-car-wrap">
-                    <div @click="setCarIconType(1)">
-                        <img src="./images/carstate/1_green_0.png" style="width: 30px;height: 30px;" @click="setCarIconType(1)">
-                    </div>
-                </i-col>
-            </Row>
-            <div slot="footer">
-                <i-button type="primary" style="width: 100%" @click="submitCarIconType">{{$t('header.submit')}}</i-button>
             </div>
         </Modal>
         <Modal v-model="chargeModal" width="700" :title="$t('bgMgr.renew')" :mask-closable="false">
@@ -447,7 +357,55 @@
                         </Row>
                     </div>
                 </Tab-Pane>
-                <Tab-Pane label="所有人信息" name="ownerInfo"></Tab-Pane>
+                <Tab-Pane label="所有人信息" name="ownerInfo">
+                    <div style="width:700px;height:432.67px;margin:10px auto">
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.name')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.ownername" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.contact1')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.phonenum1" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.contact2')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.phonenum2" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.idNumber')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.idnum" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('device.gender')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-select v-model="ownerInfoData.gender">
+                                    <i-option value="1">{{$t('device.man')}}</i-option>
+                                    <i-option value="0">{{$t('device.girl')}}</i-option>
+                                </i-select>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.address')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.address" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                        <Row style="margin:10px 0;">
+                            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('monitor.remarks')}} : &nbsp;</i-col>
+                            <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
+                                <i-input v-model.trim="ownerInfoData.ownerremark" style="width: 100%;"></i-input>
+                            </i-col>
+                        </Row>
+                    </div>
+                </Tab-Pane>
                 <Tab-Pane label="驾驶员信息" name="driverInfo"></Tab-Pane>
             </Tabs>
 
@@ -1241,7 +1199,6 @@
                 isQuery: false,
                 userType: localStorage.getItem('userType'),
                 modal: false,
-                editCarIconModal: false,
                 queryString: "",
                 loading: true,
                 total: vRoot.$children[1].allDevCount,
@@ -1513,6 +1470,7 @@
                                             vueInstanse.groupid = editObject.groupid;
                                             vueInstanse.createrToUser = editObject.creater;
                                             vueInstanse.setDeviceData();
+                                            vueInstanse.queryCarMasterInfo(editObject.deviceid);
                                             vueInstanse.modal = true;
                                         }
                                     }
@@ -1663,7 +1621,7 @@
                 icon: "0",
                 isShowIcon: false,
 
-                ownerInfoModal: false,
+                // ownerInfoModal: false,
                 ownerInfoData: { //编辑的设备信息
                     deviceid: '',
                     ownername: '',
@@ -1805,9 +1763,9 @@
                         me.loading = false;
                     });
                 },
-                queryCarMasterInfo: function(params) {
-                    utils.queryDeviceex(params.row.deviceid, function(resp) {
-                        vueInstanse.ownerInfoData.deviceid = params.row.deviceid;
+                queryCarMasterInfo: function(deviceid) {
+                    utils.queryDeviceex(deviceid, function(resp) {
+                        vueInstanse.ownerInfoData.deviceid = deviceid;
                         if (resp) {
                             vueInstanse.ownerInfoData.ownername = resp.ownername;
                             vueInstanse.ownerInfoData.phonenum1 = resp.phonenum1;
@@ -1825,7 +1783,7 @@
                             vueInstanse.ownerInfoData.ownerremark = '';
                             vueInstanse.ownerInfoData.address = '';
                         }
-                        vueInstanse.ownerInfoModal = true;
+                        // vueInstanse.ownerInfoModal = true;
                     });
                 },
                 referenceResources: function() {
@@ -2223,22 +2181,6 @@
                 setCarIconType: function(type) {
                     this.carIconType = String(type);
                 },
-                submitCarIconType: function() {
-                    var url = myUrls.setDeviceIcon();
-                    var deviceid = editObject.deviceid;
-                    var data = {
-                        deviceid: deviceid,
-                        icon: this.carIconType,
-                    };
-                    utils.sendAjax(url, data, function(resp) {
-                        if (resp.status == 0) {
-                            carIconTypes[deviceid] = data.icon;
-                            vRoot.$Message.success(vRoot.$t('monitor.setupSucc'));
-                        } else {
-                            vRoot.$Message.error(vRoot.$t('monitor.setupFail'));
-                        }
-                    })
-                },
                 getQueryTypeNumber: function() {
                     var result = 0;
                     switch (this.queryType) {
@@ -2618,7 +2560,7 @@
                             timezone: Number(this.timezone),
                             calmileageway: Number(this.calmileageway),
                         },
-                        extendinfo: {}
+                        extendinfo: this.ownerInfoData
                     };
 
                     if (this.devicename) {

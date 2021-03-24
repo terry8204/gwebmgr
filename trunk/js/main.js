@@ -162,20 +162,20 @@ Vue.component('table-dropdown', {
                 case 'io':
                     vueInstanse.onClickIoSetting(this.params);
                     break;
-                case 'carMaster':
-                    vueInstanse.queryCarMasterInfo(this.params);
-                    break;
+                    // case 'carMaster':
+                    //     vueInstanse.queryCarMasterInfo(this.params);
+                    //     break;
                 case 'insure':
                     vueInstanse.queryInsureInfo(this.params);
                     break;
                 case 'resetPass':
                     vueInstanse.resetDevicePwd(this.params.index);
                     break;
-                case 'editCarIcon':
-                    editObject = this.params.row;
-                    vueInstanse.carIconType = carIconTypes[editObject.deviceid];
-                    vueInstanse.editCarIconModal = true;
-                    break;
+                    // case 'editCarIcon':
+                    //     editObject = this.params.row;
+                    //     vueInstanse.carIconType = carIconTypes[editObject.deviceid];
+                    //     vueInstanse.editCarIconModal = true;
+                    //     break;
                 case 'charge':
                     editObject = this.params.row;
                     vueInstanse.chargeModal = true;
