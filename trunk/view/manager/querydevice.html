@@ -1862,7 +1862,7 @@
 
                             vueInstanse.driverInfo.drivername = resp.drivername; //名字  
                             vueInstanse.driverInfo.driversex = String(resp.driversex); //性别 1：男 2：女' ,
-                            vueInstanse.driverInfo.driverbrith = new Date(resp.driverbrith); //生日 YYYY-MM-DD hh:mm:ss' ,
+                            vueInstanse.driverInfo.driverbrith = new Date(resp.driverbrith ? resp.driverbrith : 0); //生日 YYYY-MM-DD hh:mm:ss' ,
                             vueInstanse.driverInfo.drivernationality = resp.drivernationality; //'国籍' ,
                             vueInstanse.driverInfo.driveraddress = resp.driveraddress; //地址' ,
                             vueInstanse.driverInfo.driverphone = resp.driverphone; //电话' ,
@@ -1870,17 +1870,17 @@
                             vueInstanse.driverInfo.drivercertificatenum = resp.drivercertificatenum; //从业资格证号码' ,
                             vueInstanse.driverInfo.drivercertificatetype = String(resp.drivercertificatetype); // '1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
                             vueInstanse.driverInfo.drivertype = resp.drivertype // '准驾车型' ,
-                            vueInstanse.driverInfo.driverinitialdate = new Date(resp.driverinitialdate); //'资格证初始领证日期' ,
-                            vueInstanse.driverInfo.drivereffectivedate = new Date(resp.drivereffectivedate); //'资格证有效起始日期' ,
+                            vueInstanse.driverInfo.driverinitialdate = new Date(resp.driverinitialdate ? resp.driverinitialdate : 0); //'资格证初始领证日期' ,
+                            vueInstanse.driverInfo.drivereffectivedate = new Date(resp.drivereffectivedate ? resp.drivereffectivedate : 0); //'资格证有效起始日期' ,
                             vueInstanse.driverInfo.drivertype = resp.drivertype; // '核发机关' ,
-                            vueInstanse.driverInfo.driverrelatevehiclenum = new Date(resp.driverrelatevehiclenum); //'核发日期' ,
+                            vueInstanse.driverInfo.driverrelatevehiclenum = new Date(resp.driverrelatevehiclenum ? resp.driverrelatevehiclenum : 0); //'核发日期' ,
 
                             vueInstanse.insureInfoData.securitynum = resp.securitynum;
                             vueInstanse.insureInfoData.vin = resp.vin;
                             vueInstanse.insureInfoData.insurecompany = resp.insurecompany;
                             vueInstanse.insureInfoData.insurenum = resp.insurenum;
-                            vueInstanse.insureInfoData.subinsuretime = new Date(resp.subinsuretime);
-                            vueInstanse.insureInfoData.effecttime = new Date(resp.effecttime);
+                            vueInstanse.insureInfoData.subinsuretime = new Date(resp.subinsuretime ? resp.subinsuretime : 0);
+                            vueInstanse.insureInfoData.effecttime = new Date(resp.effecttime ? resp.effecttime : 0);
                             vueInstanse.insureInfoData.insuremark = resp.insuremark;
 
                         } else {
