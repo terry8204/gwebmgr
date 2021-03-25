@@ -30,9 +30,12 @@
         <div style="margin-left:20px;float: left;">
             <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
         </div>
+        <div style="float: right;">
+            <i-button type="primary" @click="exportData" icon="ios-search">{{$t("reportForm.exportData")}}</i-button>
+        </div>
     </Row>
     <div style="margin:10px;">
-        <i-table :columns="columns" :height="lastTableHeight" border :data="tableData" :loading="loading"></i-table>
+        <i-table ref="table" :columns="columns" :height="lastTableHeight" border :data="tableData" :loading="loading"></i-table>
     </div>
     <div style="padding-left:10px;">
         <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />

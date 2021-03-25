@@ -987,6 +987,14 @@ function mileageMonthReport(groupslist) {
             },
         },
         methods: {
+            exportData: function() {
+                this.$refs.table.exportCsv({
+                    filename: vRoot.$t('reportForm.mileageMonthReport') + '_' + DateFormat.format(this.month, 'yyyy-MM'),
+                    original: false,
+                    columns: this.columns,
+                    data: this.records
+                });
+            },
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -1038,7 +1046,8 @@ function mileageMonthReport(groupslist) {
                             if (resp.devices.length) {
                                 resp.devices.forEach(function(item, idx) {
                                     item.index = idx + 1;
-                                    item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
+
+                                    var deviceid = item.deviceid;
                                     var records = item.records;
                                     var totaldistance = 0;
                                     for (var j = 0; j < dayLen; j++) {
@@ -1051,6 +1060,8 @@ function mileageMonthReport(groupslist) {
                                             item['day' + (j + 1)] = '-';
                                         }
                                     }
+                                    item.devicename = "\t" + (vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicename : deviceid);
+                                    item.deviceid = "\t" + deviceid;
                                     item.totaldistance = utils.getMileage(totaldistance);
                                 });
                                 me.records = resp.devices;
