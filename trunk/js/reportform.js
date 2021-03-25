@@ -962,6 +962,143 @@ function reportMileageDetail(groupslist) {
     })
 }
 
+
+
+function mileageMonthReport(groupslist) {
+    vueInstanse = new Vue({
+        el: '#month-mileage',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            loading: false,
+            isSpin: false,
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+            lastTableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            month: '',
+            columns: [],
+            tableData: [],
+            currentIndex: 1,
+        },
+        methods: {
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 175;
+            },
+            onClickQuery: function() {
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+                if (deviceids.length > 0) {
+                    var me = this;
+                    var url = myUrls.reportMileageMonth();
+                    var yearmonthArr = DateFormat.format(this.month, 'yyyy-MM').split("-");
+                    var data = {
+                        year: Number(yearmonthArr[0]),
+                        month: Number(yearmonthArr[1]),
+                        offset: timeDifference,
+                        deviceids: deviceids
+                    }
+                    me.loading = true;
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                        me.loading = false;
+                        if (resp.status === 0) {
+                            if (resp.records.length) {
+                                resp.records.forEach(function(item, index) {
+                                    console.log(item);
+                                });
+                                me.records = resp.records;
+                                me.tableData = me.records.slice(0, 20);
+                                me.total = me.records.length;
+
+                            } else {
+                                me.tableData = [];
+                            };
+                            me.currentIndex = 1;
+                        } else {
+                            me.tableData = [];
+                        }
+                    })
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
+            getTheMonthDays: function(date) {
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                year = month == 12 ? year + 1 : year;
+                month = month == 12 ? 1 : month;
+                return new Date(new Date(year, month, 1) - 1).getDate();
+            },
+        },
+        watch: {
+            month: function(newMonth) {
+
+                var columns = [
+                    { key: 'index', width: 70, title: vRoot.$t("reportForm.index"), fixed: 'left' },
+                    { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 100, fixed: 'left' },
+                    { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 100, fixed: 'left' },
+                ];
+
+                var day = this.getTheMonthDays(newMonth);
+
+                for (var i = 1; i <= day; i++) {
+                    columns.push({
+                        key: 'day' + i,
+                        title: i,
+                        width: 80,
+                    })
+                }
+
+                this.columns = columns;
+            },
+        },
+        mounted: function() {
+            var me = this;
+            me.month = new Date();
+            me.records = [];
+            me.queryDevicesTree();
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        }
+    })
+}
+
 function groupMileage(groupslist) {
     vueInstanse = new Vue({
         el: '#group-mileage',
@@ -1059,7 +1196,6 @@ function groupMileage(groupslist) {
                     }
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
-                        console.log(resp);
                         me.loading = false;
                         if (resp.status === 0) {
                             if (resp.records.length) {
@@ -5367,8 +5503,8 @@ function newEquipmentReport() {
                         });
                         tableData.sort(function(a, b) {
                             return b.createtime - a.createtime;
-                        });                           
-                        tableData.forEach(function(item,idx){
+                        });
+                        tableData.forEach(function(item, idx) {
                             item.index = idx + 1;
                         });
                         me.total = tableData.length;
@@ -5475,10 +5611,10 @@ function newEquipmentReport() {
     })
 }
 
-function deviceTypeDistribution(groupslist){
+function deviceTypeDistribution(groupslist) {
     new Vue({
-        el:"#distribution",
-        methods:{
+        el: "#distribution",
+        methods: {
             getChartsOption: function(data) {
                 var option = {
                     title: {
@@ -5487,8 +5623,8 @@ function deviceTypeDistribution(groupslist){
                     },
                     tooltip: {
                         trigger: 'item',
-                        formatter:function(name){
-                            return name.data.name + '<br/>' +  name.data.value + '<br/>' +  name.data.remark;
+                        formatter: function(name) {
+                            return name.data.name + '<br/>' + name.data.value + '<br/>' + name.data.remark;
                         }
                     },
                     legend: {
@@ -5521,15 +5657,15 @@ function deviceTypeDistribution(groupslist){
                     }]
                 };
                 return option
-            },   
-            getSeriesData:function(){
+            },
+            getSeriesData: function() {
                 var totalDeviceCountObj = {};
-                groupslist.forEach(function(group){
-                    group.devices.forEach(function(device){
+                groupslist.forEach(function(group) {
+                    group.devices.forEach(function(device) {
                         var devicetype = device.devicetype;
-                        if(totalDeviceCountObj[devicetype]){
+                        if (totalDeviceCountObj[devicetype]) {
                             totalDeviceCountObj[devicetype] += 1;
-                        }else{
+                        } else {
                             totalDeviceCountObj[devicetype] = 1;
                         }
                     });
@@ -5538,28 +5674,28 @@ function deviceTypeDistribution(groupslist){
                 var seriesData = [];
                 var legendData = [];
 
-                for(var key in totalDeviceCountObj){
+                for (var key in totalDeviceCountObj) {
                     var nameObj = this.getDevType(key);
                     seriesData.push({
-                        value:totalDeviceCountObj[key],
+                        value: totalDeviceCountObj[key],
                         name: nameObj.name,
-                        remark:nameObj.remark
+                        remark: nameObj.remark
                     })
                 }
 
-                seriesData.sort(function(a,b){
+                seriesData.sort(function(a, b) {
                     return b.value - a.value;
                 })
 
-                seriesData.forEach(function(series){
+                seriesData.forEach(function(series) {
                     legendData.push(series.name);
                 });
 
 
 
                 return {
-                    seriesData:seriesData,
-                    legendData:legendData,
+                    seriesData: seriesData,
+                    legendData: legendData,
                 };
             },
             getDevType: function(devicetype) {
@@ -5567,20 +5703,20 @@ function deviceTypeDistribution(groupslist){
                 var typename = item.typename;
                 var remark = "";
                 if (item.remark) {
-                    remark=  item.remark ;
+                    remark = item.remark;
                 }
 
                 return {
-                    name:typename,
-                    remark:remark,
+                    name: typename,
+                    remark: remark,
                 };
             },
-            initCharts:function(){
+            initCharts: function() {
                 this.charts = echarts.init(document.getElementById('distribution'));
                 this.charts.setOption(this.getChartsOption(this.getSeriesData()));
             },
         },
-        mounted:function(){
+        mounted: function() {
             var me = this;
             this.initCharts();
             window.onresize = function() {
@@ -5591,26 +5727,26 @@ function deviceTypeDistribution(groupslist){
 }
 
 
-function onlineStatisticsDay(){
+function onlineStatisticsDay() {
     new Vue({
-        el:"#online-statistics-day",
-        data:{
-            isSpin:false,
+        el: "#online-statistics-day",
+        data: {
+            isSpin: false,
         },
-        methods:{
-            queryOnlineStatisticsDay:function(){
+        methods: {
+            queryOnlineStatisticsDay: function() {
                 var me = this;
                 var url = myUrls.queryOnlineStatisticsDay();
                 var data = {};
                 me.isSpin = true;
-                utils.sendAjax(url,data,function(respData){
+                utils.sendAjax(url, data, function(respData) {
                     me.isSpin = false;
-                    if(respData.status == 0){
+                    if (respData.status == 0) {
                         me.initCharts(respData.records);
-                    }else{
+                    } else {
                         me.initCharts([]);
                     }
-                },function(){
+                }, function() {
                     me.initCharts([]);
                     me.isSpin = false;
                     me.$Message.error(vRoot.$t("monitor.queryFail"));
@@ -5656,12 +5792,12 @@ function onlineStatisticsDay(){
                     }]
                 };
             },
-            initCharts:function(records){
+            initCharts: function(records) {
                 var me = this;
                 var datas = [];
                 var seriesData = [];
 
-                records.forEach(function(record){
+                records.forEach(function(record) {
                     datas.push(record.statisticsday);
                     seriesData.push(record.count);
                 });
@@ -5674,8 +5810,8 @@ function onlineStatisticsDay(){
                 }
             }
         },
-        mounted:function(){
-     
+        mounted: function() {
+
             this.queryOnlineStatisticsDay();
         },
     })
@@ -9192,6 +9328,7 @@ var reportForm = {
                     children: [
                         { title: me.$t("reportForm.cmdReport"), name: 'cmdReport', icon: 'ios-pricetag-outline' },
                         { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
+                        { title: me.$t("reportForm.mileageMonthReport"), name: 'mileageMonthReport', icon: 'ios-basket-outline' },
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
                         { title: me.$t("reportForm.reportmileagesummary"), name: 'groupMileage', icon: 'md-globe' },
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
@@ -9227,8 +9364,8 @@ var reportForm = {
                         { title: me.$t("reportForm.monthlyVehicleOnlineRate"), name: 'deviceMonthOnlineDaily', icon: 'md-contrast' },
                         { title: me.$t("reportForm.newAddedDeviceReport"), name: 'newEquipmentReport', icon: 'md-add' },
                         { title: me.$t("reportForm.deviceTypeDistribution"), name: 'deviceTypeDistribution', icon: 'ios-git-merge' },
-                        { title: me.$t("reportForm.onlineStatisticsDay"), name: 'onlineStatisticsDay', icon: 'ios-trending-up' }, 
-                    ]  
+                        { title: me.$t("reportForm.onlineStatisticsDay"), name: 'onlineStatisticsDay', icon: 'ios-trending-up' },
+                    ]
                 },
                 {
                     title: me.$t("reportForm.oilReport"),
@@ -9317,6 +9454,9 @@ var reportForm = {
                         break;
                     case 'mileagedetail.html':
                         reportMileageDetail(groupslist);
+                        break;
+                    case 'mileagemonthreport.html':
+                        mileageMonthReport(groupslist);
                         break;
                     case 'groupmileage.html':
                         groupMileage(groupslist);

@@ -882,6 +882,9 @@ var myUrls = {
     editDeviceAllInfo: function() {
         return this.apihosts + 'webapi?action=editdeviceallinfo&token=' + token;
     },
+    reportMileageMonth: function() {
+        return this.apihosts + 'webapi?action=reportmileagemonth&token=' + token;
+    },
 }
 
 

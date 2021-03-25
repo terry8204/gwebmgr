@@ -966,8 +966,8 @@ var utils = {
 
         } else if (newMapType == 'gChinaMap') {
             var layer = new maptalks.TileLayer('base', googleChinaNormaBaseOption)
-            me.map.setSpatialReference({})
-            me.map.setBaseLayer(layer);
+            map.setSpatialReference({})
+            map.setBaseLayer(layer);
         }
 
         var customPosition = new maptalks.control.Zoom({
