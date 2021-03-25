@@ -6,7 +6,7 @@
     <Row style="margin:10px;height: 35px;">
         <div style="float: left;">
             <span>{{$t("reportForm.selectTime")}}:</span>
-            <date-picker type="month" v-model="month" :clearable="false" style="width:120px" placement="bottom-start"></date-picker>
+            <date-picker type="month" v-model="month" :clearable="false" style="width:120px" placement="bottom-start" :options="dateOptions"></date-picker>
         </div>
         <div style="float: left;padding-left: 10px;">
             <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>

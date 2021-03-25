@@ -980,6 +980,11 @@ function mileageMonthReport(groupslist) {
             columns: [],
             tableData: [],
             currentIndex: 1,
+            dateOptions: {
+                disabledDate(date) {
+                    return (date && date.valueOf()) > Date.now();
+                }
+            },
         },
         methods: {
             cleanSelected: function(treeDataFilter) {
@@ -1080,6 +1085,7 @@ function mileageMonthReport(groupslist) {
                         key: 'day' + i,
                         title: i,
                         width: 80,
+                        sortable: true,
                     })
                 }
 
@@ -9328,9 +9334,9 @@ var reportForm = {
                     children: [
                         { title: me.$t("reportForm.cmdReport"), name: 'cmdReport', icon: 'ios-pricetag-outline' },
                         { title: me.$t("reportForm.posiReport"), name: 'posiReport', icon: 'ios-pin' },
+                        { title: me.$t("reportForm.reportmileagesummary"), name: 'groupMileage', icon: 'md-globe' },
                         { title: me.$t("reportForm.mileageMonthReport"), name: 'mileageMonthReport', icon: 'ios-basket-outline' },
                         { title: me.$t("reportForm.reportmileagedetail"), name: 'mileageDetail', icon: 'ios-color-wand' },
-                        { title: me.$t("reportForm.reportmileagesummary"), name: 'groupMileage', icon: 'md-globe' },
                         { title: me.$t("reportForm.parkDetails"), name: 'parkDetails', icon: 'md-analytics' },
                         { title: me.$t("reportForm.acc"), name: 'accDetails', icon: 'md-bulb' },
                         { title: me.$t("reportForm.voiceReport"), name: 'records', icon: 'md-volume-up' },
