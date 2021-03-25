@@ -1021,7 +1021,8 @@ function mileageMonthReport(groupslist) {
                 if (deviceids.length > 0) {
                     var me = this;
                     var url = myUrls.reportMileageMonth();
-                    var yearmonthArr = DateFormat.format(this.month, 'yyyy-MM').split("-");
+                    var yearmonth = DateFormat.format(this.month, 'yyyy-MM');
+                    var yearmonthArr = yearmonth.split("-");
                     var data = {
                         year: Number(yearmonthArr[0]),
                         month: Number(yearmonthArr[1]),
@@ -1033,11 +1034,22 @@ function mileageMonthReport(groupslist) {
                         console.log(resp);
                         me.loading = false;
                         if (resp.status === 0) {
-                            if (resp.records.length) {
-                                resp.records.forEach(function(item, index) {
-                                    console.log(item);
+                            var dayLen = me.getTheMonthDays(me.month);
+                            if (resp.devices.length) {
+                                resp.devices.forEach(function(item, idx) {
+                                    item.index = idx + 1;
+                                    item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
+                                    var records = item.records;
+                                    for (var j = 0; j < dayLen; j++) {
+                                        var day = records[j];
+                                        if (day) {
+                                            item['day' + (j + 1)] = utils.getMileage(day.maxtotaldistance - day.mintotaldistance);
+                                        } else {
+                                            item['day' + (j + 1)] = '-';
+                                        }
+                                    }
                                 });
-                                me.records = resp.records;
+                                me.records = resp.devices;
                                 me.tableData = me.records.slice(0, 20);
                                 me.total = me.records.length;
 
@@ -1090,6 +1102,19 @@ function mileageMonthReport(groupslist) {
                 }
 
                 this.columns = columns;
+
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+                if (deviceids.length > 0) {
+                    this.onClickQuery();
+                }
+
             },
         },
         mounted: function() {
