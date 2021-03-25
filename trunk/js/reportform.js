@@ -1031,7 +1031,7 @@ function mileageMonthReport(groupslist) {
                     }
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
-                        console.log(resp);
+                        // console.log(resp);
                         me.loading = false;
                         if (resp.status === 0) {
                             var dayLen = me.getTheMonthDays(me.month);
@@ -1040,14 +1040,18 @@ function mileageMonthReport(groupslist) {
                                     item.index = idx + 1;
                                     item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
                                     var records = item.records;
+                                    var totaldistance = 0;
                                     for (var j = 0; j < dayLen; j++) {
                                         var day = records[j];
                                         if (day) {
-                                            item['day' + (j + 1)] = utils.getMileage(day.maxtotaldistance - day.mintotaldistance);
+                                            var distance = day.maxtotaldistance - day.mintotaldistance;
+                                            totaldistance += distance;
+                                            item['day' + (j + 1)] = utils.getMileage(distance);
                                         } else {
                                             item['day' + (j + 1)] = '-';
                                         }
                                     }
+                                    item.totaldistance = utils.getMileage(totaldistance);
                                 });
                                 me.records = resp.devices;
                                 me.tableData = me.records.slice(0, 20);
@@ -1088,6 +1092,7 @@ function mileageMonthReport(groupslist) {
                     { key: 'index', width: 70, title: vRoot.$t("reportForm.index"), fixed: 'left' },
                     { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 100, fixed: 'left' },
                     { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 100, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 100, fixed: 'left' },
                 ];
 
                 var day = this.getTheMonthDays(newMonth);
