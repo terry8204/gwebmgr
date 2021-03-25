@@ -1291,6 +1291,7 @@ function groupMileage(groupslist) {
         mounted: function() {
             var me = this;
             me.records = [];
+            me.handleSelectdDate(1);
             me.queryDevicesTree();
             this.calcTableHeight();
             window.onresize = function() {
