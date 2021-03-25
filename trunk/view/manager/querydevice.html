@@ -2670,8 +2670,14 @@
                     driverInfo.driverrelatevehiclenum = DateFormat.format(driverInfo.driverrelatevehiclenum, 'yyyy-MM-dd');
 
                     var insureInfoData = deepClone(this.insureInfoData);
+                    if(insureInfoData.subinsuretime && insureInfoData.subinsuretime.length > 0)
+                    {
                     insureInfoData.subinsuretime = DateFormat.format(insureInfoData.subinsuretime, 'yyyy-MM-dd');
+                    }
+                    if(insureInfoData.effecttime && insureInfoData.effecttime.length > 0)
+                    {                  
                     insureInfoData.effecttime = DateFormat.format(insureInfoData.effecttime, 'yyyy-MM-dd');
+                    }
                     var extendinfo = Object.assign(deepClone(this.ownerInfoData), driverInfo, insureInfoData)
                     var data = {
                         baseinfo: {
