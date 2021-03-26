@@ -1053,11 +1053,16 @@ function mileageMonthReport(groupslist) {
                                     for (var j = 0; j < dayLen; j++) {
                                         var day = records[j];
                                         if (day) {
+                                            var key = day.day.split('-')[2];
                                             var distance = day.maxtotaldistance - day.mintotaldistance;
                                             totaldistance += distance;
-                                            item['day' + (j + 1)] = utils.getMileage(distance);
-                                        } else {
-                                            item['day' + (j + 1)] = '-';
+                                            item['day' + String(parseInt(key))] = utils.getMileage(distance);
+                                        }
+                                    }
+                                    for (var k = 0; k < dayLen; k++) {
+                                        var key = 'day' + k;
+                                        if (!item[key]) {
+                                            item[key] = '-';
                                         }
                                     }
                                     item.devicename = "\t" + (vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicename : deviceid);
