@@ -1060,7 +1060,7 @@ function mileageMonthReport(groupslist) {
                                         }
                                     }
                                     for (var k = 0; k < dayLen; k++) {
-                                        var key = 'day' + k;
+                                        var key = 'day' + (k + 1);
                                         if (!item[key]) {
                                             item[key] = '-';
                                         }
