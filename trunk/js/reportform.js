@@ -1123,19 +1123,6 @@ function mileageMonthReport(groupslist) {
                 }
 
                 this.columns = columns;
-
-                var deviceids = [];
-                this.checkedDevice.forEach(function(group) {
-                    if (!group.children) {
-                        if (group.deviceid != null) {
-                            deviceids.push(group.deviceid);
-                        }
-                    }
-                });
-                if (deviceids.length > 0) {
-                    this.onClickQuery();
-                }
-
             },
         },
         mounted: function() {
