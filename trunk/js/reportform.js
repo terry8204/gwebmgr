@@ -7807,6 +7807,214 @@ function oilLeakageReport(groupslist) {
 
 }
 
+function oilWorkingHours(groupslist) {
+    vueInstanse = new Vue({
+        el: "#oil-working-hours",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            isSpin: false,
+
+            groupslist: [],
+            columns: [{
+                    title: vRoot.$t("reportForm.index"),
+                    key: 'index',
+                    width: 70,
+                },
+                {
+                    title: vRoot.$t("alarm.devName"),
+                    key: 'devicename'
+                },
+                {
+                    title: vRoot.$t("alarm.devNum"),
+                    key: 'deviceid'
+                },
+                {
+                    title: vRoot.$t("monitor.groupName"),
+                    key: 'groupname',
+                },
+                {
+                    title: vRoot.$t('reportForm.oilLeakage'),
+                    key: 'totalOil'
+                },
+                {
+                    title: vRoot.$t('reportForm.oilLeakageTimes'),
+                    key: 'count'
+                },
+            ],
+            tableData: [],
+            oil: [],
+            recvtime: [],
+        },
+        mixins: [treeMixin],
+        methods: {
+            exportData: function() {
+
+                var columns = deepClone(this.columns);
+                var tableData = deepClone(this.tableData);
+                columns.pop();
+                columns.push({
+                    title: isZh ? '地址' : 'Address',
+                    key: 'saddress',
+                })
+                tableData.forEach(function(item) {
+                    item.deviceid = '\t' + item.deviceid;
+                    item.devicename = '\t' + item.devicename;
+                    item.begintimeStr = '\t' + item.begintimeStr;
+                    item.endtimeStr = '\t' + item.endtimeStr;
+                });
+                this.$refs.detailTable.exportCsv({
+                    filename: vRoot.$t('reportForm.oilLeakageDetailed'),
+                    original: false,
+                    columns: columns,
+                    data: tableData
+                });
+
+
+            },
+            charts: function() {
+                var cotgas = vRoot.$t('reportForm.oilLeakage');
+                var no_data = vRoot.$t('reportForm.empty');
+                var option = {
+                    tooltip: {
+                        show: true,
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: [cotgas],
+                        y: 13,
+                        x: 'center'
+                    },
+
+                    grid: {
+                        x: 100,
+                        y: 40,
+                        x2: 80,
+                        y2: 30
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        //boundaryGap : false,
+                        axisLabel: {
+                            show: true,
+                            interval: 0, // {number}
+                            rotate: 0,
+                            margin: 8,
+                            textStyle: {
+                                fontSize: 12
+                            }
+                        },
+                        data: this.recvtime.length === 0 ? [no_data] : this.recvtime
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        position: 'bottom',
+                        nameLocation: 'end',
+                        boundaryGap: [0, 0.2],
+                        axisLabel: {
+                            formatter: '{value}L'
+                        }
+                    }],
+                    series: [{
+                        name: cotgas,
+                        type: 'bar',
+                        itemStyle: {
+                            //默认样式
+                            backgroundColor: '#000',
+                            normal: {
+                                label: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: '12',
+                                        fontFamily: '微软雅黑',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            },
+                        },
+                        color: '#e4393c',
+                        data: this.oil
+                    }]
+                };
+                this.chartsIns.setOption(option);
+
+            },
+
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 360;
+            },
+            onClickQuery: function() {
+                var self = this;
+                this.activeTab = 'tabTotal';
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+
+                if (deviceids.length == 0) {
+                    return;
+                }
+                this.tableData = [];
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: deviceids,
+                    oilstate: -1,
+                    oilindex: Number(self.tank)
+                };
+                this.loading = true;
+                utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
+                    self.loading = false;
+                    if (resp.status == 0) {
+                        if (resp.records) {
+
+                            resp.records.forEach(function(item, index) {
+
+                            });
+                            self.charts();
+                        } else {
+                            self.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
+                })
+            },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
+
+        },
+        mounted: function() {
+            var me = this;
+            this.myChart = null;
+            this.records = [];
+            setTimeout(function() {
+                me.chartsIns = echarts.init(document.getElementById('charts'));
+                me.charts();
+            }, 500)
+            this.queryDevicesTree();
+
+        }
+    });
+}
+
+
 
 function temperature(groupslist) {
     vueInstanse = new Vue({
@@ -9416,6 +9624,7 @@ var reportForm = {
                         { title: me.$t("reportForm.dateOilConsumption"), name: 'timeOilConsumption', icon: 'ios-timer-outline' },
                         { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
+                        { title: me.$t("reportForm.oilWorkingHours"), name: 'oilWorkingHours', icon: 'ios-appstore-outline' },
                     ]
                 },
                 {
@@ -9575,6 +9784,9 @@ var reportForm = {
                         break;
                     case 'oilleakagereport.html':
                         oilLeakageReport(groupslist);
+                        break;
+                    case 'oilworkinghours.html':
+                        oilWorkingHours(groupslist);
                         break;
                     case 'temperature.html':
                         temperature(groupslist);

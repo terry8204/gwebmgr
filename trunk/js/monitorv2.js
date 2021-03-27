@@ -265,6 +265,7 @@ var monitor = {
             audiochannel: '',
             historyaudiocodec: '0',
             realtimeaudiocodec: '0',
+            manualvideocodec: '0',
             needuploadfilename: false,
             videotimestamptype: '0',
             videochannelcount: 4,
@@ -807,6 +808,7 @@ var monitor = {
                 videostreamtype: Number(this.videostreamtype),
                 historyaudiocodec: Number(this.historyaudiocodec),
                 realtimeaudiocodec: Number(this.realtimeaudiocodec),
+                manualvideocodec: Number(this.manualvideocodec),
                 needuploadfilename: this.needuploadfilename ? 1 : 0,
                 videotimestamptype: Number(this.videotimestamptype),
                 videochannelcount: this.videochannelcount,
@@ -847,6 +849,7 @@ var monitor = {
                 if (respData.status == 0) {
                     me.historyaudiocodec = String(respData.historyaudiocodec);
                     me.realtimeaudiocodec = String(respData.realtimeaudiocodec);
+                    me.manualvideocodec = String(respData.manualvideocodec);
                     me.needuploadfilename = respData.needuploadfilename == 1 ? true : false;
                     me.videotimestamptype = String(respData.videotimestamptype);
                     me.videochannelcount = Number(respData.videochannelcount);
