@@ -1746,19 +1746,17 @@
 
                                     var polygons = [];
                                     var pointList = [];
-
+                                    var allPointsExtends = null;
                                     coordinates.forEach(function(item) {
                                         var polygon = me.getPolygon([item]);
                                         me.polygonLayer.addGeometry(polygon);
-                                        item.forEach(function(point) {
-                                            var point = {
-                                                x: point[0],
-                                                y: point[1]
-                                            }
-                                            pointList.push(point)
-                                        });
+                                        if (allPointsExtends == null) {
+                                            allPointsExtends = polygon.getExtent();
+                                        } else {
+                                            allPointsExtends.add(polygon.getExtent());
+                                        }
                                     })
-                                    me.setViewPortCenter(pointList);
+                                    me.setViewPortCenter(allPointsExtends);
 
                                     var url = myUrls.addGeoRecord();
                                     var data = {
@@ -1870,7 +1868,7 @@
                         this.startCoordinate = null;
                         this.endCoordinate = null;
                         if (selection.length) {
-                            var points = []
+                            var allPointsExtends = null;
                             for (var index = 0; index < selection.length; index++) {
                                 var element = selection[index];
                                 switch (element.type) {
@@ -1883,28 +1881,42 @@
                                             var lon_lat = wgs84togcj02(element.lon1, element.lat1);
                                         }
                                         var point = {
-                                            x: lon_lat[0],
-                                            y: lon_lat[1]
-                                        }
-                                        points.push(point);
-                                        new maptalks.Circle(point, element.radius1, {
+                                                x: lon_lat[0],
+                                                y: lon_lat[1]
+                                            }
+                                            // allPoints.push(point);
+                                        var circle = new maptalks.Circle(point, element.radius1, {
                                             symbol: symbol
                                         }).addTo(this.polygonLayer);
+                                        if (allPointsExtends == null) {
+                                            //debugger;
+                                            allPointsExtends = circle.getExtent();
+                                            console.log('圆1');
+                                        } else {
+                                            allPointsExtends = allPointsExtends.combine(circle.getExtent());
+                                        }
+
 
                                         break;
                                     case 2:
                                         var lon_lat_s = [];
                                         if (isBMap) {
-                                            console.log('baidu');
                                             lon_lat_s = wgs84sToBdPoints(JSON.parse(element.points2));
                                         } else {
-                                            console.log('google');
                                             lon_lat_s = wgs84sToGooglePoints(JSON.parse(element.points2));
                                         }
-                                        points = points.concat(lon_lat_s);
-                                        new maptalks.Polygon(lon_lat_s, {
+
+                                        var polygon = new maptalks.Polygon(lon_lat_s, {
                                             symbol: symbol
                                         }).addTo(this.polygonLayer);
+
+                                        if (allPointsExtends == null) {
+                                            allPointsExtends = polygon.getExtent();
+                                        } else {
+                                            console.log('多边形2');
+                                            //debugger;
+                                            allPointsExtends = allPointsExtends.combine(polygon.getExtent());
+                                        }
                                         break;
                                     case 3:
                                         var adcode = element.adcode3;
@@ -1915,11 +1927,22 @@
                                             success: function(json) {
                                                 var coordinates = me.getAllCoordinates(json);
                                                 var polygons = [];
-                                                var pointList = [];
+
                                                 coordinates.forEach(function(item) {
+
                                                     var polygon = me.getPolygon([item]);
+
                                                     me.polygonLayer.addGeometry(polygon);
+
+                                                    if (allPointsExtends == null) {
+                                                        allPointsExtends = polygon.getExtent();
+                                                    } else {
+                                                        allPointsExtends = allPointsExtends.combine(polygon.getExtent());
+                                                    }
+
                                                 })
+
+                                                me.setViewPortCenter(allPointsExtends);
                                             },
                                             error() {}
                                         });
@@ -1941,10 +1964,15 @@
                                                             x: lon_lat[0],
                                                             y: lon_lat[1]
                                                         }
-                                                        points.push(point);
-                                                        new maptalks.Circle(point, record.radius1, {
+
+                                                        var circle = new maptalks.Circle(point, record.radius1, {
                                                             symbol: symbol
                                                         }).addTo(me.polygonLayer);
+                                                        if (allPointsExtends == null) {
+                                                            allPointsExtends = circle.getExtent();
+                                                        } else {
+                                                            allPointsExtends.add(circle.getExtent());
+                                                        }
                                                         break;
                                                     case 2:
                                                         var lon_lat_s = [];
@@ -1953,10 +1981,16 @@
                                                         } else {
                                                             lon_lat_s = wgs84sToGooglePoints(JSON.parse(record.points2));
                                                         }
-                                                        points = points.concat(lon_lat_s);
-                                                        new maptalks.Polygon(lon_lat_s, {
+
+                                                        var polygon = new maptalks.Polygon(lon_lat_s, {
                                                             symbol: symbol
                                                         }).addTo(me.polygonLayer);
+
+                                                        if (allPointsExtends == null) {
+                                                            allPointsExtends = polygon.getExtent();
+                                                        } else {
+                                                            allPointsExtends.add(polygon.getExtent());
+                                                        }
                                                         break;
                                                     case 5:
                                                         var mapPoints = me.convertWgs84PointsToMapPoints(JSON.parse(record.points2));
@@ -2104,11 +2138,9 @@
                                 }
                             }
 
-                            if (points.length == 1) {
-                                this.map.setCenterAndZoom(points[0], 12);
-                            } else {
-                                this.setViewPortCenter(points);
-                            }
+                            console.log('allPointsExtends', allPointsExtends);
+                            this.setViewPortCenter(allPointsExtends);
+
 
                         }
                     },
@@ -2140,10 +2172,13 @@
                         this.isEidt = false;
                         this.drawTool.setMode('Polygon').enable();
                     },
-                    setViewPortCenter: function(pointList) {
-                        var polygon = new maptalks.Polygon(pointList);
-                        this.map.fitExtent(polygon.getExtent(), 0);
-                        polygon = null;
+                    setViewPortCenter: function(pointListExtent) {
+
+                        // var polygon = new maptalks.Polygon(pointList);
+                        // console.log(aaaaaa = polygon.getExtent())
+                        // var polygon = new maptalks.Polygon(pointList);
+                        this.map.fitExtent(pointListExtent, 0);
+                        // polygon = null;
                     },
                     getMapCenterPoint: function() {
                         var pt = this.map.getCenter();
