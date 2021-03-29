@@ -6514,6 +6514,7 @@ function timeOilConsumption(groupslist) {
                 { title: vRoot.$t('reportForm.oil3'), key: 'ad2', width: 90 },
                 { title: vRoot.$t('reportForm.oil4'), key: 'ad3', width: 90 },
                 { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
+                { title: vRoot.$t('reportForm.reissue'), key: 'reissue', width: 80 },
                 { title: vRoot.$t('reportForm.status'), key: 'strstatus' },
                 {
                     title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
@@ -6573,6 +6574,7 @@ function timeOilConsumption(groupslist) {
             oil2: [],
             oil3: [],
             oil4: [],
+            devReissue: [],
             currentIndex: 1,
         },
         mixins: [reportMixin],
@@ -6594,6 +6596,7 @@ function timeOilConsumption(groupslist) {
                 var usoil4 = vRoot.$t('reportForm.oil4');
                 var cotgasus = vRoot.$t('reportForm.oil');
                 var status = vRoot.$t('reportForm.status');
+                var reissue = vRoot.$t('reportForm.reissue');
                 var option = {
                     title: {
                         text: time + '/' + cotgasus,
@@ -6767,6 +6770,14 @@ function timeOilConsumption(groupslist) {
                             color: '#000',
                             data: this.devStates
                         },
+                        {
+                            smooth: true,
+                            name: reissue,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000',
+                            data: this.devReissue
+                        },
                     ]
                 };
 
@@ -6804,6 +6815,7 @@ function timeOilConsumption(groupslist) {
                                 oil2 = [],
                                 oil3 = [],
                                 oil4 = [],
+                                devReissue = [],
                                 devStates = [];
                             var firstDistance = 0;
                             resp.records.forEach(function(item, index) {
@@ -6856,6 +6868,7 @@ function timeOilConsumption(groupslist) {
                                     oil3.push(record.ad2);
                                     oil4.push(record.ad3);
                                     devStates.push(record.strstatus);
+                                    devReissue.push(record.reissue == 0 ? self.$t('header.no') : self.$t('header.yes'));
                                 });
                             });
 
@@ -6869,6 +6882,7 @@ function timeOilConsumption(groupslist) {
                             self.oil4 = oil4;
                             self.records = records;
                             self.devStates = devStates;
+                            self.devReissue = devReissue;
                             self.total = records.length;
                             records.sort(function(a, b) {
                                 return b.updatetime - a.updatetime;

@@ -740,6 +740,7 @@
                     oil4: "oil4",
                     weight: 'weight',
                     status: "status",
+                    reissue: "reissue",
                     oil: "oil",
                     speed: 'Speed',
                     mileage: 'Mileage',
@@ -809,6 +810,7 @@
                     oil4: "油液4",
                     weight: "载重",
                     status: "状态",
+                    reissue: "补传",
                     oil: "油液",
                     speed: '速度',
                     mileage: '里程',
@@ -1307,6 +1309,7 @@
                         var cotgasus = this.$t('main.oil');
                         var status = this.$t('main.status');
                         var weight = this.$t('main.weight');
+                        var reissue = this.$t('main.reissue');
                         var option = {
                             backgroundColor: '#F9F9F9',
                             title: {
@@ -1499,6 +1502,13 @@
                                 color: '#000',
                                 data: this.devStates,
                                 smooth: true,
+                            }, {
+                                name: reissue,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#000',
+                                data: this.devReissue,
+                                smooth: true,
                             }, ]
                         };
 
@@ -1517,6 +1527,7 @@
                         var oil3 = [];
                         var oil4 = [];
                         var devStates = [];
+                        var devReissue = [];
                         var weights = [];
                         this.disMin = 0;
                         var totalDistanceMin = 0;
@@ -1545,6 +1556,7 @@
                             oil3.push(item.ad2);
                             oil4.push(item.ad3);
                             devStates.push(item.strstatus);
+                            devReissue.push(item.reissue == 0 ? me.$t('main.no') : me.$t('main.yes'));
                             oil.push(item.totalad);
                             recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
                             veo.push(Number((item.speed / 1000).toFixed(2)));
@@ -1561,6 +1573,7 @@
                         this.oil3 = oil3;
                         this.oil4 = oil4;
                         this.devStates = devStates;
+                        this.devReissue = devReissue;
                         this.recorderspeed = recorderspeed;
                         this.weights = weights;
 
