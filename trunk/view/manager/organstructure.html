@@ -590,6 +590,7 @@
                             me.reloadTreeData(true);
                         } else {
                             GlobalOrgan.getInstance().editUser(me.oldCreater, data);
+                            me.treeDeviceList = [me.castUsersTreeToDevicesTree(GlobalOrgan.getInstance().globalOrganData, true, false)];
                             if (me.oldCreater !== data.creater) {
                                 me.reloadTreeData(true);
                             }
@@ -1013,7 +1014,8 @@
                             name: username,
                             username: username,
                             nocheck: isNeedRadio,
-                            icon: myUrls.viewhost + "zTreeStyle/img/diy/account.svg"
+                            icon: myUrls.viewhost + "zTreeStyle/img/diy/account.svg",
+                            showname: usersTree.showname
                         };
                         var deviceListGroups = this.getDeviceListGroups(usersTree.groups, isNeedDevice, username, isNeedRadio);
                         if (username != null && subusers != null && subusers.length > 0) {
@@ -1076,7 +1078,7 @@
                     if (item != null) {
 
                         var isFound = false;
-                        if (item.name.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                        if (item.name.toLowerCase().indexOf(searchWord) != -1 || (item.showname && item.showname.toLowerCase().indexOf(searchWord) != -1) || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
                             copyItem = item;
                             copyItem.open = false;
                             isFound = true;
