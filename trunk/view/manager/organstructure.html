@@ -781,7 +781,7 @@
                     var item = deviceTypes[key];
                     var label = item.typename;
                     if (item.remark) {
-                        label += "(" + item.remark + ")";
+                        label += "(" + (isZh ? item.remark : item.remarken) + ")";
                     }
                     me.deviceTypeList.push({
                         value: item.devicetypeid,
