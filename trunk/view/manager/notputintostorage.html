@@ -50,13 +50,13 @@
                     <i-col span="20" :offset="4">
                         <Alert type="warning">
                             <h3>{{$t("device.addNewDeviceTip1")}}</h3>
-                            <p>
+                            <p v-if="isZh">
                                 {{$t("device.addNewDeviceTip2")}}
                             </p>
-                            <p>
+                            <p v-if="isZh">
                                 {{$t("device.addNewDeviceTip3")}}
                             </p>
-                            <p>
+                            <p v-if="isZh">
                                 {{$t("device.addNewDeviceTip4")}}
                             </p>
                         </Alert>
@@ -88,6 +88,7 @@
             i18n: utils.getI18n(),
             data: {
                 modal: false,
+                isZh: isZh,
                 mapModal: false,
                 queryParameter: '',
                 createrToUser: '',

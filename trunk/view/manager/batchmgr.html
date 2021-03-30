@@ -28,7 +28,7 @@
                     <span class="user_icon"></span><span>{{$t("bgMgr.user")}}</span>
                     <span class="group_icon"></span><span>{{$t("bgMgr.group")}}</span>
                     <span class="device_icon"></span><span>{{$t("bgMgr.ordinaryDev")}}</span>
-                    <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span> 
+                    <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span>
                 </div>
                 <div style="height: 35px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
@@ -916,9 +916,10 @@
                             if (index === 0) {
                                 me.deviceType = item.devicetypeid;
                             }
+
                             me.deviceTypeList.push({
                                 value: item.devicetypeid,
-                                label: item.typename + "(" + item.remark + ")"
+                                label: item.typename + "(" + (isZh ? item.remark : item.remarken) + ")"
                             });
                         })
 

@@ -74,7 +74,7 @@
 
 
             <Tabs :animated="false" v-model="tabActive">
-                <Tab-Pane label="基本信息" name="baseInfo">
+                <Tab-Pane :label="$t('device.baseInfo')" name="baseInfo">
                     <div style="width:700px;margin:10px auto">
                         <Row style="margin: 10px 0" v-if="userType < 4">
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("reportForm.selectAccount")}} : &nbsp;</i-col>
@@ -242,7 +242,7 @@
                         </Row>
                     </div>
                 </Tab-Pane>
-                <Tab-Pane label="车辆信息" name="vehicleInfo">
+                <Tab-Pane :label="$t('device.vehicleInfo')" name="vehicleInfo">
                     <div style="width:700px;height:432.67px;margin:10px auto">
                         <Row style="margin: 10px 0">
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.plateno")}} : &nbsp;</i-col>
@@ -252,12 +252,12 @@
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.cartagcolor")}} : &nbsp;</i-col>
                             <i-col span="8">
                                 <i-select v-model="cartagcolor">
-                                    <i-option value="1">蓝色</i-option>
-                                    <i-option value="2">黄色</i-option>
-                                    <i-option value="3">黑色</i-option>
-                                    <i-option value="4">白色</i-option>
-                                    <i-option value="5">绿色</i-option>
-                                    <i-option value="9">其他</i-option>
+                                    <i-option value="1">{{$t('device.blue')}}</i-option>
+                                    <i-option value="2">{{$t('device.yellow')}}</i-option>
+                                    <i-option value="3">{{$t('device.black')}}</i-option>
+                                    <i-option value="4">{{$t('device.white')}}</i-option>
+                                    <i-option value="5">{{$t('device.green')}}</i-option>
+                                    <i-option value="9">{{$t('device.other')}}</i-option>
                                 </i-select>
                             </i-col>
                         </Row>
@@ -265,12 +265,12 @@
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.carcolor")}} : &nbsp;</i-col>
                             <i-col span="8">
                                 <i-select v-model="carcolor">
-                                    <i-option value="1">蓝色</i-option>
-                                    <i-option value="2">黄色</i-option>
-                                    <i-option value="3">黑色</i-option>
-                                    <i-option value="4">白色</i-option>
-                                    <i-option value="5">绿色</i-option>
-                                    <i-option value="9">其他</i-option>
+                                    <i-option value="1">{{$t('device.blue')}}</i-option>
+                                    <i-option value="2">{{$t('device.yellow')}}</i-option>
+                                    <i-option value="3">{{$t('device.black')}}</i-option>
+                                    <i-option value="4">{{$t('device.white')}}</i-option>
+                                    <i-option value="5">{{$t('device.green')}}</i-option>
+                                    <i-option value="9">{{$t('device.other')}}</i-option>
                                 </i-select>
                             </i-col>
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.icon")}} : &nbsp;</i-col>
@@ -2337,7 +2337,7 @@
                     var item = vstore.state.deviceTypes[row.devicetype];
                     var label = item.typename;
                     if (item.remark) {
-                        label += "(" + item.remark + ")";
+                        label += "(" + (isZh ? item.remark : item.remarken) + ")";
                     }
 
                     devType = label;
@@ -2814,7 +2814,7 @@
                         var item = deviceTypes[key];
                         var label = item.typename;
                         if (item.remark) {
-                            label += "(" + item.remark + ")";
+                            label += "(" + (isZh ? item.remark : item.remarken) + ")";
                         }
                         me.deviceTypeList.push({
                             value: item.devicetypeid,

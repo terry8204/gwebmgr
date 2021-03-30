@@ -167,13 +167,13 @@
                 <i-col span="20" :offset="4">
                     <Alert type="warning">
                         <h3>{{$t("device.addNewDeviceTip1")}}</h3>
-                        <p>
+                        <p v-if="isZh">
                             {{$t("device.addNewDeviceTip2")}}
                         </p>
-                        <p>
+                        <p v-if="isZh">
                             {{$t("device.addNewDeviceTip3")}}
                         </p>
-                        <p>
+                        <p v-if="isZh">
                             {{$t("device.addNewDeviceTip4")}}
                         </p>
                     </Alert>
@@ -204,6 +204,7 @@
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
                 },
+                isZh: isZh,
                 timezone: '99',
                 calmileageway: '0',
                 teltype: '1',
@@ -391,7 +392,7 @@
                         var item = deviceTypes[key];
                         var label = item.typename;
                         if (item.remark) {
-                            label += "(" + item.remark + ")";
+                            label += "(" + (isZh ? item.remark : item.remarken) + ")";
                         }
                         me.deviceTypeList.push({
                             value: item.devicetypeid,
