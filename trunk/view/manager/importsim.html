@@ -23,25 +23,25 @@
                     type: 'index',
                     width: 60
                 }, {
-                    title: vRoot.$t('header.phone'),
+                    title: isZh ? '手机号码' : 'SIM Phone No.',
                     key: "phonenum",
                     width: 140,
                 }, {
-                    title: 'iccid',
+                    title: 'ICCID',
                     key: "iccid"
                 }, {
-                    title: 'imsi',
+                    title: 'IMSI',
                     key: "imsi"
                 }, {
-                    title: vRoot.$t('insure.cardMerchants'),  
+                    title: vRoot.$t('insure.cardMerchants'),
                     key: "provider",
                     width: 100,
                 }, {
-                    title: vRoot.$t('insure.flowPackage'),  
+                    title: vRoot.$t('insure.flowPackage'),
                     key: "flowpackage",
                     width: 120,
                 }, {
-                    title: vRoot.$t('insure.activationTime'),  
+                    title: vRoot.$t('insure.activationTime'),
                     key: "starttime",
                     width: 120,
                 }, {
@@ -57,7 +57,7 @@
                         var color = '';
                         switch (status) {
                             case -1:
-                                statusStr =  vRoot.$t('insure.notSubmitted');
+                                statusStr = vRoot.$t('insure.notSubmitted');
                                 color = '#000';
                                 break;
                             case 0:
@@ -65,7 +65,7 @@
                                 color = '#e4393c';
                                 break;
                             case 1:
-                                statusStr =  vRoot.$t('insure.submitSucc');
+                                statusStr = vRoot.$t('insure.submitSucc');
                                 color = '#007ACC';
                                 break;
                         }
@@ -134,7 +134,7 @@
                                     item.status = 1;
                                 });
                             } else {
-                                me.$Message.error(vRoot.$t('insure.total') + ":" + respData.total + "," + vRoot.$t('insure.fail') +  ":" + respData.fail);
+                                me.$Message.error(vRoot.$t('insure.total') + ":" + respData.total + "," + vRoot.$t('insure.fail') + ":" + respData.fail);
                                 var errorrecords = respData.errorrecords;
                                 var tableData = me.tableData;
                                 errorrecords.forEach(function(failItem) {

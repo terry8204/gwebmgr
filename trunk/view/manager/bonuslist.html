@@ -12,8 +12,8 @@
         <div class="my-total" style="padding-left: 10px;">
             <span>{{$t("bgMgr.userTotal")}} : {{tableData.length}}</span>
             <span>{{$t("bgMgr.totalGoldenBeans")}} : {{bonuspoints}}</span>
-            <span>用户金豆数 : {{userbonuspoints}}</span>
-            <span>总金豆数 : {{totalbonuspoints}}</span>
+            <span>{{$t("bgMgr.userAmount") }} : {{userbonuspoints}}</span>
+            <span>{{$t("bgMgr.totalAmount") }} : {{totalbonuspoints}}</span>
         </div>
         <div style="padding: 0 10px;">
             <i-table border :columns="columns" :data="tableData" :height="taleHeight" :loading="loading"></i-table>

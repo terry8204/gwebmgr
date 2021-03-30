@@ -253,7 +253,7 @@
                 title: vRoot.$t("reportForm.ascriptionUser"),
                 key: 'username'
             }, {
-                title: vRoot.$t("user.grouping"),
+                title: vRoot.$t("reportForm.ascriptionGroup"),
                 key: 'groupname'
             }, {
                 title: vRoot.$t('alarm.action'),
@@ -558,7 +558,7 @@
             },
             handleBatchImport: function() {
                 if (!this.isOk) {
-                    this.$Message.error("请添加正确的imeis");
+                    this.$Message.error(isZh ? "请添加正确的imeis" : "Please add the correct IMEIs");
                     return;
                 };
                 var deviceids = this.deviceid.split('\n').filter(function(item) {
@@ -847,7 +847,12 @@
                     if (reg.test(guilv)) {
                         vm.isOk = true;
                         vm.deviceid = guilv + "\n";
-                        vm.errorTips = "总数 : 1";
+                        if (isZh) {
+                            vm.errorTips = "总数 : 1";
+                        } else {
+                            vm.errorTips = "Total : 1";
+                        }
+
                     } else {
                         var isOk = true; // 数据是否合法！
                         var textStr = "";

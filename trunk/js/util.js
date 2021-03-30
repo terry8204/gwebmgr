@@ -795,7 +795,7 @@ var utils = {
             '<p><span class="window_title">' + (isZh ? '设备名称' : 'Device Name') + '</span>: ' + (track.devicename ? track.devicename : track.deviceid) + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px"></i><i id="stared" onclick="onStarDevice(' + track.deviceid + ')" class="ivu-icon ivu-icon-md-heart" style="font-size: 16px;cursor: pointer;float:right;margin-right:22px;color:' + ((device && device.stared == 1) ? '#e4393c' : '#c1c1c1') + ';"></i></p>' +
             '<p><span class="window_title">' + (isZh ? '设备序号' : 'Device ID') + '</span>: ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px;"></i></p>' +
             '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
-            '<p><span class="window_title">' + (isZh ? '经度纬度' : 'Longitude and latitude') + '</span>: ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + altitude + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '经度纬度' : 'Coordinate') + '</span>: ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + altitude + '</p>' +
             '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
             '<p><span class="window_title">' + (isZh ? '定位时间' : 'Posi time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +

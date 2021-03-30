@@ -31,7 +31,7 @@
                     <span class="user_icon"></span><span>{{$t("bgMgr.user")}}</span>
                     <span class="group_icon"></span><span>{{$t("bgMgr.group")}}</span>
                     <span class="device_icon"></span><span>{{$t("bgMgr.ordinaryDev")}}</span>
-                    <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span> 
+                    <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span>
                 </div>
                 <div style="line-height: 35px;">
                     <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
@@ -355,52 +355,52 @@
             deviceInfoColumns: [],
             deviceInfoData: [],
             treeGroupList: [{
-                title: '00H-采集记录仪执行标准版本',
+                title: '00H-' + (isZh ? "采集记录仪执行标准版本" : "Collect the Device Version"),
                 cmdType: '00H',
             }, {
-                title: '01H-采集当前驾驶人信息',
+                title: '01H-采集当前驾驶人信息' + (isZh ? "采集当前驾驶人信息" : "Collect the Driver Info"),
                 cmdType: '01H',
             }, {
-                title: '02H-采集/设置记录仪实时时间',
+                title: '02H' + (isZh ? "采集/设置记录仪实时时间" : "Collect/Set Time"),
                 cmdType: '02H',
             }, {
-                title: '03H-采集/设置累计行驶里程',
+                title: '03H-' + (isZh ? "采集/设置累计行驶里程" : "Collect/Set Mileage"),
                 cmdType: '03H',
             }, {
-                title: '04H-采集/设置记录仪脉冲系数',
+                title: '04H-' + (isZh ? "采集/设置记录仪脉冲系数" : "Collect/Set A/D Value"),
                 cmdType: '04H',
             }, {
-                title: '05H-采集/设置车辆信息',
+                title: '05H-' + (isZh ? "采集/设置车辆信息" : "Collect/Set Vehicle Info"),
                 cmdType: '05H',
             }, {
-                title: '06H-采集/设置记录仪状态信号配置信息',
+                title: '06H-' + (isZh ? "采集/设置记录仪状态信号配置信息" : "Collect/Set I/O Status Info"),
                 cmdType: '06H',
             }, {
-                title: '07H-采集记录仪唯一性编号',
+                title: '07H-' + (isZh ? "采集记录仪唯一性编号" : "Collect the ID./IMEI"),
                 cmdType: '07H',
             }, {
-                title: '08H-采集指定的行驶速度记录',
+                title: '08H-' + (isZh ? "采集指定的行驶速度记录" : "Collect the Speed Records"),
                 cmdType: '08H',
             }, {
-                title: '09H-采集指定的位置信息记录',
+                title: '09H-' + (isZh ? "采集指定的位置信息记录" : "Collect the Location Records"),
                 cmdType: '09H',
             }, {
-                title: '10H-采集指定的疑点事故记录',
+                title: '10H-' + (isZh ? "采集指定的疑点事故记录" : "Collect the Accident Records"),
                 cmdType: '10H',
             }, {
-                title: '11H-采集指定的超时驾驶记录',
+                title: '11H-' + (isZh ? "采集指定的超时驾驶记录" : "Collect the Overspeed Records"),
                 cmdType: '11H',
             }, {
-                title: '12H-采集指定的驾驶人身份记录',
+                title: '12H-' + (isZh ? "采集指定的驾驶人身份记录" : "Collect the Driver ID info"),
                 cmdType: '12H',
             }, {
-                title: '13H-采集指定的记录仪外部供电记录',
+                title: '13H-' + (isZh ? "采集指定的记录仪外部供电记录" : "Collect the External Power Records"),
                 cmdType: '13H',
             }, {
-                title: '14H-采集指定的速度状态记录',
+                title: '14H-' + (isZh ? "采集指定的速度状态记录" : "Collect the Speed Status Records"),
                 cmdType: '14H',
             }, {
-                title: '15H-设置初次安装日期',
+                title: '15H-' + (isZh ? "设置初次安装日期" : "Set Installation Date"),
                 cmdType: '15H',
             }],
             tableData: [],
@@ -483,7 +483,7 @@
                 if (this.curruntRow) {
                     this.onCurrentChange(this.curruntRow)
                 } else {
-                    this.$Message.error('请选择一个设备');
+                    this.$Message.error(isZh ? '请选择一个设备' : 'Please select a device');
                 }
             },
             onCurrentChange: function(curruntRow) {
@@ -499,7 +499,7 @@
                         var recorderData = JSON.parse(resp.recorderdata);
                         me.updateTimeStr = DateFormat.longToDateTimeStr(resp.updatetime, 0)
                         me.setRecorderData(recorderData);
-                        me.$Message.success('刷新成功');
+                        me.$Message.success(isZh ? '刷新成功' : 'Refresh succeeded');
                     } else {
                         // me.$Message.error('查询失败');
                     }
@@ -735,7 +735,7 @@
                 var me = this;
                 var data = this.getCmdTypeData(type);
                 if (data.deviceids.length == 0) {
-                    me.$Message.error('请选择设备');
+                    me.$Message.error(isZh ? '请选择设备' : 'Please select a device');
                     return;
                 }
                 var url = myUrls.batchOperate();

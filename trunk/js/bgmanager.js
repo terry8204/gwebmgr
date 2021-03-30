@@ -158,7 +158,12 @@ var bgManager = {
         },
         getAllNavList: function name() {
             var me = this;
-            return [{
+
+
+
+
+
+            var navList = [{
                     title: isZh ? "管理导航" : "Menu",
                     name: 'bgNav',
                     icon: 'ios-stats',
@@ -242,7 +247,11 @@ var bgManager = {
                         { title: vRoot.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline', maxShowUserType: 1 }
                     ]
                 },
-                {
+
+            ];
+
+            if (isZh) {
+                navList.push({
                     title: me.$t("bgMgr.manageDataTransfer"),
                     name: 'forward809',
                     icon: 'ios-laptop',
@@ -252,8 +261,8 @@ var bgManager = {
                         { title: me.$t("bgMgr.setTransferRules"), name: 'forwardingSetting', icon: 'md-git-merge', maxShowUserType: 99 },
                     ]
 
-                },
-                {
+                })
+                navList.push({
                     title: '第三方平台',
                     name: 'thirdPlatform',
                     icon: 'ios-analytics',
@@ -277,15 +286,14 @@ var bgManager = {
                             maxShowUserType: 99
                         },
                     ]
-                },
-            ];
+                })
+            }
+            return navList;
         },
         filterNavFunctions: function name(currentUserType) {
             var filterNavList = [];
             var allNavList = this.getAllNavList();
-            if(!isZh){
-                allNavList.pop();
-            };
+
             allNavList.forEach(function name(category) {
                 var copyCategory = deepClone(category);
                 if (category.children) {
@@ -306,7 +314,7 @@ var bgManager = {
         }
     },
     mounted: function() {
-       
+
         this.userType = Number(vstore.state.userType);
         this.filterNavFunctions(this.userType);
         this.selectditem('bgNav');

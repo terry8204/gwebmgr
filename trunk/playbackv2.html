@@ -2305,7 +2305,7 @@
                         var recorderspeed = info.recorderspeed == 0 ? "0km/h" : (info.recorderspeed / 1000).toFixed(2) + "km/h";
                         var sContent = '<div>' +
                             '<p><span class="window_title">' + (isZh ? '设备名称' : 'Device Name') + '</span>: ' + this.deviceid + '</p>' +
-                            '<p><span class="window_title">' + (isZh ? '经度纬度' : 'Longitude and latitude') + '</span>: ' + info.callon + "," + info.callat + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '经度纬度' : 'Coordinate') + '</span>: ' + info.callon + "," + info.callat + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '设备方向' : 'Direction') + '</span>: ' + utils.getCarDirection(info.course) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + '(' + (isZh ? '信号:' : 'Signal:') + info.rxlevel + '%)</p>' +

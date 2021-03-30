@@ -7828,7 +7828,7 @@ function oilWorkingHours(groupslist) {
         data: {
             loading: false,
             isSpin: false,
-
+            dateTimeRangeVal: [DateFormat.longToDateStr(Date.now(), timeDifference) + " 00:00:00", DateFormat.longToDateStr(Date.now(), timeDifference) + " 23:59:59"],
             groupslist: [],
             columns: [{
                     title: vRoot.$t("reportForm.index"),
@@ -7862,6 +7862,10 @@ function oilWorkingHours(groupslist) {
         },
         mixins: [treeMixin],
         methods: {
+            onTimeRangeChange: function(timeRange) {
+                console.log('timeRange', timeRange);
+                this.dateTimeRangeVal = timeRange;
+            },
             exportData: function() {
 
                 var columns = deepClone(this.columns);
@@ -7979,15 +7983,13 @@ function oilWorkingHours(groupslist) {
                 this.tableData = [];
                 var data = {
                     // username: vstore.state.userName,
-                    startday: this.dateVal[0],
-                    endday: this.dateVal[1],
-                    offset: timeDifference,
+                    begintime: this.dateTimeRangeVal[0],
+                    endtime: this.dateTimeRangeVal[1],
+                    timezone: timeDifference,
                     devices: deviceids,
-                    oilstate: -1,
-                    oilindex: Number(self.tank)
                 };
                 this.loading = true;
-                utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
+                utils.sendAjax(myUrls.reportOilManHour(), data, function(resp) {
                     self.loading = false;
                     if (resp.status == 0) {
                         if (resp.records) {
