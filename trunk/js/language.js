@@ -845,7 +845,7 @@
                 daysOverdue60: "60 days expired",
                 expired: "Expired",
                 oilMarking: "Oil marking",
-                weightMarking: "载重标注",
+                weightMarking: "Weight Marking",
                 ioConfig: "IO config",
                 insureInfo: "Insure info",
                 speedingSetting: "Speeding setting",
@@ -1279,7 +1279,7 @@
                 surplusJindou: '剩余金豆',
                 consumeJindou: '消耗金豆',
                 lastactivetime: 'Last time',
-                deviceList: "设备列表",
+                deviceList: "List",
                 see: "See",
             }
         },
