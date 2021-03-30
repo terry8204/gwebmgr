@@ -790,7 +790,7 @@ var utils = {
         var temp = this.getTemperature(isZh, track);
         var device = findTheDevice(track.deviceid);
         var currentDayMileage = track.currentDayMileage ? track.currentDayMileage : '- ';
-        var altitude = track.altitude ? ('(H:' + track.altitude.toFixed(0) + ')') : '';
+        var altitude = track.altitude !== null ? ('(H:' + track.altitude.toFixed(0) + ')') : '';
         var content =
             '<p><span class="window_title">' + (isZh ? '设备名称' : 'Device Name') + '</span>: ' + (track.devicename ? track.devicename : track.deviceid) + '<i onclick="copyToClipboardText()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px"></i><i id="stared" onclick="onStarDevice(' + track.deviceid + ')" class="ivu-icon ivu-icon-md-heart" style="font-size: 16px;cursor: pointer;float:right;margin-right:22px;color:' + ((device && device.stared == 1) ? '#e4393c' : '#c1c1c1') + ';"></i></p>' +
             '<p><span class="window_title">' + (isZh ? '设备序号' : 'Device ID') + '</span>: ' + track.deviceid + '<i onclick="copyToClipboard()" class="ivu-icon ivu-icon-ios-copy-outline" style="font-size: 20px;cursor: pointer;margin-top:-2px;"></i></p>' +
