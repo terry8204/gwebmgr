@@ -799,7 +799,7 @@
                             '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
                             '<p><span class="window_title">' + (isZh ? '定位时间' : 'Posi time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +
-                            '<p><span class="window_title">' + (isZh ? '停留时长' : 'Park Duration') + '</span>: ' + utils.timeStamp(track.parkduration, isZh) + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '停留时长' : 'Parking Period') + '</span>: ' + utils.timeStamp(track.parkduration, isZh) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '总里程数' : 'Total Mileage') + '</span>: ' + utils.getMileage(track.totaldistance) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '行驶里程' : 'Travel Mileage') + '</span>: ' + utils.getMileage(this.getTravelMileage()) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +

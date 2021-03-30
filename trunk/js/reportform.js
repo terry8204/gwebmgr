@@ -7963,7 +7963,7 @@ function oilWorkingHours(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 360;
+                this.lastTableHeight = wHeight - 320;
             },
             onClickQuery: function() {
                 var self = this;

@@ -801,7 +801,7 @@ var utils = {
             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +
             '<p><span class="window_title">' + (isZh ? '当日里程' : 'Mileage') + '</span>: ' + currentDayMileage + (isZh ? ' 总里程数: ' : ' Mileage: ') + this.getMileage(track.totaldistance) + '</p>' +
             (temp && extendsBtns.humi ? temp : '') +
-            '<p><span class="window_title">' + (isZh ? '停留时长' : 'Park Duration') + '</span>: ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '停留时长' : 'Parking Period') + '</span>: ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
             (oilStr !== '' ? '<p>' + oilStr + '</p>' : '') +
             (loadstatusStr ? ('<p><span class="window_title">' + (isZh ? '载重数据' : 'Weight') + '</span>: ' + loadstatusStr + '</p>') : '') +
@@ -815,7 +815,7 @@ var utils = {
             deviceid +
             ')">' + (isZh ? '跟踪' : 'Follow') + '</span><span class="map-window-btn" onclick="refreshPostion(' +
             deviceid +
-            ')">' + (isZh ? '刷新位置' : 'Refresh') + '</span><span class="map-window-btn" onclick="openSim(' +
+            ')">' + (isZh ? '刷新位置' : 'Refresh Loc.') + '</span><span class="map-window-btn" onclick="openSim(' +
             deviceid +
             ')">SIM</span><span class="map-window-btn" onclick="setFence(' +
             deviceid +
