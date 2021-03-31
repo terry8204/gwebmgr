@@ -6219,18 +6219,18 @@ function weightSummary(groupslist) {
                 { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename' },
                 { title: vRoot.$t('reportForm.date'), key: 'statisticsday', sortable: true },
-                { title: '空车时长', key: 'emptyDurationTime' },
-                { title: '空车里程', key: 'emptyDurationDist' },
-                { title: '半载时长', key: 'halfLoadDurationTime' },
-                { title: '半载里程', key: 'halfLoadDurationDist' },
-                { title: '超载时长', key: 'overDurationTime' },
-                { title: '超载里程', key: 'overDurationDist' },
-                { title: '满载时长', key: 'fullDurationTime' },
-                { title: '满载里程', key: 'fullDurationDist' },
-                { title: '装载时长', key: 'loadingDurationTime' },
-                { title: '装载里程', key: 'loadingDurationDist' },
-                { title: '卸载时长', key: 'unloadDurationTime' },
-                { title: '卸载里程', key: 'unloadDurationDist' },
+                { title: isZh ? '空车时长' : 'Empty Duration', key: 'emptyDurationTime' },
+                { title: isZh ? '空车里程' : 'Empty Mileage', key: 'emptyDurationDist' },
+                { title: isZh ? '半载时长' : 'Half Load Duration', key: 'halfLoadDurationTime' },
+                { title: isZh ? '半载里程' : 'Half Load Mileage', key: 'halfLoadDurationDist' },
+                { title: isZh ? '超载时长' : 'Overload Duration', key: 'overDurationTime' },
+                { title: isZh ? '超载里程' : 'Overload Mileage', key: 'overDurationDist' },
+                { title: isZh ? '满载时长' : 'Full Load Duration', key: 'fullDurationTime' },
+                { title: isZh ? '满载里程' : 'Full Load Mileage', key: 'fullDurationDist' },
+                { title: isZh ? '装载时长' : 'Loading Duration', key: 'loadingDurationTime' },
+                { title: isZh ? '装载里程' : 'Loading Mileage', key: 'loadingDurationDist' },
+                { title: isZh ? '卸载时长' : 'Unloading Duration', key: 'unloadDurationTime' },
+                { title: isZh ? '卸载里程' : 'Unloading Mileage', key: 'unloadDurationDist' },
             ],
             tableData: [],
             seriesData: [],
@@ -6255,22 +6255,35 @@ function weightSummary(groupslist) {
                                 color: '#e4393c',
                                 cursor: 'pointer'
                             }
-                        }, "[ 明细 ]")
+                        }, isZh ? "[ 明细 ]" : "[ Details ]")
                     }
                 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename' },
-                { title: '空车时长', key: 'emptyDurationTime' },
-                { title: '空车里程', key: 'emptyDurationDist' },
-                { title: '半载时长', key: 'halfLoadDurationTime' },
-                { title: '半载里程', key: 'halfLoadDurationDist' },
-                { title: '超载时长', key: 'overDurationTime' },
-                { title: '超载里程', key: 'overDurationDist' },
-                { title: '满载时长', key: 'fullDurationTime' },
-                { title: '满载里程', key: 'fullDurationDist' },
-                { title: '装载时长', key: 'loadingDurationTime' },
-                { title: '装载里程', key: 'loadingDurationDist' },
-                { title: '卸载时长', key: 'unloadDurationTime' },
-                { title: '卸载里程', key: 'unloadDurationDist' },
+                // { title: '空车时长', key: 'emptyDurationTime' },
+                // { title: '空车里程', key: 'emptyDurationDist' },
+                // { title: '半载时长', key: 'halfLoadDurationTime' },
+                // { title: '半载里程', key: 'halfLoadDurationDist' },
+                // { title: '超载时长', key: 'overDurationTime' },
+                // { title: '超载里程', key: 'overDurationDist' },
+                // { title: '满载时长', key: 'fullDurationTime' },
+                // { title: '满载里程', key: 'fullDurationDist' },
+                // { title: '装载时长', key: 'loadingDurationTime' },
+                // { title: '装载里程', key: 'loadingDurationDist' },
+                // { title: '卸载时长', key: 'unloadDurationTime' },
+                // { title: '卸载里程', key: 'unloadDurationDist' },
+
+                { title: isZh ? '空车时长' : 'Empty Duration', key: 'emptyDurationTime' },
+                { title: isZh ? '空车里程' : 'Empty Mileage', key: 'emptyDurationDist' },
+                { title: isZh ? '半载时长' : 'Half Load Duration', key: 'halfLoadDurationTime' },
+                { title: isZh ? '半载里程' : 'Half Load Mileage', key: 'halfLoadDurationDist' },
+                { title: isZh ? '超载时长' : 'Overload Duration', key: 'overDurationTime' },
+                { title: isZh ? '超载里程' : 'Overload Mileage', key: 'overDurationDist' },
+                { title: isZh ? '满载时长' : 'Full Load Duration', key: 'fullDurationTime' },
+                { title: isZh ? '满载里程' : 'Full Load Mileage', key: 'fullDurationDist' },
+                { title: isZh ? '装载时长' : 'Loading Duration', key: 'loadingDurationTime' },
+                { title: isZh ? '装载里程' : 'Loading Mileage', key: 'loadingDurationDist' },
+                { title: isZh ? '卸载时长' : 'Unloading Duration', key: 'unloadDurationTime' },
+                { title: isZh ? '卸载里程' : 'Unloading Mileage', key: 'unloadDurationDist' },
                 //载重状态 0x00：空车；0x01：半载；0x02：超载；0x03：满载 0x04 装载 0x05 卸载
             ],
             allWeightTableData: [],
@@ -6328,12 +6341,12 @@ function weightSummary(groupslist) {
                 var seriesData = [];
                 var titleText = '';
                 if (current.statisticsday) {
-                    titleText = '载重时长-' + current.deviceid + '-' + current.statisticsday;
+                    titleText = (isZh ? '载重时长-' : 'Loading Duration-') + current.deviceid + '-' + current.statisticsday;
                 } else {
-                    titleText = '载重时长-' + current.deviceid;
+                    titleText = (isZh ? '载重时长-' : 'Loading Duration-') + current.deviceid;
                 }
                 for (var i = 0; i < 6; i++) {
-                    var title = utils.getloadstatusStr(i) + '时长';
+                    var title = utils.getloadstatusStr(i) + (isZh ? '时长' : 'Duration');
                     seriesData.push({
                         value: current['durationtime' + i],
                         name: title

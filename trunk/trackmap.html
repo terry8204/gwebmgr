@@ -797,7 +797,7 @@
                             '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '经纬纬度' : 'Longitude and latitude') + '</span>: ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
-                            '<p><span class="window_title">' + (isZh ? '定位时间' : 'Posi time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '定位时间' : 'Locate Time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '停留时长' : 'Parking Period') + '</span>: ' + utils.timeStamp(track.parkduration, isZh) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '总里程数' : 'Total Mileage') + '</span>: ' + utils.getMileage(track.totaldistance) + '</p>' +

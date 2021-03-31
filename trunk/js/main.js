@@ -34,10 +34,10 @@ vstore = new Vuex.Store({
         userTypeDescrList: [
             { "name": isZh ? "系统管理员" : 'Admin', "type": 0 },
             { "name": isZh ? "一级管理员" : 'Supervisor', "type": 1 },
-            { "name": isZh ? "二级管理员" : 'Manager 2', "type": 2 },
-            { "name": isZh ? "三级管理员" : 'Manager 3', "type": 3 },
-            { "name": isZh ? "四级管理员" : 'Manager 4', "type": 4 },
-            { "name": isZh ? "普通监控员" : 'Monitor', "type": 20 },
+            { "name": isZh ? "二级管理员" : 'Sub Admin', "type": 2 },
+            { "name": isZh ? "三级管理员" : 'Company Admin', "type": 3 },
+            { "name": isZh ? "四级管理员" : 'Common User', "type": 4 },
+            { "name": isZh ? "普通监控员" : 'Common User', "type": 20 },
             { "name": isZh ? "设备" : 'Device', "type": 99 }
         ], // 用户类型描述
         allCmdList: [], // 所有的指令

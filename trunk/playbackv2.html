@@ -645,7 +645,7 @@
         Vue.use(iview);
         Vue.use(VueI18n);
         var isZh = utils.locale === 'zh';
-        document.title = isZh ? "轨迹回放" : "Playback";
+        document.title = isZh ? "轨迹回放" : "History Playback";
         iview.lang(isZh ? 'zh-CN' : 'en-US');
 
 
@@ -692,11 +692,11 @@
             en: {
                 main: {
                     all: 'all',
-                    showLine: 'Show line',
+                    showLine: 'Show Trace',
                     yes: 'Yes',
                     no: 'No',
-                    queryTracks: 'Query Tracks',
-                    downloadTrack: 'Download Tracks',
+                    queryTracks: 'Query',
+                    downloadTrack: 'Download',
                     progress: 'Progress',
                     bmap: 'BaiDuMap',
                     gmap: 'GoogleMap',
@@ -712,7 +712,7 @@
                     selectTime: "Select Time",
                     startTime: "Start Time",
                     endTime: "End Time",
-                    trackType: "Track Type",
+                    trackType: "Location Type",
                     prevDay: "Prev Day",
                     nextDay: "Next Day",
                     startDate: "Start time",
@@ -733,14 +733,14 @@
                     WIFIList: "WiFi",
                     originalData: "Original Data",
                     result: "Position result",
-                    totalOil: 'Total oil',
-                    oil1: "oil1",
-                    oil2: "oil2",
-                    oil3: "oil3",
-                    oil4: "oil4",
-                    weight: 'weight',
-                    status: "status",
-                    reissue: "reissue",
+                    totalOil: 'Total Fuel Volume',
+                    oil1: "Sensor 1",
+                    oil2: "Sensor 2",
+                    oil3: "Sensor 3",
+                    oil4: "Sensor 4",
+                    weight: 'Weight',
+                    status: "Device Status",
+                    reissue: "Reissue",
                     oil: "oil",
                     speed: 'Speed',
                     mileage: 'Mileage',
@@ -2304,9 +2304,9 @@
                         var speed = info.speed == 0 ? "0km/h" : (info.speed / 1000).toFixed(2) + "km/h";
                         var recorderspeed = info.recorderspeed == 0 ? "0km/h" : (info.recorderspeed / 1000).toFixed(2) + "km/h";
                         var sContent = '<div>' +
-                            '<p><span class="window_title">' + (isZh ? '设备名称' : 'Device Name') + '</span>: ' + this.deviceid + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '设备序号' : 'Device ID') + '</span>: ' + this.deviceid + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '经度纬度' : 'Coordinate') + '</span>: ' + info.callon + "," + info.callat + '</p>' +
-                            '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
+                            '<p><span class="window_title">' + (isZh ? '定位类型' : 'Location Mode') + '</span>: ' + posiType + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '设备方向' : 'Direction') + '</span>: ' + utils.getCarDirection(info.course) + '</p>' +
                             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + '(' + (isZh ? '信号:' : 'Signal:') + info.rxlevel + '%)</p>' +
                             '<p><span class="window_title">' + (isZh ? '记录速度' : 'RecorderSpeed') + '</span>: ' + recorderspeed + '</p>' +

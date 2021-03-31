@@ -541,13 +541,13 @@ var utils = {
                 type = isZh ? "未知" : "Unknown";
                 break;
             case 'cell':
-                type = isZh ? "基站定位" : "Base station location";
+                type = isZh ? "基站定位" : "LBS";
                 break;
             case 'gps':
-                type = isZh ? "卫星定位" : "Satellite positioning";
+                type = isZh ? "卫星定位" : "GPS";
                 break;
             case 'wifi':
-                type = isZh ? "WiFi定位" : "WiFi Location";
+                type = isZh ? "WiFi定位" : "WiFi";
                 break;
             default:
                 type = isZh ? "未知" : "Unknown";
@@ -797,12 +797,12 @@ var utils = {
             '<p><span class="window_title">' + (isZh ? '定位类型' : 'Position Type') + '</span>: ' + posiType + '</p>' +
             '<p><span class="window_title">' + (isZh ? '经度纬度' : 'Coordinate') + '</span>: ' + track.callon.toFixed(6) + ',' + track.callat.toFixed(6) + altitude + '</p>' +
             '<p><span class="window_title">' + (isZh ? '更新时间' : 'Update time') + '</span>: ' + DateFormat.longToDateTimeStr(track.updatetime, timeDifference) + '(' + isOnineStr + ')</p>' +
-            '<p><span class="window_title">' + (isZh ? '定位时间' : 'Posi time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '定位时间' : 'Locate Time') + '</span>: ' + DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference) + '</p>' +
             '<p><span class="window_title">' + (isZh ? '实时速度' : 'Speed') + '</span>: ' + speed + rxlevel + '</p>' +
-            '<p><span class="window_title">' + (isZh ? '当日里程' : 'Mileage') + '</span>: ' + currentDayMileage + (isZh ? ' 总里程数: ' : ' Mileage: ') + this.getMileage(track.totaldistance) + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '当日里程' : 'Today Mileage') + '</span>: ' + currentDayMileage + (isZh ? ' 总里程数: ' : ' Total Mileage: ') + this.getMileage(track.totaldistance) + '</p>' +
             (temp && extendsBtns.humi ? temp : '') +
             '<p><span class="window_title">' + (isZh ? '停留时长' : 'Parking Period') + '</span>: ' + this.timeStamp(track.parkduration, isZh) + '</p>' +
-            '<p><span class="window_title">' + (isZh ? '设备状态' : 'Status') + '</span>: ' + strstatus + '</p>' +
+            '<p><span class="window_title">' + (isZh ? '设备状态' : 'Device Status') + '</span>: ' + strstatus + '</p>' +
             (oilStr !== '' ? '<p>' + oilStr + '</p>' : '') +
             (loadstatusStr ? ('<p><span class="window_title">' + (isZh ? '载重数据' : 'Weight') + '</span>: ' + loadstatusStr + '</p>') : '') +
             (extendsBtns.video ? ('<p><span class="window_title">' + (isZh ? '视频状态' : 'video') + '</span>: ' + videoState + '</p>') : ("")) +
@@ -810,7 +810,7 @@ var utils = {
             '<p class="operation">' +
             '<span class="map-window-btn" onclick="playBack(' +
             deviceid +
-            ')">' + (isZh ? '轨迹' : 'Track') + '</span>' +
+            ')">' + (isZh ? '轨迹' : 'History') + '</span>' +
             '<span class="map-window-btn" onclick="trackMap(' +
             deviceid +
             ')">' + (isZh ? '跟踪' : 'Follow') + '</span><span class="map-window-btn" onclick="refreshPostion(' +
