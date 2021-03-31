@@ -7857,26 +7857,66 @@ function oilWorkingHours(groupslist) {
                     key: 'deviceid'
                 },
                 {
-                    title: vRoot.$t("monitor.groupName"),
-                    key: 'groupname',
+                    title: vRoot.$t("reportForm.workingHours"),
+                    key: 'totalacc',
+                    render: function(h, pramas) {
+                        var row = pramas.row;
+                        return h('sapn', {}, utils.timeStamp(row.totalacc));
+                    },
                 },
                 {
-                    title: vRoot.$t('reportForm.oilLeakage'),
-                    key: 'totalOil'
+                    title: vRoot.$t("reportForm.oilConsumption") + '(L)',
+                    key: 'totaloil',
+                    render: function(h, pramas) {
+                        var row = pramas.row;
+                        return h('sapn', {}, (row.totaloil / 100).toFixed(2));
+                    },
                 },
                 {
-                    title: vRoot.$t('reportForm.oilLeakageTimes'),
-                    key: 'count'
+                    title: vRoot.$t('reportForm.mileage') + '(Km)',
+                    key: 'totaldistance',
+                    render: function(h, pramas) {
+                        var row = pramas.row;
+                        return h('sapn', {}, (row.totaldistance / 1000).toFixed(2));
+                    },
+                },
+                {
+                    title: vRoot.$t('reportForm.fuelConsumptionHour') + '(Km)',
+                    render: function(h, pramas) {
+                        var row = pramas.row;
+                        var totalacc = row.totalacc;
+                        var totaloil = row.totaloil;
+                        if (totalacc && totaloil) {
+                            totalacc = totalacc / 1000 / 3600;
+                            return h('sapn', {}, (totaloil / 100 / totalacc).toFixed(2));
+                        } else {
+                            return h('sapn', {}, '0');
+                        }
+                    },
+                },
+                {
+                    title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
+                    render: function(h, pramas) {
+                        var row = pramas.row;
+                        var totaldistance = row.totaldistance;
+                        var totaloil = row.totaloil / 100;
+                        if (totaldistance && totaloil) {
+                            totaldistance = totaldistance / 1000;
+                            return h('sapn', {}, ((totaldistance / totaloil) * 100).toFixed(2));
+                        } else {
+                            return h('sapn', {}, '0');
+                        }
+                    },
                 },
             ],
             tableData: [],
             oil: [],
             recvtime: [],
+            chartDataList: [],
         },
         mixins: [treeMixin],
         methods: {
             onTimeRangeChange: function(timeRange) {
-                console.log('timeRange', timeRange);
                 this.dateTimeRangeVal = timeRange;
             },
             exportData: function() {
@@ -7903,19 +7943,31 @@ function oilWorkingHours(groupslist) {
 
 
             },
-            charts: function() {
-                var cotgas = vRoot.$t('reportForm.oilLeakage');
-                var no_data = vRoot.$t('reportForm.empty');
-                var option = {
+            getChartsOption: function(deviceNames, oils, disArr, hours) {
+
+                var dis = vRoot.$t('reportForm.mileage');
+                var cotgas = vRoot.$t('reportForm.oilConsumption');
+                var workingHours = vRoot.$t("reportForm.workingHours")
+
+                return {
                     tooltip: {
-                        show: true,
                         trigger: 'axis',
-                        axisPointer: {
-                            type: 'shadow'
+                        formatter: function(v, a) {
+                            var data = v[0].name + '<br/>';
+                            for (i in v) {
+                                if (v[i].seriesName == dis) {
+                                    data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
+                                } else if (v[i].seriesName == cotgas) {
+                                    data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
+                                } else if (v[i].seriesName == workingHours) {
+                                    data += v[i].seriesName + ' : ' + utils.timeStamp(v[i].value * 1000 * 3600) + '<br/>';
+                                }
+                            }
+                            return data;
                         }
                     },
                     legend: {
-                        data: [cotgas],
+                        data: [dis, cotgas, workingHours],
                         y: 13,
                         x: 'center'
                     },
@@ -7938,7 +7990,7 @@ function oilWorkingHours(groupslist) {
                                 fontSize: 12
                             }
                         },
-                        data: this.recvtime.length === 0 ? [no_data] : this.recvtime
+                        data: deviceNames
                     }],
                     yAxis: [{
                         type: 'value',
@@ -7946,31 +7998,66 @@ function oilWorkingHours(groupslist) {
                         nameLocation: 'end',
                         boundaryGap: [0, 0.2],
                         axisLabel: {
-                            formatter: '{value}L'
+                            formatter: '{value}'
                         }
                     }],
                     series: [{
-                        name: cotgas,
-                        type: 'bar',
-                        itemStyle: {
-                            //默认样式
-                            backgroundColor: '#000',
-                            normal: {
-                                label: {
-                                    show: true,
-                                    textStyle: {
-                                        fontSize: '12',
-                                        fontFamily: '微软雅黑',
-                                        fontWeight: 'bold'
+                            name: dis,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                                //悬浮式样式
+                            },
+                            data: disArr
+                        },
+                        {
+                            name: cotgas,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
                                     }
                                 }
                             },
+                            data: oils
                         },
-                        color: '#e4393c',
-                        data: this.oil
-                    }]
+                        {
+                            name: workingHours,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                            },
+                            data: hours
+                        },
+                    ]
                 };
-                this.chartsIns.setOption(option);
 
             },
 
@@ -7994,6 +8081,7 @@ function oilWorkingHours(groupslist) {
                     return;
                 }
                 this.tableData = [];
+                this.chartDataList = [];
                 var data = {
                     // username: vstore.state.userName,
                     begintime: this.dateTimeRangeVal[0],
@@ -8006,11 +8094,35 @@ function oilWorkingHours(groupslist) {
                     self.loading = false;
                     if (resp.status == 0) {
                         if (resp.records) {
-
+                            var chartDataList = [];
                             resp.records.forEach(function(item, index) {
 
+                                item.index = index + 1;
+                                item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
+                                if (index % 4 == 0) {
+                                    chartDataList.push({
+                                        data: [],
+                                        oil: [],
+                                        dis: [],
+                                        hours: [],
+                                    })
+                                }
+                                var len = chartDataList.length - 1;
+
+                                chartDataList[len].data.push(item.devicename);
+                                chartDataList[len].oil.push(item.totaloil / 100);
+                                chartDataList[len].dis.push(Number((item.totaldistance / 1000).toFixed(2)));
+                                chartDataList[len].hours.push(Number((item.totalacc / 1000 / 3600).toFixed(2)));
+
                             });
-                            self.charts();
+
+                            self.tableData = resp.records;
+                            self.chartDataList = chartDataList;
+                            console.log('chartDataList', chartDataList);
+
+                            setTimeout(function() {
+                                self.initCharts();
+                            }, 300);
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));
                         }
@@ -8027,18 +8139,27 @@ function oilWorkingHours(groupslist) {
                     me.initZTree(rootuser);
                 })
             },
+            initCharts: function() {
+                var index = 0;
+                var len = this.chartDataList.length;
+                while (index < len) {
+                    var chartsIns = echarts.init(document.getElementById('charts' + index));
+                    var data = this.chartDataList[index]
+                    chartsIns.setOption(this.getChartsOption(data.data, data.oil, data.dis, data.hours));
 
+                    // chartDataList[len].data.push(item.devicename);
+                    // chartDataList[len].oil.push(item.totaloil);
+                    // chartDataList[len].dis.push(item.totaldistance);
+                    // chartDataList[len].hours.push(item.totalacc);
+
+                    index++;
+                }
+            }
         },
         mounted: function() {
-            var me = this;
             this.myChart = null;
             this.records = [];
-            setTimeout(function() {
-                me.chartsIns = echarts.init(document.getElementById('charts'));
-                me.charts();
-            }, 500)
             this.queryDevicesTree();
-
         }
     });
 }

@@ -33,21 +33,15 @@
             </div>
         </Row>
         <div style="width:100%;height: 180px;position: relative;">
-            <Carousel dots="none">
-                <Carousel-Item>
-                    <div id="charts" style="height: 180px;width: 100%;"></div>
-                </Carousel-Item>
-                <Carousel-Item>
-                    <div class="demo-carousel" style="height: 180px;">2</div>
-                </Carousel-Item>
-                <Carousel-Item>
-                    <div class="demo-carousel" style="height: 180px;">3</div>
-                </Carousel-Item>
-                <Carousel-Item>
-                    <div class="demo-carousel" style="height: 180px;">4</div>
+            <Carousel dots="none" v-if="chartDataList.length">
+                <Carousel-Item v-for="(item,index) in chartDataList" :key="index">
+                    <div :id="'charts' + index" style="height: 180px;width: 100%;"></div>
                 </Carousel-Item>
             </Carousel>
-            </Carousel>
+
+            <div v-else="!chartDataList.length" style="width:100%;height: 180px;line-height: 180px;padding: 0 10px;">
+                <div style="height: 180px;background-color: antiquewhite;text-align: center;" v-text="$t('reportForm.empty')"></div>
+            </div>
         </div>
         <div style="margin:10px;">
             <i-table ref="table" :columns="columns" :data="tableData" :height="lastTableHeight" :loading="loading"></i-table>

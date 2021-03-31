@@ -759,3 +759,23 @@ div.work-inner-map-wraper {
 .ivu-table .equipment-expired td {
     color: red;
 }
+
+#app .ivu-table-cell {
+    word-break: break-word;
+}
+
+#app .ivu-carousel {
+    width: 100%;
+    height: 100%;
+}
+
+#app .ivu-carousel-list,
+#app .ivu-carousel-track {
+    overflow: visible;
+}
+
+#app .ivu-carousel-arrow {
+    position: absolute;
+    top: 50%;
+    margin-top: -16px;
+}
