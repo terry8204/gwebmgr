@@ -760,6 +760,33 @@ div.work-inner-map-wraper {
     color: red;
 }
 
+#messageRecords {
+    position: relative;
+}
+
+#messageRecords .search-wrapper .ivu-icon,
+#messageRecords .ivu-date-picker-rel .ivu-icon,
+#messageRecords .ivu-input-wrapper .ivu-icon {
+    margin-top: 0px;
+}
+
+#messageRecords .content-wrap,
+#time-oil-consumption .content-wrap {
+    position: absolute;
+    right: 10px;
+    bottom: 65px;
+}
+
+#time-oil-consumption .ivu-card-head {
+    padding: 2px 16px;
+}
+
+#time-oil-consumption .ivu-card-extra {
+    position: absolute;
+    right: 4px;
+    top: 1px;
+}
+
 #app .ivu-table-cell {
     word-break: break-word;
 }

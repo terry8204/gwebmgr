@@ -6516,21 +6516,20 @@ function timeOilConsumption(groupslist) {
         data: {
             loading: false,
             groupslist: [],
+            isShowCard: false,
+            contentString: "",
             columns: [
-                { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
-                { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 100 },
+                { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 160 },
                 { title: vRoot.$t('reportForm.date'), key: 'updatetimeStr', sortable: true, width: 160 },
                 { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 100 },
                 { title: vRoot.$t('reportForm.totalOil'), key: 'totalad', width: 100 },
-                { title: vRoot.$t('reportForm.oil1'), key: 'ad0', width: 90 },
-                { title: vRoot.$t('reportForm.oil2'), key: 'ad1', width: 90 },
-                { title: vRoot.$t('reportForm.oil3'), key: 'ad2', width: 90 },
-                { title: vRoot.$t('reportForm.oil4'), key: 'ad3', width: 90 },
                 { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
                 { title: vRoot.$t('reportForm.reissue'), key: 'reissue', width: 80 },
                 { title: vRoot.$t('reportForm.status'), key: 'strstatus' },
                 {
                     title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
+                    width: 210,
                     render: function(h, params) {
                         var row = params.row;
                         var callat = row.callat.toFixed(5);
@@ -6592,6 +6591,30 @@ function timeOilConsumption(groupslist) {
         },
         mixins: [reportMixin],
         methods: {
+            onRowClick: function(row) {
+                var me = this;
+                this.isShowCard = true;
+                this.queryTrackDetail(row, function(resp) {
+                    if (resp.track) {
+                        me.contentString = JSON.stringify(resp.track);
+                    } else {
+                        vm.$Message.error(me.$t("reportForm.noRecord"));
+                    }
+                });
+            },
+            queryTrackDetail: function(row, callback) {
+                var data = {
+                    deviceid: this.queryDeviceId,
+                    updatetime: row.updatetime,
+                    trackid: row.trackid
+                }
+                var url = myUrls.queryTrackDetail();
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        callback(resp);
+                    }
+                })
+            },
             changePage: function(index) {
                 var offset = index * 20;
                 var start = (index - 1) * 20;
@@ -6633,9 +6656,14 @@ function timeOilConsumption(groupslist) {
                             for (i in v) {
                                 if (v[i].seriesName && v[i].seriesName != time) {
                                     if (v[i].seriesName == dis) {
-                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
+                                        var currentDistance = v[i].value;
+                                        var totalDistance = (Number(currentDistance) + firstDistance / 1000).toFixed(2);
+                                        data += v[i].seriesName + ' : ' + currentDistance + "(T:" + totalDistance + ")" + 'Km<br/>';
+
                                     } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
+                                    } else if (v[i].seriesName == speed) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
                                     } else {
                                         data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                     }
@@ -6830,7 +6858,7 @@ function timeOilConsumption(groupslist) {
                                 oil4 = [],
                                 devReissue = [],
                                 devStates = [];
-                            var firstDistance = 0;
+                            firstDistance = 0;
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
                                 // var independent = item.independent === 0;
@@ -6868,11 +6896,11 @@ function timeOilConsumption(groupslist) {
                                     record.ad1 = ad1 / 100;
                                     record.ad2 = ad2 / 100;
                                     record.ad3 = ad3 / 100;
-
+                                    record.speed = (record.speed / 1000).toFixed(2);
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     totalads.push(record.totalad);
-                                    veo.push((record.speed / 1000).toFixed(2));
+                                    veo.push(record.speed);
                                     record.totaldistance = ((record.totaldistance - firstDistance) / 1000).toFixed(2);
                                     distance.push(record.totaldistance);
                                     recvtime.push(record.updatetimeStr);
@@ -6900,6 +6928,9 @@ function timeOilConsumption(groupslist) {
                             records.sort(function(a, b) {
                                 return b.updatetime - a.updatetime;
                             })
+                            records.forEach(function(item, index) {
+                                item.index = index + 1;
+                            })
                             self.currentPageIndex = 1;
                             self.tableData = records.slice(0, 20);
                             self.charts();
@@ -6910,18 +6941,131 @@ function timeOilConsumption(groupslist) {
                         self.$Message.error(resp.cause);
                     }
                 })
-            },
-            onSortChange: function(column) {
-
             }
         },
         mounted: function() {
+            var me = this;
             this.groupslist = groupslist;
             this.myChart = null;
             this.records = [];
             this.disMin = 0;
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts();
+            this.chartsIns.getZr().on('click', function(params) {
+                var pointInPixel = [params.offsetX, params.offsetY];
+                if (me.chartsIns.containPixel('grid', pointInPixel)) {
+                    var tracks = me.records;
+                    if (tracks.length) {
+                        var xIndex = me.chartsIns.convertFromPixel({
+                            seriesIndex: 0
+                        }, [params.offsetX, params.offsetY])[0];
+                        var currentIndex = Math.ceil((tracks.length - xIndex) / 20);
+                        var rowIndex = (tracks.length - xIndex) % 20;
+                        if (rowIndex == 0) {
+                            rowIndex = 19;
+                        } else {
+                            rowIndex = rowIndex - 1;
+                        }
+                        me.changePage(currentIndex);
+                        me.currentIndex = currentIndex;
+
+                        setTimeout(function() {
+                            console.log(rowIndex);
+                            me.$refs.table.$refs.tbody.clickCurrentRow(rowIndex);
+                            var rowHeight = $('tr.ivu-table-row')[0].getBoundingClientRect().height
+                            $('div.ivu-table-body').animate({
+                                scrollTop: (rowIndex * rowHeight) + 'px'
+                            }, 300);
+                        }, 500)
+                    }
+                }
+            });
+
+            var usoil1 = vRoot.$t('reportForm.oil1');
+            var usoil2 = vRoot.$t('reportForm.oil2');
+            var usoil3 = vRoot.$t('reportForm.oil3');
+            var usoil4 = vRoot.$t('reportForm.oil4');
+
+            this.chartsIns.on('legendselectchanged', function(param) {
+
+                var columns = [
+                    { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
+                    { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 100 },
+                    { title: vRoot.$t('reportForm.date'), key: 'updatetimeStr', sortable: true, width: 160 },
+                    { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 100 },
+                    { title: vRoot.$t('reportForm.totalOil'), key: 'totalad', width: 100 },
+                ];
+                var selected = param.selected;
+
+                if (selected[usoil1]) {
+                    columns.push({ title: vRoot.$t('reportForm.oil1'), key: 'ad0', width: 90 })
+                }
+                if (selected[usoil2]) {
+                    columns.push({ title: vRoot.$t('reportForm.oil2'), key: 'ad1', width: 90 })
+                }
+                if (selected[usoil3]) {
+                    columns.push({ title: vRoot.$t('reportForm.oil3'), key: 'ad2', width: 90 })
+                }
+                if (selected[usoil4]) {
+                    columns.push({ title: vRoot.$t('reportForm.oil4'), key: 'ad3', width: 90 })
+                }
+
+
+                me.columns = columns.concat([
+                    { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
+                    { title: vRoot.$t('reportForm.reissue'), key: 'reissue', width: 80 },
+                    { title: vRoot.$t('reportForm.status'), key: 'strstatus' },
+                    {
+                        title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
+                        width: 210,
+                        render: function(h, params) {
+                            var row = params.row;
+                            var callat = row.callat.toFixed(5);
+                            var callon = row.callon.toFixed(5);
+
+                            if (callat && callon) {
+                                if (row.address == null) {
+
+                                    return h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                                    if (resp && resp.address) {
+                                                        vueInstanse.records[params.index].address = resp.address;
+                                                        LocalCacheMgr.setAddress(callon, callat, resp.address);
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    }, callon + "," + callat)
+
+                                } else {
+                                    return h('Tooltip', {
+                                        props: {
+                                            content: row.address,
+                                            placement: "top-start",
+                                            maxWidth: 200
+                                        },
+                                    }, [
+                                        h('Button', {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            }
+                                        }, callon + "," + callat)
+                                    ]);
+                                }
+                            } else {
+                                return h('span', {}, '');
+                            }
+                        },
+                    },
+                ]);
+            });
         }
     });
 }

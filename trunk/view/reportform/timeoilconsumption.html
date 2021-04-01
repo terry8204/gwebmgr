@@ -45,10 +45,24 @@
             <div id="charts" style="height: 180px;width: 100%;"></div>
         </div>
         <div style="margin:10px;">
-            <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
+            <i-table :columns="columns" :height="lastTableHeight" :data="tableData" ref="table" :loading="loading" highlight-row @on-row-click="onRowClick"></i-table>
         </div>
         <div style="padding-left:10px;">
             <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
         </div>
+    </div>
+    <div class="content-wrap" v-show="isShowCard">
+        <Card style="width:650px">
+            <p slot="title" style="text-align:center;">
+                <Icon type="ios-film-outline"></Icon>
+                Content
+            </p>
+            <a href="#" slot="extra" @click.prevent="isShowCard = false" style="margin-top: -5px;">
+                <Icon type="md-close-circle" size="26" />
+            </a>
+            <div id="content-string" style="max-height:400px;overflow-y:auto;">
+                {{contentString}}
+            </div>
+        </Card>
     </div>
 </div>
