@@ -4,7 +4,7 @@
             <span>{{$t('rule.addOverSpeed')}}</span>
         </p>
         <Row style="margin: 5px 0">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">{{$t('rule.ruleName')}} :</i-col>  
+            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">{{$t('rule.ruleName')}} :</i-col>
             <i-col span="19" :offset="1">
                 <i-input v-model.trim="ruleName" style="width: 437px;"></i-input>
             </i-col>
@@ -44,14 +44,14 @@
             <i-col span="6" :offset="1">
                 <Input-Number :max="100" :min="0" style="width: 100%;" v-model="piccount"></Input-Number>
             </i-col>
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">{{$t('rule.photoInterval')}} :</i-col>  
+            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">{{$t('rule.photoInterval')}} :</i-col>
             <i-col span="6" :offset="1">
                 <Input-Number :max="100" :min="0" v-model="takeinterval" :formatter="value => `${value}分`" :parser="value => value.replace('分', '')" style="width: 100%;"></Input-Number>
             </i-col>
         </Row>
 
         <Row style="margin: 5px 0" v-if="isCapture">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">{{$t('rule.camera')}} :</i-col>  
+            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">{{$t('rule.camera')}} :</i-col>
             <i-col span="16" :offset="1">
                 <Checkbox-Group v-model="caramers">
                     <Checkbox label="0"><span>1号</span></Checkbox>
@@ -78,7 +78,7 @@
             </i-col>
         </Row>
         <Row style="margin: 5px 0">
-            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">{{$t('rule.voicePrompt')}} :</i-col>  
+            <i-col span="3" :offset="1" style="height: 100%;text-align:right;line-height:32px;">{{$t('rule.voicePrompt')}} :</i-col>
             <i-col span="16" :offset="1">
                 <i-input v-model.trim="ttscontent" style="width: 437px;"></i-input>
             </i-col>
@@ -125,7 +125,7 @@
     </div>
 
     <script>
-      vueInstanse =  new Vue({
+        vueInstanse = new Vue({
             el: "#chaosu",
             i18n: utils.getI18n(),
             data: {
@@ -167,7 +167,7 @@
                     title: vRoot.$t('rule.photographCount'),
                     key: 'piccount'
                 }, {
-                    title:  vRoot.$t('rule.camera'),
+                    title: vRoot.$t('rule.camera'),
                     render: function(h, params) {
                         var arr = [];
                         var caramers = params.row.caramers;
