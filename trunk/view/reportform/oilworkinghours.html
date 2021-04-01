@@ -3,12 +3,24 @@
         <Spin size="large" fix></Spin>
     </div>
     <div class="report-item-header">
-
         <Row style="margin:10px;height: 35px;">
-            <div style="float: left;">
-                <span>{{$t("reportForm.selectTime")}}:</span>
-                <date-picker type="datetimerange" :value="dateTimeRangeVal" :editable="false" :clearable="false" @on-change="onTimeRangeChange" style="width:300px" placement="bottom-start"></date-picker>
+            <div style="float: left;padding-left: 10px;">
+                <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectTime")}}:&nbsp;</div>
             </div>
+
+            <div style="float: left;">
+                <date-picker type="date" v-model="startDate" style="width: 120px" :options="options"></date-picker>
+                <Time-Picker type="time" v-model="startTime" style="width: 120px"></Time-Picker>
+            </div>
+            <div style="float: left;">
+                <div style="height: 32px; line-height: 32px;">&nbsp;&nbsp;-&nbsp;&nbsp; </div>
+            </div>
+            <div style="float: left;">
+                <date-picker type="date" v-model="endDate" style="width: 120px" :options="options"></date-picker>
+                <Time-Picker type="time" v-model="endTime" style="width: 120px"></Time-Picker>
+            </div>
+        </Row>
+        <Row style="margin:10px;height: 35px;">
             <div style="float: left;padding-left: 10px;">
                 <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
             </div>

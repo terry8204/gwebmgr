@@ -7532,6 +7532,7 @@ function refuelingReport(groupslist) {
                 });
 
                 if (deviceids.length == 0) {
+                    this.$Message.error(this.$t('reportForm.selectDevTip'));
                     return;
                 }
                 this.tableData = [];
@@ -7883,6 +7884,7 @@ function oilLeakageReport(groupslist) {
                 });
 
                 if (deviceids.length == 0) {
+                    this.$Message.error(this.$t('reportForm.selectDevTip'));
                     return;
                 }
                 this.tableData = [];
@@ -7985,6 +7987,15 @@ function oilWorkingHours(groupslist) {
         data: {
             loading: false,
             isSpin: false,
+            startDate: DateFormat.longToDateStr(Date.now(), timeDifference),
+            startTime: '00:00:00',
+            endDate: DateFormat.longToDateStr(Date.now(), timeDifference),
+            endTime: '23:59:59',
+            options: {
+                disabledDate: function(date) {
+                    return date && date.valueOf() > Date.now();
+                }
+            },
             dateTimeRangeVal: [DateFormat.longToDateStr(Date.now(), timeDifference) + " 00:00:00", DateFormat.longToDateStr(Date.now(), timeDifference) + " 23:59:59"],
             groupslist: [],
             columns: [{
@@ -8207,7 +8218,7 @@ function oilWorkingHours(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 320;
+                this.lastTableHeight = wHeight - 365;
             },
             onClickQuery: function() {
                 var self = this;
@@ -8222,14 +8233,25 @@ function oilWorkingHours(groupslist) {
                 });
 
                 if (deviceids.length == 0) {
+                    this.$Message.error(this.$t('reportForm.selectDevTip'));
                     return;
                 }
+
+
+                var begintime = DateFormat.longToDateStr(this.startDate.getTime(), timeDifference) + ' ' + this.startTime;
+                var endtime = DateFormat.longToDateStr(this.endDate.getTime(), timeDifference) + ' ' + this.endTime;
+
+                if (new Date(begintime).getTime() > new Date(endtime).getTime()) {
+                    this.$Message.error(this.$t('videoback.downloadTips3'));
+                    return;
+                }
+
                 this.tableData = [];
                 this.chartDataList = [];
                 var data = {
                     // username: vstore.state.userName,
-                    begintime: this.dateTimeRangeVal[0],
-                    endtime: this.dateTimeRangeVal[1],
+                    begintime: begintime,
+                    endtime: endtime,
                     timezone: timeDifference,
                     devices: deviceids,
                 };
