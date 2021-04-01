@@ -8025,7 +8025,7 @@ function oilWorkingHours(groupslist) {
                     },
                 },
                 {
-                    title: vRoot.$t('reportForm.fuelConsumptionHour') + '(Km)',
+                    title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
                     render: function(h, pramas) {
                         var row = pramas.row;
                         var totalacc = row.totalacc;
@@ -8046,7 +8046,7 @@ function oilWorkingHours(groupslist) {
                         var totaloil = row.totaloil / 100;
                         if (totaldistance && totaloil) {
                             totaldistance = totaldistance / 1000;
-                            return h('sapn', {}, ((totaldistance / totaloil) * 100).toFixed(2));
+                            return h('sapn', {}, ((totaloil / totaldistance) * 100).toFixed(2));
                         } else {
                             return h('sapn', {}, '0');
                         }
