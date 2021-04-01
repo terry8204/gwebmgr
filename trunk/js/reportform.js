@@ -8012,11 +8012,11 @@ function oilWorkingHours(groupslist) {
                     key: 'deviceid'
                 },
                 {
-                    title: vRoot.$t("reportForm.workingHours"),
-                    key: 'totalacc',
+                    title: vRoot.$t('reportForm.mileage') + '(Km)',
+                    key: 'totaldistance',
                     render: function(h, pramas) {
                         var row = pramas.row;
-                        return h('sapn', {}, utils.timeStamp(row.totalacc));
+                        return h('sapn', {}, (row.totaldistance / 1000).toFixed(2));
                     },
                 },
                 {
@@ -8028,25 +8028,11 @@ function oilWorkingHours(groupslist) {
                     },
                 },
                 {
-                    title: vRoot.$t('reportForm.mileage') + '(Km)',
-                    key: 'totaldistance',
+                    title: vRoot.$t("reportForm.workingHours"),
+                    key: 'totalacc',
                     render: function(h, pramas) {
                         var row = pramas.row;
-                        return h('sapn', {}, (row.totaldistance / 1000).toFixed(2));
-                    },
-                },
-                {
-                    title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
-                    render: function(h, pramas) {
-                        var row = pramas.row;
-                        var totalacc = row.totalacc;
-                        var totaloil = row.totaloil;
-                        if (totalacc && totaloil) {
-                            totalacc = totalacc / 1000 / 3600;
-                            return h('sapn', {}, (totaloil / 100 / totalacc).toFixed(2));
-                        } else {
-                            return h('sapn', {}, '0');
-                        }
+                        return h('sapn', {}, utils.timeStamp(row.totalacc));
                     },
                 },
                 {
@@ -8063,6 +8049,21 @@ function oilWorkingHours(groupslist) {
                         }
                     },
                 },
+                {
+                    title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
+                    render: function(h, pramas) {
+                        var row = pramas.row;
+                        var totalacc = row.totalacc;
+                        var totaloil = row.totaloil;
+                        if (totalacc && totaloil) {
+                            totalacc = totalacc / 1000 / 3600;
+                            return h('sapn', {}, (totaloil / 100 / totalacc).toFixed(2));
+                        } else {
+                            return h('sapn', {}, '0');
+                        }
+                    },
+                },
+
             ],
             tableData: [],
             oil: [],
