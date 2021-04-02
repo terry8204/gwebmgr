@@ -410,7 +410,7 @@
             top: 36px;
             height: 4px;
             border-radius: 4px 0 0 4px;
-            background-color: yellow;
+            background-color: red;
             left: 0px;
         }
         
@@ -422,7 +422,7 @@
             height: 4px;
             /* height: 12px; */
             border-radius: 0 4px 4px 0;
-            background-color: red;
+            background-color: #960BA3;
         }
     </style>
 </head>
@@ -1014,7 +1014,7 @@
                     modal: false,
                     modal1: false,
                     settingModal: false,
-                    sliderValue: [60, 80],
+                    sliderValue: [30, 80],
                     cause: "",
                     xList: '',
                     wList: '',
@@ -1175,8 +1175,10 @@
                         this.drawLines(tracks);
                     },
                     drawLines: function(tracks) {
+                        var lastLineColor = -1;
+                        var tempPointList = [];
                         for (var i = 0; i < tracks.length; i++) {
-                            var tempPointList = [];
+							var isLastLines = false;
                             var trackPre = tracks[i];
                             var trackPost = tracks[i + 1];
                             if (this.isShowAllLine == 'no' && this.currentMarkerIndex == i) {
@@ -1184,9 +1186,14 @@
                             }
                             if (!trackPost) {
                                 trackPost = trackPre;
+                                isLastLines = true;
                             }
 
-                            var lineColor = this.getLineColorBySpeed(trackPre.speed);
+                            var currentlineColor = this.getLineColorBySpeed(trackPre.speed);
+                            if(lastLineColor == -1)
+                            {
+                            	lastLineColor = currentlineColor;
+                            }
                             if (this.mapType == 'bMap') {
 
                                 tempPointList.push(trackPre.bpoint);
@@ -1197,21 +1204,24 @@
                                 tempPointList.push(trackPost.gpoint);
 
                             }
+                            if ( (currentlineColor != lastLineColor) || isLastLines) {
 
-                            new maptalks.LineString(
-                                tempPointList, {
-                                    symbol: {
-                                        'lineColor': {
-                                            'type': 'linear',
-                                            'colorStops': [
-                                                [0.00, lineColor],
-                                                [1.00, lineColor]
-                                            ]
-                                        },
-                                        'lineWidth': 4
-                                    }
-                                }).addTo(this.lineLayer);
-
+                                new maptalks.LineString(
+                                    tempPointList, {
+                                        symbol: {
+                                            'lineColor': {
+                                                'type': 'linear',
+                                                'colorStops': [
+                                                    [0.00, currentlineColor],
+                                                    [1.00, currentlineColor]
+                                                ]
+                                            },
+                                            'lineWidth': 4
+                                        }
+                                    }).addTo(this.lineLayer);
+                                lastLineColor = currentlineColor;
+                                tempPointList = [];
+                            }
 
                         }
                     },
@@ -1956,9 +1966,10 @@
                         var to = this.sliderValue[1];
                         var lineColor = "black";
                         if (speed < from * 1000) {
-                            lineColor = "yellow";
-                        } else if (speed > to * 1000) {
+
                             lineColor = "red";
+                        } else if (speed > to * 1000) {
+                            lineColor = "#960BA3";
                         } else {
                             lineColor = "green";
                         }
