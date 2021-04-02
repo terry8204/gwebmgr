@@ -410,7 +410,7 @@
             top: 36px;
             height: 4px;
             border-radius: 4px 0 0 4px;
-            background-color: yellow;
+            background-color: #960BA3;
             left: 0px;
         }
         
@@ -1014,7 +1014,7 @@
                     modal: false,
                     modal1: false,
                     settingModal: false,
-                    sliderValue: [60, 80],
+                    sliderValue: [30, 80],
                     cause: "",
                     xList: '',
                     wList: '',
@@ -1200,6 +1200,7 @@
 
                             new maptalks.LineString(
                                 tempPointList, {
+                                    arrowStyle: [0, 0.5],
                                     symbol: {
                                         'lineColor': {
                                             'type': 'linear',
@@ -1956,7 +1957,7 @@
                         var to = this.sliderValue[1];
                         var lineColor = "black";
                         if (speed < from * 1000) {
-                            lineColor = "yellow";
+                            lineColor = "#960BA3";
                         } else if (speed > to * 1000) {
                             lineColor = "red";
                         } else {
