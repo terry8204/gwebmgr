@@ -888,6 +888,12 @@ var myUrls = {
     reportOilManHour: function() {
         return this.apihosts + 'webapi?action=reportoilmanhour&token=' + token;
     },
+    querySpeedLimitColors: function() {
+        return this.apihosts + 'webapi?action=queryspeedlimitcolors&token=' + token;
+    },
+    setSpeedLimitColors: function() {
+        return this.apihosts + 'webapi?action=setspeedlimitcolors&token=' + token;
+    },
 }
 
 

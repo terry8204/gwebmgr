@@ -8,6 +8,7 @@
     <link rel="shortcut icon" href="./favicon.ico" />
     <title>loading...</title>
     <link rel="stylesheet" href="dist/styles/iview.css">
+    <link rel="stylesheet" href="css/ion.rangeSlider.min.css">
     <link rel="stylesheet" href="./maptalks/maptalks.css">
     <style>
         html,
@@ -385,6 +386,44 @@
         div.maptalks-attribution {
             display: none;
         }
+        
+        .ivu-modal-wrap .irs--flat .irs-line {
+            background-color: transparent !important;
+        }
+        
+        .ivu-modal-wrap .irs--round .irs-line {
+            background-color: transparent !important;
+        }
+        
+        .ivu-modal-wrap .irs--flat .irs-bar {
+            background-color: green !important;
+        }
+        
+        .ivu-modal-wrap .irs--round .irs-bar {
+            background-color: green !important;
+        }
+        
+        .ivu-modal-wrap .slider-left {
+            position: absolute;
+            /* top: 25px; */
+            /* height: 12px; */
+            top: 36px;
+            height: 4px;
+            border-radius: 4px 0 0 4px;
+            background-color: yellow;
+            left: 0px;
+        }
+        
+        .ivu-modal-wrap .slider-right {
+            position: absolute;
+            /* top: 25px; */
+            top: 36px;
+            right: 0px;
+            height: 4px;
+            /* height: 12px; */
+            border-radius: 0 4px 4px 0;
+            background-color: red;
+        }
     </style>
 </head>
 
@@ -556,6 +595,7 @@
                         <Page :total="total" show-total @on-change="onPageChange" :page-size="pageSize" :current="currentIndex" />
                     </div>
                 </tab-pane>
+                <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="settingModal=true">{{$t("main.setting")}}</i-button>
                 <i-button v-show="tabActive=='table'" type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="getAllTracksAddress">{{$t("main.queryAddress")}}</i-button>
             </Tabs>
         </div>
@@ -580,6 +620,26 @@
                 <p>
                     {{cause}}
                 </p>
+            </div>
+        </Modal>
+        <Modal v-model="settingModal" width="600">
+            <p slot="header" style="color:#2D8CF0;text-align:center">
+                <Icon type="ios-hammer-outline"></Icon>
+                <span>{{$t("main.setting")}}</span>
+            </p>
+            <div style="text-align: center;">
+                <div style="position: relative;height: 60px;">
+                    <div style="position: absolute;left: 0px;right: 0px;bottom: 0px;top: 0px;">
+                        <div class="slider-left" :style="{width:sliderLeft}"></div>
+                        <div class="slider-right" :style="{left:sliderLeft}"></div>
+                    </div>
+                    <div style="position: absolute;left: 0px;right: 0px;bottom: 0px;top: 0px;">
+                        <div id="slider_wrapper"></div>
+                    </div>
+                </div>
+            </div>
+            <div slot="footer">
+                <i-button type="primary" @click="setSpeedLimitColors" style="width: 100%;">{{$t("main.comfirm")}}</i-button>
             </div>
         </Modal>
         <div class="demo-spin-container" v-if="queryLoading">
@@ -619,6 +679,7 @@
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="./js/gps51-jquery.js"></script>
+    <script src="./js/ion.rangeSlider.min.js"></script>
     <script src="./js/config.js"></script>
     <script src="./js/vue-i18n.min.js"></script>
     <script src="./js/hashmap.js"></script>
@@ -691,6 +752,7 @@
             defaultLang: 'zh',
             en: {
                 main: {
+                    comfirm: "Comfirm",
                     all: 'all',
                     showLine: 'Show Trace',
                     yes: 'Yes',
@@ -704,6 +766,7 @@
                     chart: 'Chart',
                     trackList: 'Track List',
                     queryAddress: 'Qeury address',
+                    setting: 'Setting',
                     showBubbles: 'Bubbles',
                     openRanging: 'Distance ',
                     fullScreen: 'Full screen ',
@@ -749,7 +812,8 @@
                     slow: 'slow',
                     middle: 'middle',
                     fast: 'fast',
-
+                    success: 'Set successfully',
+                    error: 'Setup failed',
                 },
                 reportForm: {
                     d: "day",
@@ -761,6 +825,7 @@
             },
             zh: {
                 main: {
+                    comfirm: "确定",
                     all: '全部',
                     showLine: '显示路线',
                     yes: '是',
@@ -774,6 +839,7 @@
                     chart: '曲线图表',
                     trackList: '轨迹列表',
                     queryAddress: '一键查询地址',
+                    setting: '设置',
                     showBubbles: '显示气泡',
                     openRanging: '开启测距',
                     fullScreen: '地图全屏',
@@ -819,6 +885,8 @@
                     slow: '慢',
                     middle: '中',
                     fast: '快',
+                    success: '设置成功',
+                    error: '设置失败',
                 },
                 reportForm: {
                     d: "天",
@@ -945,6 +1013,8 @@
                 data: {
                     modal: false,
                     modal1: false,
+                    settingModal: false,
+                    sliderValue: [60, 80],
                     cause: "",
                     xList: '',
                     wList: '',
@@ -1018,6 +1088,23 @@
                     totalMileage: 0,
                 },
                 methods: {
+                    setSpeedLimitColors: function() {
+                        var me = this;
+                        var url = myUrls.setSpeedLimitColors();
+                        var data = {
+                            deviceid: this.deviceid,
+                            color1speed: this.sliderValue[0],
+                            color2speed: this.sliderValue[1],
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            if (resp.status == 0) {
+                                me.settingModal = false;
+                                me.$Message.success(me.$t('main.success'));
+                            } else {
+                                me.$Message.error(me.$t('main.error'));
+                            }
+                        })
+                    },
                     onSelectMap: function(item) {
                         this.mapType = item.mapType;
                         this.setMapType(item);
@@ -1052,8 +1139,9 @@
                                     me.markerMoveing();
                                     if (me.isShowAllLine == 'no') {
                                         var tracks = me.getTypeRecords();
-                                        var pointList = me.getPointList(tracks);
-                                        me.lineString.setCoordinates(pointList);
+                                        // var pointList = me.getPointList(tracks);
+                                        // me.lineString.setCoordinates(pointList);
+                                        me.drawLines(tracks);
                                     }
                                 }, me.playSpeedMillisecond);
                             } else {
@@ -1078,8 +1166,54 @@
                     },
                     redrawLines: function() {
                         var tracks = this.getTypeRecords();
-                        var pointList = this.getPointList(tracks);
-                        this.lineString.setCoordinates(pointList);
+                        // var pointList = this.getPointList(tracks);
+                        // this.lineString.setCoordinates(pointList);
+                        this.map.removeLayer(this.lineLayer);
+                        this.lineLayer = new maptalks.VectorLayer('line').addTo(this.map);
+                        this.lineLayer.setZIndex(998);
+
+                        this.drawLines(tracks);
+                    },
+                    drawLines: function(tracks) {
+                        for (var i = 0; i < tracks.length; i++) {
+                            var tempPointList = [];
+                            var trackPre = tracks[i];
+                            var trackPost = tracks[i + 1];
+                            if (this.isShowAllLine == 'no' && this.currentMarkerIndex == i) {
+                                break;
+                            }
+                            if (!trackPost) {
+                                trackPost = trackPre;
+                            }
+
+                            var lineColor = this.getLineColorBySpeed(trackPre.speed);
+                            if (this.mapType == 'bMap') {
+
+                                tempPointList.push(trackPre.bpoint);
+                                tempPointList.push(trackPost.bpoint);
+                            } else {
+                                var track = tracks[i];
+                                tempPointList.push(trackPre.gpoint);
+                                tempPointList.push(trackPost.gpoint);
+
+                            }
+
+                            new maptalks.LineString(
+                                tempPointList, {
+                                    symbol: {
+                                        'lineColor': {
+                                            'type': 'linear',
+                                            'colorStops': [
+                                                [0.00, lineColor],
+                                                [1.00, lineColor]
+                                            ]
+                                        },
+                                        'lineWidth': 4
+                                    }
+                                }).addTo(this.lineLayer);
+
+
+                        }
                     },
                     nextSpeed: function() {
                         if (this.currentTracksLenth == 0) return;
@@ -1745,6 +1879,12 @@
                             this.map.removeLayer(this.markerLayer);
                         }
 
+                        // 清除之前的图层
+                        if (this.lineLayer !== null) {
+                            this.map.removeLayer(this.lineLayer);
+                        }
+
+
                         this.map.removeLayer('parkingMarkers');
 
                         // 得到当前类型轨迹
@@ -1764,6 +1904,10 @@
                         this.markerLayer = new maptalks.VectorLayer('marker', [this.startMarker, this.endMarker, this.carMarker]);
                         this.markerLayer.setZIndex(999)
                         this.markerLayer.addTo(this.map);
+
+                        // 创建line图层并添加到地图  
+                        this.lineLayer = new maptalks.VectorLayer('line').addTo(this.map);
+                        this.lineLayer.setZIndex(998);
 
                         //得到停留的Markers 并添加到地图   
                         var parkingMarker = this.getParkingMarkers(tracks);
@@ -1792,10 +1936,13 @@
                             // this.carMarker.closeInfoWindow()
                         }
 
+                        this.drawLines(tracks);
 
                         var pointList = this.getPointList(tracks);
 
-                        this.lineString.setCoordinates(pointList);
+                        // this.lineString.setCoordinates(pointList);
+
+
 
                         this.totalMileage = Number(((tracks[tracks.length - 1].totaldistance - tracks[0].totaldistance)).toFixed(3));
 
@@ -1803,6 +1950,19 @@
 
                         this.fitExtent(pointList);
 
+                    },
+                    getLineColorBySpeed: function(speed) {
+                        var from = this.sliderValue[0];
+                        var to = this.sliderValue[1];
+                        var lineColor = "black";
+                        if (speed < from * 1000) {
+                            lineColor = "yellow";
+                        } else if (speed > to * 1000) {
+                            lineColor = "red";
+                        } else {
+                            lineColor = "green";
+                        }
+                        return lineColor;
                     },
                     fitExtent: function(pointList) {
                         var polygon = new maptalks.Polygon(pointList);
@@ -1836,9 +1996,15 @@
                             this.map.removeLayer(this.markerLayer);
                             this.markerLayer = null;
                         }
-                        if (this.lineString !== null) {
-                            this.lineString.setCoordinates([]);
+                        // if (this.lineString !== null) {
+                        //     this.lineString.setCoordinates([]);
+                        // }
+                        if (this.lineLayer !== null) {
+                            // this.markerLayer.clear();
+                            this.map.removeLayer(this.lineLayer);
+                            this.lineLayer = null;
                         }
+
                         this.currentMarkerIndex = 0;
                         this.currentTracksLenth = 0;
                     },
@@ -1882,21 +2048,21 @@
                         }
 
 
-                        this.lineLayer = new maptalks.VectorLayer('line').addTo(this.map);
-                        this.lineLayer.setZIndex(998);
-                        this.lineString = new maptalks.LineString(
-                            [], {
-                                symbol: {
-                                    'lineColor': {
-                                        'type': 'linear',
-                                        'colorStops': [
-                                            [0.00, 'red'],
-                                            [1.00, 'red']
-                                        ]
-                                    },
-                                    'lineWidth': 4
-                                }
-                            }).addTo(this.lineLayer);
+                        // this.lineLayer = new maptalks.VectorLayer('line').addTo(this.map);
+                        // this.lineLayer.setZIndex(998);
+                        // this.lineString = new maptalks.LineString(
+                        //     [], {
+                        //         symbol: {
+                        //             'lineColor': {
+                        //                 'type': 'linear',
+                        //                 'colorStops': [
+                        //                     [0.00, 'red'],
+                        //                     [1.00, 'red']
+                        //                 ]
+                        //             },
+                        //             'lineWidth': 4
+                        //         }
+                        //     }).addTo(this.lineLayer);
 
                         var customPosition = new maptalks.control.Zoom({
                             'position': {
@@ -2063,8 +2229,8 @@
 
                         var isQueryAddress = data.some(function(item) {
                             return item.address == null || item.address == "点击一键获取" || item.address == 'Click query address';
-                        })
-                        console.log('isQueryAddress', isQueryAddress);
+                        });
+
                         if (isQueryAddress) {
                             this.getAllNoLoadingTracksAddress(true, function() {
                                 me.$refs.table.exportCsv({
@@ -2140,11 +2306,36 @@
                         this.initMap();
                         this.initCharts();
                         this.queryReportMileageDetail(new Date(this.year, this.month - 1, 1));
+
+                        utils.sendAjax(myUrls.querySpeedLimitColors(), {
+                            deviceid: this.deviceid
+                        }, function(resp) {
+                            var sliderValue = [resp.color1speed, resp.color2speed];
+                            me.sliderValue = sliderValue;
+                            $("#slider_wrapper").ionRangeSlider({
+                                type: "double",
+                                skin: "round",
+                                grid: true,
+                                min: 0,
+                                max: 150,
+                                from: sliderValue[0],
+                                to: sliderValue[1],
+                                prefix: "",
+                                postfix: "Km/h",
+                                decorate_both: true, // false,
+                                onChange: function(data) {
+                                    var sliderValue = [data.from, data.to];
+                                    me.sliderValue = sliderValue;
+
+                                }
+                            });
+                        })
                         document.onkeydown = function(e) {
                             if (e.keyCode == 27) {
                                 me.isFullScreen = false;
                             }
                         }
+
                     },
                     getAllNoLoadingTracksAddress: function(isShowLoading, callback) {
                         var me = this;
@@ -2450,6 +2641,10 @@
                     }
                 },
                 computed: {
+                    sliderLeft: function() {
+                        var value = this.sliderValue[0];
+                        return value / 150 * 100 + '%';
+                    },
                     tabsHeight: function() {
                         return this.elementHeight - 530;
                     },
@@ -2569,7 +2764,6 @@
                 },
                 mounted: function() {
                     this.init();
-
                 }
             });
         })();
