@@ -156,7 +156,7 @@
                         if (respData.status == 0) {
                             isNeedRefresh = true;
                             if (respData.total === respData.success) {
-                                me.$Message.success(vRoot.$t('insure.importSucceeded') + tableData.length);
+                                me.$Message.success(vRoot.$t('insure.importSucceeded') + ' ' + me.tableData.length);
                                 me.tableData.forEach(function(item) {
                                     if (String(item.deviceid).length > 0 && String(item.name).length > 0 && item.status == -1) {
                                         item.status = 1;
