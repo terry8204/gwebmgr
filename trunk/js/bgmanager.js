@@ -202,6 +202,7 @@ var bgManager = {
                         { title: me.$t("bgMgr.queryDev"), name: 'queryDevice', icon: 'md-search', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.addDev"), name: 'addDevice', icon: 'md-add', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.batchAdd"), name: 'batchAddDevice', icon: 'md-add', maxShowUserType: 99 },
+                        { title: me.$t("bgMgr.importDeviceName"), name: 'ImportDeviceName', icon: 'md-add', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.batchMgr"), name: 'batchMgrDevice', icon: 'ios-folder-outline', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.travelingDataRecorder"), name: 'travelingDataRecorder', icon: 'ios-car-outline', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.stockDev"), name: 'stockDev', icon: 'md-cube', maxShowUserType: 99 },
@@ -222,7 +223,6 @@ var bgManager = {
                         { title: me.$t("bgMgr.importVin"), name: 'ImportVehicleNumber', icon: 'md-add', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.importOfflineInsurePolicyInfo"), name: 'ImportOfflineInsure', icon: 'md-add', maxShowUserType: 99 },
                         { title: me.$t("bgMgr.importSimInfo"), name: 'ImportSim', icon: 'md-add', maxShowUserType: 99 },
-                        { title: me.$t("bgMgr.importDeviceName"), name: 'ImportDeviceName', icon: 'md-add', maxShowUserType: 99 },
                     ]
                 },
                 {
