@@ -894,6 +894,9 @@ var myUrls = {
     setSpeedLimitColors: function() {
         return this.apihosts + 'webapi?action=setspeedlimitcolors&token=' + token;
     },
+    importDeviceInfos: function() {
+        return this.apihosts + 'webapi?action=importdeviceinfos&token=' + token;
+    },
 }
 
 

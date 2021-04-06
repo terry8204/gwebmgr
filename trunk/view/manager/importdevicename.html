@@ -8,15 +8,35 @@
         </div>
         <div style="padding: 5px; text-align: center;border: 1px solid #DCDEE2;">
             <i-button @click="importTownerInfo">{{$t('insure.importFile')}}</i-button>
-            <i-button @click="handleSubmit" :loading="loading" style="margin: 0 10px;">{{$t('header.submit')}}</i-button>
+            <i-button @click="modal=true" :loading="loading" style="margin: 0 10px;">{{$t('header.submit')}}</i-button>
             <i-button @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
         </div>
     </div>
+    <Modal v-model="modal" width="600">
+        <p slot="header" style="color:#2D8CF0;text-align:center">
+            <Icon type="ios-hammer-outline"></Icon>
+            <span>{{$t("header.changePwd")}}</span>
+        </p>
+        <Row style="margin: 10px 0">
+            <i-col span="5" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
+            <i-col span="16">
+                <i-select v-model="devicetype" style="width: 100%">
+                    <i-option v-for="item in deviceTypeList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+                </i-select>
+            </i-col>
+        </Row>
+        <div slot="footer">
+            <i-button style="width: 100%" type="primary" @click="handleSubmit">{{$t("header.submit")}}</i-button>
+        </div>
+    </Modal>
     <script>
         vueInstanse = new Vue({
             el: "#importdevicename",
             i18n: utils.getI18n(),
             data: {
+                modal: false,
+                deviceTypeList: [],
+                devicetype: '',
                 taleHeight: 300,
                 loading: false,
                 columns: [{
@@ -27,7 +47,13 @@
                     key: "deviceid",
                 }, {
                     title: vRoot.$t('alarm.devName'),
-                    key: "name"
+                    key: "devicename"
+                }, {
+                    title: vRoot.$t('monitor.plateno'),
+                    key: "plateno"
+                }, {
+                    title: vRoot.$t('header.phone'),
+                    key: "simnum"
                 }, {
                     'title': vRoot.$t('insure.addStatus'),
                     width: 200,
@@ -60,35 +86,51 @@
                     width: 85,
                     render: function(h, params) {
                         return h('Button', {
-                                props: {
-                                    type: 'error',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: function() {
-                                        vueInstanse.tableData.splice(params.index, 1);
-                                    }
+                            props: {
+                                type: 'error',
+                                size: 'small'
+                            },
+                            style: {
+                                marginRight: '5px'
+                            },
+                            on: {
+                                click: function() {
+                                    vueInstanse.tableData.splice(params.index, 1);
                                 }
-                            },vRoot.$t('insure.remove'))
+                            }
+                        }, vRoot.$t('insure.remove'))
                     }
                 }],
 
                 tableData: [],
-                excelX: ['A', 'B', 'C']
+                excelX: ['A', 'B', 'C', 'D', 'E']
 
             },
             methods: {
+                getDeviceType: function() {
+                    var me = this;
+                    var deviceTypes = vstore.state.deviceTypes;
+                    for (var key in deviceTypes) {
+                        var item = deviceTypes[key];
+                        var label = item.typename;
+                        if (item.remark) {
+                            label += "(" + (isZh ? item.remark : item.remarken) + ")";
+                        }
+                        me.deviceTypeList.push({
+                            value: item.devicetypeid,
+                            label: label
+                        });
+                    }
+                    me.devicetype = 1;
+                },
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;
                     this.taleHeight = wHeight - 170;
                 },
                 downloadTemplate: function() {
                     var a = document.createElement('a');
-                    a.href = myUrls.apihost + 'renametemplate.xlsx';
-                    a.download = 'renametemplate.xlsx';
+                    a.href = myUrls.apihost + 'deviceinfos.xlsx';
+                    a.download = 'deviceinfos.xlsx';
                     a.click();
                 },
                 handleSubmit: function() {
@@ -99,16 +141,15 @@
                     this.loading = true;
                     var tableData = deepClone(this.tableData),
                         me = this;
-                    var url = myUrls.importRename();
+                    var url = myUrls.importDeviceInfos();
+                    // var url = myUrls.importRename();
 
-                    var renamerecords = [];
                     tableData.forEach(function(item) {
-                        if (String(item.deviceid).length > 0 && String(item.name).length > 0) {
-                            renamerecords.push(item)
-                        }
+                        item.devicetype = me.devicetype
                     });
+
                     var data = {
-                        renamerecords: renamerecords,
+                        records: this.tableData,
                     }
                     utils.sendAjax(url, data, function(respData) {
                         me.loading = false;
@@ -122,7 +163,7 @@
                                     }
                                 });
                             } else {
-                                me.$Message.error(vRoot.$t('insure.total') + ":" + respData.total + ","+vRoot.$t('insure.fail') +":" + respData.fail);
+                                me.$Message.error(vRoot.$t('insure.total') + ":" + respData.total + "," + vRoot.$t('insure.fail') + ":" + respData.fail);
                                 var errorrecords = respData.errorrecords;
                                 var tableData = me.tableData;
                                 errorrecords.forEach(function(failItem) {
@@ -139,6 +180,8 @@
                                     }
                                 });
                                 me.tableData = tableData;
+                                me.modal = false;
+                                isNeedRefresh = true;
                             }
                         } else {
                             me.$Message.error(vRoot.$t('insure.importFailed'));
@@ -170,14 +213,18 @@
                         var indexY = 2;
                         var tableData = [];
                         while (true) {
-                            var deviceidKey = this.excelX[1] + indexY; //设备ID
-                            var devicenameKey = this.excelX[2] + indexY; //防盗号
+                            var deviceidKey = this.excelX[1] + indexY; //设备名称
+                            var devicenameKey = this.excelX[2] + indexY; //设备ID
+                            var licensePlateKey = this.excelX[3] + indexY; //设备ID
+                            var simKey = this.excelX[4] + indexY; //设备ID
                             if (excelData[deviceidKey] == undefined && excelData[devicenameKey] == undefined) {
                                 break;
                             }
                             tableData.push({
                                 deviceid: excelData[deviceidKey] ? String(excelData[deviceidKey].v).trim() : '',
-                                name: excelData[devicenameKey] ? String(excelData[devicenameKey].v).trim() : '',
+                                devicename: excelData[devicenameKey] ? String(excelData[devicenameKey].v).trim() : '',
+                                plateno: excelData[licensePlateKey] ? String(excelData[licensePlateKey].v).trim() : '',
+                                simnum: excelData[simKey] ? String(excelData[simKey].v).trim() : '',
                                 status: -1
                             })
 
@@ -206,6 +253,7 @@
                         me.parserExcelData(workbook.Sheets['批量改名'])
                     });
                 };
+                this.getDeviceType();
                 this.calcTableHeight();
                 window.onresize = function() {
                     me.calcTableHeight();
