@@ -5821,7 +5821,8 @@ function onlineStatisticsDay() {
                         data: dates
                     },
                     yAxis: {
-                        type: 'value'
+                        type: 'value',
+                        min: "dataMin"
                     },
                     series: [{
                         name: '上线设备',
@@ -5829,6 +5830,7 @@ function onlineStatisticsDay() {
                         stack: '总量',
                         data: seriesData,
                         smooth: true,
+
                     }]
                 };
             },

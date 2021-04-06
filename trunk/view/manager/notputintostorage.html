@@ -355,24 +355,12 @@
                     this.taleHeight = wHeight - 160;
                 },
                 queryNoFoundDeviceids: function() {
-                    if (this.queryParameter == "") {
-                        this.qeuryNoFoundDeviceids();
-                    } else {
-                        var me = this;
-                        var tableData = [];
-                        this.records.forEach(function(item) {
-                            if (item.deviceid.indexOf(me.queryParameter) != -1) {
-                                tableData.push(item);
-                            }
-                        })
-                        this.tableData = tableData;
-                    };
-                },
-                qeuryNoFoundDeviceids: function() {
                     var me = this;
                     var url = myUrls.listNoFoundDeviceids();
                     this.loading = true;
-                    utils.sendAjax(url, {}, function(resp) {
+                    utils.sendAjax(url, {
+                        keyword: this.queryParameter
+                    }, function(resp) {
                         if (resp.status == 0) {
                             resp.devices.forEach(function(device) {
                                 var positionlast = device;
@@ -387,8 +375,7 @@
                             resp.devices.sort(function(a, b) {
                                 return a.updatetime - b.updatetime
                             });
-                            me.records = resp.devices;
-                            me.tableData = deepClone(resp.devices);
+                            me.tableData = resp.devices;
                         }
                         me.loading = false;
                     })
@@ -415,7 +402,7 @@
                 this.userlists = globalUserList;
                 this.initMap();
                 this.calcTableHeight();
-                this.qeuryNoFoundDeviceids();
+                this.queryNoFoundDeviceids();
                 this.getDeviceType();
                 window.onresize = function() {
                     me.calcTableHeight();
