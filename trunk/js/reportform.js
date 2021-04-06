@@ -6588,6 +6588,10 @@ function timeOilConsumption(groupslist) {
             oil2: [],
             oil3: [],
             oil4: [],
+            srcad0: [],
+            srcad1: [],
+            srcad2: [],
+            srcad3: [],
             devReissue: [],
             currentIndex: 1,
         },
@@ -6632,6 +6636,12 @@ function timeOilConsumption(groupslist) {
                 var usoil2 = vRoot.$t('reportForm.oil2');
                 var usoil3 = vRoot.$t('reportForm.oil3');
                 var usoil4 = vRoot.$t('reportForm.oil4');
+
+                var srcad0 = vRoot.$t('reportForm.srcad0');
+                var srcad1 = vRoot.$t('reportForm.srcad1');
+                var srcad2 = vRoot.$t('reportForm.srcad2');
+                var srcad3 = vRoot.$t('reportForm.srcad3');
+
                 var cotgasus = vRoot.$t('reportForm.oil');
                 var status = vRoot.$t('reportForm.status');
                 var reissue = vRoot.$t('reportForm.reissue');
@@ -6646,10 +6656,13 @@ function timeOilConsumption(groupslist) {
                         }
                     },
                     grid: {
-                        x: 50,
-                        y: 40,
-                        x2: 50,
-                        y2: 40
+                        // x: 50,
+                        // y: 40,
+                        // x2: 50,
+                        // y2: 40
+                        top: 60,
+                        left: 60,
+                        right: 60,
                     },
                     tooltip: {
                         trigger: 'axis',
@@ -6675,14 +6688,19 @@ function timeOilConsumption(groupslist) {
                         }
                     },
                     legend: {
-                        data: [speed, dis, totoil, usoil1, usoil2, usoil3, usoil4],
+                        data: [speed, dis, totoil, usoil1, usoil2, usoil3, usoil4, srcad0, srcad1, srcad2, srcad3],
                         selected: {
                             [usoil1]: false,
                             [usoil2]: false,
                             [usoil3]: false,
                             [usoil4]: false,
+                            [srcad0]: false,
+                            [srcad1]: false,
+                            [srcad2]: false,
+                            [srcad3]: false,
                         },
-                        x: 'left'
+                        x: 'left',
+                        width: 600,
                     },
                     toolbox: {
                         show: true,
@@ -6807,6 +6825,38 @@ function timeOilConsumption(groupslist) {
 
                         {
                             smooth: true,
+                            name: srcad0,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#B65432',
+                            data: this.srcad0
+                        },
+                        {
+                            smooth: true,
+                            name: srcad1,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#B68442',
+                            data: this.srcad1
+                        },
+                        {
+                            smooth: true,
+                            name: srcad2,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#B68499',
+                            data: this.srcad2
+                        },
+                        {
+                            smooth: true,
+                            name: srcad3,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#B00442',
+                            data: this.srcad3
+                        },
+                        {
+                            smooth: true,
                             name: status,
                             type: 'line',
                             symbol: 'none',
@@ -6858,6 +6908,10 @@ function timeOilConsumption(groupslist) {
                                 oil2 = [],
                                 oil3 = [],
                                 oil4 = [],
+                                srcad0 = [],
+                                srcad1 = [],
+                                srcad2 = [],
+                                srcad3 = [],
                                 devReissue = [],
                                 devStates = [];
                             firstDistance = 0;
@@ -6910,6 +6964,10 @@ function timeOilConsumption(groupslist) {
                                     oil2.push(record.ad1);
                                     oil3.push(record.ad2);
                                     oil4.push(record.ad3);
+                                    srcad0.push(record.srcad0);
+                                    srcad1.push(record.srcad1);
+                                    srcad2.push(record.srcad2);
+                                    srcad3.push(record.srcad3);
                                     devStates.push(record.strstatus);
                                     devReissue.push(record.reissue == 0 ? self.$t('header.no') : self.$t('header.yes'));
                                 });
@@ -6923,6 +6981,10 @@ function timeOilConsumption(groupslist) {
                             self.oil2 = oil2;
                             self.oil3 = oil3;
                             self.oil4 = oil4;
+                            self.srcad0 = srcad0;
+                            self.srcad1 = srcad1;
+                            self.srcad2 = srcad2;
+                            self.srcad3 = srcad3;
                             self.records = records;
                             self.devStates = devStates;
                             self.devReissue = devReissue;
