@@ -6828,7 +6828,7 @@ function timeOilConsumption(groupslist) {
                             name: srcad0,
                             type: 'line',
                             symbol: 'none',
-                            color: '#B65432',
+                            color: '#000000',
                             data: this.srcad0
                         },
                         {
@@ -6836,7 +6836,7 @@ function timeOilConsumption(groupslist) {
                             name: srcad1,
                             type: 'line',
                             symbol: 'none',
-                            color: '#B68442',
+                            color: '#000000',
                             data: this.srcad1
                         },
                         {
@@ -6844,7 +6844,7 @@ function timeOilConsumption(groupslist) {
                             name: srcad2,
                             type: 'line',
                             symbol: 'none',
-                            color: '#B68499',
+                            color: '#000000',
                             data: this.srcad2
                         },
                         {
@@ -6852,7 +6852,7 @@ function timeOilConsumption(groupslist) {
                             name: srcad3,
                             type: 'line',
                             symbol: 'none',
-                            color: '#B00442',
+                            color: '#000000',
                             data: this.srcad3
                         },
                         {
