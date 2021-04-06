@@ -2,7 +2,7 @@
 <div id="importdevicename">
     <input type="file" id="file" style="display: none;" />
     <div class="full" style="padding: 10px;">
-        <h3 class="h3-title">{{$t('bgMgr.importDeviceName')}}</h3>
+        <h3 class="h3-title">{{$t('bgMgr.importDeviceName')}} <strong style="color: #515A6E;font-size: 12px;float: right;margin-top: 6px;">{{$t('bgMgr.selectedDeviceList')}} {{tableData.length}}</strong></h3>
         <div style="padding: 10px 0;">
             <i-table border ref="table" :columns="columns" :data="tableData" :loading="loading" :height="taleHeight"></i-table>
         </div>
@@ -15,7 +15,7 @@
     <Modal v-model="modal" width="600">
         <p slot="header" style="color:#2D8CF0;text-align:center">
             <Icon type="ios-hammer-outline"></Icon>
-            <span>{{$t("header.changePwd")}}</span>
+            <span>{{$t("message.selectDeviceTtypeTips")}}</span>
         </p>
         <Row style="margin: 10px 0">
             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;"><i style="color: red;display: inline-block;">*</i>&nbsp;{{$t("user.devType")}} : &nbsp;</i-col>
