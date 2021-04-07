@@ -113,6 +113,14 @@
        foundUser = this.getUserByUserName(username);
        if (foundUser) {
            var groups = foundUser.groups;
+           if (groups.length == 0) {
+               groups.push({
+                   devices: [],
+                   groupid: 0,
+                   groupname: "Default",
+                   remark: "",
+               })
+           }
            if (groups) {
                groups.forEach(function(group) {
                    if (group.groupid == groupid) {
@@ -251,7 +259,6 @@
 
 
    GlobalOrgan.prototype.removeDevice = function(creater, groupid, deviceid) {
-       console.log(creater, groupid, deviceid);
        if (groupid < 0) {
            groupid = 0;
        }
