@@ -35,8 +35,23 @@
         <div style="margin-left:10px;float: left;line-height: 32px;" v-if="selectType == 'user'">
             <Checkbox v-model="isIncludeSub">{{$t("charge.includeSub")}}</Checkbox>
         </div>
-        <div style="float: left;position: relative;width: 210px;line-height:32px;" v-if="selectType == 'device'">
-            <i-input v-model.trim="deviceid" icon="ios-search-outline"></i-input>
+        <div style="float: left;position: relative;width: 280px;line-height:32px;" v-if="selectType == 'device'">
+            <!-- <i-input v-model.trim="deviceid" icon="ios-search-outline"></i-input> -->
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="deviceid" icon="ios-search-outline" @on-change="sosoValueChange2" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                <transition name="fade">
+                    <ul class="search-item-wrapper" v-show="isShowMatchDev">
+                        <li class="demo-auto-complete-item" v-for="item in filterData">
+                            <div class="demo-auto-complete-group" v-show="item.devices.length">
+                                <span>{{ item.groupname }}</span>
+                            </div>
+                            <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
+                                <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.allDeviceIdTitle }}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </transition>
+            </div>
         </div>
         <div style="margin-left:10px;float: left;">
             <i-button :loading="loading" type="info" @click="queryChargeDeviceList">{{$t("reportForm.query")}}</i-button>
@@ -208,6 +223,7 @@
                 type: 'years',
                 overdueDate: DateFormat.addYear(new Date(), 1),
                 selectionArray: [],
+                filterData: [],
                 createrToUser: userName,
                 modal: false,
                 columns: [{
@@ -297,6 +313,19 @@
                     this.isShowMatchDev = false;
                 },
                 focus: function() {
+                    if (this.selectType == 'device') {
+                        if (this.deviceid && this.deviceid.trim()) {
+                            this.sosoValueChange2()
+                        } else {
+                            var groupslist = vRoot.$children[1].groups;
+                            groupslist.forEach(function(group) {
+                                group.devices.forEach(function(device) {
+                                    device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
+                                })
+                            });
+                            this.filterData = groupslist;
+                        }
+                    }
                     this.isShowMatchDev = true;
                 },
                 sosoValueChange: function() {
@@ -312,6 +341,81 @@
                     if (this.isShowMatchDev == false) {
                         this.isShowMatchDev = true;
                     }
+                },
+                sosoSelect: function(option) {
+                    this.deviceid = option.allDeviceIdTitle;
+                    this.isShowMatchDev = false;
+                    this.filterMethod2(this.deviceid);
+                },
+                sosoValueChange2: function() {
+                    var me = this;
+                    var value = this.deviceid;
+
+                    if (this.timeoutIns != null) {
+                        clearTimeout(this.timeoutIns);
+                    };
+
+                    this.timeoutIns = setTimeout(function() {
+                        me.filterMethod2(value);
+                        if (!me.isShowMatchDev) {
+                            me.isShowMatchDev = true;
+                        };
+                    }, 300);
+                },
+                filterMethod2: function(value) {
+                    var groupslist = vRoot.$children[1].groups;
+                    var filterData = [];
+                    value = value.toLowerCase();
+                    for (var i = 0; i < groupslist.length; i++) {
+                        var group = groupslist[i];
+                        if (
+                            group.groupname.toLowerCase().indexOf(value) !== -1 ||
+                            group.firstLetter.indexOf(value) !== -1 ||
+                            group.pinyin.indexOf(value) !== -1
+                        ) {
+                            group.devices.forEach(function(device) {
+                                device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
+                            })
+                            var copyGroup = deepClone(group);
+                            copyGroup.devices = copyGroup.devices.slice(0, 9);
+                            filterData.push(copyGroup)
+                        } else {
+                            var devices = group.devices
+                            var obj = {
+                                groupname: group.groupname,
+                                devices: []
+                            }
+                            for (var j = 0; j < devices.length; j++) {
+                                var device = devices[j]
+                                var title = device.allDeviceIdTitle
+                                device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
+                                if (
+                                    title.toLowerCase().indexOf(value) !== -1 ||
+                                    device.firstLetter.indexOf(value) !== -1 ||
+                                    device.pinyin.indexOf(value) !== -1
+                                ) {
+                                    obj.devices.push(device)
+                                } else {
+                                    if (device.remark) {
+                                        if (device.remark.indexOf(value) !== -1) {
+                                            obj.devices.push(device);
+                                        };
+                                    };
+                                };
+                                if (obj.devices.length >= 10) {
+                                    break;
+                                }
+                            }
+                            if (obj.devices.length) {
+                                filterData.push(obj);
+                                if (filterData.length >= 10) {
+                                    break;
+                                }
+                            };
+                        };
+                    };
+                    this.filterData = filterData;
+
                 },
                 variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
                     var childTemp = [];
@@ -395,9 +499,13 @@
                             overduedays: overduedays //负数 代表过期多少天 正数代表还有多少天过期
                         };
                     } else if (this.selectType == 'device') {
+                        var deviceid = this.deviceid;
+                        if (this.deviceid.indexOf('-') != -1) {
+                            deviceid = this.deviceid.split('-')[1];
+                        }
                         var data = {
                             querytype: 1,
-                            keyword: this.deviceid
+                            keyword: deviceid
                         };
                     }
                     utils.sendAjax(url, data, function(respData) {
@@ -454,7 +562,7 @@
                         var deviceids = this.selectionArray.map(function(item) {
                             return item.deviceid
                         });
-                        if (deviceids.length >= 100) {
+                        if (deviceids.length > 100) {
                             this.$Message.error(isZh ? "一次性删除不能超过100个设备" : "No more than 100 devices can be deleted at one time");
                             return;
                         }
@@ -463,6 +571,13 @@
                         }, function(resp) {
                             if (resp.status == 0) {
                                 me.queryChargeDeviceList();
+                                // var tableData = [];
+                                // me.tableData.forEach(function(item) {
+                                //     if (!deviceids.includes(item.deviceid)) {
+                                //         tableData.push(item);
+                                //     }
+                                // })
+                                // me.tableData = tableData;
                                 me.$Message.success(vRoot.$t('message.deleteSucc'));
                             } else {
                                 me.$Message.error(vRoot.$t('message.deleteFail'));
@@ -516,7 +631,6 @@
 
                     utils.sendAjax(url, data, function(respData) {
                         if (respData.status == 0) {
-
                             me.modal = false;
                             me.adminModal = false;
 
@@ -526,11 +640,30 @@
                             } else {
                                 me.$Message.success("Recharge success:" + respData.successcount);
                             }
-                            var deviceids = [];
-                            me.tableData.forEach(function(item) {
-                                deviceids.push(item.deviceid);
-                            })
-                            me.queryDevicesByIds(deviceids);
+                            var deviceTypeMap = vRoot.$store.state.deviceTypes;
+                            respData.devices.forEach(function(item) {
+                                var deviceInfo = {
+                                    username: item.creater,
+                                    deviceid: item.deviceid,
+                                    devicename: item.devicename,
+                                    devicetype: deviceTypeMap[item.devicetype].typename,
+                                    devicetypeid: item.devicetype,
+                                    chargestatus: item.chargestatus,
+                                    overduedate: DateFormat.longToDateStr(item.overduetime, timeDifference),
+                                    createtimeStr: DateFormat.longToDateStr(item.createtime, timeDifference),
+                                    lastactivetimeStr: DateFormat.longToDateStr(item.lastactivetime, timeDifference),
+                                    overduetime: item.overduetime,
+                                    isfree: item.isfree,
+                                    price: me.priceObj[item.devicetype].price
+                                }
+                                console.log(deviceInfo);
+                                me.tableData.forEach(function(tItem, index) {
+                                    if (item.deviceid == tItem.deviceid) {
+                                        me.$set(me.tableData, index, deviceInfo);
+                                    }
+                                })
+                            });
+
                         } else if (respData.status == 2) {
                             me.$Message.error(isZh ? "剩余金豆数不足,请购买金豆" : "Recharge failed");
                         } else {
