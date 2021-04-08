@@ -283,7 +283,6 @@
 
 
    GlobalOrgan.prototype.editDevice = function(oldCreater, oldGroupid, editDevice) {
-       debugger;
        if (oldGroupid < 0) {
            oldGroupid = 0;
        }

@@ -6647,20 +6647,20 @@ function timeOilConsumption(groupslist) {
                 var reissue = vRoot.$t('reportForm.reissue');
                 var option = {
                     title: {
-                        text: time + '/' + cotgasus,
-                        x: 'center',
-                        textStyle: {
-                            fontSize: 12,
-                            fontWeight: 'bolder',
-                            color: '#333'
-                        }
+                        // text: time + '/' + cotgasus,
+                        // x: 'center',
+                        // textStyle: {
+                        //     fontSize: 12,
+                        //     fontWeight: 'bolder',
+                        //     color: '#333'
+                        // }
                     },
                     grid: {
                         // x: 50,
                         // y: 40,
                         // x2: 50,
                         // y2: 40
-                        top: 60,
+                        top: 30,
                         left: 60,
                         right: 60,
                     },
@@ -6700,7 +6700,7 @@ function timeOilConsumption(groupslist) {
                             [srcad3]: false,
                         },
                         x: 'left',
-                        width: 600,
+                        // width: 600,
                     },
                     toolbox: {
                         show: true,
@@ -6740,13 +6740,13 @@ function timeOilConsumption(groupslist) {
                         data: this.recvtime
                     }],
                     yAxis: [{
-                        name: totoil + '/' + speed,
+                        name: '', //totoil + '/' + speed
                         type: 'value',
                         nameTextStyle: 10,
                         nameGap: 5,
 
                     }, {
-                        name: dis,
+                        name: '', //dis
                         type: 'value',
                         nameTextStyle: 10,
                         nameGap: 2,
@@ -6878,7 +6878,7 @@ function timeOilConsumption(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 400;
+                this.lastTableHeight = wHeight - 360;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
