@@ -51,12 +51,6 @@
         }
     </style>
     <script src="./js/js.cookie.min.js"></script>
-    <script>
-        var token = utils.getParameterByName('token');
-        if (token == undefined) {
-            window.location.href = "index.html";
-        };
-    </script>
 </head>
 
 <body>
@@ -180,6 +174,10 @@
     <script src="./js/echarts.min.js"></script>
     <script src="./js/countup.min.js"></script>
     <script>
+        var token = utils.getParameterByName('token');
+        if (token == undefined) {
+            window.location.href = "index.html";
+        };
         var timeDifference = DateFormat.getOffset();
         Vue.component('count-to', {
             template: document.getElementById('count-to').innerHTML,
@@ -237,7 +235,6 @@
             methods: {
 
                 initCountTo() {
-                    console.log('decimals', this.decimals);
                     var that = this;
                     this.counter = new CountUp(this.countid, this.start, this.end, this.decimals, this.duration, {
                         useEasing: true,

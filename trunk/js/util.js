@@ -260,7 +260,7 @@ var utils = {
                         if (vRoot.$t) {
                             vRoot.$Message.error(vRoot.$t("monitor.reLogin"));
                         } else {
-                            vRoot.$Message.error('token失效请从新登陆');
+                            Vue.prototype.$Message.error('token失效请从新登陆');
                         }
                         localStorage.setItem('token', "")
                         setTimeout(function() {
