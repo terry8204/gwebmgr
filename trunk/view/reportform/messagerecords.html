@@ -48,7 +48,7 @@
         </div>
     </div>
     <div style="margin:10px;">
-        <i-table ref="table" :columns="columns" :height="tableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
+        <i-table ref="table" :columns="columns" size="small" :height="tableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
     </div>
     <div style="padding-left:10px;">
         <Page :total="total" show-total @on-change="onChange" :page-size="20" :current="currentIndex" />

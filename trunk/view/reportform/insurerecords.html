@@ -39,7 +39,7 @@
         </div>
     </div>
     <div style="margin:10px;">
-        <i-table :columns="columns" border ref="table" :height="tableHeight" :data="tableData" :loading="loading"></i-table>
+        <i-table :columns="columns" size="small" border ref="table" :height="tableHeight" :data="tableData" :loading="loading"></i-table>
     </div>
     <div style="padding-left:10px;">
         <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />

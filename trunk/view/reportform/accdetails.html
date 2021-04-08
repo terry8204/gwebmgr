@@ -45,10 +45,10 @@
     <div style="margin:10px;">
         <Tabs :value="activeTab" @on-click="onClickTab">
             <Tab-pane :label="$t('reportForm.accStatistics')" name="tabTotal">
-                <i-table ref="totalTable" :columns="allAccColumns" :data="allAccTableData" :height="lastTableHeight" :loading="loading"></i-table>
+                <i-table ref="totalTable" size="small" :columns="allAccColumns" :data="allAccTableData" :height="lastTableHeight" :loading="loading"></i-table>
             </Tab-pane>
             <Tab-pane :label="$t('reportForm.accDetailed')" name="tabDetail">
-                <i-table ref="detailTable" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
+                <i-table ref="detailTable" size="small" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
             </Tab-pane>
         </Tabs>
     </div>

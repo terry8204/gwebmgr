@@ -45,7 +45,7 @@
             <div id="charts" style="height: 180px;width: 100%;"></div>
         </div>
         <div style="margin:10px;">
-            <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
+            <i-table :columns="columns" size="small" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
         </div>
         <div style="padding-left:10px;">
             <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />

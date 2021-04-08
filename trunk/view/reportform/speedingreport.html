@@ -47,13 +47,13 @@
                 <div style="width:100%;height: 190px;position: relative;">
                     <div id="barContainer" style="height: 180px;width: 100%;"></div>
                 </div>
-                <i-table ref="totalTable" :columns="allAccColumns" :data="allRotateTableData" :height="lastTableHeight" :loading="loading"></i-table>
+                <i-table ref="totalTable" size="small" :columns="allAccColumns" :data="allRotateTableData" :height="lastTableHeight" :loading="loading"></i-table>
             </Tab-pane>
             <Tab-pane :label="$t('reportForm.speedingDetails')" name="tabDetail">
                 <div style="width:100%;height: 190px;position: relative;">
                     <div id="spedding-chart" style="height: 180px;width: 100%;"></div>
                 </div>
-                <i-table ref="detailTable" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
+                <i-table ref="detailTable" size="small" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
             </Tab-pane>
         </Tabs>
     </div>

@@ -45,7 +45,7 @@
                     <i-table ref="totalTable" highlight-row @on-current-change="onCurrentChange" :columns="allWeightColumns" :data="allWeightTableData" :height="lastTableHeight" :loading="loading"></i-table>
                 </Tab-pane>
                 <Tab-pane :label="$t('reportForm.loadingStatusDetails')" name="tabDetail">
-                    <i-table ref="detailTable" :columns="columns" highlight-row @on-current-change="onCurrentChange" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
+                    <i-table ref="detailTable" size="small" :columns="columns" highlight-row @on-current-change="onCurrentChange" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
                 </Tab-pane>
             </Tabs>
 

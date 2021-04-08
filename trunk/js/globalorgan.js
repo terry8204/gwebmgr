@@ -59,7 +59,6 @@
    };
 
 
-
    GlobalOrgan.prototype.doResuicUserTree = function(userTree, username) {
        var foundUser = null;
        if (userTree) {

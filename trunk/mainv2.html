@@ -2414,10 +2414,10 @@
                         <div>
                             <Tabs type="card">
                                 <tab-pane :label="$t('monitor.toSendCmd')">
-                                    <i-table :columns="cacheColumns" height="280" :data="cacheTableData" :loading="loading"></i-table>
+                                    <i-table :columns="cacheColumns" height="280" size="small" :data="cacheTableData" :loading="loading"></i-table>
                                 </tab-pane>
                                 <tab-pane :label="$t('monitor.directivesSent')">
-                                    <i-table :columns="sendColumns" height="280" :data="sendTableData" :loading="loading"></i-table>
+                                    <i-table :columns="sendColumns" height="280" size="small" :data="sendTableData" :loading="loading"></i-table>
                                 </tab-pane>
                             </Tabs>
                         </div>

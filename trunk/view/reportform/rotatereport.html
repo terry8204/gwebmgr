@@ -45,10 +45,10 @@
     <div style="margin:10px;">
         <Tabs :value="activeTab" @on-click="onClickTab">
             <Tab-pane :label="$t('reportForm.rotationStatistics')" name="tabTotal">
-                <i-table ref="totalTable" :columns="allAccColumns" :data="allRotateTableData" :height="lastTableHeight" :loading="loading"></i-table>
+                <i-table ref="totalTable" size="small" size="small" :columns="allAccColumns" :data="allRotateTableData" :height="lastTableHeight" :loading="loading"></i-table>
             </Tab-pane>
             <Tab-pane :label="$t('reportForm.rotationDetails')" name="tabDetail">
-                <i-table ref="detailTable" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
+                <i-table ref="detailTable" size="small" size="small" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
             </Tab-pane>
             <div style="margin-top:5px;" slot="extra">
                 <i-button @click="exportData" type="primary" icon="md-arrow-down" size="small">{{$t("reportForm.exportData")}}</i-button>

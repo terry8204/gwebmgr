@@ -50,7 +50,7 @@
             </div>
         </Row>
         <div style="margin:10px;">
-            <i-table ref="lastTable" :columns="lastPosiColumns" :height="lastTableHeight" :data="lastPosiData" :loading="loading"></i-table>
+            <i-table ref="lastTable" :columns="lastPosiColumns" size="small" :height="lastTableHeight" :data="lastPosiData" :loading="loading"></i-table>
         </div>
         <Modal v-model="trackDetailModal" fullscreen>
             <p slot="header" style="color:#f60;text-align:center">

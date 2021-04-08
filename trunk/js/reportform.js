@@ -6663,6 +6663,7 @@ function timeOilConsumption(groupslist) {
                         top: 30,
                         left: 60,
                         right: 60,
+                        bottom: 40,
                     },
                     tooltip: {
                         trigger: 'axis',

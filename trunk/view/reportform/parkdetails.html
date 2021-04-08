@@ -41,7 +41,7 @@
         </div>
     </Row>
     <div style="margin:10px;">
-        <i-table :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
+        <i-table :columns="columns" size="small" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
     </div>
     <transition name="fade">
         <div v-show="mapModal" class="posi-map-wraper">

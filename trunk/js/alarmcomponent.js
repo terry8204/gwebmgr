@@ -559,7 +559,7 @@ var waringComponent = {
     },
     components: {
         waringMsg: {
-            template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="waringrecords"></Table>',
+            template: '<Table size="small" :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="waringrecords"></Table>',
             props: ['waringrecords', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -639,7 +639,7 @@ var waringComponent = {
             },
         },
         deviceMsg: {
-            template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="deviceinfolist"></Table>',
+            template: '<Table size="small" :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="deviceinfolist"></Table>',
             props: ['deviceinfolist', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -715,7 +715,7 @@ var waringComponent = {
             }
         },
         emergencyAlarm: {
-            template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="emergencyAlarmList"></Table>',
+            template: '<Table size="small" :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="emergencyAlarmList"></Table>',
             props: ['emergencyAlarmList', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -788,7 +788,7 @@ var waringComponent = {
             },
         },
         mediaFiles: {
-            template: '<Table :height="tabheight" border :columns="columns" highlight-row  :data="mediaFileList" @on-row-click="onRowClick"></Table>',
+            template: '<Table size="small" :height="tabheight" border :columns="columns" highlight-row  :data="mediaFileList" @on-row-click="onRowClick"></Table>',
             props: ['mediaFileList', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;
@@ -934,7 +934,7 @@ var waringComponent = {
             },
         },
         overdueInfo: {
-            template: '<Table :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="overdueinfolist"></Table>',
+            template: '<Table size="small" :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="overdueinfolist"></Table>',
             props: ['overdueinfolist', 'tabletype', 'wrapperheight'],
             data: function() {
                 var me = this;

@@ -15,7 +15,7 @@
             <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
         </div>
     </Row>
-    <Row style="margin: 10px;border: 1px solid #DCDEE2;text-align: center;"> 
+    <Row style="margin: 10px;border: 1px solid #DCDEE2;text-align: center;">
         <div style="height: 100%;line-height:32px;display: inline-block;">{{$t("reportForm.vehicleTotal")}} :&nbsp;<span v-text="totalVehicle"></span>&nbsp;&nbsp;</div>
         <div style="height: 100%;line-height:32px;display: inline-block;">{{$t("reportForm.onlineTotal")}} :&nbsp;<span v-text="onlineVehicle"></span>&nbsp;&nbsp;</div>
         <div style="height: 100%;line-height:32px;display: inline-block;">{{$t("reportForm.offlineTotal")}} :&nbsp;<span v-text="offlineVehicle"></span>&nbsp;&nbsp;</div>
@@ -23,6 +23,6 @@
         <div style="height: 100%;line-height:32px;display: inline-block;">{{$t("reportForm.notLocationTotal")}} :&nbsp;<span v-text="notPosiVehicle"></span>&nbsp;&nbsp;</div>
     </Row>
     <div style="margin:10px;">
-        <i-table :columns="columns" :height="tableHeight" :data="tableData" :loading="loading"></i-table>
+        <i-table :columns="columns" size="small" size="small" :height="tableHeight" :data="tableData" :loading="loading"></i-table>
     </div>
 </div>
