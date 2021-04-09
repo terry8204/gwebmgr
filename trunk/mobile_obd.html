@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta http-equiv="cache-control" content="no-cache" />
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/obd_icon/iconfont.css">
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            font-size: 100px;
+            position: relative;
+            margin: 0;
+        }
+        
+        #app,
+        .full {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .tab-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tab-wrapper .tab_header {
+            height: 0.35rem;
+            background-color: #0F1632;
+            color: #ffffff;
+            font-size: 0.12rem;
+            text-align: center;
+            line-height: 0.35rem;
+        }
+        
+        .tab-wrapper .tab_body {
+            flex: 1;
+            background-color: #0F1632;
+            position: relative;
+        }
+        
+        .tab-wrapper .tab_body>div {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            left: 0px;
+        }
+        
+        .tab_content_1 {
+            display: flex;
+            flex-direction: column;
+            background-color: #0F1632;
+        }
+        
+        .tab_content_1 .obd_action {
+            flex: 1;
+            background: linear-gradient(#0F1632, #0E0C22);
+        }
+        
+        .tab_content_1 .obd_action .desc {
+            height: 13%;
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 500;
+            text-align: center;
+            padding-top: 0.02rem;
+        }
+        
+        .tab_content_1 .obd_action .desc>span {
+            color: #72A8E5;
+        }
+        
+        .tab_content_1 .obd_action .mileage {
+            height: 17%;
+            padding: 0 0.4rem;
+            box-sizing: border-box;
+        }
+        
+        .tab_content_1 .obd_action .mileage .mileage-box {
+            height: 100%;
+            background-color: #3B4161;
+            color: #ffffff;
+            border-radius: 0.4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+        }
+        
+        .tab_content_1 .obd_action .progress,
+        .tab_content_1 .obd_action .inspect {
+            height: 35%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+        
+        .obd_action .progress .progress-box {
+            height: 0.12rem;
+            width: 70%;
+            border-radius: 0.1rem;
+            background-color: #1A1B30;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .obd_action .progress .progress-box .progress-bar {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            bottom: 0px;
+            background-color: #6996CE;
+        }
+        
+        .tab_content_1 .obd_action .inspect .inspect-btn {
+            width: 2.2rem;
+            height: 0.55rem;
+            background-color: #6996CE;
+            border-radius: 0.35rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            margin-top: -0.2rem;
+        }
+        
+        .tab_content_2 {
+            display: flex;
+            flex-direction: column;
+            background-color: #1E2542;
+        }
+        
+        .tab_content_2 .charts-wrapper {
+            height: 2.3rem;
+            padding-top: 0.1rem;
+        }
+        
+        .tab_content_2 .charts-wrapper .charts-box {
+            height: 1.70rem;
+        }
+        
+        .tab_content_2 .charts-wrapper .charts-box>div {
+            float: left;
+            width: 50%;
+            height: 1.70rem;
+        }
+        
+        .tab_content_2 .charts-wrapper .charts-footer {
+            width: 100%;
+            height: 1.70rem;
+        }
+        
+        .tab_content_2 .charts-wrapper .charts-footer .total-mileage {
+            width: 2.8rem;
+            height: 0.40rem;
+            background-color: #3B4161;
+            margin: 0 auto;
+            border-radius: 0.225rem;
+            line-height: 0.4rem;
+            text-align: center;
+            color: #ffffff;
+            font-size: 18px;
+        }
+        
+        .tab_content_1 .charts1 {
+            height: 2.93rem;
+        }
+        
+        .tab-wrapper .tab_footer {
+            height: 0.50rem;
+            line-height: 0.45rem;
+            background-color: #08081C;
+        }
+        
+        .tab_content_2 .obd-info-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #0F1632;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            padding: 5px 0;
+        }
+        
+        .tab_content_2 .obd-info-wrapper>div {
+            width: 50%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        
+        .tab_content_2 .obd-info-wrapper .item-wrap .item-inner {
+            height: 100%;
+            width: 100%;
+            background-color: #222840;
+            border-radius: 4px;
+            padding: 15px 20px 15px 20px;
+            box-sizing: border-box;
+            color: #ffffff;
+        }
+        
+        .tab_content_2 .obd-info-wrapper .item-wrap .item-inner .line {
+            width: 100%;
+            border: 2px solid #3B4161;
+        }
+        
+        .tab_content_2 .obd-info-wrapper .item-wrap .item-inner .value {
+            text-align: center;
+            padding: 5px;
+            font-weight: 600;
+            font-size: 20px;
+        }
+        
+        .tab_content_2 .obd-info-wrapper .item-wrap .item-inner .name {
+            text-align: center;
+            font-size: 15px;
+        }
+        
+        .tab-wrapper .tab_footer>div {
+            float: left;
+            width: 50%;
+            height: 0.50rem;
+            font-size: 0.20rem;
+            text-align: center;
+            color: #434343;
+            border-top: 2px solid #08081C;
+            box-sizing: border-box;
+        }
+        
+        .tab-wrapper .tab_footer>div.active {
+            border-top: 0.02rem solid #79A5E6;
+            color: #1762C9;
+        }
+        
+        .tab-wrapper .tab_footer>div>i {
+            vertical-align: middle;
+        }
+        
+        .examination {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            background-color: #1A2044;
+            z-index: 999;
+        }
+        
+        .examination .examination-close {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 0.35rem;
+            height: 0.35rem;
+            font-size: 24px;
+            text-align: center;
+            line-height: 0.32rem;
+            border-radius: 0.175rem;
+            background-color: #3B4161;
+            color: #ffffff;
+            z-index: 999;
+        }
+        
+        [v-cloak] {
+            display: none;
+        }
+        
+        .examination .check-animation,
+        .examination .check-report {
+            height: 50%;
+            width: 100%;
+            position: relative;
+        }
+        
+        .check-animation {
+            height: 50%;
+            background-color: #1A2044;
+            position: relative;
+        }
+        
+        .check-inner-wrap {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            width: 200px;
+            height: 200px;
+            margin: auto;
+        }
+        
+        .check-inner-wrap .car-image {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+        }
+        
+        .check-inner-wrap .loading-image,
+        .check-inner-wrap .text-wrap {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            right: 10px;
+            bottom: 10px;
+        }
+        
+        .text-wrap {
+            color: #ffffff;
+            padding: 50px 0;
+            box-sizing: border-box;
+        }
+        
+        .text-wrap>div {
+            height: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .text-wrap>div:first-child {
+            font-size: 28px;
+        }
+        
+        .text-wrap>div:last-child {
+            font-size: 14px;
+        }
+        
+        .animation-rotate {
+            animation: rotate 1s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg)
+            }
+            50% {
+                transform: rotate(180deg)
+            }
+            100% {
+                transform: rotate(360deg)
+            }
+        }
+        
+        .check-inner-wrap img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .progress-wrap {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            display: flex;
+            flex-direction: row;
+            color: #ffffff;
+            font-size: 12px;
+        }
+        
+        .progress-wrap>div:first-child {
+            width: 35px;
+            line-height: 30px;
+            text-align: center;
+        }
+        
+        .progress-wrap>div:last-child {
+            width: 35px;
+            line-height: 30px;
+            text-align: center;
+        }
+        
+        .middle {
+            flex: 1;
+            padding: 9px 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+        .middle .progress-inner-wrap {
+            border-radius: 15px;
+            background-color: #101125;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .middle .progress-inner-wrap .progress {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            top: 0;
+            background-color: #6C9EF1;
+            border-radius: 15px;
+        }
+        
+        .examination .check-report {
+            background: -webkit-linear-gradient(#1A2044 10%, #101125);
+        }
+        
+        .check-report>div {
+            height: 100%;
+            width: 100%;
+            color: #ffffff;
+        }
+        
+        .check-wrap>div {
+            height: 100%;
+            width: 100%;
+        }
+        
+        div.item-wrap2,
+        div.info-wrap {
+            height: 48%;
+            width: 100%;
+        }
+        
+        div.item-wrap2>div {
+            height: 25%;
+            width: 100%;
+            padding: 7px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row;
+            color: #ffffff;
+        }
+        
+        div.item-wrap2>div>div:first-child {
+            width: 23.69px;
+            height: 23.69px;
+            padding: 2.5px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        
+        div.item-wrap2>div>div:first-child>img {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+        }
+        
+        div.item-wrap2>div>div:last-child {
+            flex: 1;
+            padding-left: 10px;
+            font-size: 16px;
+            line-height: 23.69px;
+        }
+        
+        div.info-wrap>div {
+            height: 50%;
+            position: relative;
+        }
+        
+        .info-wrap .check-desc {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            font-size: 20px;
+        }
+        
+        .complete-btn-wrap .complete-btn {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 150px;
+            height: 40px;
+            margin: auto;
+            background-color: #6C9EF1;
+            border-radius: 40px;
+            text-align: center;
+            line-height: 40px;
+            font-size: 20px;
+        }
+        
+        .faultcodes-wrap {
+            position: relative;
+        }
+        
+        .faultcodes-item-wrap {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            bottom: 75.38px;
+            overflow-y: auto;
+        }
+        
+        .faultcodes-item {
+            display: flex;
+            flex-direction: row;
+            padding: 7px 20px;
+            box-sizing: border-box;
+        }
+        
+        .faultcodes-item>div:first-child {
+            width: 23.69px;
+            height: 23.69px;
+            padding: 2.5px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        
+        .faultcodes-item>div:first-child>img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0px;
+            top: 0.5px;
+        }
+        
+        .faultcodes-item>div:last-child {
+            flex: 1;
+            padding-left: 5px;
+        }
+        
+        .faultcodes-item .name {
+            line-height: 25px;
+            font-size: 16px;
+        }
+        
+        .error-code {
+            font-size: 14px;
+            line-height: 15px;
+            color: yellow;
+            margin: 3px 0;
+        }
+        
+        .faultcodes-wrap>div.btn {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 75.38px;
+        }
+        
+        .ctrl-wrap .check-time {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 20px;
+            font-size: 14px;
+        }
+        
+        .ctrl-wrap .hitched-count-wrap {
+            width: 100%;
+            height: 80px;
+            position: relative;
+        }
+        
+        .ctrl-wrap .hitched-count-wrap .hitched-count-inner {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            top: 0;
+            margin: auto;
+            width: 160px;
+            border: 2px solid #7FAFF1;
+            height: 45px;
+            line-height: 45px;
+            border-radius: 45px;
+            text-align: center;
+            font-size: 20px;
+        }
+        
+        .ctrl-btn-wrap {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            height: 50px;
+            padding: 0 10px;
+        }
+        
+        .ctrl-btn-wrap>div {
+            width: 150px;
+            height: 100%;
+            border-radius: 50px;
+            box-sizing: border-box;
+            text-align: center;
+            line-height: 50px;
+            font-size: 20px;
+        }
+        
+        .ctrl-btn-wrap>div:first-child {
+            border: 2px solid #7FAFF1;
+            line-height: 48px;
+        }
+        
+        .ctrl-btn-wrap>div:last-child {
+            background-color: #3A74D8;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="tab-wrapper" v-cloak>
+            <div class="tab_header"> 设备号:{{deviceid}} {{time}} </div>
+            <div class="tab_body">
+                <div class="tab_content_1 full" :style="{zIndex:tabType==1?2:1}">
+                    <div id="charts1" class="charts1"></div>
+                    <div class="obd_action">
+                        <div class="desc">
+                            发动起 <span>转速:</span> {{engineturnrate}}RPM
+                        </div>
+                        <div class="mileage">
+                            <div class="mileage-box">总里程:{{totalMileage}}Km</div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-box">
+                                <div class="progress-bar" :style="{width:progressWidth}"></div>
+                            </div>
+                        </div>
+                        <div class="inspect">
+                            <div class="inspect-btn" @click="onClickInspect">爱车体检</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab_content_2 full" :style="{zIndex:tabType==2?2:1}">
+                    <div class="charts-wrapper">
+                        <div class="charts-box">
+                            <div id="charts2" class="charts2"></div>
+                            <div id="charts3" class="charts3"></div>
+                        </div>
+                        <div class="charts-footer">
+                            <div class="total-mileage">总里程:{{totalMileage}}Km</div>
+                        </div>
+                    </div>
+                    <div class="obd-info-wrapper">
+                        <template v-for="(item,index) in itemInfos">
+                            <div :key="index">
+                                <div class="item-wrap">
+                                    <div class='item-inner'>
+                                        <div class='line'></div>
+                                        <div class='value'>{{item.value}}{{item.unit}}</div>
+                                        <div class='name'>{{item.name}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+            <div class="tab_footer">
+                <div :class="[tabType==1?'active':'']" @click="tabType=1">
+                    <i class="icon iconfont icon-yibiaopan" style="font-size: 0.23rem;"></i>
+                </div>
+                <div :class="[tabType==2?'active':'']" @click="tabType=2">
+                    <i class="icon iconfont icon-yunyingshuju"></i>
+                </div>
+            </div>
+        </div>
+        <div v-if="examinationObd" class="examination" v-cloak>
+            <div class="examination-close" @click="examinationObd=false">×</div>
+            <div class="check-animation">
+                <div class='check-inner-wrap'>
+                    <div class='car-image'>
+                        <img src='images/obd/pic_car.png' />
+                    </div>
+                    <div class='loading-image' v-show="checking">
+                        <img src='images/obd/pic_light.png' class='animation-rotate' />
+                    </div>
+                    <div class='text-wrap'>
+                        <div class='fraction'>{{fraction}}分</div>
+                        <div class='check-desc'>{{checking ? '正在查询中,请稍后...' : '检测完成!'}}</div>
+                    </div>
+                </div>
+                <div class='progress-wrap'>
+                    <div>
+                        <span>进度</span>
+                    </div>
+                    <div class='middle'>
+                        <div class='progress-inner-wrap'>
+                            <div class='progress' :style='{width:progressNumber+"%"}'></div>
+                        </div>
+                    </div>
+                    <div>
+                        <span>{{progressNumber}}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="check-report">
+                <div v-if="isCheck" class='check-wrap'>
+                    <div v-if="!isFaultcodes">
+                        <div class='item-wrap2'>
+                            <div v-for="(item,index) in checkItems" :key="index">
+                                <div>
+                                    <img :src='item.img' />
+                                </div>
+                                <div><span>{{item.name}}</span></div>
+                            </div>
+                        </div>
+                        <div class='info-wrap'>
+                            <div class='check-desc'>
+                                <span>没有故障</span>
+                            </div>
+                            <div class='complete-btn-wrap'>
+                                <div class='complete-btn' @click='completeCheck'>完成</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='faultcodes-wrap' v-else>
+                        <div class='faultcodes-item-wrap'>
+                            <div class='faultcodes-item' v-for="(item,index) in errorCheckItems" :key="index">
+                                <div><img :src='item.img' /></div>
+                                <div>
+                                    <div class='name'>{{item.name}}</div>
+                                    <div class='error-code' v-for="(error,idx) in item.children" :key="idx">
+                                        {{error.faultcode }}:{{ error.codedescchina}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='btn'>
+                            <div class='complete-btn-wrap' style='height:100%;width:100%;'>
+                                <div class='complete-btn' @click='completeCheck'>完成</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='ctrl-wrap'>
+                    <div class='check-time'>
+                        检查时间 <span style='padding:0 10rpx;'></span> {{faultcodetimeStr}}
+                    </div>
+                    <div class='hitched-count-wrap'>
+                        <div class='hitched-count-inner'>
+                            故障 <span style='padding:0 10rpx;'></span> {{faultcodesNumber}}
+                        </div>
+                    </div>
+                    <div class='ctrl-btn-wrap'>
+                        <div @click='recheck'>重新体检</div>
+                        <div @click='isCheck=true'>检测报告</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./dist/vue.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/gps51-jquery.js"></script>
+    <script src="./js/dateformat.js"></script>
+    <script src="./js/echarts.min.js"></script>
+    <script type="text/javascript">
+        var token = '';
+        new Vue({
+            el: "#app",
+            data: {
+                time: '',
+                deviceid: '',
+                tabType: 1,
+                examinationObd: false,
+                totalMileage: 0,
+                engineturnrate: 0,
+                itemInfos: [{
+                    name: '发动机负荷',
+                    value: 0,
+                    unit: '%'
+                }, {
+                    name: '电瓶电压',
+                    value: 0,
+                    unit: 'V'
+                }, {
+                    name: '行驶瞬间油耗',
+                    value: 0,
+                    unit: 'L/100km'
+                }, {
+                    name: '怠速瞬间油耗',
+                    value: 0,
+                    unit: 'L/h'
+                }, {
+                    name: '冷却液温度',
+                    value: 0,
+                    unit: '℃'
+                }, {
+                    name: '空气流量',
+                    value: 0,
+                    unit: 'g/s'
+                }, {
+                    name: '节气门位置',
+                    value: 0,
+                    unit: '%'
+                }, {
+                    name: '燃油压力',
+                    value: 0,
+                    unit: 'kPa'
+                }, {
+                    name: '进气温度',
+                    value: 0,
+                    unit: '℃'
+                }, {
+                    name: '进气压力',
+                    value: 0,
+                    unit: 'kPa'
+                }, {
+                    name: '油量百分比',
+                    value: 0,
+                    unit: '%'
+                }],
+
+                isCheck: true,
+                checking: true,
+                isFaultcodes: true,
+                faultcodesNumber: 0,
+                progressNumber: 0,
+                fraction: 0,
+                faultcodetimeStr: '',
+                checkItems: [{
+                    img: 'images/obd/recharge_success.png',
+                    name: '动力系统'
+                }, {
+                    img: 'images/obd/recharge_success.png',
+                    name: '车身系统'
+                }, {
+                    img: 'images/obd/recharge_success.png',
+                    name: '底盘系统'
+                }, {
+                    img: 'images/obd/recharge_success.png',
+                    name: '网络通信系统'
+                }],
+                errorCheckItems: [{
+                    img: 'images/obd/recharge_fail.png',
+                    name: '动力系统',
+                    children: [{
+                        faultcode: 'code',
+                        codedescchina: '附近的刚回到家',
+                    }]
+                }],
+            },
+            methods: {
+                queryobdinfo: function() {
+                    var me = this;
+                    var url = myUrls.queryObdInfo();
+                    $.ajax({
+                        url: url,
+                        type: 'post',
+                        data: JSON.stringify({
+                            deviceid: this.deviceid,
+                        }),
+                        timeout: 15000,
+                        //contentType: "application/json;charset=utf-8",
+                        dataType: 'json',
+                        success: function(resp) {
+                            console.log(resp)
+                            if (resp.status == 0) {
+                                var record = resp.record;
+                                me.charts1.setOption(me.getCharts1Option(record.speed));
+                                me.charts2.setOption(me.getCharts2Option(record.speed));
+                                me.charts3.setOption(me.getCharts3Option(record.engineturnrate));
+                                me.engineturnrate = record.engineturnrate;
+                                me.totalMileage = record.mileage;
+                                var itemInfos = me.itemInfos;
+
+
+                                itemInfos[0].value = record.overloadcalculate;
+                                itemInfos[1].value = record.controlvoltage;
+                                itemInfos[2].value = record.gasolineconsumptionperhunkm.toFixed(2);
+                                itemInfos[3].value = record.gasolineconsumptionperhour.toFixed(2);
+                                itemInfos[4].value = record.coolanttemperature;
+                                itemInfos[5].value = record.airmassflow;
+                                itemInfos[6].value = record.throttleposition;
+                                itemInfos[7].value = record.oilpressure;
+                                itemInfos[8].value = record.inlettemperature;
+                                itemInfos[9].value = record.inletbranchpressure;
+                                itemInfos[10].value = record.oilvalue;
+
+                                me.time = DateFormat.longToDateTimeStr(record.updatetime, DateFormat.getOffset());
+
+                            }
+
+                        },
+                        error: function(e) {},
+                        complete: function() {}
+                    })
+                },
+                queryObdFaultCodes: function() {
+                    var me = this;
+                    var url = myUrls.queryObdFaultCodes();
+                    var data = {
+                        deviceid: this.deviceid
+                    };
+                    (function poll() {
+                        if (me.progressNumber >= 100) {
+                            $.ajax({
+                                url: url,
+                                type: 'post',
+                                data: JSON.stringify(data),
+                                timeout: 15000,
+                                dataType: 'json',
+                                success: function(resp) {
+                                    console.log(resp)
+                                    if (resp.status == 0) {
+                                        let pfaultcodes = resp.pfaultcodes // 动力系统
+                                        let bfaultcodes = resp.bfaultcodes // 车身
+                                        let cfaultcodes = resp.cfaultcodes // 底盘
+                                        let ufaultcodes = resp.ufaultcodes // 用户网络
+                                        let errorImgUrl = 'images/obd/recharge_fail.png';
+                                        let errorCheckItems = [];
+                                        let faultcodesNumber = 0;
+                                        let fraction = 100;
+                                        if (pfaultcodes && pfaultcodes.length) {
+                                            faultcodesNumber += pfaultcodes.length;
+                                            errorCheckItems.push({
+                                                name: "动力系统",
+                                                img: errorImgUrl,
+                                                children: pfaultcodes
+                                            })
+                                        }
+                                        if (bfaultcodes && bfaultcodes.length) {
+                                            faultcodesNumber += bfaultcodes.length;
+                                            errorCheckItems.push({
+                                                name: "车身系统",
+                                                img: errorImgUrl,
+                                                children: bfaultcodes
+                                            })
+                                        }
+                                        if (cfaultcodes && cfaultcodes.length) {
+                                            faultcodesNumber += cfaultcodes.length;
+                                            errorCheckItems.push({
+                                                name: "底盘系统",
+                                                img: errorImgUrl,
+                                                children: cfaultcodes
+                                            })
+                                        }
+                                        if (ufaultcodes && ufaultcodes.length) {
+                                            faultcodesNumber += ufaultcodes.length;
+                                            errorCheckItems.push({
+                                                name: "网络通信系统",
+                                                img: errorImgUrl,
+                                                children: ufaultcodes
+                                            })
+                                        }
+                                        fraction -= faultcodesNumber * 10;
+
+                                        let faultcodetimeStr = DateFormat.longToDateTimeStr(resp.faultcodetime, 0);
+                                        if (errorCheckItems.length) {
+                                            let len = errorCheckItems.length,
+                                                index = 0;
+                                            me.isFaultcodes = true;
+                                            me.checking = false;
+                                            me.faultcodesNumber = faultcodesNumber;
+                                            me.faultcodetimeStr = faultcodetimeStr;
+                                            me.fraction = fraction;
+
+
+                                            let intervalIns = setInterval(() => {
+                                                index++;
+                                                if (index < (len + 1)) {
+                                                    me.errorCheckItems = errorCheckItems.slice(0, index);
+                                                } else {
+                                                    clearInterval(intervalIns);
+                                                }
+                                            }, 800);
+                                        } else {
+                                            me.isFaultcodes = false;
+                                            me.checking = false;
+                                            me.faultcodetimeStr = faultcodetimeStr;
+                                            me.fraction = fraction;
+                                        };
+
+                                    }
+                                },
+                                error: function(e) {},
+                                complete: function() {}
+                            })
+                        } else {
+                            me.progressNumber++;
+                            setTimeout(poll, 30);
+                        }
+                    }());
+                },
+                completeCheck: function() {
+                    if (this.checking) {
+                        return;
+                    }
+                    this.isCheck = false;
+                },
+                recheck: function() {
+                    this.checking = true;
+                    this.isCheck = true;
+                    this.progressNumber = 0;
+                    this.faultcodesNumber = 0;
+                    this.isFaultcodes = false;
+                    this.fraction = 0;
+                    this.errorCheckItems = [];
+                    this.queryObdFaultCodes();
+                },
+                getQueryString: function(name) {
+                    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                    var r = window.location.search.substr(1).match(reg);
+                    if (r != null) return unescape(r[2]);
+                    return null;
+                },
+                getCharts1Option: function(value) {
+                    return {
+                        backgroundColor: '#0F1632',
+                        tooltip: {
+                            formatter: "速度 : {c}km/h"
+                        },
+                        series: [{
+                            min: 0,
+                            max: 400,
+                            name: '速度',
+                            type: 'gauge',
+                            updateTimeStr: '',
+                            radius: '85%',
+                            detail: {
+                                formatter: '{value}'
+                            },
+                            data: [{
+                                value: value,
+                                name: 'km/h'
+                            }],
+                            title: {
+                                textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                                    fontWeight: 'bolder',
+                                    fontSize: 20,
+                                    fontStyle: 'italic',
+                                    color: '#fff',
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
+                                }
+                            },
+                        }]
+                    };
+                },
+                getCharts2Option: function(value) {
+                    return {
+                        backgroundColor: '#1E2542',
+                        tooltip: {
+                            formatter: "速度 : {c}km/h"
+                        },
+                        series: [{
+                            radius: '91%',
+                            axisLine: { // 坐标轴线
+                                lineStyle: { // 属性lineStyle控制线条样式
+                                    width: 3,
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
+                                }
+                            },
+                            axisTick: { // 坐标轴小标记
+                                length: 3, // 属性length控制线长
+                            },
+                            splitLine: { // 分隔线
+                                length: 6, // 属性length控制线长
+                            },
+                            min: 0,
+                            max: 400,
+                            name: '速度',
+                            type: 'gauge',
+                            detail: {
+                                formatter: '{value}'
+                            },
+                            data: [{
+                                value: value,
+                                name: 'km/h'
+                            }],
+                            title: {
+                                textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                                    fontWeight: 'bolder',
+                                    fontSize: 20,
+                                    fontStyle: 'italic',
+                                    color: '#fff',
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
+                                }
+                            },
+                            data: [{
+                                value: value,
+                                name: 'km/h'
+                            }]
+                        }]
+                    }
+                },
+                getCharts3Option: function(value) {
+                    return {
+                        backgroundColor: '#1E2542',
+                        tooltip: {
+                            formatter: "转速 : {c}rpm"
+                        },
+                        series: [{
+                            min: 0,
+                            max: 10000,
+                            radius: '91%',
+                            name: 'rpm',
+                            type: 'gauge',
+                            data: [{
+                                value: value,
+                                name: 'RPM'
+                            }],
+                            title: {
+                                textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                                    fontWeight: 'bolder',
+                                    fontSize: 14,
+                                    fontStyle: 'italic',
+                                    color: '#fff',
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
+                                }
+                            },
+                            axisTick: { // 坐标轴小标记
+                                length: 3, // 属性length控制线长
+                            },
+                            splitLine: { // 分隔线
+                                length: 6, // 属性length控制线长
+                            },
+                            axisLabel: { // 坐标轴小标记
+                                textStyle: {
+                                    fontSize: 10,
+                                }
+                            },
+                            axisLine: { // 坐标轴线
+                                lineStyle: { // 属性lineStyle控制线条样式
+                                    color: [
+                                        [0.09, 'lime'],
+                                        [0.82, '#1e90ff'],
+                                        [1, '#ff4500']
+                                    ],
+                                    width: 3,
+                                    shadowColor: '#fff', //默认透明
+                                    shadowBlur: 10
+                                }
+                            },
+                            detail: {
+                                backgroundColor: 'rgba(30,144,255,0.8)',
+                                borderWidth: 1,
+                                borderColor: '#fff',
+                                shadowColor: '#fff', //默认透明
+                                shadowBlur: 5,
+                                offsetCenter: [0, '50%'], // x, y，单位px
+                                textStyle: { // 其余属性默认使用全局文本样式，详见TEXTSTYLE
+                                    fontWeight: 'bolder',
+                                    color: '#fff',
+                                    fontSize: 10
+                                }
+                            },
+                        }]
+                    };
+                },
+                onClickInspect: function() {
+                    this.examinationObd = true;
+                    this.recheck();
+                },
+                init: function() {
+                    token = this.getQueryString('token');
+                    this.deviceid = this.getQueryString('deviceid');
+
+                    this.charts1 = echarts.init(document.getElementById('charts1'));
+                    this.charts1.setOption(this.getCharts1Option(0));
+
+                    this.charts2 = echarts.init(document.getElementById('charts2'));
+                    this.charts2.setOption(this.getCharts2Option(0));
+
+                    this.charts3 = echarts.init(document.getElementById('charts3'));
+                    this.charts3.setOption(this.getCharts3Option(0));
+
+                    this.queryobdinfo();
+                }
+            },
+            computed: {
+                progressWidth: function() {
+                    return (this.engineturnrate / 100) + '%';
+                }
+            },
+            mounted: function() {
+                this.init();
+            }
+        })
+    </script>
+</body>
+
+</html>

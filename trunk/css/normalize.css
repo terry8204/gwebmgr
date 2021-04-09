@@ -1,0 +1,417 @@
+/*! normalize.css v6.0.0 | MIT License | github.com/necolas/normalize.css */
+ 
+   /* Document
+    * ========================================================================== 
+    *
+    *1.在所有浏览器中统一行高的高度。
+    *2.iOS和Windows phone设备旋转后可能会自动调整字体大小（e.g. 竖着的时候是14px，横着就自动调整成20px）。将这个属性设置为100%后Safari就不会自作主张调整大小，设置成100%和设置成none的区别是前者在防止浏览器自动插手字体大小的同时，可以让用户通过缩放控制字体大小，后者会很恼人地让用户无法放大缩小字体。。
+    */
+    html {
+     line-height: 1.15; /* 1 */
+     -ms-text-size-adjust: 100%; /* 2 */
+     -webkit-text-size-adjust: 100%; /* 2 */
+   }
+    
+   /* Sections
+      ========================================================================== */
+    
+   /**
+    * 为低版本的IE们补充一些HTML5元素的正确显示方法，IE8不认识HTML5的新元素
+    */
+    
+   article,
+   aside,
+   footer,
+   header,
+   nav,
+   section {
+     display: block;
+   }
+    
+   /**
+   部分版本的Firefox、Chrome和Safari下section和aside里的h1的font-size和margin不一致
+    */
+    
+   h1 {
+     font-size: 2em;
+     margin: 0.67em 0;
+   }
+    
+   /* Grouping content
+      ========================================================================== */
+    
+   /**
+   为低版本的IE们补充一些HTML5元素的正确显示方法
+    */
+    
+   figcaption,
+   figure,
+   main { /* 1 */
+     display: block;
+   }
+    
+   /**
+    * IE8/9和Safari没有对figure加上margin
+    */
+    
+   figure {
+     margin: 1em 40px;
+   }
+    
+   /**
+   Firefox的hr用的是border-box（border和padding算在height里），IE附体……为了保持一致，设为content-box
+    */
+    
+   hr {
+     box-sizing: content-box; /* 1 */
+     height: 0; /* 1 */
+     overflow: visible; /* 2 */
+   }
+    
+   /**
+   1。纠正所有浏览器中字体大小的继承和缩放。
+   2。在所有浏览器中纠正奇数的字体大小。
+    */
+    
+   pre {
+     font-family: monospace, monospace; /* 1 */
+     font-size: 1em; /* 2 */
+   }
+    
+   /* Text-level semantics
+      ========================================================================== */
+    
+   /**
+    * 1. 去掉IE10中活动a链接的灰色背景
+    * 2. 删除在iOS 8 +和Safari 8 +里a链接的下划线和链接间隙。
+    */
+    
+   a {
+     background-color: transparent; /* 1 */
+     -webkit-text-decoration-skip: objects; /* 2 */
+   }
+    
+   /**
+    * 1. 移除 Chrome 57- and Firefox 39- 显示的底部下划线.
+    * 2. 给 Chrome, Edge, IE, Opera, and Safari添加正确的下划线.
+    */
+    
+   abbr[title] {
+     border-bottom: none; /* 1 */
+     text-decoration: underline; /* 2 */
+     text-decoration: underline dotted; /* 2 */
+   }
+    
+   /**
+    * Firefox 4+, Safari和Chrome给b和strong设置的其实是bolder而不是bold，先让其默认
+    */
+    
+   b,
+   strong {
+     font-weight: inherit;
+   }
+    
+   /**
+    * 再添加正确的粗线
+    */
+    
+   b,
+   strong {
+     font-weight: bolder;
+   }
+    
+   /**
+    * 1. 纠正所有浏览器中字体大小的继承和缩放。
+    * 2. 在所有浏览器中纠正奇数的字体大小。
+    */
+    
+   code,
+   kbd,
+   samp {
+     font-family: monospace, monospace; /* 1 */
+     font-size: 1em; /* 2 */
+   }
+    
+   /**
+    * 在Android 4.3、Safari和Chrome里不是斜体
+    */
+    
+   dfn {
+     font-style: italic;
+   }
+    
+   /**
+    * 在IE9给mark添加正确的背景颜色和文字颜色
+    */
+    
+   mark {
+     background-color: #ff0;
+     color: #000;
+   }
+    
+   /**
+    * 不同浏览器下的small大小不一致，这里定为80%
+    */
+    
+   small {
+     font-size: 80%;
+   }
+    
+   /**
+    这里为了让所有浏览器保持一致+不影响其他元素的行高，把两者的line-height设为0，vertical-align从baseline开始，然后用top和bottom手动设置两者偏移量。
+    */
+    
+   sub,
+   sup {
+     font-size: 75%;
+     line-height: 0;
+     position: relative;
+     vertical-align: baseline;
+   }
+    
+   sub {
+     bottom: -0.25em;
+   }
+    
+   sup {
+     top: -0.5em;
+   }
+    
+   /* Embedded content嵌入内容
+      ========================================================================== */
+    
+   /**
+    * 在IE9-正确显示
+    */
+    
+   audio,
+   video {
+     display: inline-block;
+   }
+    
+   /**
+    这个略狠，没有控件的audio不给显示，让ios4-7不乱
+    */
+    
+   audio:not([controls]) {
+     display: none;
+     height: 0;
+   }
+    
+   /**
+    * 移除IE10以下的浏览器的默认图片边框
+    */
+    
+   img {
+     border-style: none;
+   }
+    
+   /**
+    * 隐藏溢出的内容
+    */
+    
+   svg:not(:root) {
+     overflow: hidden;
+   }
+    
+   /* Forms
+      ========================================================================== */
+    
+   /**
+    * 删除Firefox和Safari浏览器里的默认边距
+    */
+    
+   button,
+   input,
+   optgroup,
+   select,
+   textarea {
+     margin: 0;
+   }
+    
+   /**
+   在IE下显示溢出
+    */
+    
+   button,
+   input { /* 1 */
+     overflow: visible;
+   }
+    
+   /**
+    * 让Firefox和IE浏览器统一.
+    * 
+    */
+    
+   button,
+   select { /* 1 */
+     text-transform: none;
+   }
+    
+   /**
+    * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`
+    *    controls in Android 4.
+    * 2. Correct the inability to style clickable types in iOS and Safari.
+    */
+    
+   button,
+   html [type="button"], /* 1 */
+   [type="reset"],
+   [type="submit"] {
+     -webkit-appearance: button; /* 2 */
+   }
+    
+   /**
+    * 删除Firefox里面的填充和边框.
+    */
+    
+   button::-moz-focus-inner,
+   [type="button"]::-moz-focus-inner,
+   [type="reset"]::-moz-focus-inner,
+   [type="submit"]::-moz-focus-inner {
+     border-style: none;
+     padding: 0;
+   }
+    
+   /**
+    * 让样式统一
+    */
+    
+   button:-moz-focusring,
+   [type="button"]:-moz-focusring,
+   [type="reset"]:-moz-focusring,
+   [type="submit"]:-moz-focusring {
+     outline: 1px dotted ButtonText;
+   }
+    
+   /**
+    * 1. 让legend在IE下显示正常
+    * 2. 在IE下继承正确的颜色
+    * 3. 删除填充
+    */
+    
+   legend {
+     box-sizing: border-box; /* 1 */
+     color: inherit; /* 2 */
+     display: table; /* 1 */
+     max-width: 100%; /* 1 */
+     padding: 0; /* 3 */
+     white-space: normal; /* 1 */
+   }
+    
+   /**
+    * 1. 让IE 9-以下浏览器显示正确.
+    * 2. 让在Chrome, Firefox, 和 Opera垂直对齐正确.
+    */
+    
+   progress {
+     display: inline-block; /* 1 */
+     vertical-align: baseline; /* 2 */
+   }
+    
+   /**
+    * 移除ie默认的垂直滚动条
+    */
+    
+   textarea {
+     overflow: auto;
+   }
+    
+   /**
+    * 1.让IE10以下浏览器显示正确的框大小-.
+    * 2. 让IE10以下的填充清零.
+    */
+    
+   [type="checkbox"],
+   [type="radio"] {
+     box-sizing: border-box; /* 1 */
+     padding: 0; /* 2 */
+   }
+    
+   /**
+    * 纠正chrome中递增或递减按钮的光标样式
+    */
+    
+   [type="number"]::-webkit-inner-spin-button,
+   [type="number"]::-webkit-outer-spin-button {
+     height: auto;
+   }
+    
+   /**
+    * 1. 修正了chrome和safari中的奇怪外观
+    * 2. 修正了safari的样式
+    */
+    
+   [type="search"] {
+     -webkit-appearance: textfield; /* 1 */
+     outline-offset: -2px; /* 2 */
+   }
+    
+   /**
+    * 移除内填充取消按钮 in Chrome and Safari on macOS.
+    */
+    
+   [type="search"]::-webkit-search-cancel-button,
+   [type="search"]::-webkit-search-decoration {
+     -webkit-appearance: none;
+   }
+    
+   /**
+    * 1. 修正在IOS和safari的点击类型
+    * 2. 在safari更改字体属性为继承
+    */
+    
+   ::-webkit-file-upload-button {
+     -webkit-appearance: button; /* 1 */
+     font: inherit; /* 2 */
+   }
+    
+   /* Interactive
+      ========================================================================== */
+    
+   /*
+    * 让IE9以下浏览器和firefox正确显示
+    */
+    
+   details, /* 1 */
+   menu {
+     display: block;
+   }
+    
+   /*
+    * 让所有浏览器显示统一
+    */
+    
+   summary {
+     display: list-item;
+   }
+    
+   /* Scripting脚本
+      ========================================================================== */
+    
+   /**
+    * 让IE9以下浏览器正确显示
+    */
+    
+   canvas {
+     display: inline-block;
+   }
+    
+   /**
+    *让IE正确显示
+    */
+    
+   template {
+     display: none;
+   }
+    
+   /* Hidden隐藏
+      ========================================================================== */
+    
+   /**
+    * 让IE10以下浏览器正确显示
+    */
+    
+   [hidden] {
+     display: none;
+   }

@@ -405,6 +405,9 @@ var myUrls = {
     queryObdInfo: function() {
         return this.apihost + 'webapi?action=queryobdinfo&token=' + token;
     },
+    queryObdFaultCodes: function() {
+        return this.apihost + 'webapi?action=queryobdfaultcodes&token=' + token;
+    },
     //复杂围栏
     addGeoRecord: function() {
         return this.apihost + 'webapi?action=addgeorecord&token=' + token;
