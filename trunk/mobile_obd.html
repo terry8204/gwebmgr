@@ -614,7 +614,7 @@
 <body>
     <div id="app">
         <div class="tab-wrapper" v-cloak>
-            <div class="tab_header"> 设备号:{{deviceid}} {{time}} </div>
+            <div class="tab_header" :style="{backgroundColor:tabType==1?'#0F1632':'#1E2542'}"> 设备号:{{deviceid}} {{time}} </div>
             <div class="tab_body">
                 <div class="tab_content_1 full" :style="{zIndex:tabType==1?2:1}">
                     <div id="charts1" class="charts1"></div>
@@ -836,14 +836,7 @@
                     img: 'images/obd/recharge_success.png',
                     name: '网络通信系统'
                 }],
-                errorCheckItems: [{
-                    img: 'images/obd/recharge_fail.png',
-                    name: '动力系统',
-                    children: [{
-                        faultcode: 'code',
-                        codedescchina: '附近的刚回到家',
-                    }]
-                }],
+                errorCheckItems: [],
             },
             methods: {
                 queryobdinfo: function() {
