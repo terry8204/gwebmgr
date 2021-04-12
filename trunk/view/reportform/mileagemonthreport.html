@@ -5,13 +5,9 @@
     </div>
     <Row style="margin:10px;height: 35px;">
         <div style="float: left;">
-            <span>{{$t("reportForm.selectTime")}}:</span>
-            <date-picker type="month" v-model="month" :clearable="false" style="width:120px" placement="bottom-start" :options="dateOptions"></date-picker>
-        </div>
-        <div style="float: left;padding-left: 10px;">
             <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
         </div>
-        <div style="float: left;position: relative;width: 300px;">
+        <div style="float: left;position: relative;width: 260px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
                 <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-focus="focus" :placeholder="placeholder"></i-input>
                 <transition name="fade">
@@ -21,13 +17,19 @@
                 </transition>
             </div>
         </div>
-        <div style="margin-left:20px;float: left;line-height: 35px;">
-            {{$t("reportForm.selected")}}: <span v-text="selectedCount"></span>
-        </div>
-        <div style="margin-left:20px;float: left;">
+        <div style="margin-left:10px;float: left;">
             <i-button @click="clean" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
         </div>
-        <div style="margin-left:20px;float: left;">
+        <div style="float: left;padding-left: 10px;">
+            <span>{{$t("reportForm.selectTime")}}:</span>
+            <date-picker type="month" v-model="month" :clearable="false" style="width:120px" placement="bottom-start" :options="dateOptions"></date-picker>
+        </div>
+
+        <div style="margin-left:10px;float: left;line-height: 35px;">
+            {{$t("reportForm.selected")}}: <span v-text="selectedCount"></span>
+        </div>
+
+        <div style="margin-left:10px;float: left;">
             <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>
         </div>
         <div style="float: right;">

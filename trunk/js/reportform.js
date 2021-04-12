@@ -426,8 +426,8 @@ function cmdReport(groupslist) {
         methods: {
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 170;
-                this.posiDetailHeight = wHeight - 144;
+                this.lastTableHeight = wHeight - 170 + 40;
+                this.posiDetailHeight = wHeight - 144 + 40;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -710,8 +710,8 @@ function posiReport(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 170;
-                this.posiDetailHeight = wHeight - 186;
+                this.lastTableHeight = wHeight - 130;
+                this.posiDetailHeight = wHeight - 146;
             },
             onClickQuery: function() {
                 var me = this;
@@ -909,8 +909,8 @@ function reportMileageDetail(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 170;
-                this.posiDetailHeight = wHeight - 144;
+                this.lastTableHeight = wHeight - 130;
+                this.posiDetailHeight = wHeight - 104;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId) {
@@ -1213,7 +1213,7 @@ function groupMileage(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 210;
+                this.lastTableHeight = wHeight - 170;
             },
             onClickQuery: function() {
                 var deviceids = [];
@@ -1377,8 +1377,8 @@ function parkDetails(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 170;
-                this.posiDetailHeight = wHeight - 144;
+                this.lastTableHeight = wHeight - 130;
+                this.posiDetailHeight = wHeight - 104;
             },
 
             onClickQuery: function() {
@@ -1541,7 +1541,7 @@ function accDetails(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 215;
+                this.lastTableHeight = wHeight - 175;
             },
             onClickQuery: function() {
                 var deviceids = [];
@@ -6394,7 +6394,7 @@ function weightSummary(groupslist) {
 
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 615;
+                this.lastTableHeight = wHeight - 570;
             },
             onClickQuery: function() {
                 var deviceids = [];

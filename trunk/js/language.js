@@ -548,7 +548,7 @@
                 year: 'year',
                 month: 'month',
                 insurePlaceholder: 'input_user|phone|identity',
-                oilReport: 'Oil report',
+                oilReport: 'Oil Reports',
                 weightReport: 'Weight Reports',
                 dayOilConsumption: 'Daily Fuel Consumption Report',
                 dateOilConsumption: 'Fuel Consumption Chart',
