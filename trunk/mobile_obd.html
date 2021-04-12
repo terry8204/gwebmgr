@@ -17,6 +17,7 @@
             font-size: 100px;
             position: relative;
             margin: 0;
+            background-color: #08081C;
         }
         
         #app,
@@ -852,7 +853,7 @@
                         //contentType: "application/json;charset=utf-8",
                         dataType: 'json',
                         success: function(resp) {
-                            console.log(resp)
+
                             if (resp.status == 0) {
                                 var record = resp.record;
                                 me.charts1.setOption(me.getCharts1Option(record.speed));

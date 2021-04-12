@@ -6528,7 +6528,7 @@ function timeOilConsumption(groupslist) {
                 { title: vRoot.$t('reportForm.totalOil'), key: 'totalad', width: 100 },
                 { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
                 { title: vRoot.$t('reportForm.reissue'), key: 'reissue', width: 80 },
-                { title: vRoot.$t('reportForm.status'), key: 'strstatus' },
+                { title: vRoot.$t('reportForm.status'), key: 'strstatus', },
                 {
                     title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
                     width: 210,
@@ -6645,6 +6645,7 @@ function timeOilConsumption(groupslist) {
                 var cotgasus = vRoot.$t('reportForm.oil');
                 var status = vRoot.$t('reportForm.status');
                 var reissue = vRoot.$t('reportForm.reissue');
+
                 var option = {
                     title: {
                         // text: time + '/' + cotgasus,
@@ -6690,16 +6691,7 @@ function timeOilConsumption(groupslist) {
                     },
                     legend: {
                         data: [speed, dis, totoil, usoil1, usoil2, usoil3, usoil4, srcad0, srcad1, srcad2, srcad3],
-                        selected: {
-                            [usoil1]: false,
-                            [usoil2]: false,
-                            [usoil3]: false,
-                            [usoil4]: false,
-                            [srcad0]: false,
-                            [srcad1]: false,
-                            [srcad2]: false,
-                            [srcad3]: false,
-                        },
+                        selected: this.selectedLegend,
                         x: 'left',
                         // width: 600,
                     },
@@ -7014,8 +7006,32 @@ function timeOilConsumption(groupslist) {
             this.myChart = null;
             this.records = [];
             this.disMin = 0;
+
+            var usoil1 = vRoot.$t('reportForm.oil1');
+            var usoil2 = vRoot.$t('reportForm.oil2');
+            var usoil3 = vRoot.$t('reportForm.oil3');
+            var usoil4 = vRoot.$t('reportForm.oil4');
+
+            var srcad0 = vRoot.$t('reportForm.srcad0');
+            var srcad1 = vRoot.$t('reportForm.srcad1');
+            var srcad2 = vRoot.$t('reportForm.srcad2');
+            var srcad3 = vRoot.$t('reportForm.srcad3');
+
+            this.selectedLegend = {
+                [usoil1]: false,
+                [usoil2]: false,
+                [usoil3]: false,
+                [usoil4]: false,
+                [srcad0]: false,
+                [srcad1]: false,
+                [srcad2]: false,
+                [srcad3]: false,
+            }
+
+
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts();
+
             this.chartsIns.getZr().on('click', function(params) {
                 var pointInPixel = [params.offsetX, params.offsetY];
                 if (me.chartsIns.containPixel('grid', pointInPixel)) {
@@ -7046,10 +7062,9 @@ function timeOilConsumption(groupslist) {
                 }
             });
 
-            var usoil1 = vRoot.$t('reportForm.oil1');
-            var usoil2 = vRoot.$t('reportForm.oil2');
-            var usoil3 = vRoot.$t('reportForm.oil3');
-            var usoil4 = vRoot.$t('reportForm.oil4');
+
+
+
 
             this.chartsIns.on('legendselectchanged', function(param) {
 
@@ -7060,7 +7075,16 @@ function timeOilConsumption(groupslist) {
                     { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 100 },
                     { title: vRoot.$t('reportForm.totalOil'), key: 'totalad', width: 100 },
                 ];
+
                 var selected = param.selected;
+                me.selectedLegend[usoil1] = !!selected[usoil1];
+                me.selectedLegend[usoil2] = !!selected[usoil2];
+                me.selectedLegend[usoil3] = !!selected[usoil3];
+                me.selectedLegend[usoil4] = !!selected[usoil4];
+                me.selectedLegend[srcad0] = !!selected[srcad0];
+                me.selectedLegend[srcad1] = !!selected[srcad1];
+                me.selectedLegend[srcad2] = !!selected[srcad2];
+                me.selectedLegend[srcad3] = !!selected[srcad3];
 
                 if (selected[usoil1]) {
                     columns.push({ title: vRoot.$t('reportForm.oil1'), key: 'ad0', width: 90 })
@@ -7074,12 +7098,24 @@ function timeOilConsumption(groupslist) {
                 if (selected[usoil4]) {
                     columns.push({ title: vRoot.$t('reportForm.oil4'), key: 'ad3', width: 90 })
                 }
+                if (selected[srcad0]) {
+                    columns.push({ title: vRoot.$t('reportForm.srcad0'), key: 'srcad0', width: 90 })
+                }
+                if (selected[srcad1]) {
+                    columns.push({ title: vRoot.$t('reportForm.srcad1'), key: 'srcad1', width: 90 })
+                }
+                if (selected[srcad2]) {
+                    columns.push({ title: vRoot.$t('reportForm.srcad2'), key: 'srcad2', width: 90 })
+                }
+                if (selected[srcad3]) {
+                    columns.push({ title: vRoot.$t('reportForm.srcad3'), key: 'srcad3', width: 90 })
+                }
 
 
                 me.columns = columns.concat([
                     { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
                     { title: vRoot.$t('reportForm.reissue'), key: 'reissue', width: 80 },
-                    { title: vRoot.$t('reportForm.status'), key: 'strstatus' },
+                    { title: vRoot.$t('reportForm.status'), key: 'strstatus', width: 160, },
                     {
                         title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
                         width: 210,
