@@ -1032,7 +1032,8 @@ var monitor = {
             });
         },
         videoBack: function() {
-            window.open('videoback.html?deviceid=' + globalDeviceId + '&token=' + token);
+            var device = this.deviceInfos[globalDeviceId];
+            window.open('videoback.html?deviceid=' + globalDeviceId + '&token=' + token + '&devicename=' + device.devicename);
         },
         openActiveSafety: function() {
             var device = this.deviceInfos[globalDeviceId];

@@ -194,6 +194,22 @@
                     <div class="full">
                         <Row class="row-cls">
                             <i-Col span="6" class="col-cls">
+                                {{$t('alarm.devName')}}:
+                            </i-Col>
+                            <i-Col span="18" style="line-height: 32px;">
+                                <span v-text="devicename"></span>
+                            </i-Col>
+                        </Row>
+                        <Row class="row-cls">
+                            <i-Col span="6" class="col-cls">
+                                {{$t('alarm.devNum')}}:
+                            </i-Col>
+                            <i-Col span="18" style="line-height: 32px;">
+                                <span v-text="deviceid"></span>
+                            </i-Col>
+                        </Row>
+                        <Row class="row-cls">
+                            <i-Col span="6" class="col-cls">
                                 {{$t('videoback.channelNumber')}}:
                             </i-Col>
                             <i-Col span="18">
@@ -401,6 +417,7 @@
         var player = null;
         var chart = null;
         var deviceid = utils.getParameterByName("deviceid");
+        var devicename = utils.getParameterByName("devicename");
         var token = utils.getParameterByName("token");
         var startPlayerTimer = null;
         var isRequsetPlaying = false; // 防止连续点击
@@ -437,6 +454,8 @@
             el: "#container",
             i18n: utils.getI18n(),
             data: {
+                deviceid: deviceid,
+                devicename: devicename,
                 networkSpeed: '0KB/S',
                 isSpin: false,
                 modal: false,
