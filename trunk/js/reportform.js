@@ -3097,10 +3097,11 @@ function messageRecords(groupslist) {
                     var that = this;
                     var filterArr = [];
                     this.data.forEach(function(item) {
-                        if ((item.typedescr && item.typedescr.indexOf(that.filterStr) != -1) || item.strstatus.indexOf(that.filterStr) != -1 || item.stralarm.indexOf(that.filterStr) != -1) {
+                        if ((item.typedescr && item.typedescr.indexOf(that.filterStr) != -1) || item.strstatus.indexOf(that.filterStr) != -1 || item.stralarm.indexOf(that.filterStr) != -1 || item.messagetype.indexOf(that.filterStr) != -1) {
                             filterArr.push(item);
                         }
                     });
+
                     this.tableData = filterArr;
                 };
             },
