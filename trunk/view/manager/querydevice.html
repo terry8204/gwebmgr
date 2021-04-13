@@ -286,6 +286,12 @@
                                 </div>
                             </i-col>
                         </Row>
+                        <Row>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("reportForm.vinno")}} : &nbsp;</i-col>
+                            <i-col span="8">
+                                <i-input v-model.trim="vin"></i-input>
+                            </i-col>
+                        </Row>
                     </div>
                 </Tab-Pane>
                 <Tab-Pane :label="$t('device.ownerInfo')" name="ownerInfo">
@@ -431,7 +437,7 @@
                         <Row style="margin:10px 0;">
                             <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t('reportForm.vinno')}} : &nbsp;</i-col>
                             <i-col span="16" style="height: 100%;line-height:32px;text-align:left;">
-                                <i-input v-model.trim="insureInfoData.vin" style="width: 100%;"></i-input>
+                                <i-input v-model.trim="insureInfoData.insurevin" style="width: 100%;"></i-input>
                             </i-col>
                         </Row>
                         <Row style="margin:10px 0;">
@@ -1675,6 +1681,7 @@
                 plateno: "",
                 cartagcolor: "9",
                 carcolor: "9",
+                vin: '',
                 icon: "0",
                 isShowIcon: false,
 
@@ -1693,7 +1700,7 @@
                 insureInfoData: { //编辑的设备信息
                     deviceid: '',
                     securitynum: '', //防盗号
-                    vin: '', //车架号
+                    insurevin: '', //车架号
                     insurecompany: '', //保险公司
                     insurenum: '', //保单号
                     subinsuretime: new Date(), //投保日期
@@ -1864,7 +1871,7 @@
                             vueInstanse.driverInfo.driverrelatevehiclenum = new Date(resp.driverrelatevehiclenum ? resp.driverrelatevehiclenum : 0); //'核发日期' ,
 
                             vueInstanse.insureInfoData.securitynum = resp.securitynum;
-                            vueInstanse.insureInfoData.vin = resp.vin;
+                            vueInstanse.insureInfoData.insurevin = resp.insurevin;
                             vueInstanse.insureInfoData.insurecompany = resp.insurecompany;
                             vueInstanse.insureInfoData.insurenum = resp.insurenum;
                             vueInstanse.insureInfoData.subinsuretime = new Date(resp.subinsuretime ? resp.subinsuretime : 0);
@@ -1898,7 +1905,7 @@
 
 
                             vueInstanse.insureInfoData.securitynum = '';
-                            vueInstanse.insureInfoData.vin = '';
+                            vueInstanse.insureInfoData.insurevin = '';
                             vueInstanse.insureInfoData.insurecompany = '';
                             vueInstanse.insureInfoData.insurenum = '';
                             vueInstanse.insureInfoData.subinsuretime = new Date();
@@ -1922,7 +1929,7 @@
                         vueInstanse.insureInfoData.deviceid = params.row.deviceid;
                         if (resp) {
                             vueInstanse.insureInfoData.securitynum = resp.securitynum;
-                            vueInstanse.insureInfoData.vin = resp.vin;
+                            vueInstanse.insureInfoData.insurevin = resp.insurevin;
                             vueInstanse.insureInfoData.insurecompany = resp.insurecompany;
                             vueInstanse.insureInfoData.insurenum = resp.insurenum;
                             vueInstanse.insureInfoData.subinsuretime = resp.subinsuretime;
@@ -1930,7 +1937,7 @@
                             vueInstanse.insureInfoData.insuremark = resp.insuremark;
                         } else {
                             vueInstanse.insureInfoData.securitynum = '';
-                            vueInstanse.insureInfoData.vin = '';
+                            vueInstanse.insureInfoData.insurevin = '';
                             vueInstanse.insureInfoData.insurecompany = '';
                             vueInstanse.insureInfoData.insurenum = '';
                             vueInstanse.insureInfoData.subinsuretime = '';
@@ -2698,6 +2705,9 @@
                     if (this.carcolor) {
                         data.baseinfo.carcolor = Number(this.carcolor);
                     };
+                    if (this.vin) {
+                        data.baseinfo.vin = this.vin;
+                    };
                     if (this.icon) {
                         data.baseinfo.icon = Number(this.icon);
                     };
@@ -2783,6 +2793,7 @@
                     me.plateno = editObject.plateno;
                     me.cartagcolor = String(editObject.cartagcolor);
                     me.carcolor = String(editObject.carcolor);
+                    me.vin = editObject.vin;
                     me.icon = editObject.icon;
                 },
                 getDeviceType: function() {
