@@ -149,16 +149,6 @@
                             </i-col>
                         </Row>
 
-                        <Row style="margin: 10px 0">
-                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}} : &nbsp;</i-col>
-                            <i-col span="8">
-                                <i-input v-model.trim="reportedpoint"></i-input>
-                            </i-col>
-                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allReportCount")}} : &nbsp;</i-col>
-                            <i-col span="8">
-                                <i-input v-model.trim="totalpoint"></i-input>
-                            </i-col>
-                        </Row>
 
                         <Row style="margin: 10px 0">
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.isUse")}} : &nbsp;</i-col>
@@ -1674,8 +1664,6 @@
                 loginenable: "1",
                 deviceenable: "0",
                 deviceTypeList: [],
-                reportedpoint: 0,
-                totalpoint: 1500,
                 groupid: '',
                 forwardurl: "",
                 allowedit: '0',
@@ -2723,13 +2711,6 @@
                         data.baseinfo.groupid = 0;
                     };
 
-                    if (this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)) {
-                        data.baseinfo.reportedpoint = Number(this.reportedpoint);
-                    }
-
-                    if (this.totalpoint && !isNaN(this.totalpoint)) {
-                        data.baseinfo.totalpoint = Number(this.totalpoint);
-                    }
 
                     data.baseinfo.monitor = this.monitor;
 
@@ -2778,8 +2759,7 @@
                     this.deviceenable = "0";
                     this.groupsList = [];
                     this.groupid = "";
-                    this.reportedpoint = 0;
-                    this.totalpoint = 1500;
+
                     this.forwardurl = "";
                     this.monitor = "";
                 },
@@ -2792,8 +2772,6 @@
                     me.devicetype = editObject.devicetype;
                     me.loginenable = editObject.loginenable + "";
                     me.deviceenable = "" + editObject.deviceenable;
-                    me.reportedpoint = editObject.reportedpoint;
-                    me.totalpoint = editObject.totalpoint;
                     me.forwardurl = editObject.forwardurl;
                     me.isfree = editObject.isfree;
                     me.remark = editObject.remark;

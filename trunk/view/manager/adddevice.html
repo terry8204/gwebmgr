@@ -80,17 +80,6 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}} : &nbsp;</i-col>
-                <i-col span="8">
-                    <i-input v-model.trim="reportedpoint"></i-input>
-                </i-col>
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allReportCount")}} : &nbsp;</i-col>
-                <i-col span="8">
-                    <i-input v-model.trim="totalpoint"></i-input>
-                </i-col>
-            </Row>
-
-            <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allowLogin")}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-select v-model="loginenable">
@@ -217,8 +206,6 @@
                 groupsList: [],
                 deviceTypeList: [],
                 groupid: '',
-                reportedpoint: 0,
-                totalpoint: 1500,
                 checkboxObj: {},
                 createrToUser: "",
                 userlists: [],
@@ -324,15 +311,6 @@
                     if (this.groupid) {
                         data.groupid = this.groupid;
                     };
-
-                    if (this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)) {
-                        data.reportedpoint = Number(this.reportedpoint);
-                    }
-
-                    if (this.totalpoint && !isNaN(this.totalpoint)) {
-                        data.totalpoint = Number(this.totalpoint);
-                    }
-
 
 
                     if (globalUserList.indexOf(this.createrToUser) == -1) {

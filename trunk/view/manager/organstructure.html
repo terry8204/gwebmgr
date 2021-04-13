@@ -232,16 +232,6 @@
                             </i-col>
                         </Row>
 
-                        <Row style="margin: 10px 0">
-                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.reportCount")}} : &nbsp;</i-col>
-                            <i-col span="8">
-                                <i-input v-model.trim="reportedpoint"></i-input>
-                            </i-col>
-                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.allReportCount")}} : &nbsp;</i-col>
-                            <i-col span="8">
-                                <i-input v-model.trim="totalpoint"></i-input>
-                            </i-col>
-                        </Row>
 
                         <Row style="margin: 10px 0">
                             <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">{{$t("device.isUse")}} : &nbsp;</i-col>
@@ -387,8 +377,6 @@
             deviceTypeList: [],
             deviceid: '',
             teltype: '',
-            reportedpoint: '',
-            totalpoint: '',
             deviceenable: '',
             monitor: '',
             allowedit: '',
@@ -643,14 +631,6 @@
                     data.groupid = 0;
                 };
 
-                if (this.reportedpoint == 0 || this.reportedpoint && !isNaN(this.reportedpoint)) {
-                    data.reportedpoint = Number(this.reportedpoint);
-                }
-
-                if (this.totalpoint && !isNaN(this.totalpoint)) {
-                    data.totalpoint = Number(this.totalpoint);
-                }
-
                 data.monitor = this.monitor;
 
                 this.forwardurl && (data.forwardurl = this.forwardurl);
@@ -798,8 +778,6 @@
                 me.devicetype = editObject.devicetype;
                 me.loginenable = editObject.loginenable + "";
                 me.deviceenable = "" + editObject.deviceenable;
-                me.reportedpoint = editObject.reportedpoint;
-                me.totalpoint = editObject.totalpoint;
                 me.forwardurl = editObject.forwardurl;
                 me.isfree = editObject.isfree;
                 me.monitor = editObject.monitor;
