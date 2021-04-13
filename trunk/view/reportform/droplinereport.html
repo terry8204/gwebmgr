@@ -46,6 +46,18 @@
         </div>
     </Row>
     <div style="margin:10px;">
-        <i-table ref="totalTable" size="small" :columns="columns" :data="tableData" :height="tableHeight" :loading="loading"></i-table>
+        <i-table ref="totalTable" size="small" :columns="columns" border :data="tableData" :height="tableHeight" :loading="loading"></i-table>
     </div>
+    <transition name="fade">
+        <div v-show="mapModal" class="posi-map-wraper">
+            <div class="map-modal" @click="mapModal=false"></div>
+            <div class="inner-map-wraper">
+                <div class="posi-map-title">
+                    {{$t("reportForm.seePosi")}}
+                    <div class="map-close"></div>
+                </div>
+                <div id="posi-map"></div>
+            </div>
+        </div>
+    </transition>
 </div>

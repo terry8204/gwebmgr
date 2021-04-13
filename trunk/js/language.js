@@ -1879,7 +1879,7 @@
                 temp4: '温度4',
                 averageTemp: '平均温度',
                 humi: '湿度',
-                drivername: '司机名称',
+                drivername: '司机姓名',
                 cardinsertTime: '装点时间(插卡)',
                 cardinsertAddress: '装点地点(插卡)',
                 cardPullTime: '卸点时间(拔卡)',

@@ -4749,50 +4749,44 @@ function dropLineReport(groupslist) {
             days: '1',
             groupslist: [],
             columns: [
-                { title: vRoot.$t("reportForm.index"), key: 'index', width: 70 },
+                { title: vRoot.$t("reportForm.index"), key: 'index', width: 60 },
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 120 },
                 { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 120 },
+                { title: vRoot.$t('reportForm.offlineTime'), width: 150, key: 'updatetimeStr' },
+                { title: vRoot.$t('reportForm.downOfflineDuration'), width: 180, key: 'downOfflineDuration' },
+                { title: vRoot.$t("reportForm.drivername"), key: 'drivername', width: 120 },
+                { title: vRoot.$t("customer.contactNumber"), key: 'driverphone', width: 120 },
                 { title: 'SIM', key: 'simnum', width: 120 },
+                { title: vRoot.$t("monitor.groupName"), key: 'groupName', width: 100 },
+                { title: vRoot.$t("user.devType"), key: 'devicetype', width: 85 },
+                { title: vRoot.$t("monitor.ownerInfo"), key: 'ownername', width: 100 },
+                { title: vRoot.$t("device.contact1"), key: 'phonenum1', width: 120 },
+                { title: vRoot.$t("device.contact2"), key: 'phonenum2', width: 120 },
+                { title: vRoot.$t('reportForm.stralarm'), width: 200, key: 'stralarm' },
+                { title: vRoot.$t('reportForm.strstatus'), width: 200, key: 'strstatus' },
                 {
-                    title: vRoot.$t("monitor.groupName"),
-                    key: 'groupName',
-                    width: 100,
-                },
-                {
-                    title: vRoot.$t("user.devType"),
-                    key: 'devicetype',
-                    width: 85,
-                },
-                {
-                    title: vRoot.$t('reportForm.offlineTime'),
-                    width: 150,
-                    key: 'updatetimeStr',
-                },
-                {
-                    title: vRoot.$t('reportForm.downOfflineDuration'),
-                    width: 150,
-                    key: 'downOfflineDuration',
-                },
-                {
-                    title: vRoot.$t('monitor.remarks'),
-                    key: 'remark',
+                    title: vRoot.$t("alarm.action"),
+                    width: 120,
                     render: function(h, params) {
-                        var remark = params.row.remark;
-                        return h('div', {
-                            style: {
-                                maxHeight: '40px',
-                                overflow: 'hidden'
-                            }
-                        }, remark)
+                        return h('Button', {
+                            props: {
+                                size: "small",
+                            },
+                            on: {
+                                click: function() {
+                                    utils.showWindowMap(vueInstanse, params);
+                                }
+                            },
+                        }, isZh ? '查看地图' : 'See Map')
                     }
                 },
             ],
+            mapModal: false,
             tableData: [],
             tableHeight: 300,
         },
         methods: {
             exportData: function() {
-
                 var tableData = deepClone(this.tableData);
                 var columns = deepClone(this.columns);
                 tableData.forEach(function(item) {
@@ -4801,13 +4795,17 @@ function dropLineReport(groupslist) {
                     item.devicename = "\t" + item.devicename;
                     item.simnum = "\t" + item.simnum;
                 });
-                columns[columns.length - 1] = { title: vRoot.$t('monitor.remarks'), key: 'remark', };
+                columns.pop();
                 this.$refs.totalTable.exportCsv({
                     filename: isZh ? "离线报表" : "OfflineReport",
                     original: false,
                     columns: columns,
                     data: tableData
                 });
+            },
+            initMap: function() {
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('posi-map');
             },
             onClickQuery: function() {
                 if (this.checkedDevice.length == 0) {
@@ -4844,11 +4842,32 @@ function dropLineReport(groupslist) {
                     if (respData.status == 0) {
 
                         respData.records.forEach(function(item, index) {
+
                             item.index = index + 1;
                             item.updatetimeStr = getUpdatetimeStr(item);
                             item.devicetype = vstore.state.deviceTypes[item.devicetype].typename;
                             item.downOfflineDuration = utils.timeStamp(Date.now() - item.updatetime);
                             item.groupName = me.getGroupName(groupslist, item);
+
+                            var deviceex = item.deviceex;
+                            if (deviceex) {
+                                item.ownername = deviceex.ownername;
+                                item.phonenum1 = deviceex.phonenum1;
+                                item.phonenum2 = deviceex.phonenum2;
+                                item.drivername = deviceex.drivername;
+                                item.driverphone = deviceex.driverphone;
+                            } else {
+                                item.ownername = '';
+                                item.phonenum1 = '';
+                                item.phonenum2 = '';
+                                item.drivername = '';
+                                item.driverphone = '';
+                            }
+
+                            if (!isZh) {
+                                item.stralarm = item.stralarmen;
+                                item.strstatus = item.strstatusen;
+                            }
                         });
 
                         me.tableData = respData.records;
@@ -4912,6 +4931,7 @@ function dropLineReport(groupslist) {
         mounted: function() {
             var me = this;
             this.queryDevicesTree();
+            this.initMap();
             window.onresize = function() {
                 me.calcTableHeight();
             };
