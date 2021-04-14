@@ -117,8 +117,14 @@ new Vue({
                         localStorage.setItem(resp.username + "-multilogin", resp.multilogin);
                         // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                         window.location.href = "mainv2.html";
-                    } else {
-                        me.$Message.error("登录失败");
+                    } else if (resp.status == -1) {
+                        me.$Message.error(me.$t("login.error_4"));
+                    } else if (resp.status == 1) {
+                        me.$Message.error(me.$t("login.error_4"));
+                    } else if (resp.status == 2) {
+                        me.$Message.error(me.$t("login.error_5"));
+                    } else if (resp.status == 3) {
+                        me.$Message.error(me.$t("login.error_6"));
                     }
                 },
                 error: function(e) {
