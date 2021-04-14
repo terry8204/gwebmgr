@@ -47,6 +47,9 @@
             <i-button @click="exportData" icon="ios-search" type="primary">{{$t("reportForm.exportData")}}</i-button>
         </div>
     </div>
+    <div style="height: 200px;">
+        <div id="msg_charts" style="width:600px;height:200px;margin: 0 auto;"></div>
+    </div>
     <div style="margin:10px;">
         <i-table ref="table" :columns="columns" size="small" :height="tableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
     </div>

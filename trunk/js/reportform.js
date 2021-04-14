@@ -3065,6 +3065,40 @@ function messageRecords(groupslist) {
                     data: this.data
                 });
             },
+            charts: function(title) {
+                var option = {
+                    title: {
+                        text: title,
+                        bottom: 'auto'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'right',
+                    },
+                    // grid: {
+                    //     top: 5,
+                    //     left: 20,
+                    //     right: 5,
+                    //     bottom: 5,
+                    // },
+                    series: [{
+                        type: 'pie',
+                        radius: '70%',
+                        data: this.seriesData,
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }]
+                };;
+                this.chartsIns.setOption(option);
+            },
             onRowClick: function(row) {
                 var me = this;
                 this.isShowCard = true;
@@ -3096,12 +3130,21 @@ function messageRecords(groupslist) {
                 if (this.filterStr) {
                     var that = this;
                     var filterArr = [];
-                    this.data.forEach(function(item) {
+                    // this.data.forEach(function(item) {
+                    //     if ((item.typedescr && item.typedescr.indexOf(that.filterStr) != -1) || item.strstatus.indexOf(that.filterStr) != -1 || item.stralarm.indexOf(that.filterStr) != -1 || item.messagetype.indexOf(that.filterStr) != -1) {
+                    //         filterArr.push(item);
+                    //     }
+                    // });
+
+                    for (var i = 0; i < this.data.length; i++) {
+                        var item = this.data[i];
                         if ((item.typedescr && item.typedescr.indexOf(that.filterStr) != -1) || item.strstatus.indexOf(that.filterStr) != -1 || item.stralarm.indexOf(that.filterStr) != -1 || item.messagetype.indexOf(that.filterStr) != -1) {
                             filterArr.push(item);
+                            if (i > 80) {
+                                break;
+                            }
                         }
-                    });
-
+                    }
                     this.tableData = filterArr;
                 };
             },
@@ -3112,7 +3155,7 @@ function messageRecords(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.tableHeight = wHeight - 165;
+                this.tableHeight = wHeight - 380;
             },
             nextDay: function() {
                 this.startDate = new Date(this.startDate.getTime() + this.dayTime);
@@ -3145,15 +3188,43 @@ function messageRecords(groupslist) {
                 var me = this;
                 this.requestTracks(function(resp) {
                     if (resp.status == 0 && resp.records) {
+                        var seriesObj = {};
                         resp.records.forEach(function(record) {
-                            var type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
+                            var type = null;
+                            var status = record.status;
+                            var messageType = record.messagetype;
+                            if (messageType == 0x200) {
+                                var isLocated = (status & 0x4) == 0x4;
+                                if (isLocated) {
+                                    type = "0x" + parseInt(record.messagetype, 10).toString(16) + '-1(' + record.messagetype + ')';
+                                } else {
+                                    type = "0x" + parseInt(record.messagetype, 10).toString(16) + '-0(' + record.messagetype + ')';
+                                }
+                            } else {
+                                type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
+                            }
                             record.messagetype = type;
-                            record.reportmodeStr = getReportModeStr(record.reportmode);
+                            record.reportmodeStr = reportmodeStr = getReportModeStr(record.reportmode);
                             record.updatetimeStr = '\t' + DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                            if (seriesObj[type] == undefined) {
+                                seriesObj[type] = {
+                                    name: type,
+                                    value: 1
+                                };
+                            } else {
+                                seriesObj[type].value++;
+                            }
                         });
                         resp.records.sort(function(a, b) {
                             return b.updatetime - a.updatetime;
                         });
+
+                        me.seriesData = Object.values(seriesObj);
+                        me.seriesData.sort(function(a, b) {
+                            return b.value - a.value;
+                        });
+                        console.log('seriesData', me.seriesData);
+                        me.charts(isZh ? "上报比例" : 'Proportion');
                         me.data = Object.freeze(resp.records);
                         me.total = me.data.length;
                         me.tableData = me.data.slice(0, 20);
@@ -3176,9 +3247,11 @@ function messageRecords(groupslist) {
         mounted: function() {
             var me = this;
             this.groupslist = groupslist;
-
             this.calcTableHeight();
             this.dayTime = 60 * 60 * 24 * 1000;
+            this.seriesData = [];
+            this.chartsIns = echarts.init(document.getElementById('msg_charts'));
+            this.charts(isZh ? "上报比例" : 'Proportion');
             window.onresize = function() {
                 me.calcTableHeight();
             };
@@ -6521,8 +6594,6 @@ function weightSummary(groupslist) {
             }
         },
         mounted: function() {
-            var me = this;
-
             this.myChart = null;
             this.records = [];
             this.chartsIns = echarts.init(document.getElementById('charts'));
