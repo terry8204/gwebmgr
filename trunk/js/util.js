@@ -532,6 +532,17 @@ var utils = {
             paramsListObj: paramsListObj
         };
     },
+    padPreZero: function(value, zeroCount) {
+        var newValue = value;
+        var oldCount = value.toString().length;
+        if (oldCount < zeroCount) {
+            var needPadCount = zeroCount - oldCount;
+            for (var i = 0; i < needPadCount; i++) {
+                newValue = "0" + newValue;
+            }
+        }
+        return newValue;
+    },
     getPosiType: function(track) {
 
         var type = null;

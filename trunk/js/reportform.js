@@ -3193,15 +3193,16 @@ function messageRecords(groupslist) {
                             var type = null;
                             var status = record.status;
                             var messageType = record.messagetype;
+                            var paddedZeroMessageType = "0x" + utils.padPreZero(parseInt(record.messagetype, 10).toString(16), 4);
                             if (messageType == 0x200) {
                                 var isLocated = (status & 0x4) == 0x4;
                                 if (isLocated) {
-                                    type = "0x" + parseInt(record.messagetype, 10).toString(16) + '-1(' + record.messagetype + ')';
+                                    type = paddedZeroMessageType + '-1(' + record.messagetype + ')';
                                 } else {
-                                    type = "0x" + parseInt(record.messagetype, 10).toString(16) + '-0(' + record.messagetype + ')';
+                                    type = paddedZeroMessageType + '-0(' + record.messagetype + ')';
                                 }
                             } else {
-                                type = "0x" + parseInt(record.messagetype, 10).toString(16) + '(' + record.messagetype + ')';
+                                type = paddedZeroMessageType + '(' + record.messagetype + ')';
                             }
                             record.messagetype = type;
                             record.reportmodeStr = reportmodeStr = getReportModeStr(record.reportmode);
