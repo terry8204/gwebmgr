@@ -3185,6 +3185,7 @@ function messageRecords(groupslist) {
                         var seriesObj = {};
                         resp.records.forEach(function(record) {
                             var type = null;
+                            var copyType = null;
                             var status = record.status;
                             var messageType = record.messagetype;
                             var paddedZeroMessageType = "0x" + utils.padPreZero(parseInt(record.messagetype, 10).toString(16), 4);
@@ -3192,22 +3193,25 @@ function messageRecords(groupslist) {
                                 var isLocated = (status & 0x4) == 0x4;
                                 if (isLocated) {
                                     type = paddedZeroMessageType + '-1(' + record.messagetype + ')';
+                                    copyType = paddedZeroMessageType + '-1(' + record.typedescr + ')';
                                 } else {
                                     type = paddedZeroMessageType + '-0(' + record.messagetype + ')';
+                                    copyType = paddedZeroMessageType + '-1(' + record.typedescr + ')';
                                 }
                             } else {
                                 type = paddedZeroMessageType + '(' + record.messagetype + ')';
+                                copyType = paddedZeroMessageType + '(' + record.typedescr + ')';
                             }
                             record.messagetype = type;
                             record.reportmodeStr = reportmodeStr = getReportModeStr(record.reportmode);
                             record.updatetimeStr = '\t' + DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
-                            if (seriesObj[type] == undefined) {
-                                seriesObj[type] = {
-                                    name: type,
+                            if (seriesObj[copyType] == undefined) {
+                                seriesObj[copyType] = {
+                                    name: copyType,
                                     value: 1
                                 };
                             } else {
-                                seriesObj[type].value++;
+                                seriesObj[copyType].value++;
                             }
                         });
                         resp.records.sort(function(a, b) {
@@ -3218,7 +3222,6 @@ function messageRecords(groupslist) {
                         me.seriesData.sort(function(a, b) {
                             return b.value - a.value;
                         });
-                        console.log('seriesData', me.seriesData);
                         me.charts(isZh ? "上报比例" : 'Proportion');
                         me.data = Object.freeze(resp.records);
                         me.total = me.data.length;
