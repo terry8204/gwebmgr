@@ -3130,17 +3130,11 @@ function messageRecords(groupslist) {
                 if (this.filterStr) {
                     var that = this;
                     var filterArr = [];
-                    // this.data.forEach(function(item) {
-                    //     if ((item.typedescr && item.typedescr.indexOf(that.filterStr) != -1) || item.strstatus.indexOf(that.filterStr) != -1 || item.stralarm.indexOf(that.filterStr) != -1 || item.messagetype.indexOf(that.filterStr) != -1) {
-                    //         filterArr.push(item);
-                    //     }
-                    // });
-
                     for (var i = 0; i < this.data.length; i++) {
                         var item = this.data[i];
                         if ((item.typedescr && item.typedescr.indexOf(that.filterStr) != -1) || item.strstatus.indexOf(that.filterStr) != -1 || item.stralarm.indexOf(that.filterStr) != -1 || item.messagetype.indexOf(that.filterStr) != -1) {
                             filterArr.push(item);
-                            if (i > 80) {
+                            if (filterArr.length > 80) {
                                 break;
                             }
                         }
