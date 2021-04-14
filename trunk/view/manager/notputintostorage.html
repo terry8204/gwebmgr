@@ -140,7 +140,6 @@
                                         click: function() {
                                             utils.getJiuHuAddressSyn(lon, lat, function(resp) {
                                                 if (resp && resp.address) {
-                                                    vueInstanse.records[params.index].address = resp.address;
                                                     vueInstanse.tableData[params.index].address = resp.address;
                                                     LocalCacheMgr.setAddress(lon, lat, resp.address);
                                                 }
@@ -275,7 +274,6 @@
                             rootuser = null;
                             isNeedRefresh = true;
                             me.modal = false;
-                            me.records.splice(me.index, 1);
                             me.tableData.splice(me.index, 1);
                             me.$Message.success(me.$t("message.addSucc"));
                         } else if (resp.status == -1) {
@@ -386,7 +384,6 @@
                     utils.sendAjax(url, {}, function(resp) {
                         if (resp.status == 0) {
                             me.$Message.success(me.$t('message.clearSucc'));
-                            me.records = [];
                             me.tableData = [];
                         } else {
                             me.$Message.error(me.$t('message.clearFail'));
@@ -397,7 +394,6 @@
             mounted: function() {
                 var me = this;
                 this.userType = vstore.state.userType;
-                this.records = [];
                 this.createrToUser = userName;
                 this.userlists = globalUserList;
                 this.initMap();
