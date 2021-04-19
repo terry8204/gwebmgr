@@ -396,17 +396,17 @@ div.selected-map-list>div.actived {
 div.map-selector-popup {
     position: absolute;
     right: 100px;
+    width: 155px;
+    height: 60px;
     padding: 5px 0px 5px 5px;
     box-shadow: 0 0 5px 0 rgb(0 0 0 / 10%);
     background-color: #fff;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
 }
 
 .MapSelector_item_193IR {
     height: 50px;
     width: 50px;
+    float: left;
     border: 1px solid;
     cursor: pointer;
     position: relative;
