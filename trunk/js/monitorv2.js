@@ -624,7 +624,7 @@ var monitor = {
                 return elt;
             }).indexOf(element);
         },
-        onDragstart(event) {
+        onDragstart: function(event) {
             // event.target 都返回源元素
             this.startExchangeIndex = event.target.getAttribute('data-id')
             var parentElement = this.$refs.videoContent;
@@ -632,7 +632,7 @@ var monitor = {
             this.kaishiIndex = this.computeVmIndex(parentElement.children, startElement)
 
         },
-        onDragend(event) {
+        onDragend: function(event) {
             // event.target 都返回源元素
             var startElement = document.getElementsByClassName('vpw' + this.startExchangeIndex)[0];
             var endElement = document.getElementsByClassName('vpw' + this.endExchangeIndex)[0];
@@ -645,14 +645,14 @@ var monitor = {
                 this.insertNodeAt(parentElement, endElement, this.kaishiIndex);
             }
         },
-        onDrop(event) {
+        onDrop: function(event) {
             // event.target 都返回目标元素
             this.endExchangeIndex = event.target.parentElement.parentElement.parentElement.getAttribute('data-id')
             var parentElement = this.$refs.videoContent;
             var endElement = document.getElementsByClassName('vpw' + this.endExchangeIndex)[0];
             this.jieshuIndex = this.computeVmIndex(parentElement.children, endElement)
         },
-        onDragover(event) {
+        onDragover: function(event) {
             // 阻止元素的默认行为，不然ondrop不管用
             event.preventDefault();
         },
@@ -1600,7 +1600,7 @@ var monitor = {
                     me.fitExtent(pointList);
                     me.calcAreaBaiduMarkerStatus(totalPoints);
                 },
-                error() {
+                error: function() {
                     me.arealoading = false;
                 }
             });
@@ -2177,7 +2177,7 @@ var monitor = {
             }
             return resultArr;
         },
-        encodeWeekPeriodParams(paramsObj) {
+        encodeWeekPeriodParams: function(paramsObj) {
             var copyParamsObj = deepClone(paramsObj);
             var resultArr = [];
             var weekStr = "",
@@ -3579,7 +3579,7 @@ var monitor = {
                 }
             });
         },
-        createMarker(track) {
+        createMarker: function(track) {
             var isBMap = this.mapType == 'bMap';
             var pointArr = isBMap ? [track.b_lon, track.b_lat] : [track.g_lon, track.g_lat];
             var deviceInfo = this.deviceInfos[track.deviceid];

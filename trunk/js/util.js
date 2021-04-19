@@ -187,7 +187,7 @@ var utils = {
             }
         }
     },
-    locale: localStorage.getItem("PATH_LANG") || 'zh',
+    locale: localStorage.getItem("PATH_LANG") || messages.defaultLang || 'zh',
     getMapType: function() {
         var mapType = localStorage.getItem('app-map-type');
         if (!mapType) {
@@ -932,7 +932,7 @@ var utils = {
     },
     getI18n: function() {
         return new VueI18n({
-            locale: localStorage.getItem("PATH_LANG") || messages.defaultLang,
+            locale: this.locale || messages.defaultLang,
             messages: messages
         });
     },

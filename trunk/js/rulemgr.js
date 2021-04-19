@@ -15,7 +15,7 @@ var ruleMixIn = {
             return wHeight - 110;
         },
     },
-    mounted() {
+    mounted: function() {
         var me = this;
         me.taleHeight = me.calcTableHeight();
         window.onresize = function() {

@@ -194,7 +194,7 @@
                 }
             },
             watch: {
-                disabled(newVal) {
+                disabled: function(newVal) {
                     if (!this.lock) {
                         this.setForcealarm().then((response) => {
                             let data = response.data;
@@ -208,7 +208,7 @@
                         });;
                     }
                 },
-                searchValue(newVal) {
+                searchValue: function(newVal) {
                     if (newVal.length == 0) {
                         this.alarmTypeList.forEach((item) => {
                             item.show = true;
@@ -224,7 +224,7 @@
                     }
                 }
             },
-            mounted() {
+            mounted: function() {
                 this.lock = true;
                 this.token = null;
                 this.username = this.getQueryString('username');

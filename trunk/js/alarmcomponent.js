@@ -58,7 +58,7 @@ var waringComponent = {
         isLargen: function() {
             this.changeWrapperCls();
         },
-        searchValue(newVal) {
+        searchValue: function(newVal) {
             if (newVal.length == 0) {
                 this.alarmTypeList.forEach(function(item) {
                     item.show = true;

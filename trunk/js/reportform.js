@@ -981,7 +981,7 @@ function mileageMonthReport(groupslist) {
             tableData: [],
             currentIndex: 1,
             dateOptions: {
-                disabledDate(date) {
+                disabledDate: function(date) {
                     return (date && date.valueOf()) > Date.now();
                 }
             },
@@ -7107,16 +7107,39 @@ function timeOilConsumption(groupslist) {
             var srcad2 = vRoot.$t('reportForm.srcad2');
             var srcad3 = vRoot.$t('reportForm.srcad3');
 
-            this.selectedLegend = {
-                [usoil1]: false,
-                [usoil2]: false,
-                [usoil3]: false,
-                [usoil4]: false,
-                [srcad0]: false,
-                [srcad1]: false,
-                [srcad2]: false,
-                [srcad3]: false,
+            if (isZh) {
+                this.selectedLegend = {
+                    "油液1(L)": false,
+                    "油液2(L)": false,
+                    "油液3(L)": false,
+                    "油液4(L)": false,
+                    "模拟量1": false,
+                    "模拟量2": false,
+                    "模拟量3": false,
+                    "模拟量4": false,
+                }
+            } else {
+                this.selectedLegend = {
+                    "Sensor 1(L)": false,
+                    "Sensor 2(L)": false,
+                    "Sensor 3(L)": false,
+                    "Sensor 4(L)": false,
+                    "srcad0": false,
+                    "srcad1": false,
+                    "srcad2": false,
+                    "srcad3": false,
+                }
             }
+            // this.selectedLegend = {
+            //     [usoil1]: false,
+            //     [usoil2]: false,
+            //     [usoil3]: false,
+            //     [usoil4]: false,
+            //     [srcad0]: false,
+            //     [srcad1]: false,
+            //     [srcad2]: false,
+            //     [srcad3]: false,
+            // }
 
 
             this.chartsIns = echarts.init(document.getElementById('charts'));
@@ -7167,6 +7190,7 @@ function timeOilConsumption(groupslist) {
                 ];
 
                 var selected = param.selected;
+
                 me.selectedLegend[usoil1] = !!selected[usoil1];
                 me.selectedLegend[usoil2] = !!selected[usoil2];
                 me.selectedLegend[usoil3] = !!selected[usoil3];
