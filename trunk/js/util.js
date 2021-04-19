@@ -1389,7 +1389,7 @@ var utils = {
         result = (functionsLong & mask) == mask;
         return result;
     }
-}
+};
 
 var timeDifference = DateFormat.getOffset();
 try {
