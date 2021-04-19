@@ -585,8 +585,7 @@
                         }
                         me.$Message.success(me.$t(isEditUser ? "message.changeSucc" : "message.addSucc"));
                     } else {
-
-                        me.$Message.error(me.$t(isEditUser ? "message.changeFail" : "message.addFail"));
+                        me.$Message.error(me.$t(isEditUser ? "message.changeFail" : "message.addFail") + ' ' + resp.cause);
                     }
                 });
 

@@ -165,7 +165,7 @@
                 retain: 'Retain',
             },
             monitor: {
-                notRealtime: "Invalid Location",
+                notRealtime: "Not Realtime",
                 camera: 'Take Photo',
                 resolvingPower: 'Resolving power',
                 cameraChannel: 'Capture channel',
