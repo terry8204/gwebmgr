@@ -306,10 +306,11 @@ var waringComponent = {
                         if (me.isPopup) {
                             var deviceInfo = me.$store.state.deviceInfos[item.deviceid];
                             var desc = '';
+                            var alarm = isZh ? item.stralarm : item.stralarmen;
                             if (deviceInfo) {
-                                desc = DateFormat.longToDateTimeStr(item.lastalarmtime, timeDifference) + "<br/>" + deviceInfo.devicename + " : " + item.stralarm;
+                                desc = DateFormat.longToDateTimeStr(item.lastalarmtime, timeDifference) + "<br/>" + deviceInfo.devicename + " : " + alarm;
                             } else {
-                                desc = DateFormat.longToDateTimeStr(item.lastalarmtime, timeDifference) + "<br/>" + item.deviceid + " : " + item.stralarm;
+                                desc = DateFormat.longToDateTimeStr(item.lastalarmtime, timeDifference) + "<br/>" + item.deviceid + " : " + alarm;
                             }
                             me.$Notice.warning({
                                 title: isZh ? '设备报警提醒' : 'Device alarm',
@@ -1049,10 +1050,11 @@ var waringComponent = {
                     });
                 }
                 if (me.isPopup) {
+                    var alarm = isZh ? data.stralarm : data.stralarmen;
                     me.$Notice.warning({
-                        title: '设备报警提醒',
+                        title: isZh ? '设备报警提醒' : 'Alarm Notice',
                         duration: 6,
-                        desc: data.lastalarmtimeStr + "<br/>" + data.devicename + " : " + data.stralarm
+                        desc: data.lastalarmtimeStr + "<br/>" + data.devicename + " : " + alarm
                     });
                 }
             }
