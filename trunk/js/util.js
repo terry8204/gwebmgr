@@ -190,11 +190,13 @@ var utils = {
     locale: (function() {
         var locale = localStorage.getItem("PATH_LANG");
         if (locale != null) {
-            return locale
+            return locale;
         };
         try {
             locale = messages ? messages.defaultLang : false;
-            if (!locale) {
+            if (locale != false) {
+                localStorage.setItem("PATH_LANG", locale);
+            } else {
                 locale = 'zh';
             }
         } catch (e) {
