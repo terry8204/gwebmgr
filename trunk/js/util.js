@@ -187,7 +187,21 @@ var utils = {
             }
         }
     },
-    locale: localStorage.getItem("PATH_LANG") || messages.defaultLang || 'zh',
+    locale: (function() {
+        var locale = localStorage.getItem("PATH_LANG");
+        if (locale != null) {
+            return locale
+        };
+        try {
+            locale = messages ? messages.defaultLang : false;
+            if (!locale) {
+                locale = 'zh';
+            }
+        } catch (e) {
+            locale = 'zh';
+        }
+        return locale;
+    })(),
     getMapType: function() {
         var mapType = localStorage.getItem('app-map-type');
         if (!mapType) {
