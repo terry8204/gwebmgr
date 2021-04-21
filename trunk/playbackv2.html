@@ -1176,7 +1176,7 @@
                         this.drawLines(tracks);
                     },
                     drawLines: function(tracks) {
-
+                        debugger;
                         var lastLineColor = -1;
                         var tempPointList = [];
                         for (var i = 0; i < tracks.length; i++) {
@@ -1199,11 +1199,34 @@
 
 
                             var currentlineColor = this.getLineColorBySpeed(trackPre.speed);
+
+
                             if (lastLineColor == -1) {
                                 lastLineColor = currentlineColor;
                             }
-                            if (this.mapType == 'bMap') {
 
+
+                            if ((currentlineColor != lastLineColor) || isLastLines) {
+                                if (tempPointList.length > 0) {
+                                    new maptalks.LineString(
+                                        tempPointList, {
+                                            symbol: {
+                                                'lineColor': {
+                                                    'type': 'linear',
+                                                    'colorStops': [
+                                                        [0.00, lastLineColor],
+                                                        [1.00, lastLineColor]
+                                                    ]
+                                                },
+                                                'lineWidth': 4
+                                            }
+                                        }).addTo(this.lineLayer);
+                                    lastLineColor = currentlineColor;
+                                    tempPointList = [];
+                                }
+                            }
+
+                            if (this.mapType == 'bMap') {
                                 tempPointList.push(trackPre.bpoint);
                                 tempPointList.push(trackPost.bpoint);
                             } else {
@@ -1213,23 +1236,6 @@
 
                             }
 
-                            if ((currentlineColor != lastLineColor) || isLastLines) {
-                                new maptalks.LineString(
-                                    tempPointList, {
-                                        symbol: {
-                                            'lineColor': {
-                                                'type': 'linear',
-                                                'colorStops': [
-                                                    [0.00, lastLineColor],
-                                                    [1.00, lastLineColor]
-                                                ]
-                                            },
-                                            'lineWidth': 4
-                                        }
-                                    }).addTo(this.lineLayer);
-                                lastLineColor = currentlineColor;
-                                tempPointList = [];
-                            }
 
 
                         }
@@ -1447,11 +1453,13 @@
                         window.onresize = onresize;
                     },
                     getTypeRecords: function() {
+                        var tracks = null;
                         if (this.trackType == 'exact') {
-                            return this.exactTracks;
+                            tracks = this.exactTracks;
                         } else if (this.trackType == 'all') {
-                            return this.allTracks;
+                            tracks = this.allTracks;
                         }
+                        return tracks;
                     },
                     getChartsOption: function() {
                         var totalOil = this.$t('main.totalOil');
@@ -1882,7 +1890,16 @@
                         utils.sendAjax(url, data, function(resp) {
                             me.loading = false;
                             if (resp.status == 0) {
+
                                 var records = resp.records;
+                                // if (records != null) {
+                                //     records = records.splice(0, 4);
+                                //     records[0].speed = 12 * 1000;
+                                //     records[1].speed = 30 * 1000;
+                                //     records[2].speed = 35 * 1000;
+                                //     records[3].speed = 15 * 1000;
+                                // }
+
                                 me.filtertracks(records ? records : []);
                                 me.redrawCharts();
                                 me.setTableData();
