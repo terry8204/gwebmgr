@@ -1138,10 +1138,11 @@
                                     }
                                     me.markerMoveing();
                                     if (me.isShowAllLine == 'no') {
-                                        var tracks = me.getTypeRecords();
+                                        // var tracks = me.getTypeRecords();
                                         // var pointList = me.getPointList(tracks);
                                         // me.lineString.setCoordinates(pointList);
-                                        me.drawLines(tracks);
+                                        me.redrawLines();
+
                                     }
                                 }, me.playSpeedMillisecond);
                             } else {
@@ -1175,19 +1176,27 @@
                         this.drawLines(tracks);
                     },
                     drawLines: function(tracks) {
+
                         var lastLineColor = -1;
                         var tempPointList = [];
                         for (var i = 0; i < tracks.length; i++) {
+                            var nextMarkerIndex = i + 1;
                             var isLastLines = false;
                             var trackPre = tracks[i];
-                            var trackPost = tracks[i + 1];
-                            if (this.isShowAllLine == 'no' && this.currentMarkerIndex == i) {
-                                break;
-                            }
+                            var trackPost = tracks[nextMarkerIndex];
+
                             if (!trackPost) {
                                 trackPost = trackPre;
                                 isLastLines = true;
                             }
+
+                            if (this.isShowAllLine == 'no' && nextMarkerIndex > this.currentMarkerIndex) {
+                                break;
+                            }
+                            if (this.isShowAllLine == 'no' && nextMarkerIndex == (this.currentMarkerIndex)) {
+                                isLastLines = true;
+                            }
+
 
                             var currentlineColor = this.getLineColorBySpeed(trackPre.speed);
                             if (lastLineColor == -1) {
@@ -1203,16 +1212,16 @@
                                 tempPointList.push(trackPost.gpoint);
 
                             }
-                            if ((currentlineColor != lastLineColor) || isLastLines) {
 
+                            if ((currentlineColor != lastLineColor) || isLastLines) {
                                 new maptalks.LineString(
                                     tempPointList, {
                                         symbol: {
                                             'lineColor': {
                                                 'type': 'linear',
                                                 'colorStops': [
-                                                    [0.00, currentlineColor],
-                                                    [1.00, currentlineColor]
+                                                    [0.00, lastLineColor],
+                                                    [1.00, lastLineColor]
                                                 ]
                                             },
                                             'lineWidth': 4
@@ -1221,6 +1230,7 @@
                                 lastLineColor = currentlineColor;
                                 tempPointList = [];
                             }
+
 
                         }
                     },
@@ -1429,7 +1439,11 @@
                         var onresize = utils.debounce(function() {
                             me.charts.resize();
                         }, 500);
-
+                        var speed = this.$t('main.speed');
+                        this.charts.on('legendselectchanged', function(param) {
+                            me.isShowSpeed = param.selected[speed];
+                            me.charts.setOption(me.getChartsOption());
+                        })
                         window.onresize = onresize;
                     },
                     getTypeRecords: function() {
@@ -1475,17 +1489,21 @@
                                 formatter: function(v, a) {
                                     var data = vRoot.$t('main.time') + ': ' + v[0].name + '<br/>';
                                     for (i in v) {
-                                        if (v[i].seriesName && v[i].seriesName != vRoot.$t('main.time')) {
-                                            if (v[i].seriesName == weight) {
-                                                data += v[i].seriesName + ' : ' + v[i].value + 'Kg<br/>';
-                                            } else if (v[i].seriesName == dis) {
-                                                data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
-                                            } else if (v[i].seriesName == speed || v[i].seriesName == recorderspeed) {
-                                                data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
-                                            } else if (v[i].seriesName == totalOil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
-                                                data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
+                                        var seriesName = v[i].seriesName;
+                                        var value = v[i].value;
+                                        if (seriesName && seriesName != vRoot.$t('main.time')) {
+                                            if (seriesName == weight) {
+                                                data += seriesName + ' : ' + value + 'Kg<br/>';
+                                            } else if (seriesName == dis) {
+                                                data += seriesName + ' : ' + value + 'Km<br/>';
+                                            } else if (seriesName == speed || seriesName == recorderspeed) {
+                                                data += seriesName + ' : ' + value + 'Km/h<br/>';
+                                            } else if (seriesName == totalOil || seriesName == usoil1 || seriesName == usoil2 || seriesName == usoil3 || seriesName == usoil4) {
+                                                data += seriesName + ' : ' + value + 'L<br/>';
+                                            } else if (seriesName == 'red' || seriesName == 'green') {
+
                                             } else {
-                                                data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                                data += seriesName + ' : ' + value + '<br/>';
                                             }
                                         }
                                     }
@@ -1564,98 +1582,139 @@
                                     show: false
                                 }
                             }],
-                            series: [{
-                                name: time,
-                                type: 'line',
-                                symbol: 'none',
-                                yAxisIndex: 1,
-                                color: '#F0805A',
-                                data: this.recvtime,
-                                smooth: true,
-                            }, {
-                                name: dis,
-                                type: 'line',
-                                symbol: 'none',
-                                yAxisIndex: 1,
-                                color: '#3CB371',
-                                data: this.distance,
-                                smooth: true,
-                            }, {
-                                name: speed,
-                                type: 'line',
-                                symbol: 'none',
-                                yAxisIndex: 0,
-                                color: '#4876FF',
-                                data: this.veo,
-                                smooth: true,
-                            }, {
-                                name: recorderspeed,
-                                type: 'line',
-                                symbol: 'none',
-                                yAxisIndex: 0,
-                                color: '#710000',
-                                data: this.recorderspeed,
-                                smooth: true,
-                            }, {
-                                name: totalOil,
-                                type: 'line',
-                                symbol: 'none',
-                                color: '#C1232B',
-                                data: this.oil,
-                                smooth: true,
-                            }, {
-                                name: usoil1,
-                                type: 'line',
-                                symbol: 'none',
-                                color: '#8E388E',
-                                data: this.oil1,
-                                smooth: true,
-                            }, {
-                                name: usoil2,
-                                type: 'line',
-                                symbol: 'none',
-                                color: '#FF4500',
-                                data: this.oil2,
-                                smooth: true,
-                            }, {
-                                name: usoil3,
-                                type: 'line',
-                                symbol: 'none',
-                                color: '#2177C7',
-                                data: this.oil3,
-                                smooth: true,
-                            }, {
-                                name: usoil4,
-                                type: 'line',
-                                symbol: 'none',
-                                color: '#B05432',
-                                data: this.oil4,
-                                smooth: true,
-                            }, {
-                                name: weight,
-                                type: 'line',
-                                symbol: 'none',
-                                color: '#000',
-                                data: this.weights,
-                                smooth: true,
-                            }, {
-                                name: status,
-                                type: 'line',
-                                symbol: 'none',
-                                color: '#000',
-                                data: this.devStates,
-                                smooth: true,
-                            }, {
-                                name: reissue,
-                                type: 'line',
-                                symbol: 'none',
-                                color: '#000',
-                                data: this.devReissue,
-                                smooth: true,
-                            }, ]
+                            series: this.getSeriesData()
                         };
 
                         return option;
+                    },
+                    getSeriesData: function() {
+                        var totalOil = this.$t('main.totalOil');
+                        var speed = this.$t('main.speed');
+                        var recorderspeed = isZh ? "行驶记录仪速度" : 'RecorderSpeed';
+                        var dis = this.$t('main.mileage');
+                        var time = this.$t('main.time');
+                        var usoil1 = this.$t('main.oil1');
+                        var usoil2 = this.$t('main.oil2');
+                        var usoil3 = this.$t('main.oil3');
+                        var usoil4 = this.$t('main.oil4');
+                        var cotgasus = this.$t('main.oil');
+                        var status = this.$t('main.status');
+                        var weight = this.$t('main.weight');
+                        var reissue = this.$t('main.reissue');
+                        var seriesData = [{
+                            name: time,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#F0805A',
+                            data: this.recvtime,
+                            smooth: true,
+                        }, {
+                            name: dis,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#3CB371',
+                            data: this.distance,
+                            smooth: true,
+                        }, {
+                            name: speed,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 0,
+                            color: '#4876FF',
+                            data: this.veo,
+                            smooth: true,
+                        }, {
+                            name: recorderspeed,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 0,
+                            color: '#710000',
+                            data: this.recorderspeed,
+                            smooth: true,
+                        }, {
+                            name: totalOil,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#C1232B',
+                            data: this.oil,
+                            smooth: true,
+                        }, {
+                            name: usoil1,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#8E388E',
+                            data: this.oil1,
+                            smooth: true,
+                        }, {
+                            name: usoil2,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#FF4500',
+                            data: this.oil2,
+                            smooth: true,
+                        }, {
+                            name: usoil3,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#2177C7',
+                            data: this.oil3,
+                            smooth: true,
+                        }, {
+                            name: usoil4,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#B05432',
+                            data: this.oil4,
+                            smooth: true,
+                        }, {
+                            name: weight,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000',
+                            data: this.weights,
+                            smooth: true,
+                        }, {
+                            name: status,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000',
+                            data: this.devStates,
+                            smooth: true,
+                        }, {
+                            name: reissue,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000',
+                            data: this.devReissue,
+                            smooth: true,
+                        }, {
+                            name: 'red',
+                            type: 'line',
+                            symbol: 'none',
+                            // color: 'red',
+                            data: this.isShowSpeed ? this.redArr : [],
+                            smooth: true,
+                            lineStyle: {
+                                color: 'red',
+                                width: 1,
+                                type: 'dashed'
+                            },
+                        }, {
+                            name: 'green',
+                            type: 'line',
+                            symbol: 'none',
+                            // color: 'green',
+                            data: this.isShowSpeed ? this.greenArr : [],
+                            smooth: true,
+                            lineStyle: {
+                                color: 'green',
+                                width: 1,
+                                type: 'dashed'
+                            },
+                        }]
+                        return seriesData;
                     },
                     redrawCharts: function() {
                         var records = this.getTypeRecords(),
@@ -1672,6 +1731,10 @@
                         var devStates = [];
                         var devReissue = [];
                         var weights = [];
+                        var redArr = [];
+                        var greenArr = [];
+                        var from = this.sliderValue[0];
+                        var to = this.sliderValue[1];
                         this.disMin = 0;
                         var totalDistanceMin = 0;
                         records.forEach(function(item, index) {
@@ -1705,8 +1768,12 @@
                             veo.push(Number((item.speed / 1000).toFixed(2)));
                             recorderspeed.push(Number((item.recorderspeed / 1000).toFixed(3)));
                             distance.push(Number((item.totaldistance - totalDistanceMin).toFixed(3)));
-                            weights.push(item.weight / 10)
+                            weights.push(item.weight / 10);
+
+                            redArr.push(from);
+                            greenArr.push(to);
                         });
+
                         this.distance = distance;
                         this.recvtime = recvtime;
                         this.veo = veo;
@@ -1719,7 +1786,8 @@
                         this.devReissue = devReissue;
                         this.recorderspeed = recorderspeed;
                         this.weights = weights;
-
+                        this.redArr = redArr;
+                        this.greenArr = greenArr;
                         this.charts.setOption(this.getChartsOption());
 
                     },
@@ -1963,6 +2031,7 @@
                     getLineColorBySpeed: function(speed) {
                         var from = this.sliderValue[0];
                         var to = this.sliderValue[1];
+
                         var lineColor = "black";
                         if (speed < from * 1000) {
 
@@ -2312,6 +2381,7 @@
                         this.allTracks = [];
                         this.exactTracks = []
                         this.lastMapType = this.mapType;
+                        this.isShowSpeed = true;
                         this.setTheDate();
                         this.initMap();
                         this.initCharts();
