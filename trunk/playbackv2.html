@@ -1176,7 +1176,6 @@
                         this.drawLines(tracks);
                     },
                     drawLines: function(tracks) {
-                        debugger;
                         var lastLineColor = -1;
                         var tempPointList = [];
                         for (var i = 0; i < tracks.length; i++) {
@@ -1445,8 +1444,27 @@
                         var onresize = utils.debounce(function() {
                             me.charts.resize();
                         }, 500);
-                        var speed = this.$t('main.speed');
+
+                        var speed = this.$t('main.speed');;
+                        var recorderspeed = isZh ? "行驶记录仪速度" : 'RecorderSpeed';
+                        var time = this.$t('main.time');
+                        var usoil1 = this.$t('main.oil1');
+                        var usoil2 = this.$t('main.oil2');
+                        var usoil3 = this.$t('main.oil3');
+                        var usoil4 = this.$t('main.oil4');
+                        var totalOil = this.$t('main.totalOil');
+                        var weight = this.$t('main.weight');
+                        this.selectedLegend = {
+                            [recorderspeed]: false,
+                            [totalOil]: utils.hasFunction(Number(functionslong), 0x0200),
+                            [usoil1]: false,
+                            [usoil2]: false,
+                            [usoil3]: false,
+                            [usoil4]: false,
+                            [weight]: false,
+                        }
                         this.charts.on('legendselectchanged', function(param) {
+                            me.selectedLegend = param.selected;
                             me.isShowSpeed = param.selected[speed];
                             me.charts.setOption(me.getChartsOption());
                         })
@@ -1519,16 +1537,8 @@
                                 }
                             },
                             legend: {
-                                data: [dis, speed, recorderspeed, totalOil, usoil1, usoil2, , usoil3, usoil4, weight],
-                                selected: {
-                                    [recorderspeed]: false,
-                                    [totalOil]: utils.hasFunction(Number(functionslong), 0x0200),
-                                    [usoil1]: false,
-                                    [usoil2]: false,
-                                    [usoil3]: false,
-                                    [usoil4]: false,
-                                    [weight]: false,
-                                },
+                                data: [dis, speed, recorderspeed, totalOil, usoil1, usoil2, usoil3, usoil4, weight],
+                                selected: this.selectedLegend,
                                 x: 'left'
                             },
                             toolbox: {
@@ -2777,7 +2787,6 @@
                 },
                 watch: {
                     isShowBubble: function(newVal) {
-                        debugger;
                         if (this.carMarker != null) {
                             if (newVal) {
                                 var tracks = this.getTypeRecords()
