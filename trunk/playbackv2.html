@@ -1410,6 +1410,15 @@
                     },
                     initCharts: function() {
                         var me = this;
+                        var speed = this.$t('main.speed');;
+                        var recorderspeed = isZh ? "行驶记录仪速度" : 'RecorderSpeed';
+                        var time = this.$t('main.time');
+                        var usoil1 = this.$t('main.oil1');
+                        var usoil2 = this.$t('main.oil2');
+                        var usoil3 = this.$t('main.oil3');
+                        var usoil4 = this.$t('main.oil4');
+                        var totalOil = this.$t('main.totalOil');
+                        var weight = this.$t('main.weight');
                         this.distance = [];
                         this.veo = [];
                         this.recorderspeed = [];
@@ -1421,6 +1430,15 @@
                         this.oil4 = [];
                         this.devStates = [];
                         this.weights = [];
+                        this.selectedLegend = {
+                            [recorderspeed]: false,
+                            [totalOil]: utils.hasFunction(Number(functionslong), 0x0200),
+                            [usoil1]: false,
+                            [usoil2]: false,
+                            [usoil3]: false,
+                            [usoil4]: false,
+                            [weight]: false,
+                        }
                         this.charts = echarts.init(document.getElementById('charts'));
                         this.charts.setOption(this.getChartsOption());
                         this.charts.getZr().on('click', function(params) {
@@ -1445,24 +1463,8 @@
                             me.charts.resize();
                         }, 500);
 
-                        var speed = this.$t('main.speed');;
-                        var recorderspeed = isZh ? "行驶记录仪速度" : 'RecorderSpeed';
-                        var time = this.$t('main.time');
-                        var usoil1 = this.$t('main.oil1');
-                        var usoil2 = this.$t('main.oil2');
-                        var usoil3 = this.$t('main.oil3');
-                        var usoil4 = this.$t('main.oil4');
-                        var totalOil = this.$t('main.totalOil');
-                        var weight = this.$t('main.weight');
-                        this.selectedLegend = {
-                            [recorderspeed]: false,
-                            [totalOil]: utils.hasFunction(Number(functionslong), 0x0200),
-                            [usoil1]: false,
-                            [usoil2]: false,
-                            [usoil3]: false,
-                            [usoil4]: false,
-                            [weight]: false,
-                        }
+
+
                         this.charts.on('legendselectchanged', function(param) {
                             me.selectedLegend = param.selected;
                             me.isShowSpeed = param.selected[speed];
