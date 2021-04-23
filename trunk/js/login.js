@@ -118,13 +118,17 @@ new Vue({
                         // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                         window.location.href = "mainv2.html";
                     } else if (resp.status == -1) {
-                        me.$Message.error(me.$t("login.error_4"));
+                        me.$Message.error(me.$t("login.error_3"));
                     } else if (resp.status == 1) {
                         me.$Message.error(me.$t("login.error_4"));
                     } else if (resp.status == 2) {
                         me.$Message.error(me.$t("login.error_5"));
                     } else if (resp.status == 3) {
                         me.$Message.error(me.$t("login.error_6"));
+                    } else if (resp.status == 4) {
+                        me.$Message.error(me.$t("login.error_7"));
+                    } else if (resp.status == 5) {
+                        me.$Message.error(me.$t("login.error_8"));
                     }
                 },
                 error: function(e) {
@@ -190,14 +194,17 @@ new Vue({
                     // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
                     window.location.href = "mainv2.html";
                 } else if (resp.status == -1) {
-                    // me.$Message.error(me.$t("login.error_3"));
-                    me.$Message.error(me.$t("login.error_4"));
+                    me.$Message.error(me.$t("login.error_3"));
                 } else if (resp.status == 1) {
                     me.$Message.error(me.$t("login.error_4"));
                 } else if (resp.status == 2) {
                     me.$Message.error(me.$t("login.error_5"));
                 } else if (resp.status == 3) {
                     me.$Message.error(me.$t("login.error_6"));
+                } else if (resp.status == 4) {
+                    me.$Message.error(me.$t("login.error_7"));
+                } else if (resp.status == 5) {
+                    me.$Message.error(me.$t("login.error_8"));
                 }
             });
         },
