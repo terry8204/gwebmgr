@@ -2591,7 +2591,7 @@
                         if (localStorage.getItem(this.deviceid + '-' + info.trackid)) {
                             color = 'red';
                         };
-                        if (info.gotsrc === 'gps' && info.gpsvalidnum) {
+                        if (info.gotsrc === 'gps' && info.gpsvalidnum > 0) {
                             posiType += "(" + info.gpsvalidnum + ")";
                         };
 

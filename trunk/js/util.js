@@ -775,7 +775,7 @@ var utils = {
             }
             posiType += radiuDesc;
         };
-        if (track.gotsrc === 'gps' && track.gpsvalidnum) {
+        if (track.gotsrc === 'gps' && track.gpsvalidnum > 0) {
             posiType += "(" + track.gpsvalidnum + ")";
 
         };
