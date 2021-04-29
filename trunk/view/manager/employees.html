@@ -611,7 +611,7 @@
                         var item = treeDataFilter[i];
                         if (item != null) {
                             var isFound = false;
-                            if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                            if (item.title.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.toLowerCase().indexOf(searchWord) != -1)) {
                                 copyItem = deepClone(item);
                                 copyItem.expand = false;
                                 isFound = true;

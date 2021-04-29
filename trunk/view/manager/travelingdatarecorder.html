@@ -1020,7 +1020,7 @@
                     if (item != null) {
 
                         var isFound = false;
-                        if (item.name.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                        if (item.name.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.toLowerCase().indexOf(searchWord) != -1)) {
                             copyItem = item;
                             copyItem.open = false;
                             isFound = true;
@@ -1077,6 +1077,7 @@
                     this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
                 } else {
                     var limitcount = 0;
+                    newVal = newVal.toLowerCase();
                     var data = this.variableDeepSearch(this.treeDeviceList, newVal, limitcount);
                     if (data.length == 0) {
                         data.push({

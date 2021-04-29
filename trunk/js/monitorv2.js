@@ -2381,6 +2381,7 @@ var monitor = {
 
                     for (var j = 0; j < devices.length; j++) {
                         var device = devices[j]
+                        var deviceid = device.deviceid.toLowerCase();
                         var devicename = device.devicename;
                         var isOnline = this.getIsOnline(device.deviceid, currentTime);
                         device.isOnline = isOnline;
@@ -2389,7 +2390,7 @@ var monitor = {
                             devicename.toLowerCase().indexOf(value) !== -1 ||
                             device.firstLetter.indexOf(value) !== -1 ||
                             device.pinyin.indexOf(value) !== -1 ||
-                            device.deviceid.indexOf(value) !== -1
+                            deviceid.indexOf(value) !== -1
                         ) {
                             if (me.selectedState == "all") {
                                 obj.devices.push(device)

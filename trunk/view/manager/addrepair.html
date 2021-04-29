@@ -27,8 +27,8 @@
                         </span>
                 </i-col>
             </Row>
- 
-            <Row style="margin: 10px 0">                                                            
+
+            <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t('insure.repairItem')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="repairitem"></i-input>
@@ -41,7 +41,7 @@
             </Row>
 
             <Row style="margin: 10px 0">
-                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t('insure.repairFee')}} : &nbsp;</i-col>  
+                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;" :offset="2">{{$t('insure.repairFee')}} : &nbsp;</i-col>
                 <i-col span="8">
                     <i-input v-model.trim="fee"></i-input>
                 </i-col>
@@ -145,7 +145,7 @@
     </div>
 
     <script>
-      vueInstanse =  new Vue({
+        vueInstanse = new Vue({
             el: "#addrepair",
             i18n: utils.getI18n(),
             data: {
@@ -235,7 +235,7 @@
                                     devicename.toLowerCase().indexOf(value) !== -1 ||
                                     device.firstLetter.indexOf(value) !== -1 ||
                                     device.pinyin.indexOf(value) !== -1 ||
-                                    device.deviceid.indexOf(value) !== -1
+                                    device.deviceid.toLowerCase().indexOf(value) !== -1
                                 ) {
                                     obj.devices.push(device)
                                 } else {

@@ -101,7 +101,7 @@ var treeMixin = {
                 if (item != null) {
 
                     var isFound = false;
-                    if (item.name.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                    if (item.name.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.toLowerCase().indexOf(searchWord) != -1)) {
                         copyItem = item;
                         copyItem.open = false;
                         isFound = true;
@@ -3837,6 +3837,7 @@ function insureRecords(groupslist) {
             },
             searchfilterMethod: function(value) {
                 this.treeData = [];
+                value = value.toLowerCase();
                 this.treeData = this.variableDeepSearchIview(this.groupslist, value, 0);
                 this.checkedDevice = [];
                 if (this.isShowMatchDev == false) {
@@ -3851,7 +3852,7 @@ function insureRecords(groupslist) {
                     var item = treeDataFilter[i];
                     if (item != null) {
                         var isFound = false;
-                        if (item.title.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                        if (item.title.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.toLowerCase().indexOf(searchWord) != -1)) {
                             copyItem = deepClone(item);
                             copyItem.expand = false;
                             isFound = true;
@@ -4262,6 +4263,7 @@ function salesRecord(groupslist) {
             },
             searchfilterMethod: function(value) {
                 this.treeData = [];
+                value = value.toLowerCase();
                 this.treeData = this.variableDeepSearchIview(this.groupslist, value, 0);
                 this.checkedDevice = [];
                 if (this.isShowMatchDev == false) {
@@ -4276,7 +4278,7 @@ function salesRecord(groupslist) {
                     var item = treeDataFilter[i];
                     if (item != null) {
                         var isFound = false;
-                        if (item.title.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.indexOf(searchWord) != -1)) {
+                        if (item.title.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.toLowerCase().indexOf(searchWord) != -1)) {
                             copyItem = deepClone(item);
                             copyItem.expand = false;
                             isFound = true;
