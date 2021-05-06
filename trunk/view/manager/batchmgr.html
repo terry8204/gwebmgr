@@ -52,7 +52,7 @@
         <Row>
             <i-col span="24" style="border: 1px solid #DCDEE2;padding: 5px;">
                 <div style="display: flex;justify-content: center;">
-                    <i-button @click="alarmModel=true" style="margin:0 5px;">过滤报警类型</i-button>
+                    <i-button @click="alarmModel=true" style="margin:0 5px;">{{$t("alarm.setAlarmType")}}</i-button>
                     <i-button @click="handleBatchTransfer" style="margin:0 5px;">{{$t("bgMgr.batchTransfer")}}</i-button>
                     <i-button @click="importModal=true" style="margin:0 5px;">{{$t("bgMgr.exportDevice")}}</i-button>
                     <i-button @click="showBatchModal(1)" style="margin:0 5px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
@@ -95,14 +95,21 @@
                 <div>
                     <i-input v-model.trim="searchValue" icon="ios-search-outline" style="width:100%;" :placeholder='$t("alarm.searchValuePlaceholder")'></i-input>
                 </div>
-                <div style="overflow:hidden;margin-top:12px;">
+                <div style="overflow:hidden;margin-top:12px;" @click="checkingSelectState">
                     <div style="width:33.33%;float:left;padding:2px 0;" v-for="(item,index) in alarmTypeList" :key="index" v-show="item.show">
                         <Checkbox v-model="checkboxObj[item.index]">{{ isZh ? item.alarmname : item.alarmnameen}}</Checkbox>
                     </div>
                 </div>
             </div>
             <div slot="footer">
-                <i-button type="primary" @click="setForceAlarmClick" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
+                <Row>
+                    <i-col span="21">
+                        <i-button type="primary" @click="setForceAlarmClick" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
+                    </i-col>
+                    <i-col span="3" style="text-align: center;line-height: 32px;" @click.native="onCheckAll">
+                        <Checkbox :value="checkAll">{{isZh ? '全选' :'All'}}</Checkbox>
+                    </i-col>
+                </Row>
             </div>
         </Modal>
 
@@ -235,6 +242,8 @@
         el: "#batchmgr",
         i18n: utils.getI18n(),
         data: {
+            isZh: isZh,
+            checkAll: false,
             loading: false,
             alarmModel: false,
             userType: localStorage.getItem('userType'),
@@ -357,6 +366,29 @@
             searchValue: '',
         },
         methods: {
+            checkingSelectState: function() {
+                var me = this;
+                setTimeout(function() {
+                    var isCheckAll = true;
+                    for (var key in me.checkboxObj) {
+                        if (!me.checkboxObj[key]) {
+                            isCheckAll = false;
+                            break;
+                        }
+                    }
+                    console.log('isCheckAll', isCheckAll);
+                    me.checkAll = isCheckAll;
+                }, 300)
+            },
+            onCheckAll: function() {
+                var me = this;
+                this.checkAll = !this.checkAll;
+
+                for (var key in me.checkboxObj) {
+                    console.log('checkAll', this.checkAll);
+                    me.checkboxObj[key] = this.checkAll;
+                }
+            },
             showBatchModal: function(type) {
                 this.showBatchModalType = type;
                 this.batchModal = true;
@@ -1104,7 +1136,7 @@
                     deviceids: [],
                     needalarmstr: '',
                 };
-                for (var i = 0; i <= 62; i++) {
+                for (var i = 0; i < alarmTypeList.length; i++) {
                     data.needalarmstr += this.checkboxObj[i] ? '1' : '0';
                 }
                 this.tableData.forEach(function(item) {
