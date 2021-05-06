@@ -376,16 +376,15 @@
                             break;
                         }
                     }
-                    console.log('isCheckAll', isCheckAll);
+                    // console.log('isCheckAll', isCheckAll);
                     me.checkAll = isCheckAll;
                 }, 300)
             },
             onCheckAll: function() {
                 var me = this;
                 this.checkAll = !this.checkAll;
-
                 for (var key in me.checkboxObj) {
-                    console.log('checkAll', this.checkAll);
+                    // console.log('checkAll', this.checkAll);
                     me.checkboxObj[key] = this.checkAll;
                 }
             },

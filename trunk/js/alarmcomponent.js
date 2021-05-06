@@ -11,6 +11,7 @@ var waringComponent = {
             waringRowIndex: null,
             componentName: 'emergencyAlarm',
             searchValue: '',
+            checkAll: false,
             disposeModal: false,
             settingModal: false,
             checkboxObj: {},
@@ -100,6 +101,27 @@ var waringComponent = {
         }
     },
     methods: {
+        checkingSelectState: function() {
+            var me = this;
+            setTimeout(function() {
+                var isCheckAll = true;
+                for (var i = 0; i < alarmTypeList.length; i++) {
+                    var result = me.checkboxObj[i];
+                    if (!result) {
+                        isCheckAll = false;
+                        break;
+                    }
+                }
+                me.checkAll = isCheckAll;
+            }, 300)
+        },
+        onCheckAll: function() {
+            var me = this;
+            this.checkAll = !this.checkAll;
+            for (var key in me.checkboxObj) {
+                me.checkboxObj[key] = this.checkAll;
+            }
+        },
         getIsWaring: function() {
             var isWaring = false;
             var waringRecords = this.waringRecords;

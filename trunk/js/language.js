@@ -1429,7 +1429,7 @@
                 min: "最小化",
                 max: "最大化",
                 changeWin: "切换窗口",
-                filterAlarmTitle: "过滤器报警",
+                filterAlarmTitle: "过滤报警",
                 releaseAlarmTitle: "解除报警",
                 errorNeedParams: "所有参数都是必填的",
                 successfulRelease: "解除成功",
