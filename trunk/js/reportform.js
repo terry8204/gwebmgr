@@ -2317,7 +2317,7 @@ function speedingReport(groupslist) {
                                 click: function() {
 
                                     vueInstanse.activeTab = "tabDetail";
-                                    vueInstanse.getRotateDetailTableData(records);
+                                    vueInstanse.getSpeedingDetailTableData(records);
 
                                     if (records.length) {
                                         vueInstanse.isSpin = true;
@@ -2373,6 +2373,9 @@ function speedingReport(groupslist) {
                 { title: vRoot.$t("alarm.devNum"), key: 'deviceid' },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate' },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate' },
+                { title: vRoot.$t("reportForm.duration"), key: 'duration' },
+                { title: vRoot.$t("reportForm.maxSpeed") + '(km/h)', width: 120, key: 'maxSpeed' },
+                { title: vRoot.$t("reportForm.minSpeed") + '(km/h)', width: 120, key: 'minSpeed' },
                 {
                     title: vRoot.$t("reportForm.address"),
                     width: 145,
@@ -2421,7 +2424,6 @@ function speedingReport(groupslist) {
                         }
                     },
                 },
-                { title: vRoot.$t("reportForm.duration"), key: 'duration' },
                 {
                     title: vRoot.$t("alarm.action"),
                     render: function(h, params) {
@@ -2641,10 +2643,12 @@ function speedingReport(groupslist) {
                 }
                 return allRotateTableData;
             },
-            getRotateDetailTableData: function(records) {
+            getSpeedingDetailTableData: function(records) {
                 var newRecords = [],
                     me = this;
+                console.log(records);
                 records.forEach(function(item, index) {
+
                     var deviceName = vstore.state.deviceInfos[item.deviceid].devicename;
                     var duration = item.endtime - item.begintime;
                     var durationStr = utils.timeStamp(duration);
@@ -2663,8 +2667,11 @@ function speedingReport(groupslist) {
                         duration: durationStr,
                         slon: slon,
                         slat: slat,
+                        maxSpeed: (item.maxspeed / 1000).toFixed(2),
+                        minSpeed: (item.minspeed / 1000).toFixed(2)
                     });
                 });
+
                 me.tableData = newRecords;
             },
             displayChart: function() {
