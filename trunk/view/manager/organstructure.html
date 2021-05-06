@@ -226,7 +226,7 @@
                                     <i-option value="4">{{$t("reportForm.maxSignal")}}32(4G)</i-option>
                                 </i-select>
                             </i-col>
-                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("device.forwardAddress")}} : &nbsp;</i-col>
+                            <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t("manageTransfer.transferPlatform")}} : &nbsp;</i-col>
                             <i-col span="8">
                                 <i-input v-model.trim="forwardurl" disabled></i-input>
                             </i-col>
@@ -632,7 +632,7 @@
 
                 data.monitor = this.monitor;
 
-                this.forwardurl && (data.forwardurl = this.forwardurl);
+                // this.forwardurl && (data.forwardurl = this.forwardurl);
 
                 if (globalUserList.indexOf(this.createrToUser) == -1) {
                     me.$Message.error(me.$t("message.selectCorrectAccount"));
@@ -777,7 +777,7 @@
                 me.devicetype = editObject.devicetype;
                 me.loginenable = editObject.loginenable + "";
                 me.deviceenable = "" + editObject.deviceenable;
-                me.forwardurl = editObject.forwardurl;
+                // me.forwardurl = editObject.forwardurl;
                 me.isfree = editObject.isfree;
                 me.monitor = editObject.monitor;
                 me.timezone = String(editObject.timezone);
@@ -787,6 +787,9 @@
                 me.createrToUser = editObject.creater;
                 me.remark = editObject.remark;
                 this.oldCreater = me.createrToUser;
+
+                var record = me.forwards[editObject.forwardid];
+                me.forwardurl = record ? record.servername : '';
             },
             selectedCmd: function(item) {
                 var me = this;
@@ -1107,7 +1110,26 @@
             refreshzTree: function() {
                 this.selectType = null;
                 this.queryDevicesTree();
-            }
+            },
+            queryForwardParams: function() {
+                var me = this;
+                var url = myUrls.queryForwardParams();
+                me.copyForwards = [];
+                utils.sendAjax(url, {
+                    creater: null,
+                    keyword: '',
+                }, function(resp) {
+
+                    me.forwards = {};
+                    if (resp.forwards != null) {
+                        resp.forwards.forEach(function(item) {
+                            me.forwards[item.forwardid] = item;
+                        })
+                    }
+
+                    console.log('me.forwards', me.forwards);
+                });
+            },
         },
         computed: {
             disabledInput: function() {
@@ -1179,6 +1201,7 @@
             utils.deviceInfos = {};
             this.currentPageUserLists = deepClone(globalUserList);
             this.treeDeviceList = [];
+            me.queryForwardParams();
             me.getDeviceType();
             me.getUserInfoList();
             me.setUserTypeByUser(me.userType);
