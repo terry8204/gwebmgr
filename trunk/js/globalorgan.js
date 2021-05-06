@@ -302,3 +302,22 @@
        }
        this.globalSelectedTreeData = null;
    };
+
+   GlobalOrgan.prototype.editDeviceAlarmStr = function(deviceInfo) {
+       debugger;
+       var creater = deviceInfo.creater;
+       var groupid = deviceInfo.groupid;
+       var deviceid = deviceInfo.deviceid;
+       var needalarmstr = deviceInfo.needalarmstr;
+       var group = this.getGroupByUserNameAndGroupId(creater, groupid);
+       if (group) {
+           var devices = group.devices;
+           for (var i = 0; i < devices.length; i++) {
+               var device = devices[i];
+               if (device.deviceid == deviceid) {
+                   device.needalarmstr = needalarmstr;
+                   break;
+               }
+           }
+       }
+   }

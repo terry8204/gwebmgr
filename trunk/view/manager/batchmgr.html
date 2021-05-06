@@ -52,6 +52,7 @@
         <Row>
             <i-col span="24" style="border: 1px solid #DCDEE2;padding: 5px;">
                 <div style="display: flex;justify-content: center;">
+                    <i-button @click="alarmModel=true" style="margin:0 5px;">过滤报警类型</i-button>
                     <i-button @click="handleBatchTransfer" style="margin:0 5px;">{{$t("bgMgr.batchTransfer")}}</i-button>
                     <i-button @click="importModal=true" style="margin:0 5px;">{{$t("bgMgr.exportDevice")}}</i-button>
                     <i-button @click="showBatchModal(1)" style="margin:0 5px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
@@ -84,6 +85,27 @@
                 </div>
             </i-col>
         </Row>
+
+        <Modal v-model="alarmModel" width="600">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="information-circled"></Icon>
+                <span>{{$t('alarm.filterAlarmTitle')}}</span>
+            </p>
+            <div>
+                <div>
+                    <i-input v-model.trim="searchValue" icon="ios-search-outline" style="width:100%;" :placeholder='$t("alarm.searchValuePlaceholder")'></i-input>
+                </div>
+                <div style="overflow:hidden;margin-top:12px;">
+                    <div style="width:33.33%;float:left;padding:2px 0;" v-for="(item,index) in alarmTypeList" :key="index" v-show="item.show">
+                        <Checkbox v-model="checkboxObj[item.index]">{{ isZh ? item.alarmname : item.alarmnameen}}</Checkbox>
+                    </div>
+                </div>
+            </div>
+            <div slot="footer">
+                <i-button type="primary" @click="setForceAlarmClick" style="width: 100%">{{$t("monitor.confirm")}}</i-button>
+            </div>
+        </Modal>
+
         <Modal v-model="importModal" width="700" :title="$t('device.import')">
             <Row>
                 <i-col span="12" style="padding: 10px;">
@@ -214,6 +236,7 @@
         i18n: utils.getI18n(),
         data: {
             loading: false,
+            alarmModel: false,
             userType: localStorage.getItem('userType'),
             batchSendCmdLoading: false,
             idx: 0,
@@ -328,7 +351,10 @@
             }],
             selectedGroupId: null,
             selectedUserName: null,
-            taleHeight: 100
+            taleHeight: 100,
+            alarmTypeList: deepClone(alarmTypeList),
+            checkboxObj: {},
+            searchValue: '',
         },
         methods: {
             showBatchModal: function(type) {
@@ -508,7 +534,7 @@
                     this.$Message.error(vRoot.$t('reportForm.selectDevTip'));
                     return;
                 }
-                console.log(this.selectedGroupId === null, this.selectedGroupId)
+
                 if (this.selectedGroupId === null) {
                     this.$Message.error(vRoot.$t('device.selectedTransferGroup'));
                     return;
@@ -597,6 +623,18 @@
                     newArr = newArr.slice(0, 500);
                 }
                 this.tableData = newArr;
+                if (newArr.length > 0) {
+                    var needalarmstr = newArr[0].needalarmstr;
+                    if (needalarmstr.length == 0) {
+                        for (var key in this.checkboxObj) {
+                            this.checkboxObj[key] = true;
+                        }
+                    } else {
+                        needalarmstr.split("").forEach(function(item, index) {
+                            me.checkboxObj[index] = item == '1' ? true : false;
+                        })
+                    }
+                }
             },
             isRepeatAddDevice: function(deviceid) {
                 var relsut = false;
@@ -748,7 +786,7 @@
                                 groupObj.children.push({
                                     deviceid: device.deviceid,
                                     name: device.devicename,
-                                    icon: utils.getzTreeDeviceIcon(device)
+                                    icon: utils.getzTreeDeviceIcon(device),
                                 });
                                 utils.deviceInfos[device.deviceid] = {
                                     deviceid: device.deviceid,
@@ -757,6 +795,8 @@
                                     groupid: group.groupid,
                                     groupname: group.groupname,
                                     forwardid: device.forwardid,
+                                    needalarmstr: device.needalarmstr,
+                                    creater: device.creater,
                                 }
                             });
                         }
@@ -1053,6 +1093,43 @@
 
                 return childTemp;
             },
+            setForceAlarmClick: function() {
+                if (this.tableData.length == 0) {
+                    this.$Message.error(vRoot.$t('reportForm.selectDevTip'));
+                    return;
+                }
+                var me = this;
+                var data = {
+                    action: 'setneedalarm',
+                    deviceids: [],
+                    needalarmstr: '',
+                };
+                for (var i = 0; i <= 62; i++) {
+                    data.needalarmstr += this.checkboxObj[i] ? '1' : '0';
+                }
+                this.tableData.forEach(function(item) {
+                    data.deviceids.push(item.deviceid);
+                });
+                var url = myUrls.batchOperate();
+
+                utils.sendAjax(url, data, function(respData) {
+                    if (respData.status === 0) {
+                        if (respData.total == respData.success) {
+                            me.$Message.success(vRoot.$t('device.actionSucc'));
+                            data.deviceids.forEach(function(deviceid) {
+                                utils.deviceInfos[deviceid].needalarmstr = data.needalarmstr;
+                                GlobalOrgan.getInstance().editDeviceAlarmStr(utils.deviceInfos[deviceid]);
+                            });
+                        } else {
+                            me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
+                        }
+                        me.updatedActionState(respData.errorrecords);
+                        me.batchModal = false;
+                    } else {
+                        me.$Message.error(respData.cause);
+                    }
+                });
+            }
         },
         computed: {
             treeStyle: function() {
@@ -1076,6 +1153,30 @@
             }
         },
         watch: {
+            searchValue: function(newVal) {
+                if (newVal.length == 0) {
+                    this.alarmTypeList.forEach(function(item) {
+                        item.show = true;
+                    });
+                } else {
+                    this.alarmTypeList.forEach(function(item) {
+                        if (isZh) {
+                            if (item.alarmname.indexOf(newVal) != -1) {
+                                item.show = true;
+                            } else {
+                                item.show = false;
+                            }
+                        } else {
+                            if (item.alarmnameen.indexOf(newVal) != -1) {
+                                item.show = true;
+                            } else {
+                                item.show = false;
+                            }
+                        }
+
+                    });
+                }
+            },
             isOk: function(isOk) {
                 if (isOk) {
                     $('.my-error-tips textarea').css({
@@ -1148,6 +1249,10 @@
             this.queryDevicesTree();
             this.getDeviceType();
             this.userName = userName;
+            this.alarmTypeList.forEach(function(item, index) {
+                me.checkboxObj[index] = false;
+                item.show = true;
+            })
         },
     })
 </script>
