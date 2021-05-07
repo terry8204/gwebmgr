@@ -1444,7 +1444,7 @@
                 isOverdue: "是否过期",
                 createTime: "创建时间",
                 content: '内容',
-                expirationInfo: '过期信息',
+                expirationInfo: '到期提醒',
                 emergencyAlarm: '紧急报警',
                 voice: '声音',
                 popup: '弹窗',

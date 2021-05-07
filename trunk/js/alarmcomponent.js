@@ -1092,7 +1092,7 @@ var waringComponent = {
             me.overdueDevice = me.msgListObj.getMsgList().reverse();
         });
         communicate.$on("monitorlist", function(groups) {
-            me.overdueinfolist = me.getOverdueInfoList(groups);
+            me.overdueinfolist = me.getOverdueInfoList(groups).slice(0, 100);
         });
         // timeout定时器
         var timeout = null;
