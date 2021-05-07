@@ -975,7 +975,7 @@ var waringComponent = {
                             key: 'deviceid'
                         },
                         {
-                            title: me.$t("alarm.overdueTime"),
+                            title: me.$t("alarm.expireTime"),
                             render: function(h, params) {
                                 var expirenotifytime = params.row.expirenotifytime;
                                 return h('span', {}, DateFormat.format(new Date(expirenotifytime), 'yyyy-MM-dd'));
@@ -989,14 +989,14 @@ var waringComponent = {
                                 var dayStr = "";
                                 if (mss > 0) {
                                     if (isZh) {
-                                        dayStr += "剩" + days + "天过期";
+                                        dayStr += "剩" + days + "天到期";
                                     } else {
                                         dayStr += days + " days to expire";
                                     }
 
                                 } else if (mss < 0) {
                                     if (isZh) {
-                                        dayStr += "已过期" + Math.abs(days) + "天";
+                                        dayStr += "已到期" + Math.abs(days) + "天";
                                     } else {
                                         dayStr += Math.abs(days) + " days overdue";
                                     }
