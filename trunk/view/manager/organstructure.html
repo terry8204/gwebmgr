@@ -534,6 +534,11 @@
                     return;
                 }
 
+                if (globalUserList.indexOf(this.createrToUser) == -1) {
+                    me.$Message.error(me.$t("message.selectCorrectAccount"));
+                    return;
+                }
+
                 var data = {
                     creater: this.createrToUser,
                     username: this.username,
