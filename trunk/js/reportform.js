@@ -3037,6 +3037,7 @@ function messageRecords(groupslist) {
                 { title: vRoot.$t("reportForm.strstatus"), key: isZh ? 'strstatus' : 'strstatusen', width: 220 },
                 { title: vRoot.$t("reportForm.stralarm"), key: 'stralarm', width: 120 },
                 { title: vRoot.$t("reportForm.updatetimeStr"), key: 'updatetimeStr', width: 160 },
+                { title: vRoot.$t("reportForm.arrivedtimeStr"), key: 'arrivedtimeStr', width: 160 },
                 { title: vRoot.$t("reportForm.reportmodeStr"), key: 'reportmodeStr', width: 120 },
                 { title: vRoot.$t("reportForm.reissue"), key: 'reissue', width: 80 },
                 { title: vRoot.$t("reportForm.callat"), key: 'callat', width: 120 },
@@ -3212,6 +3213,7 @@ function messageRecords(groupslist) {
                             record.messagetype = type;
                             record.reportmodeStr = reportmodeStr = getReportModeStr(record.reportmode);
                             record.updatetimeStr = '\t' + DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                            record.arrivedtimeStr = '\t' + DateFormat.longToDateTimeStr(record.arrivedtime, timeDifference);
                             if (seriesObj[copyType] == undefined) {
                                 seriesObj[copyType] = {
                                     name: copyType,
