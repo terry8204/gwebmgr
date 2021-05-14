@@ -429,6 +429,9 @@
 
 <body>
     <div id="container" v-cloak>
+        <div class="demo-spin-container" v-if="loading">
+            <Spin size="large" fix></Spin>
+        </div>
         <div class="master-wraper">
             <div class="ctrl-wraper">
                 <div class="device">
@@ -514,7 +517,7 @@
                     <div>
                         <Row>
                             <i-col span="12" style="height: 100%;text-align:center;line-height:32px;">
-                                <i-button type="primary" style="width:140px" :loading="loading" @click="queryTracks" icon="ios-search">{{$t("main.queryTracks")}}</i-button>
+                                <i-button type="primary" style="width:140px" @click="queryTracks" icon="ios-search">{{$t("main.queryTracks")}}</i-button>
                             </i-col>
                             <i-col span="12" style="height: 100%;text-align:center;line-height:32px;">
                                 <i-button type="primary" style="width:140px" icon="ios-download-outline" @click="exportData">{{$t("main.downloadTrack")}}</i-button>
@@ -1926,6 +1929,8 @@
                                     me.totalMileage = 0;
                                 }
                             }
+                        }, function() {
+                            me.loading = false;
                         });
                     },
                     getParkingMarkers: function(tracks) {
