@@ -6294,7 +6294,9 @@ function timeWeightConsumption(groupslist) {
                     } else {
                         self.$Message.error(resp.cause);
                     }
-                })
+                }, function() {
+                    self.loading = false;
+                });
             },
             onSortChange: function(column) {
 
@@ -7098,6 +7100,8 @@ function timeOilConsumption(groupslist) {
                     } else {
                         self.$Message.error(resp.cause);
                     }
+                }, function() {
+                    self.loading = false;
                 })
             }
         },

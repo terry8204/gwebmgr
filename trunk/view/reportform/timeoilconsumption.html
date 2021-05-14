@@ -1,5 +1,8 @@
 <meta charset="UTF-8">
 <div id="time-oil-consumption">
+    <div class="demo-spin-container" v-if="loading">
+        <Spin size="large" fix></Spin>
+    </div>
     <div class="report-item-header">
         <Row style="margin:10px;height: 35px;">
             <div style="float: left;">
@@ -44,7 +47,7 @@
             <div id="charts" style="height: 180px;width: 100%;"></div>
         </div>
         <div style="margin:10px;">
-            <i-table :columns="columns" size="small" :height="lastTableHeight" :data="tableData" ref="table" :loading="loading" highlight-row @on-row-click="onRowClick"></i-table>
+            <i-table :columns="columns" size="small" :height="lastTableHeight" :data="tableData" ref="table" highlight-row @on-row-click="onRowClick"></i-table>
         </div>
         <div style="padding-left:10px;">
             <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
