@@ -261,11 +261,11 @@
 
                             var dates = me.getLatestDate();
                             var seriesData = me.getNewInstallationConut(true, me.groupList, dates);
-                            me.dailyInstallationChart.setOption(me.getDailyInstallationOption('日新增设备', dates, seriesData))
+                            me.dailyInstallationChart.setOption(me.getDailyInstallationOption('日新增设备', dates, seriesData), true)
 
                             var months = me.getLatestMonth();
                             var monthSeriesData = me.getNewInstallationConut(false, me.groupList, months);
-                            me.monthInstallationChart.setOption(me.getDailyInstallationOption('月新增设备', me.getLatestMonth(), monthSeriesData));
+                            me.monthInstallationChart.setOption(me.getDailyInstallationOption('月新增设备', me.getLatestMonth(), monthSeriesData), true);
 
                         }
 
@@ -297,10 +297,10 @@
                     this.queryDirectDevicesForDatav();
                     //每日新增
                     this.dailyInstallationChart = echarts.init(document.getElementById('daily-installation'));
-                    this.dailyInstallationChart.setOption(this.getDailyInstallationOption('日新增设备', this.getLatestDate(), []));
+                    this.dailyInstallationChart.setOption(this.getDailyInstallationOption('日新增设备', this.getLatestDate(), []), true);
                     //每月新增
                     this.monthInstallationChart = echarts.init(document.getElementById('month-installation'));
-                    this.monthInstallationChart.setOption(this.getDailyInstallationOption('月新增设备', this.getLatestMonth(), []));
+                    this.monthInstallationChart.setOption(this.getDailyInstallationOption('月新增设备', this.getLatestMonth(), []), true);
 
                 }
             },

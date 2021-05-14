@@ -1291,7 +1291,7 @@
                 },
                 initChart: function() {
                     chart = echarts.init(document.getElementById('videoTime'));
-                    chart.setOption(this.getEchartOption(DateFormat.format(this.date, 'yyyy-MM-dd'), []));
+                    chart.setOption(this.getEchartOption(DateFormat.format(this.date, 'yyyy-MM-dd'), []), true);
                 },
                 getEchartOption: function(dateStr, data) {
 
@@ -1487,9 +1487,9 @@
                             })
                         })
 
-                        chart.setOption(this.getEchartOption(DateFormat.format(this.date, 'yyyy-MM-dd'), data));
+                        chart.setOption(this.getEchartOption(DateFormat.format(this.date, 'yyyy-MM-dd'), data), true);
                     } else {
-                        chart.setOption(this.getEchartOption(DateFormat.format(this.date, 'yyyy-MM-dd'), []));
+                        chart.setOption(this.getEchartOption(DateFormat.format(this.date, 'yyyy-MM-dd'), []), true);
                     }
                 }
             },

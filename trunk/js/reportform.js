@@ -2007,7 +2007,7 @@ function rotateReport(groupslist) {
             },
             displayChart: function() {
                 var barChartOtion = this.getChartOption();
-                this.barChartJourney.setOption(barChartOtion);
+                this.barChartJourney.setOption(barChartOtion, true);
             },
             getChartOption: function() {
                 var dw_hour = this.$t("reportForm.h");
@@ -2493,7 +2493,7 @@ function speedingReport(groupslist) {
                                 me.distance = distance;
                                 me.recvtime = recvtime;
                                 me.veo = veo;
-                                me.speedChart.setOption(me.getSpeedChartsOption());
+                                me.speedChart.setOption(me.getSpeedChartsOption(), true);
                             }
                         }
                     }
@@ -2676,7 +2676,7 @@ function speedingReport(groupslist) {
             },
             displayChart: function() {
                 var barChartOtion = this.getChartOption();
-                this.barChartJourney.setOption(barChartOtion);
+                this.barChartJourney.setOption(barChartOtion, true);
             },
             getChartOption: function() {
                 var car = isZh ? '车辆' : 'vehicle';
@@ -2910,7 +2910,7 @@ function speedingReport(groupslist) {
             this.recvtime = [];
             this.veo = [];
             this.speedChart = echarts.init(document.getElementById('spedding-chart'));
-            this.speedChart.setOption(this.getSpeedChartsOption());
+            this.speedChart.setOption(this.getSpeedChartsOption(), true);
             this.calcTableHeight();
             window.onresize = function() {
                 me.calcTableHeight();
@@ -3105,7 +3105,7 @@ function messageRecords(groupslist) {
                         }
                     }]
                 };;
-                this.chartsIns.setOption(option);
+                this.chartsIns.setOption(option, true);
             },
             onRowClick: function(row) {
                 var me = this;
@@ -5668,7 +5668,7 @@ function newEquipmentReport() {
                             })
                             seriesData.push(count);
                         });
-                        me.charts.setOption(me.getChartsOption(dates, seriesData));
+                        me.charts.setOption(me.getChartsOption(dates, seriesData), true);
                     }
                 }, function() {
                     me.loading = false;
@@ -5686,7 +5686,7 @@ function newEquipmentReport() {
             },
             initCharts: function() {
                 this.charts = echarts.init(document.getElementById('charts'));
-                this.charts.setOption(this.getChartsOption(this.getLatestDate(), []));
+                this.charts.setOption(this.getChartsOption(this.getLatestDate(), []), true);
             },
             getChartsOption: function(dates, seriesData) {
                 return {
@@ -5856,7 +5856,7 @@ function deviceTypeDistribution(groupslist) {
             },
             initCharts: function() {
                 this.charts = echarts.init(document.getElementById('distribution'));
-                this.charts.setOption(this.getChartsOption(this.getSeriesData()));
+                this.charts.setOption(this.getChartsOption(this.getSeriesData()), true);
             },
         },
         mounted: function() {
@@ -5948,7 +5948,7 @@ function onlineStatisticsDay() {
                 });
 
                 this.charts = echarts.init(document.getElementById('statistics-charts'));
-                this.charts.setOption(this.getChartsOption(datas, seriesData));
+                this.charts.setOption(this.getChartsOption(datas, seriesData), true);
 
                 window.onresize = function() {
                     me.charts.resize();
@@ -6195,7 +6195,7 @@ function timeWeightConsumption(groupslist) {
                     ]
                 };
 
-                this.chartsIns.setOption(option);
+                this.chartsIns.setOption(option, true);
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
@@ -6492,7 +6492,7 @@ function weightSummary(groupslist) {
                         }
                     }]
                 };;
-                this.chartsIns.setOption(option);
+                this.chartsIns.setOption(option, true);
             },
 
             calcTableHeight: function() {
@@ -6968,7 +6968,7 @@ function timeOilConsumption(groupslist) {
                     ]
                 };
 
-                this.chartsIns.setOption(option);
+                this.chartsIns.setOption(option, true);
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
@@ -7416,7 +7416,7 @@ function dayOil(groupslist) {
                         }
                     ]
                 };
-                this.chartsIns.setOption(option);
+                this.chartsIns.setOption(option, true);
             },
 
             calcTableHeight: function() {
@@ -7711,7 +7711,7 @@ function refuelingReport(groupslist) {
                         data: this.oil
                     }]
                 };
-                this.chartsIns.setOption(option);
+                this.chartsIns.setOption(option, true);
 
             },
 
@@ -8063,7 +8063,7 @@ function oilLeakageReport(groupslist) {
                         data: this.oil
                     }]
                 };
-                this.chartsIns.setOption(option);
+                this.chartsIns.setOption(option, true);
 
             },
 
@@ -8538,7 +8538,7 @@ function oilWorkingHours(groupslist) {
                 while (index < len) {
                     var chartsIns = echarts.init(document.getElementById('charts' + index));
                     var data = this.chartDataList[index]
-                    chartsIns.setOption(this.getChartsOption(data.data, data.oil, data.dis, data.hours));
+                    chartsIns.setOption(this.getChartsOption(data.data, data.oil, data.dis, data.hours), true);
 
                     // chartDataList[len].data.push(item.devicename);
                     // chartDataList[len].oil.push(item.totaloil);
@@ -8824,7 +8824,7 @@ function temperature(groupslist) {
                     ]
                 };
 
-                this.chartsIns.setOption(option);
+                this.chartsIns.setOption(option, true);
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;

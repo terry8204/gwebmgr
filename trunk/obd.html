@@ -372,12 +372,12 @@
                     this.counterList[2].end2 = record.inletbranchpressure; // 进气管压力
                     this.counterList[2].end3 = record.oilvalue; // 剩余油量 
                     this.totalMileage = record.mileage;
-                    this.speedChart.setOption(this.getSeedOption(record.speed));
-                    this.rpmChart.setOption(this.getRpmOption(record.engineturnrate));
+                    this.speedChart.setOption(this.getSeedOption(record.speed), true);
+                    this.rpmChart.setOption(this.getRpmOption(record.engineturnrate), true);
 
                 },
                 setOptionSpeedChart: function() {
-                    this.speedChart.setOption(this.getSeedOption(0));
+                    this.speedChart.setOption(this.getSeedOption(0), true);
                 },
                 getSeedOption: function(value) {
                     var option = {
@@ -465,7 +465,7 @@
                     return option
                 },
                 setOptionRpmChart: function() {
-                    this.rpmChart.setOption(this.getRpmOption(0));
+                    this.rpmChart.setOption(this.getRpmOption(0), true);
                 },
                 getRpmOption: function(value) {
                     var option = {

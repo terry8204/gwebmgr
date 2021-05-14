@@ -269,8 +269,8 @@
                             me.weightArr = weightArr;
                             me.speedArr = speedArr;
                             me.fixedWeightArr = fixedWeightArr;
-                            me.weighChart.setOption(me.getWeighChartOption());
-                            me.speedChart.setOption(me.getSpeedChartOption());
+                            me.weighChart.setOption(me.getWeighChartOption(), true);
+                            me.speedChart.setOption(me.getSpeedChartOption(), true);
                             me.$Message.success("查询成功");
                         } else {
                             me.$Message.error("查询失败");
@@ -306,8 +306,8 @@
                 vm.$nextTick(function() {
                     vm.weighChart = echarts.init(document.getElementById('weigh-box'));
                     vm.speedChart = echarts.init(document.getElementById('speed-box'));
-                    vm.weighChart.setOption(vm.getWeighChartOption());
-                    vm.speedChart.setOption(vm.getSpeedChartOption());
+                    vm.weighChart.setOption(vm.getWeighChartOption(), true);
+                    vm.speedChart.setOption(vm.getSpeedChartOption(), true);
                     vm.setContentHeight();
                     vm.getWeighingInfo();
                 });

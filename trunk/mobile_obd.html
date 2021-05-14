@@ -856,9 +856,9 @@
 
                             if (resp.status == 0) {
                                 var record = resp.record;
-                                me.charts1.setOption(me.getCharts1Option(record.speed));
-                                me.charts2.setOption(me.getCharts2Option(record.speed));
-                                me.charts3.setOption(me.getCharts3Option(record.engineturnrate));
+                                me.charts1.setOption(me.getCharts1Option(record.speed), true);
+                                me.charts2.setOption(me.getCharts2Option(record.speed), true);
+                                me.charts3.setOption(me.getCharts3Option(record.engineturnrate), true);
                                 me.engineturnrate = record.engineturnrate;
                                 me.totalMileage = record.mileage;
                                 var itemInfos = me.itemInfos;
@@ -1159,13 +1159,13 @@
                     this.deviceid = this.getQueryString('deviceid');
 
                     this.charts1 = echarts.init(document.getElementById('charts1'));
-                    this.charts1.setOption(this.getCharts1Option(0));
+                    this.charts1.setOption(this.getCharts1Option(0), true);
 
                     this.charts2 = echarts.init(document.getElementById('charts2'));
-                    this.charts2.setOption(this.getCharts2Option(0));
+                    this.charts2.setOption(this.getCharts2Option(0), true);
 
                     this.charts3 = echarts.init(document.getElementById('charts3'));
-                    this.charts3.setOption(this.getCharts3Option(0));
+                    this.charts3.setOption(this.getCharts3Option(0), true);
 
                     this.queryobdinfo();
                 }
