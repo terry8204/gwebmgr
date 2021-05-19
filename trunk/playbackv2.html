@@ -315,7 +315,7 @@
         
         div.map-selector-popup {
             position: absolute;
-            right: 100px;
+            right: 90px;
             width: 155px;
             height: 60px;
             padding: 5px 0px 5px 5px;
@@ -1811,7 +1811,8 @@
                         this.weights = weights;
                         this.redArr = redArr;
                         this.greenArr = greenArr;
-                        this.charts.setOption(this.getChartsOption(), true);
+                        this.charts.setOption({}, true);
+                        this.charts.setOption(this.getChartsOption());
 
                     },
                     getMonthDays: function(date) {
@@ -1903,7 +1904,7 @@
                             endtime: DateFormat.longToDateTimeStr(this.endTimeValue, timeDifference),
                         };
                         utils.sendAjax(url, data, function(resp) {
-                            me.loading = false;
+
                             if (resp.status == 0) {
 
                                 var records = resp.records;
@@ -1929,6 +1930,7 @@
                                     me.totalMileage = 0;
                                 }
                             }
+                            me.loading = false;
                         }, function() {
                             me.loading = false;
                         });

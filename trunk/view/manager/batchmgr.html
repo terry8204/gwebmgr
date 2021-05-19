@@ -198,19 +198,19 @@
             <div v-if="showBatchModalType == 5">
                 <div style="text-align: center;padding:0 0 10px 0;font-weight: 600;font-size: 18px;">{{$t('bgMgr.issueCmd')}}</div>
                 <Row>
-                    <i-col span="4" offset="4" style="line-height: 32px;">
+                    <i-col span="4" style="line-height: 32px;">
                         {{$t('bgMgr.cmdContent')}}:
                     </i-col>
-                    <i-col span="12">
-                        <i-input v-model.trim="cmdContent"></i-input>
+                    <i-col span="20">
+                        <i-input v-model.trim="cmdContent" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
                 <Row style="margin-top: 10px;">
-                    <i-col span="4" offset="4" style="line-height: 32px;">
+                    <i-col span="4" style="line-height: 32px;">
                         {{$t('bgMgr.pwd')}}:
                     </i-col>
-                    <i-col span="12">
-                        <i-input v-model.trim="cmdPassword"></i-input>
+                    <i-col span="20">
+                        <i-input v-model.trim="cmdPassword" style="width: 100%;"></i-input>
                     </i-col>
                 </Row>
             </div>
