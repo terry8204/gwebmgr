@@ -656,7 +656,7 @@
                 this.tableData = newArr;
                 if (newArr.length > 0) {
                     var needalarmstr = newArr[0].needalarmstr;
-                    if (needalarmstr.length == 0) {
+                    if (needalarmstr == null || needalarmstr.length == 0) {
                         for (var key in this.checkboxObj) {
                             this.checkboxObj[key] = true;
                         }
