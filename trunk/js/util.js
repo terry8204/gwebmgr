@@ -750,6 +750,174 @@ var utils = {
         };
         return oilStr;
     },
+    getDirectiveList: function(type) {
+        var allCmdList = vstore.state.allCmdList;
+        var directiveList = [];
+        allCmdList.forEach(function(cmd) {
+            var copyCmd = cmd;
+            if (!isZh) {
+                copyCmd = deepClone(cmd)
+                copyCmd.cmdname = cmd.cmdnameen;
+            }
+            if (copyCmd.devicetype == type) {
+                directiveList.push(copyCmd);
+            } else if (copyCmd.common == 1) {
+                directiveList.push(copyCmd);
+            };
+        });
+
+        directiveList.sort(function(a, b) {
+            return a.cmdlevel - b.cmdlevel;
+        });
+        return directiveList;
+    },
+    parserToRemindJson: function(value) {
+        var valueArr = value.split("-"),
+            len = valueArr.length,
+            remindJson = {};
+
+        remindJson.time = valueArr[0];
+        remindJson.switch = valueArr[1] == 1 ? true : false;
+        remindJson.type = valueArr[2];
+        remindJson.weekselected = [];
+        if (len === 4) {
+            var weekStr = valueArr[3];
+            var week1 = weekStr.charAt(0) == 1 ? '一' : false;
+            var week2 = weekStr.charAt(1) == 1 ? '二' : false;
+            var week3 = weekStr.charAt(2) == 1 ? '三' : false;
+            var week4 = weekStr.charAt(3) == 1 ? '四' : false;
+            var week5 = weekStr.charAt(4) == 1 ? '五' : false;
+            var week6 = weekStr.charAt(5) == 1 ? '六' : false;
+            var week7 = weekStr.charAt(6) == 1 ? '日' : false;
+
+            week1 && remindJson.weekselected.push(week1);
+            week2 && remindJson.weekselected.push(week2);
+            week3 && remindJson.weekselected.push(week3);
+            week4 && remindJson.weekselected.push(week4);
+            week5 && remindJson.weekselected.push(week5);
+            week6 && remindJson.weekselected.push(week6);
+            week7 && remindJson.weekselected.push(week7);
+        }
+        return remindJson;
+    },
+    parserToWeekTimeJson: function(value) {
+        var valueArr = value.split("-"),
+            remindJson = {
+                time: valueArr[0],
+                weekselected: []
+            };
+        var weekStr = valueArr[1];
+        var week1 = weekStr.charAt(0) == 1 ? '一' : false;
+        var week2 = weekStr.charAt(1) == 1 ? '二' : false;
+        var week3 = weekStr.charAt(2) == 1 ? '三' : false;
+        var week4 = weekStr.charAt(3) == 1 ? '四' : false;
+        var week5 = weekStr.charAt(4) == 1 ? '五' : false;
+        var week6 = weekStr.charAt(5) == 1 ? '六' : false;
+        var week7 = weekStr.charAt(6) == 1 ? '日' : false;
+
+        week1 && remindJson.weekselected.push(week1);
+        week2 && remindJson.weekselected.push(week2);
+        week3 && remindJson.weekselected.push(week3);
+        week4 && remindJson.weekselected.push(week4);
+        week5 && remindJson.weekselected.push(week5);
+        week6 && remindJson.weekselected.push(week6);
+        week7 && remindJson.weekselected.push(week7);
+
+        return remindJson;
+    },
+    parserToWeekPeriodJson: function(param, value) {
+        if (param.type == 'week') {
+            var weekselected = [];
+            if (value) {
+                var weekStr = value;
+            } else {
+                var weekStr = param.value;
+            }
+            var week1 = weekStr.charAt(0) == 1 ? '一' : false;
+            var week2 = weekStr.charAt(1) == 1 ? '二' : false;
+            var week3 = weekStr.charAt(2) == 1 ? '三' : false;
+            var week4 = weekStr.charAt(3) == 1 ? '四' : false;
+            var week5 = weekStr.charAt(4) == 1 ? '五' : false;
+            var week6 = weekStr.charAt(5) == 1 ? '六' : false;
+            var week7 = weekStr.charAt(6) == 1 ? '日' : false;
+
+            week1 && weekselected.push(week1);
+            week2 && weekselected.push(week2);
+            week3 && weekselected.push(week3);
+            week4 && weekselected.push(week4);
+            week5 && weekselected.push(week5);
+            week6 && weekselected.push(week6);
+            week7 && weekselected.push(week7);
+
+            return weekselected;
+        } else {
+            return value ? value.split('-') : param.value.split("-");
+        }
+
+    },
+    encodeWeekTimeParams: function(paramsObj) {
+
+        var resultArr = [];
+        for (var key in paramsObj) {
+            var item = paramsObj[key];
+            var weekStr = "",
+                weekArr = item.weekselected;
+
+            weekArr.indexOf("一") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("二") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("三") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("四") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("五") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("六") !== -1 ? weekStr += '1' : weekStr += '0';
+            weekArr.indexOf("日") !== -1 ? weekStr += '1' : weekStr += '0';
+            resultArr.push(item.time + "-" + weekStr);
+        }
+        return resultArr;
+    },
+    encodeWeekPeriodParams: function(paramsObj) {
+        var copyParamsObj = deepClone(paramsObj);
+        var resultArr = [];
+        var weekStr = "",
+            weekArr = copyParamsObj.week;
+
+        weekArr.indexOf("一") !== -1 ? weekStr += '1' : weekStr += '0';
+        weekArr.indexOf("二") !== -1 ? weekStr += '1' : weekStr += '0';
+        weekArr.indexOf("三") !== -1 ? weekStr += '1' : weekStr += '0';
+        weekArr.indexOf("四") !== -1 ? weekStr += '1' : weekStr += '0';
+        weekArr.indexOf("五") !== -1 ? weekStr += '1' : weekStr += '0';
+        weekArr.indexOf("六") !== -1 ? weekStr += '1' : weekStr += '0';
+        weekArr.indexOf("日") !== -1 ? weekStr += '1' : weekStr += '0';
+        resultArr.push(weekStr);
+        delete copyParamsObj.week;
+
+        for (var i = 1; i < 4; i++) {
+            var key = 'period' + i;
+            resultArr.push(copyParamsObj[key].join('-'));
+        }
+
+        return resultArr;
+    },
+    encodeRemindParams: function(paramsObj) {
+        var resultArr = [];
+        for (var key in paramsObj) {
+            var item = paramsObj[key];
+            if (item.type == '3') {
+                var weekStr = "",
+                    weekArr = item.weekselected;
+                weekArr.indexOf("一") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("二") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("三") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("四") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("五") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("六") !== -1 ? weekStr += '1' : weekStr += '0';
+                weekArr.indexOf("日") !== -1 ? weekStr += '1' : weekStr += '0';
+                resultArr.push(item.time + "-" + (item.switch ? '1' : '0') + '-' + item.type + "-" + weekStr)
+            } else {
+                resultArr.push(item.time + "-" + (item.switch ? '1' : '0') + '-' + item.type);
+            };
+        }
+        return resultArr;
+    },
     getWindowContent: function(track, b_address) {
         var strstatus = '';
         var posiType = this.getPosiType(track);

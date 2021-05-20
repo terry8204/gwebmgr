@@ -134,6 +134,179 @@
                 </Row>
             </div>
         </Modal>
+
+        <Modal v-model="sendCmdModal" width="800" :title="$t('bgMgr.issueCmd')">
+            <div style="height: 400px;">
+                <Row>
+                    <i-col span="8" style="height: 400px;overflow-y: auto;">
+                        <div class="ivu-menu-directive">
+                            <ul class="ivu-menu ivu-menu-light ivu-menu-vertical">
+                                <template v-for="(item,index) in currentDevDirectiveList">
+                                    <li class="ivu-menu-item" 
+                                        :key="item.name"
+                                        :class="{'ivu-menu-item-active':currentCmdCode == item.cmdcode,'ivu-menu-item-selected':currentCmdCode == item.cmdcode}" 
+                                        @click="handleClickDevType(item)">
+                                            <span>{{ item.cmdname}}</span>
+                                    </li> 
+                                </template>
+                            </ul>
+                        </div>
+                    </i-col>
+                    <i-col offset="1" span="15" style="height: 400px;overflow-y: auto;">
+                        <div style="text-align:center">
+                            <h3 style="color:#f60;text-align:center">
+                                <Icon type="ios-create-outline"></Icon>
+                                <span>{{ selectedCmdInfo.cmdName }}</span>
+                            </h3>
+                            <Row style="margin: 10px 0">
+                                <i-col span="24" style="height: 100%;text-align:center;line-height:32px;font-size:14px;">{{selectedCmdInfo.cmddescr}}</i-col>
+                            </Row>
+
+                            <Row style="margin: 10px 0" v-if="selectedCmdInfo.type === 'list'">
+                                <i-col :offset="5" span="16">
+                                    <i-select v-model="selectedTypeVal">
+                                        <i-option v-for="item in selectedCmdInfo.params" :value="item.type" :key="item.type">{{ item.value }}</i-option>
+                                    </i-select>
+                                </i-col>
+                            </Row>
+
+                            <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'text'">
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                                <i-col span="16">
+                                    <i-input v-model.trim="cmdParams[item.type]"></i-input>
+                                </i-col>
+                            </Row>
+
+                            <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'timeperiod'">
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                                <i-col span="16">
+                                    <Time-Picker format="HH:mm" type="timerange" placeholder="选择时间段" v-model="cmdParams[item.type]"></Time-Picker>
+                                </i-col>
+                            </Row>
+
+                            <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'remind'">
+                                <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                                <i-col span="18">
+                                    <Row>
+                                        <i-col span="16">
+                                            <Time-Picker format="HH:mm" placeholder="选择时间" v-model="cmdParams[item.type].time"></Time-Picker>
+                                        </i-col>
+                                        <i-col span="8" style="height: 100%;line-height:32px;">
+                                            <i-switch v-model="cmdParams[item.type].switch" />
+                                        </i-col>
+                                    </Row>
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="16">
+                                            <Radio-Group v-model="cmdParams[item.type].type">
+                                                <Radio label="1"> <span>一次</span></Radio>
+                                                <Radio label="2"> <span>每天</span></Radio>
+                                                <Radio label="3"><span>每周</span></Radio>
+                                            </Radio-Group>
+                                        </i-col>
+                                    </Row>
+                                    <Row style="margin: 10px 0" v-if="cmdParams[item.type].type === '3' ">
+                                        <i-col span="24">
+                                            <CheckboxGroup v-model="cmdParams[item.type].weekselected">
+                                                <Checkbox label="一"><span>一</span></Checkbox>
+                                                <Checkbox label="二"><span>二</span></Checkbox>
+                                                <Checkbox label="三"><span>三</span></Checkbox>
+                                                <Checkbox label="四"><span>四</span></Checkbox>
+                                                <Checkbox label="五"><span>五</span></Checkbox>
+                                                <Checkbox label="六"><span>六</span></Checkbox>
+                                                <Checkbox label="日"><span>日</span></Checkbox>
+                                            </CheckboxGroup>
+                                        </i-col>
+                                    </Row>
+                                </i-col>
+                            </Row>
+
+                            <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'time'">
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{item.desc}} : &nbsp;</i-col>
+                                <i-col span="16">
+                                    <Time-Picker format="HH:mm" type="time" placeholder="选择时间" v-model="cmdParams[item.type]"></Time-Picker>
+                                </i-col>
+                            </Row>
+
+                            <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'weektime'">
+                                <i-col span="3" style="height: 100%;text-align:right;line-height:32px;">
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="24">
+                                            {{item.desc}} : &nbsp;
+                                        </i-col>
+                                    </Row>
+                                </i-col>
+                                <i-col span="18">
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="24">
+                                            <Time-Picker format="HH:mm" type="time" placeholder="选择时间" v-model="cmdParams[item.type].time"></Time-Picker>
+                                        </i-col>
+                                    </Row>
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="24">
+                                            <CheckboxGroup v-model="cmdParams[item.type].weekselected">
+                                                <Checkbox label="一"><span>一</span></Checkbox>
+                                                <Checkbox label="二"><span>二</span></Checkbox>
+                                                <Checkbox label="三"><span>三</span></Checkbox>
+                                                <Checkbox label="四"><span>四</span></Checkbox>
+                                                <Checkbox label="五"><span>五</span></Checkbox>
+                                                <Checkbox label="六"><span>六</span></Checkbox>
+                                                <Checkbox label="日"><span>日</span></Checkbox>
+                                            </CheckboxGroup>
+                                        </i-col>
+                                    </Row>
+                                </i-col>
+                            </Row>
+
+                            <Row style="margin: 10px 0" v-for="item in selectedCmdInfo.params" :key="item.desc" v-if="selectedCmdInfo.type === 'weekperiod'">
+                                <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">
+                                    <Row style="margin: 10px 0">
+                                        <i-col span="24">
+                                            {{item.desc}} : &nbsp;
+                                        </i-col>
+                                    </Row>
+                                </i-col>
+                                <i-col span="20">
+                                    <Row style="margin: 10px 0" v-if="item.type=='week'">
+                                        <i-col span="24">
+                                            <Checkbox-Group v-model="cmdParams[item.type]">
+                                                <Checkbox label="一"><span>一</span></Checkbox>
+                                                <Checkbox label="二"><span>二</span></Checkbox>
+                                                <Checkbox label="三"><span>三</span></Checkbox>
+                                                <Checkbox label="四"><span>四</span></Checkbox>
+                                                <Checkbox label="五"><span>五</span></Checkbox>
+                                                <Checkbox label="六"><span>六</span></Checkbox>
+                                                <Checkbox label="日"><span>日</span></Checkbox>
+                                            </Checkbox-Group>
+                                        </i-col>
+                                    </Row>
+                                    <Row style="margin: 10px 0" v-else>
+                                        <i-col span="20">
+                                            {{item.title}} &nbsp;
+                                            <Time-Picker format="HH:mm" v-model="cmdParams[item.type]" type="timerange" placeholder="选择时间段"></Time-Picker>
+                                        </i-col>
+                                    </Row>
+                                </i-col>
+                            </Row>
+
+                            <Row style="margin: 10px 0" v-show="selectedCmdInfo.cmdpwd">
+                                <i-col span="5" style="height: 100%;text-align:right;line-height:32px;">{{$t("bgMgr.pwd")}} : &nbsp;</i-col>
+                                <i-col span="16">
+                                    <i-input v-model.trim="cmdPwd" style="width:100%;"></i-input>
+                                </i-col>
+                            </Row>
+
+                        </div>
+                    </i-col>
+                </Row>
+            </div>
+            <div slot="footer">
+                <Row>
+                    <i-col offset="9" span="15" style="text-align: center;">
+                        <i-button @click="batchSendCmd" style="width:300px;" type="primary">{{$t("videoSettings.send")}}</i-button>
+                    </i-col>
+                </Row>
+            </div>
+        </Modal>
         <Modal v-model="batchModal" width="400" :title="$t('bgMgr.batchModification')">
             <div v-if="showBatchModalType == 1">
                 <Row>
@@ -252,6 +425,7 @@
             showBatchModalType: 1, // 1批量地址  2
             importModal: false,
             batchModal: false,
+            sendCmdModal: false,
             idLength: 11,
             isOk: false,
             mileage: 0,
@@ -364,8 +538,88 @@
             alarmTypeList: deepClone(alarmTypeList),
             checkboxObj: {},
             searchValue: '',
+            currentDevDirectiveList: [],
+            currentCmdCode: '',
+            selectedCmdInfo: {},
+            cmdParams: {},
+            cmdPwd: '',
         },
         methods: {
+            handleClickDevType: function(cmd) {
+                this.currentCmdCode = cmd.cmdcode;
+                this.currentCmd = cmd;
+                this.renderingCmdParamOrAssignment(cmd);
+            },
+            renderingCmdParamOrAssignment: function(cmdInfo) {
+                var me = this;
+                var cmdcode = cmdInfo.cmdcode;
+                var cmdVal = this.cmdSettings[cmdcode];;
+
+                this.cmdParams = {};
+                this.selectedCmdInfo = {};
+                if (isZh) {
+                    this.selectedCmdInfo.cmdName = cmdInfo.cmdname;
+                    this.selectedCmdInfo.cmddescr = cmdInfo.cmddescr;
+                } else {
+                    this.selectedCmdInfo.cmdName = cmdInfo.cmdnameen;
+                    this.selectedCmdInfo.cmddescr = cmdInfo.cmddescren;
+                }
+                this.selectedCmdInfo.cmdcode = cmdInfo.cmdcode;
+                this.selectedCmdInfo.cmdpwd = cmdInfo.cmdpwd;
+                this.selectedCmdInfo.type = cmdInfo.cmdtype;
+
+                if (cmdInfo.params) {
+
+                    var paramsXMLObj = utils.parseXML(isZh ? cmdInfo.params : cmdInfo.paramsen);
+                    // this.selectedCmdInfo.type = paramsXMLObj.type;
+                    this.selectedCmdInfo.params = paramsXMLObj.paramsListObj;
+
+                    this.selectedCmdInfo.params.forEach(function(param, index) {
+                        if (cmdVal && cmdVal.length && cmdVal[0]) {
+                            if (cmdInfo.cmdtype === 'timeperiod') {
+                                me.cmdParams[param.type] = cmdVal[index].split("-");
+                            } else if (cmdInfo.cmdtype === 'remind') {
+                                me.cmdParams[param.type] = utils.parserToRemindJson(cmdVal[index]);
+                            } else if (cmdInfo.cmdtype === 'weektime') {
+                                me.cmdParams[param.type] = utils.parserToWeekTimeJson(cmdVal[index]);
+                            } else if (cmdInfo.cmdtype === 'weekperiod') {
+                                me.cmdParams[param.type] = utils.parserToWeekPeriodJson(param, cmdVal[index]);
+                            } else {
+                                me.cmdParams[param.type] = cmdVal[index];
+                            }
+                        } else {
+                            if (cmdInfo.cmdtype === 'timeperiod') {
+                                var timerArr = param.value ? param.value.split("-") : ["00:00", "00:00"];
+                                me.cmdParams[param.type] = timerArr;
+                            } else if (cmdInfo.cmdtype === 'remind') {
+                                var remindJson = utils.parserToRemindJson(param.value);
+                                me.cmdParams[param.type] = remindJson;
+                            } else if (cmdInfo.cmdtype === 'weektime') {
+                                me.cmdParams[param.type] = utils.parserToWeekTimeJson(param.value);
+                            } else if (cmdInfo.cmdtype === 'weekperiod') {
+                                me.cmdParams[param.type] = utils.parserToWeekPeriodJson(param);
+                            } else {
+                                me.cmdParams[param.type] = param.value;
+                            }
+
+                        }
+                    });
+
+
+                    (cmdInfo.cmdtype !== 'text' || cmdInfo.cmdtype === 'timeperiod') ? this.selectedTypeVal = (cmdVal ? cmdVal[0] : ""): '';
+                };
+            },
+            querySingleAllCmdDefaultValue: function(deviceid) {
+                var url = myUrls.queryDeviceSettings(),
+                    me = this;
+                utils.sendAjax(url, {
+                    deviceid: deviceid
+                }, function(resp) {
+                    if (resp.status === 0) {
+                        me.cmdSettings = resp.settings;
+                    }
+                })
+            },
             checkingSelectState: function() {
                 var me = this;
                 setTimeout(function() {
@@ -389,10 +643,19 @@
                 }
             },
             showBatchModal: function(type) {
+                if (type == 5) {
+                    if (this.tableData.length == 0) {
+                        this.$Message.error(vRoot.$t('reportForm.selectDevTip'));
+                        return;
+                    }
+                    this.sendCmdModal = true;
+                } else {
+                    this.batchModal = true;
+                    this.forwardurl = '';
+                    this.newPassword = '';
+                }
                 this.showBatchModalType = type;
-                this.batchModal = true;
-                this.forwardurl = '';
-                this.newPassword = '';
+
             },
             clearRecord: function() {
                 if (this.tableData.length == 0) {
@@ -442,6 +705,77 @@
                     })(item);
                 });
             },
+            getCmdParamsVlaue: function() {
+                var params = [];
+
+                switch (this.selectedCmdInfo.type) {
+                    case 'text':
+                        params = Object.values(this.cmdParams);
+                        break;
+                    case 'time':
+                        params = Object.values(this.cmdParams);
+                        break;
+                    case 'timeperiod':
+                        for (var key in this.cmdParams) {
+                            params.push(this.cmdParams[key].join("-"))
+                        };
+                        break;
+                    case 'remind':
+                        params = utils.encodeRemindParams(this.cmdParams);
+                        break;
+                    case 'weektime':
+                        params = utils.encodeWeekTimeParams(this.cmdParams);
+                        break;
+                    case 'weekperiod':
+                        params = utils.encodeWeekPeriodParams(this.cmdParams);
+                        break;
+                    default:
+                        params = [this.selectedTypeVal]
+                };
+                return params;
+            },
+            batchSendCmd: function() {
+                if (this.tableData.length == 0) {
+                    this.$Message.error(vRoot.$t('reportForm.selectDevTip'));
+                    return;
+                }
+                var me = this;
+                var params = me.getCmdParamsVlaue();
+                var data = {
+                    deviceids: [],
+                    action: 'sendcommand',
+                    devicetype: this.devicetype,
+                    cmdcode: this.currentCmdCode,
+                    params: params,
+                }
+                if (this.selectedCmdInfo.cmdpwd && this.selectedCmdInfo.cmdpwd != "") {
+                    if (this.cmdPwd) {
+                        data.cmdpwd = this.cmdPwd;
+                    } else {
+                        me.$Message.error(me.$t("monitor.pwdErr"));
+                        return;
+                    }
+                };
+                this.tableData.forEach(function(item) {
+                    data.deviceids.push(item.deviceid);
+                });
+                var url = myUrls.batchOperate();
+                utils.sendAjax(url, data, function(respData) {
+                    me.cmdSettings[data.cmdcode] = params;
+                    if (respData.status === 0) {
+                        if (respData.total == respData.success) {
+                            me.$Message.success(vRoot.$t('device.actionSucc'));
+                        } else {
+                            me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
+                        }
+                        me.updatedActionState(respData.errorrecords);
+                        me.batchModal = false;
+                    } else {
+                        me.$Message.error(respData.cause);
+                    }
+                });
+
+            },
             handleBatchEdit: function() {
                 if (this.tableData.length == 0) {
                     this.$Message.error(vRoot.$t('reportForm.selectDevTip'));
@@ -451,6 +785,7 @@
                         deviceids: []
                     },
                     me = this;
+
                 if (this.showBatchModalType == 1) {
                     data.action = 'modifyforwardurl';
                     data.forwardtype = Number(this.forwardtype);
@@ -654,18 +989,7 @@
                     newArr = newArr.slice(0, 500);
                 }
                 this.tableData = newArr;
-                if (newArr.length > 0) {
-                    var needalarmstr = newArr[0].needalarmstr;
-                    if (needalarmstr == null || needalarmstr.length == 0) {
-                        for (var key in this.checkboxObj) {
-                            this.checkboxObj[key] = true;
-                        }
-                    } else {
-                        needalarmstr.split("").forEach(function(item, index) {
-                            me.checkboxObj[index] = item == '1' ? true : false;
-                        })
-                    }
-                }
+
             },
             isRepeatAddDevice: function(deviceid) {
                 var relsut = false;
@@ -828,6 +1152,7 @@
                                     forwardid: device.forwardid,
                                     needalarmstr: device.needalarmstr,
                                     creater: device.creater,
+                                    devicetype: device.devicetype,
                                 }
                             });
                         }
@@ -1184,6 +1509,38 @@
             }
         },
         watch: {
+            tableData: function(tableData) {
+
+                if (tableData.length > 0) {
+                    var firstDev = tableData[0];
+                    var devicetype = utils.deviceInfos[firstDev.deviceid].devicetype;
+                    // console.log('firstDev', firstDev);
+                    // console.log('devicetype', devicetype);
+                    this.devicetype = devicetype;
+                    this.querySingleAllCmdDefaultValue(firstDev.deviceid);
+                    this.currentDevDirectiveList = utils.getDirectiveList(devicetype);
+                    if (this.currentDevDirectiveList.length > 0) {
+                        this.handleClickDevType(this.currentDevDirectiveList[0]);
+                    }
+                    var needalarmstr = firstDev.needalarmstr;
+                    if (needalarmstr == null || needalarmstr.length == 0) {
+                        for (var key in this.checkboxObj) {
+                            this.checkboxObj[key] = true;
+                        }
+                    } else {
+                        try {
+                            var me = this;
+                            var needalarmstrArr = needalarmstr.split("");
+                            needalarmstrArr.forEach(function(item, index) {
+                                me.checkboxObj[index] = item == '1' ? true : false;
+                            })
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+                }
+
+            },
             searchValue: function(newVal) {
                 if (newVal.length == 0) {
                     this.alarmTypeList.forEach(function(item) {
@@ -1271,9 +1628,11 @@
         },
         mounted: function() {
             var me = this;
-            utils.deviceInfos = {};
+            this.selectedTypeVal = null;
+            this.cmdSettings = {};
             this.calcTableHeight();
             this.treeDeviceList = [];
+            utils.deviceInfos = {};
             window.onresize = function() {
                 me.calcTableHeight();
             }
