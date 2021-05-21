@@ -2434,7 +2434,7 @@ var monitor = {
             utils.sendAjax(url, data, function name(resp) {
                 if (resp.status == 0) {
                     var record = resp.records[0];
-                    var mileage = ((record.maxtotaldistance - record.mintotaldistance) / 1000).toFixed(2) + 'Km';
+                    var mileage = ((record.maxtotaldistance - record.mintotaldistance) / 1000) + 'Km';
                     callback(mileage, track);
                 } else {
                     callback('-', track);
