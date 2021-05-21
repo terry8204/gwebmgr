@@ -241,6 +241,18 @@
                                 <Time-Picker confirm type="timerange" placement="bottom-end" style="width:100%;" v-model="timeRange"></Time-Picker>
                             </i-Col>
                         </Row>
+                        <Row class="row-cls">
+                            <i-Col span="6" class="col-cls">
+                                {{$t('videoSettings.streamType')}}:
+                            </i-Col>
+                            <i-Col span="18">
+                                <i-select v-model="streamType">
+                                    <i-option value="0">{{$t('monitor.all')}}</i-option>
+                                    <i-option value="1">{{$t('videoSettings.mainStream')}}</i-option>
+                                    <i-option value="2">{{$t('videoSettings.subStream')}}</i-option>
+                                </i-select>
+                            </i-Col>
+                        </Row>
                         <div>
                             <Row>
                                 <i-Col span="16" style="line-height:32px;height:32px;">{{$t('videoback.storageType')}}</i-Col>
@@ -464,6 +476,7 @@
                 tipModal: false,
                 maskEl: null,
                 selectType: '1',
+                streamType: '0',
                 date: new Date(),
                 dateStr: "",
                 startValue: '',
@@ -784,11 +797,16 @@
                         this.playerStateTip = lang.$t('videoback.stopPlay');
 
                     };
+
+
                     var url = myUrls.playRecordControl(),
                         me = this;
                     utils.sendAjax(url, {
                         deviceid: deviceid,
-                        channel: Number(this.selectType),
+                        channel: this.backupSelectType,
+                        streamtype: this.backupStreamtype,
+                        mediatype: this.backupMediatype,
+                        storetype: this.backupStoretype,
                         starttime: gstartTimeStr,
                         endtime: gendTimeStr,
                         playcontrol: 2,
@@ -877,18 +895,20 @@
                         return;
                     }
 
+
+
                     var data = {
                         deviceid: deviceid,
-                        channel: this.selectType,
+                        channel: this.backupSelectType,
+                        streamtype: this.backupStreamtype,
                         totalstarttime: this.row.starttime,
                         totalendtime: this.row.endtime,
                         totalfilesize: this.row.filesize,
                         needstarttime: needstarttime,
                         needendtime: needendtime,
                         alarmtype: 0,
-                        mediatype: mediatype,
-                        streamtype: 0,
-                        storetype: storetype,
+                        mediatype: this.backupMediatype,
+                        storetype: this.backupStoretype,
                         offset: DateFormat.getOffset()
                     };
                     this.tag && (data.tag = this.tag);
@@ -938,18 +958,20 @@
                     } else if (this.storageType == 'backupstore') {
                         storetype = 2;
                     }
+
+
                     var data = {
                         deviceid: deviceid,
-                        channel: this.selectType,
+                        channel: this.backupSelectType,
+                        streamtype: this.backupStreamtype,
                         totalstarttime: row.starttime,
                         totalendtime: row.endtime,
                         totalfilesize: row.filesize,
                         needstarttime: row.starttime,
                         needendtime: row.endtime,
                         alarmtype: 0,
-                        mediatype: mediatype,
-                        streamtype: 0,
-                        storetype: storetype,
+                        mediatype: this.backupMediatype,
+                        storetype: this.backupStoretype,
                         offset: DateFormat.getOffset()
                     };
                     utils.sendAjax(url, data, function(resp) {
@@ -1058,7 +1080,10 @@
                         gchannel = channel;
                         utils.sendAjax(url, {
                             deviceid: deviceid,
-                            channel: channel,
+                            channel: this.backupSelectType,
+                            streamtype: this.backupStreamtype,
+                            mediatype: this.backupMediatype,
+                            storetype: this.backupStoretype,
                             playrate: 0,
                             playcontrol: 0,
                             starttime: startTimeStr,
@@ -1137,7 +1162,10 @@
                         me = this,
                         data = {
                             deviceid: deviceid,
-                            channel: row.channel,
+                            channel: this.backupSelectType,
+                            streamtype: this.backupStreamtype,
+                            mediatype: this.backupMediatype,
+                            storetype: this.backupStoretype,
                             starttime: row.starttime,
                             endtime: row.endtime,
                             playtype: ishttps ? 'flvs' : 'flv',
@@ -1212,6 +1240,7 @@
                         data = {
                             deviceid: deviceid,
                             channel: Number(this.selectType), //需要查询的通道号
+                            streamtype: Number(this.streamType),
                             starttime: (dateStr + ' ' + this.timeRange[0]), //开始时间YY-MM-DD-HH-MM-SS
                             endtime: (dateStr + ' ' + this.timeRange[1]), //结束时间YY-MM-DD-HH-MM-SS
                             mediatype: mediatype, //资源类型     0：音视频 1音频 2视频 3视频或者音视频
@@ -1219,11 +1248,15 @@
                             offset: DateFormat.getOffset()
                         };
                     that.loading = true;
-                    utils.sendAjax(url, data, function(data) {
-                        var status = data.status;
-                        var records = data.records;
+                    utils.sendAjax(url, data, function(respData) {
+                        var status = respData.status;
+                        var records = respData.records;
                         var isSucc = false;
                         that.loading = false;
+                        that.backupSelectType = data.channel;
+                        that.backupStreamtype = data.streamtype;
+                        that.backupMediatype = data.mediatype;
+                        that.backupStoretype = data.storetype;
 
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
                             that.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
