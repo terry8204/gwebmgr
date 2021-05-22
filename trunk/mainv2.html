@@ -1085,7 +1085,7 @@
                     <Modal v-model="setupVideoModal" width="800">
                         <p slot="header" style="color:#f60;text-align:center">
                             <Icon type="ios-settings"></Icon>
-                            <span>{{$t('monitor.videoSettings')}}</span>
+                            <span>{{$t('monitor.videoSettings')}} - {{currentDeviceName}}</span>
                         </p>
                         <Tabs value="" :animated="false">
                             <Tab-Pane :label="$t('videoSettings.videoPlayParameter')" name="videoPlay">
