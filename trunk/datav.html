@@ -477,7 +477,7 @@
                 },
                 displayEcharts: function() {
                     var options = this.getEchartsOptions();
-                    this.myChart.setOption(options, true);
+                    this.myChart.setOption(options);
                 },
                 changeData: function() {
                     echarts.registerMap('map', mapJson);
@@ -486,7 +486,7 @@
                             mapType: 'map',
                             data: this.data,
                         }],
-                    }, true);
+                    });
                 },
                 qeuryDatavOnlineSummary: function(adcode) {
                     var url = myUrls.datavOnlineSummary(),
@@ -558,7 +558,7 @@
                                 },
                             }, ]
                         }]
-                    }, true);
+                    });
                     this.chart_total1.setOption({
                         series: [{
                             name: '在线',
@@ -627,7 +627,7 @@
                                 },
                             }, ]
                         }]
-                    }, true);
+                    });
                     this.chart_total2.setOption({
                         series: [{
                             name: '离线',
@@ -696,7 +696,7 @@
                                 },
                             }, ]
                         }]
-                    }, true);
+                    });
                     this.chart_total3.setOption({
                         series: [{
                             name: '行驶',
@@ -765,7 +765,7 @@
                                 },
                             }, ]
                         }]
-                    }, true);
+                    });
                     this.chart_total4.setOption({
                         series: [{
                             name: '停止',
@@ -834,7 +834,7 @@
                                 },
                             }, ]
                         }]
-                    }, true);
+                    });
                 },
                 getEchartsOptions: function() {
                     return {
