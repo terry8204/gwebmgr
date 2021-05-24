@@ -362,7 +362,7 @@ Vue.component('my-video', {
                 video: video,
                 autoplay: true,
                 onPlay: function(obj) {
-                    me.playerStateTips = me.$t('video.play');
+                    me.setPlayerStateTips(vRoot.$t('video.play'));
                 }
             });
             this.videoPlayer = videoPlayer;
@@ -410,6 +410,9 @@ Vue.component('my-video', {
                 this.initFlvVideo(url, hasaudio);
             }
         },
+        setPlayerStateTips: function(tips) {
+            this.playerStateTips = tips + '-' + this.getAccSwitchStatusStr();
+        },
         switchrtcPlayer: function(url, hasaudio) {
             var me = this;
             if (isWebrtcPlay) {
@@ -419,13 +422,13 @@ Vue.component('my-video', {
                         if (!this.isPlaying) {
                             videoPlayer.play();
                             this.$refs.player.play();
-                            me.playerStateTips = me.$t('video.play');
+                            me.setPlayerStateTips(me.$t('video.play'));
                         } else {
                             var oldURL = videoPlayer.getURL();
                             if (oldURL != null && oldURL === url) {
                                 videoPlayer.play();
                                 this.$refs.player.play();
-                                me.playerStateTips = me.$t('video.play');
+                                me.setPlayerStateTips(me.$t('video.play'));
                             } else {
                                 try {
                                     this.$refs.player.pause();
@@ -477,7 +480,25 @@ Vue.component('my-video', {
 
             }
         },
+        getAccSwitchStatusStr: function() {
+            var result = false;
+            var track = vRoot.$children[1].positionLastrecords[this.deviceId];
+            if (track) {
+                var statusLong = track['status'];
+                //byte acc = 0;                   //0 0：未启用Acc 2:ACC 关；3： ACC 开
+                var accByte = statusLong & 0x03;
+                if (accByte == 0x03) {
+                    result = true;
+                }
+            }
+            if (isZh) {
+                return result ? "ACC 开" : "ACC关";
+            } else {
+                return result ? "ACC Open" : "ACC Close";
+            }
+        },
         addEventListenerToPlayer: function() {
+
             var player = this.$refs.player,
                 me = this;
             player.addEventListener('loadedmetadata', function(e) {
@@ -488,23 +509,24 @@ Vue.component('my-video', {
             })
             player.addEventListener('error', function() {
                 me.isSendAjaxState = false;
-                me.playerStateTips = vRoot.$t('video.error');
+                me.setPlayerStateTips(me.$t('video.error'));
             });
             player.addEventListener('play', function() {
-                me.playerStateTips = vRoot.$t('video.play');
+                me.setPlayerStateTips(me.$t('video.play'));
                 me.isPlaying = true;
             });
             player.addEventListener('playing', function() {
-                me.playerStateTips = vRoot.$t('video.playing');
+                me.setPlayerStateTips(me.$t('video.playing'));
                 me.isSendAjaxState = false;
             });
             player.addEventListener('pause', function() {
-                me.playerStateTips = me.isTimerStop ? vRoot.$t('video.threeMinutes') : vRoot.$t('video.pause');
+                var tips = me.isTimerStop ? vRoot.$t('video.threeMinutes') : vRoot.$t('video.pause');
+                me.setPlayerStateTips(tips);
                 me.isTimerStop = false;
                 me.isPlaying = false;
             });
             player.addEventListener('waiting', function() {
-                me.playerStateTips = vRoot.$t('video.waiting');
+                me.setPlayerStateTips(vRoot.$t('video.waiting'));
             });
         },
         caclBits: function() {
@@ -614,7 +636,7 @@ Vue.component('my-video', {
             clearInterval(this.timer);
             var url = myUrls.startVideos(),
                 me = this;
-            this.playerStateTips = me.$t('video.requestPlay');
+            me.setPlayerStateTips(vRoot.$t('video.requestPlay'));
             utils.sendAjax(url, {
                 deviceid: this.deviceId,
                 channels: [Number(this.channel)],
@@ -686,7 +708,7 @@ Vue.component('my-video', {
                 }
             } catch (error) {};
             this.isPlaying = false;
-            this.playerStateTips = this.$t('video.pausePlay');
+            this.setPlayerStateTips(vRoot.$t('video.pausePlay'));
             this.isSendAjaxState = false;
             this.networkSpeed = '0KB/S';
             isWebrtcPlay && clearInterval(this.timer);

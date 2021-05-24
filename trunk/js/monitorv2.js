@@ -1673,7 +1673,9 @@ var monitor = {
             this.isShowAreaCount = true;
             this.arealoading = false;
         },
+
         handleWebSocket: function(data) {
+
             var me = this;
             var deviceid = data.deviceid;
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
