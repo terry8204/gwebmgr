@@ -1511,12 +1511,13 @@
                                     'markerRotation': -course,
                                     'markerDy': 15,
                                     'markerDx': 0,
-                                }
+                                },
+                                zIndex: 1
                             }
                         );
 
                         var markerLayer = new maptalks.VectorLayer('carmarker', [carMarker]);
-                        markerLayer.setZIndex(1111);
+                        markerLayer.setZIndex(111);
                         markerLayer.addTo(this.map);
 
                         this.routePlanning = new maptalks.VectorLayer('routePlanning', []);
@@ -1535,7 +1536,7 @@
 
 
                         var layer = this.polygonLayer = new maptalks.VectorLayer('vector').addTo(this.map);
-
+                        this.polygonLayer.setZIndex(999);
                         var drawTool = this.drawTool = new maptalks.DrawTool({
                             mode: 'Point',
                             symbol: symbol,
@@ -1886,7 +1887,8 @@
                                             }
                                             // allPoints.push(point);
                                         var circle = new maptalks.Circle(point, element.radius1, {
-                                            symbol: symbol
+                                            symbol: symbol,
+                                            zIndex: 999
                                         }).addTo(this.polygonLayer);
                                         if (allPointsExtends == null) {
                                             //debugger;
@@ -1966,7 +1968,8 @@
                                                         }
 
                                                         var circle = new maptalks.Circle(point, record.radius1, {
-                                                            symbol: symbol
+                                                            symbol: symbol,
+                                                            zIndex: 999
                                                         }).addTo(me.polygonLayer);
                                                         if (allPointsExtends == null) {
                                                             allPointsExtends = circle.getExtent();

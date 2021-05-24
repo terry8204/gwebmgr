@@ -584,6 +584,9 @@
                     <div class="map-tool-wraper">
                         <Checkbox v-model="isFullScreen">{{$t("main.fullScreen")}}</Checkbox>
                     </div>
+                    <div class="map-tool-wraper">
+                        <Checkbox v-model="isShowFence">{{$t("main.showFence")}}</Checkbox>
+                    </div>
                 </div>
             </div>
         </div>
@@ -706,6 +709,12 @@
         var functionslong = utils.getParameterByName("functionslong");
         var vRoot = null;
         var currentTrack = null;
+        var symbol = {
+            'lineColor': '#41B883',
+            'lineWidth': 2,
+            'polygonFill': 'rgb(135,196,240)',
+            'polygonOpacity': 0
+        };
         Vue.use(iview);
         Vue.use(VueI18n);
         var isZh = utils.locale === 'zh';
@@ -773,6 +782,7 @@
                     showBubbles: 'Bubbles',
                     openRanging: 'Distance ',
                     fullScreen: 'Full screen ',
+                    showFence: 'Fence',
 
                     selectDate: "Select Date",
                     selectTime: "Select Time",
@@ -846,6 +856,7 @@
                     showBubbles: '显示气泡',
                     openRanging: '开启测距',
                     fullScreen: '地图全屏',
+                    showFence: '显示围栏',
 
                     selectDate: "选择日期",
                     selectTime: "选择时间",
@@ -1032,6 +1043,7 @@
                     isShowBubble: true,
                     isOpenDistance: false,
                     isFullScreen: false,
+                    isShowFence: false,
                     currentMarkerIndex: 0,
                     currentTracksLenth: 0,
                     trackType: 'exact',
@@ -2025,6 +2037,7 @@
                         this.lineLayer = new maptalks.VectorLayer('line').addTo(this.map);
                         this.lineLayer.setZIndex(998);
 
+
                         //得到停留的Markers 并添加到地图   
                         var parkingMarker = this.getParkingMarkers(tracks);
                         var parkingVectorLayer = new maptalks.VectorLayer('parkingMarkers', parkingMarker);
@@ -2065,6 +2078,7 @@
 
 
                         this.fitExtent(pointList);
+
 
                     },
                     getLineColorBySpeed: function(speed) {
@@ -2425,7 +2439,7 @@
                         this.initMap();
                         this.initCharts();
                         this.queryReportMileageDetail(new Date(this.year, this.month - 1, 1));
-
+                        this.getFenceInfo();
                         utils.sendAjax(myUrls.querySpeedLimitColors(), {
                             deviceid: this.deviceid
                         }, function(resp) {
@@ -2757,7 +2771,362 @@
                         });
                         this.distanceTool.addTo(this.map);
                         this.distanceTool.disable();
-                    }
+                    },
+                    getFenceInfo: function() {
+                        var me = this;
+                        var url = myUrls.queryGeoRecords();
+                        utils.sendAjax(url, {
+                            deviceid: deviceid
+                        }, function(resp) {
+                            var record = resp.records;
+                            if (record) {
+                                me.fenceRecords = record;
+                            } else {
+                                me.fenceRecords = [];
+                            }
+                        }, function() {
+                            me.fenceRecords = [];
+                        });
+                    },
+                    getPolygon: function(arr) {
+                        return new maptalks.Polygon(arr, {
+                            visible: true,
+                            editable: true,
+                            cursor: 'pointer',
+                            shadowBlur: 0,
+                            shadowColor: 'black',
+                            draggable: false,
+                            dragShadow: false, // display a shadow during dragging
+                            drawOnAxis: null, // force dragging stick on a axis, can be: x, y
+                            symbol: symbol
+                        });
+                    },
+                    addDeviceidFenceToMap: function(selection) {
+                        var me = this;
+                        var isBMap = me.mapType == 'bMap';
+                        if (selection.length) {
+                            var allPointsExtends = null;
+                            for (var index = 0; index < selection.length; index++) {
+                                var element = selection[index];
+                                switch (element.type) {
+                                    case 1:
+                                        me.radius = element.radius1;
+                                        if (isBMap) {
+                                            var lon_lat = wgs84tobd09(element.lon1, element.lat1);
+                                        } else {
+                                            var lon_lat = wgs84togcj02(element.lon1, element.lat1);
+                                        }
+                                        var point = {
+                                                x: lon_lat[0],
+                                                y: lon_lat[1]
+                                            }
+                                            // allPoints.push(point);
+                                        var circle = new maptalks.Circle(point, element.radius1, {
+                                            symbol: symbol,
+                                            zIndex: 999
+                                        }).addTo(this.fenceLayer);
+                                        if (allPointsExtends == null) {
+                                            //debugger;
+                                            allPointsExtends = circle.getExtent();
+                                            console.log('圆1');
+                                        } else {
+                                            allPointsExtends = allPointsExtends.combine(circle.getExtent());
+                                        }
+
+
+                                        break;
+                                    case 2:
+                                        var lon_lat_s = [];
+                                        if (isBMap) {
+                                            lon_lat_s = wgs84sToBdPoints(JSON.parse(element.points2));
+                                        } else {
+                                            lon_lat_s = wgs84sToGooglePoints(JSON.parse(element.points2));
+                                        }
+
+                                        var polygon = new maptalks.Polygon(lon_lat_s, {
+                                            symbol: symbol
+                                        }).addTo(this.fenceLayer);
+
+                                        if (allPointsExtends == null) {
+                                            allPointsExtends = polygon.getExtent();
+                                        } else {
+                                            console.log('多边形2');
+                                            //debugger;
+                                            allPointsExtends = allPointsExtends.combine(polygon.getExtent());
+                                        }
+                                        break;
+                                    case 3:
+                                        var adcode = element.adcode3;
+                                        var isincludesub = 0;
+                                        $.ajax({
+                                            url: myUrls.queryGeoJson(adcode, isincludesub),
+                                            async: true,
+                                            success: function(json) {
+                                                var coordinates = me.getAllCoordinates(json);
+                                                var polygons = [];
+
+                                                coordinates.forEach(function(item) {
+
+                                                    var polygon = me.getPolygon([item]);
+
+                                                    me.fenceLayer.addGeometry(polygon);
+
+                                                    if (allPointsExtends == null) {
+                                                        allPointsExtends = polygon.getExtent();
+                                                    } else {
+                                                        allPointsExtends = allPointsExtends.combine(polygon.getExtent());
+                                                    }
+
+                                                })
+
+                                                // me.setViewPortCenter(allPointsExtends);
+                                            },
+                                            error() {}
+                                        });
+                                        break;
+                                    case 4:
+                                        var categoryid = element.categoryid4;
+                                        var info = this.getTreeItemData(categoryid);
+                                        if (info) {
+                                            info.children.forEach(function(record) {
+                                                switch (record.type) {
+                                                    case 1:
+                                                        if (isBMap) {
+                                                            var lon_lat = wgs84tobd09(record.lon1, record.lat1);
+                                                        } else {
+                                                            var lon_lat = wgs84togcj02(record.lon1, record.lat1);
+                                                        }
+
+                                                        var point = {
+                                                            x: lon_lat[0],
+                                                            y: lon_lat[1]
+                                                        }
+
+                                                        var circle = new maptalks.Circle(point, record.radius1, {
+                                                            symbol: symbol,
+                                                            zIndex: 999
+                                                        }).addTo(me.fenceLayer);
+                                                        if (allPointsExtends == null) {
+                                                            allPointsExtends = circle.getExtent();
+                                                        } else {
+                                                            allPointsExtends.add(circle.getExtent());
+                                                        }
+                                                        break;
+                                                    case 2:
+                                                        var lon_lat_s = [];
+                                                        if (isBMap) {
+                                                            lon_lat_s = wgs84sToBdPoints(JSON.parse(record.points2));
+                                                        } else {
+                                                            lon_lat_s = wgs84sToGooglePoints(JSON.parse(record.points2));
+                                                        }
+
+                                                        var polygon = new maptalks.Polygon(lon_lat_s, {
+                                                            symbol: symbol
+                                                        }).addTo(me.fenceLayer);
+
+                                                        if (allPointsExtends == null) {
+                                                            allPointsExtends = polygon.getExtent();
+                                                        } else {
+                                                            allPointsExtends.add(polygon.getExtent());
+                                                        }
+                                                        break;
+                                                    case 5:
+                                                        var mapPoints = me.convertWgs84PointsToMapPoints(JSON.parse(record.points2));
+                                                        new maptalks.LineString(
+                                                            mapPoints, {
+                                                                symbol: {
+                                                                    'lineColor': {
+                                                                        'type': 'linear',
+                                                                        'colorStops': [
+                                                                            [0.00, '#41B883'],
+                                                                            [1.00, '#41B883']
+                                                                        ]
+                                                                    },
+                                                                    'lineWidth': 4
+                                                                }
+                                                            }).addTo(me.fenceLayer);
+                                                        var startCoordinate = mapPoints[0];
+                                                        var endCoordinate = mapPoints[mapPoints.length - 1];
+                                                        new maptalks.Marker(
+                                                            [startCoordinate.x, startCoordinate.y], {
+                                                                symbol: [{
+                                                                    'markerFile': './images/map/marker_qidian.png',
+                                                                    'markerWidth': 30,
+                                                                    'markerHeight': 30,
+                                                                    'markerRotation': 0,
+                                                                    'markerDy': 0,
+                                                                    'markerDx': 0,
+                                                                }, {
+                                                                    'textFaceName': 'sans-serif',
+                                                                    'textName': '起点',
+                                                                    'textSize': 12,
+                                                                    'textDy': 10,
+                                                                    'textFill': '#ffffff',
+                                                                    'textOpacity': 1,
+                                                                    'textHaloFill': '#00A8D4',
+                                                                    'textHaloRadius': 5,
+                                                                    'textWrapWidth': null,
+                                                                    'textWrapCharacter': '\n',
+                                                                    'textLineSpacing': 0,
+                                                                }]
+
+                                                            }
+                                                        ).addTo(me.fenceLayer);
+                                                        var totalDistance = record.totaldistance5;
+                                                        var totalDuration = record.totalduration5;
+                                                        new maptalks.Marker(
+                                                            [endCoordinate.x, endCoordinate.y], {
+                                                                symbol: [{
+                                                                    'markerFile': './images/map/marker_zhongdian.png',
+                                                                    'markerWidth': 30,
+                                                                    'markerHeight': 30,
+                                                                    'markerRotation': 0,
+                                                                    'markerDy': 0,
+                                                                    'markerDx': 0,
+                                                                }, {
+                                                                    'textFaceName': 'sans-serif',
+                                                                    'textName': '总里程:' + (totalDistance / 1000).toFixed(2) + '公里,时长:' + me.timeStamp(totalDuration * 1000),
+                                                                    'textSize': 12,
+                                                                    'textDy': 10,
+                                                                    'textFill': '#ffffff',
+                                                                    'textOpacity': 1,
+                                                                    'textHaloFill': '#00A8D4',
+                                                                    'textHaloRadius': 5,
+                                                                    'textWrapWidth': null,
+                                                                    'textWrapCharacter': '\n',
+                                                                    'textLineSpacing': 0,
+                                                                }]
+                                                            }
+                                                        ).addTo(me.fenceLayer);
+                                                        break;
+                                                }
+                                            });
+                                        }
+                                        break;
+                                    case 5:
+                                        var mapPoints = me.convertWgs84PointsToMapPoints(JSON.parse(element.points2));
+                                        points = points.concat(mapPoints);
+                                        new maptalks.LineString(
+                                            mapPoints, {
+                                                symbol: {
+                                                    'lineColor': {
+                                                        'type': 'linear',
+                                                        'colorStops': [
+                                                            [0.00, '#41B883'],
+                                                            [1.00, '#41B883']
+                                                        ]
+                                                    },
+                                                    'lineWidth': 4
+                                                }
+                                            }).addTo(me.fenceLayer);
+                                        var startCoordinate = mapPoints[0];
+                                        var endCoordinate = mapPoints[mapPoints.length - 1];
+                                        new maptalks.Marker(
+                                            [startCoordinate.x, startCoordinate.y], {
+                                                symbol: [{
+                                                    'markerFile': './images/map/marker_qidian.png',
+                                                    'markerWidth': 30,
+                                                    'markerHeight': 30,
+                                                    'markerRotation': 0,
+                                                    'markerDy': 0,
+                                                    'markerDx': 0,
+                                                }, {
+                                                    'textFaceName': 'sans-serif',
+                                                    'textName': '起点',
+                                                    'textSize': 12,
+                                                    'textDy': 10,
+                                                    'textFill': '#ffffff',
+                                                    'textOpacity': 1,
+                                                    'textHaloFill': '#00A8D4',
+                                                    'textHaloRadius': 5,
+                                                    'textWrapWidth': null,
+                                                    'textWrapCharacter': '\n',
+                                                    'textLineSpacing': 0,
+                                                }]
+
+                                            }
+                                        ).addTo(me.fenceLayer);
+                                        var totalDistance = element.totaldistance5;
+                                        var totalDuration = element.totalduration5;
+                                        new maptalks.Marker(
+                                            [endCoordinate.x, endCoordinate.y], {
+                                                symbol: [{
+                                                    'markerFile': './images/map/marker_zhongdian.png',
+                                                    'markerWidth': 30,
+                                                    'markerHeight': 30,
+                                                    'markerRotation': 0,
+                                                    'markerDy': 0,
+                                                    'markerDx': 0,
+                                                }, {
+                                                    'textFaceName': 'sans-serif',
+                                                    'textName': '总里程:' + (totalDistance / 1000).toFixed(2) + '公里,时长:' + me.timeStamp(totalDuration * 1000),
+                                                    'textSize': 12,
+                                                    'textDy': 10,
+                                                    'textFill': '#ffffff',
+                                                    'textOpacity': 1,
+                                                    'textHaloFill': '#00A8D4',
+                                                    'textHaloRadius': 5,
+                                                    'textWrapWidth': null,
+                                                    'textWrapCharacter': '\n',
+                                                    'textLineSpacing': 0,
+                                                }]
+                                            }
+                                        ).addTo(me.fenceLayer);
+                                        break;
+                                }
+                            }
+
+
+                            if (!this.isPlaying) {
+                                this.map.fitExtent(allPointsExtends, 0);
+                            }
+
+                        }
+                    },
+                    convertWgs84PointsToMapPoints: function(wgs84Ponts) {
+                        var isBMap = this.mapType == 'bMap';
+                        var mapPonts = [];
+                        wgs84Ponts.forEach(function(point) {
+                            var point = utils.getCurrentMapCoordinate(isBMap, [point.x, point.y]);
+                            mapPonts.push({
+                                x: point[0],
+                                y: point[1],
+                            })
+                        });
+                        return mapPonts;
+                    },
+                    getAllCoordinates: function(json) {
+                        var outCoordinates = [];
+                        var me = this;
+                        var isBMap = me.mapType == 'bMap';
+                        json.features.forEach(function(item) {
+                            var geometry = item.geometry;
+                            var coordinates = geometry.coordinates;
+                            if (geometry.type == "Polygon") {
+                                coordinates.forEach(function(coordinate) {
+                                    var points = [];
+                                    coordinate.forEach(function(point) {
+                                        points.push(utils.getCurrentMapCoordinate(isBMap, point));
+                                        // points.push(point);
+                                    })
+                                    outCoordinates.push(points);
+                                })
+                            } else if (geometry.type == "MultiPolygon") {
+                                coordinates.forEach(function(coordinate) {
+                                    var points = [];
+                                    coordinate.forEach(function(pointArr) {
+                                        pointArr.forEach(function(point) {
+                                            points.push(utils.getCurrentMapCoordinate(isBMap, point));
+                                            // points.push(point);
+                                        })
+
+                                    })
+                                    outCoordinates.push(points);
+                                })
+                            }
+                        })
+                        return outCoordinates;
+                    },
                 },
                 computed: {
                     sliderLeft: function() {
@@ -2795,7 +3164,7 @@
                                 'left': '325px',
                             }
                         }
-                    }
+                    },
                 },
                 watch: {
                     isShowBubble: function(newVal) {
@@ -2877,9 +3246,25 @@
                                 me.initMapView();
                             }
                         }
+                        if (this.isShowFence) {
+                            this.map.removeLayer(this.fenceLayer);
+                            this.fenceLayer = new maptalks.VectorLayer('fenceLayer').addTo(this.map);
+                            this.fenceLayer.setZIndex(1111);
+                            this.addDeviceidFenceToMap(this.fenceRecords);
+                        }
                         me.lastMapType = newMapType;
                     },
-
+                    isShowFence: function(value) {
+                        if (value) {
+                            // 创建fenceLayer图层并添加到地图  
+                            this.fenceLayer = new maptalks.VectorLayer('fenceLayer').addTo(this.map);
+                            this.fenceLayer.setZIndex(1111);
+                            this.addDeviceidFenceToMap(this.fenceRecords);
+                            // this.getFenceInfo();
+                        } else {
+                            this.map.removeLayer(this.fenceLayer);
+                        }
+                    }
                 },
                 mounted: function() {
                     this.init();
