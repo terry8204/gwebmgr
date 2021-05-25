@@ -431,6 +431,9 @@
         var deviceid = utils.getParameterByName("deviceid");
         var devicename = utils.getParameterByName("devicename");
         var token = utils.getParameterByName("token");
+        var starttime = utils.getParameterByName("starttime");
+        var endtime = utils.getParameterByName("endtime");
+        var isSelectTime = (starttime != "undefined" && endtime != "undefined")
         var startPlayerTimer = null;
         var isRequsetPlaying = false; // 防止连续点击
         var isResize = false;
@@ -461,6 +464,7 @@
         var lang = new Vue({
             i18n: utils.getI18n()
         });
+
         document.title = lang.$t('monitor.videoPlayback');
         var vRoot = new Vue({
             el: "#container",
@@ -477,7 +481,7 @@
                 maskEl: null,
                 selectType: '1',
                 streamType: '0',
-                date: new Date(),
+                date: isSelectTime ? new Date(DateFormat.longToDateStr(Number(starttime), timeDifference)) : new Date(),
                 dateStr: "",
                 startValue: '',
                 resolvingPower: {
@@ -487,7 +491,7 @@
                 endValue: '',
                 startVideoTime: '',
                 endVideoTime: '',
-                timeRange: ["00-00-00", "23-59-59"],
+                timeRange: isSelectTime ? [DateFormat.longToDateTimeStr(Number(starttime), timeDifference).split(" ")[1], DateFormat.longToDateTimeStr(Number(endtime), timeDifference).split(" ")[1]] : ["00-00-00", "23-59-59"],
                 storageType: 'mainAndBackupStore',
                 mediatype: 'all',
                 videotppe: true,

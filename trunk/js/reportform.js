@@ -1367,6 +1367,36 @@ function parkDetails(groupslist) {
                         }
                         return node;
                     }
+                },
+                {
+                    title: vRoot.$t("alarm.action"),
+                    width: 100,
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h('Button', {
+                            props: {
+                                type: 'primary',
+                                size: 'small',
+                            },
+                            on: {
+                                click: function() {
+                                    var twoMinutes = 60 * 1000 * 2;
+                                    var deviceid = row.deviceid;
+                                    var devicename = row.deviceName;
+                                    var starttime = row.starttime - twoMinutes;
+                                    var endtime = row.endtime + twoMinutes;
+
+                                    var toDay = DateFormat.longToDateStr(starttime, timeDifference);
+                                    if (toDay != DateFormat.longToDateStr(endtime, timeDifference)) {
+                                        endtime = DateFormat.formatToDateTime(toDay + " 23:59:59");
+                                    };
+
+                                    window.open('videoback.html?deviceid=' + deviceid + '&token=' + token + '&devicename=' + devicename + '&starttime=' + starttime + '&endtime=' + endtime);
+                                }
+                            }
+                        }, vRoot.$t("monitor.videoPlayback"));
+
+                    }
                 }
             ],
             tableData: []
@@ -1407,7 +1437,10 @@ function parkDetails(groupslist) {
                                         deviceName: deviceName,
                                         startDate: DateFormat.longToDateTimeStr(item.starttime, timeDifference),
                                         endDate: DateFormat.longToDateTimeStr(item.endtime, timeDifference),
+                                        starttime: item.starttime,
+                                        endtime: item.endtime,
                                         parkTime: parkTime,
+                                        deviceid: data.deviceid,
                                         callon_callat: callon + ',' + callat,
                                         callon: callon,
                                         callat: callat,
