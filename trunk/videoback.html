@@ -238,7 +238,7 @@
                                 {{$t('videoback.timeFrame')}}:
                             </i-Col>
                             <i-Col span="18">
-                                <Time-Picker confirm type="timerange" placement="bottom-end" style="width:100%;" v-model="timeRange"></Time-Picker>
+                                <Time-Picker confirm type="timerange" placement="bottom-end" style="width:100%;" v-model="timeRange" @on-clear="onClearTime"></Time-Picker>
                             </i-Col>
                         </Row>
                         <Row class="row-cls">
@@ -779,6 +779,9 @@
                 timeStamp: '',
             },
             methods: {
+                onClearTime: function() {
+                    this.timeRange = ["00-00-00", "23-59-59"]
+                },
                 onSliderChange: function(value) {
 
                     var startValue = value[0];
