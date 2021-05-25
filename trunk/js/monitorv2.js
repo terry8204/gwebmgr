@@ -322,7 +322,8 @@ var monitor = {
             editDevModal: false, // 编辑设备模态
             dispatchDirectiveModal: false, // 下发指令模态
             deviceInfoModal: false, // 设备基本信息模态
-            deviceBaseTabs: 'property', // 设备基本信息模态
+            deviceBaseTabs: 'property',
+            deviceBaseParameter: '',
             directiveReportModal: false, //指令记录
             currentDeviceName: "",
             editDevData: { //编辑的设备信息

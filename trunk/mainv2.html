@@ -2183,7 +2183,7 @@
                         </p>
                         <Tabs v-model="deviceBaseTabs" :animated="false">
                             <TabPane :label="$t('monitor.property')" name="property">
-                                <div style="text-align:center">
+                                <div style="text-align:center" style="height:430px">
                                     <Row>
                                         <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.customer")}} : &nbsp;</i-col>
                                         <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
@@ -2288,7 +2288,9 @@
                                     </Row>
                                 </div>
                             </TabPane>
-                            <TabPane :label="$t('monitor.parameter')" name="parameter">标签三的内容</TabPane>
+                            <TabPane :label="$t('monitor.parameter')" name="parameter">
+                                <i-input v-model="deviceBaseParameter" :autosize="{ minRows: 20, maxRows: 20 }" type="textarea" readonly />
+                            </TabPane>
                         </Tabs>
 
                         <div slot="footer" style="text-align:center;">
