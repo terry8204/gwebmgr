@@ -323,7 +323,7 @@ var monitor = {
             dispatchDirectiveModal: false, // 下发指令模态
             deviceInfoModal: false, // 设备基本信息模态
             deviceBaseTabs: 'property',
-            deviceBaseParameter: '',
+            deviceBaseParameter: isZh ? '请先点击查询' : 'Please click query first',
             directiveReportModal: false, //指令记录
             currentDeviceName: "",
             editDevData: { //编辑的设备信息
@@ -1933,13 +1933,13 @@ var monitor = {
                 if (this.deviceBaseTabs != 'parameter') {
                     this.deviceBaseTabs = 'parameter';
                 }
+                that.loading = true;
                 var url = myUrls.queryClientParametersSync();
                 var data = {
                     deviceid: globalDeviceId,
                 };
                 utils.sendAjax(url, data, function(resp) {
                     var status = resp.status;
-                    console.log(resp)
                     if (status == CMD_SEND_RESULT_UNCONFIRM) {
                         that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                     } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
@@ -1953,7 +1953,7 @@ var monitor = {
                     } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                         that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                     } else if (status === CMD_SEND_CONFIRMED) {
-
+                        that.deviceBaseParameter = isZh ? resp.settings : resp.settingsen;
                     } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                         that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                     } else if (status === CMD_SEND_SYNC_TIMEOUT) {
