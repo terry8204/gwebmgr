@@ -285,6 +285,10 @@ var myUrls = {
     queryDeviceBaseInfo: function() {
         return this.apihost + 'webapi?action=querydeviceinfo&token=' + token;
     },
+    // 查询设备基本参数
+    queryClientParametersSync: function() {
+        return this.apihost + 'webapi?action=queryclientparameters_sync&token=' + token;
+    },
     //设置电子围栏
     setGeofence: function() {
         return this.apihost + 'webapi?action=setgeofence&token=' + token;

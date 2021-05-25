@@ -169,6 +169,10 @@
                 retain: 'Retain',
             },
             monitor: {
+                property: '设备属性',
+                parameter: '设备参数',
+                queryProperty: '查询属性',
+                queryParameter: '查询参数',
                 notRealtime: "Not Realtime",
                 camera: 'Take Photo',
                 resolvingPower: 'Resolving power',
@@ -1463,6 +1467,10 @@
                 retain: '保留',
             },
             monitor: {
+                property: '设备属性',
+                parameter: '设备参数',
+                queryProperty: '查询属性',
+                queryParameter: '查询参数',
                 notRealtime: "非实时",
                 camera: '抓拍',
                 resolvingPower: '分辨率',

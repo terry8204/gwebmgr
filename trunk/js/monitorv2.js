@@ -322,6 +322,7 @@ var monitor = {
             editDevModal: false, // 编辑设备模态
             dispatchDirectiveModal: false, // 下发指令模态
             deviceInfoModal: false, // 设备基本信息模态
+            deviceBaseTabs: 'property', // 设备基本信息模态
             directiveReportModal: false, //指令记录
             currentDeviceName: "",
             editDevData: { //编辑的设备信息
@@ -1882,47 +1883,88 @@ var monitor = {
         },
         queryDeviceBaseInfo: function(forceupdate) {
             var that = this;
-            var url = myUrls.queryDeviceBaseInfo();
-            var data = {
-                deviceid: globalDeviceId,
-                forceupdate: forceupdate
-            };
-            if (forceupdate == 1) {
-                that.loading = true;
-            } else {
-                this.deviceBaseInfo = {};
-            }
-            utils.sendAjax(url, data, function(resp) {
-                var status = resp.status;
-                if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
-                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
-                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
-                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
-                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
-                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                    that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
-                } else if (status === CMD_SEND_CONFIRMED) {
-                    var device = vstore.state.deviceInfos[globalDeviceId];
-                    resp.overdueDateStr = DateFormat.longToDateStr(resp.expirenotifytime, timeDifference);
-                    resp.deviceTypeStr = that.getDeviceTypeStr(device.devicetype);
-                    resp.creater = device.creater;
-                    resp.groupname = utils.getGroupName(that.groups, globalDeviceId);
-                    that.deviceBaseInfo = resp;
-                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                    that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
-                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                    that.$Message.error(that.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+            if (forceupdate == 0 || forceupdate == 1) {
+                if (this.deviceBaseTabs != 'property') {
+                    this.deviceBaseTabs = 'property';
                 }
-                that.loading = false;
-            }, function() {
-                that.loading = false;
-                that.$Message.error(that.$t('monitor.queryFail'));
-            })
+                var url = myUrls.queryDeviceBaseInfo();
+                var data = {
+                    deviceid: globalDeviceId,
+                    forceupdate: forceupdate
+                };
+                if (forceupdate == 1) {
+                    that.loading = true;
+                } else {
+                    this.deviceBaseInfo = {};
+                }
+                utils.sendAjax(url, data, function(resp) {
+                    var status = resp.status;
+                    if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                    } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                    } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                    } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                    } else if (status === CMD_SEND_CONFIRMED) {
+                        var device = vstore.state.deviceInfos[globalDeviceId];
+                        resp.overdueDateStr = DateFormat.longToDateStr(resp.expirenotifytime, timeDifference);
+                        resp.deviceTypeStr = that.getDeviceTypeStr(device.devicetype);
+                        resp.creater = device.creater;
+                        resp.groupname = utils.getGroupName(that.groups, globalDeviceId);
+                        that.deviceBaseInfo = resp;
+                    } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                    } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+                    }
+                    that.loading = false;
+                }, function() {
+                    that.loading = false;
+                    that.$Message.error(that.$t('monitor.queryFail'));
+                })
+            } else {
+                if (this.deviceBaseTabs != 'parameter') {
+                    this.deviceBaseTabs = 'parameter';
+                }
+                var url = myUrls.queryClientParametersSync();
+                var data = {
+                    deviceid: globalDeviceId,
+                };
+                utils.sendAjax(url, data, function(resp) {
+                    var status = resp.status;
+                    console.log(resp)
+                    if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                    } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                    } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                    } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                    } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                    } else if (status === CMD_SEND_CONFIRMED) {
+
+                    } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                    } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                        that.$Message.error(that.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
+                    }
+                    that.loading = false;
+                }, function() {
+                    that.loading = false;
+                    that.$Message.error(that.$t('monitor.queryFail'));
+                })
+            }
+
         },
         getDeviceTypeStr: function(devicetype) {
             var devType = "";

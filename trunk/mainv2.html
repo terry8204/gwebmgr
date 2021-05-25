@@ -2181,113 +2181,119 @@
                             <Icon type="ios-create-outline"></Icon>
                             <span>{{$t("monitor.devBaseInfo")}}</span>
                         </p>
-                        <div style="text-align:center">
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.customer")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.creater}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.groupName")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.groupname}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.devNumber")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.deviceid}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.devName")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.devicename}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.platformType")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.deviceTypeStr}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.factoryNum")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.manufactureid}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.clientType")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.terminalmodelno}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.terminalNumber")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.terminalid}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.hardwareVersion")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.hardwareversion}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.firmwareVersion")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.firmwareversion}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.expireTime")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{ deviceBaseInfo.isfree==6 ? $t("charge.freelife") : deviceBaseInfo.overdueDateStr }}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.plateno")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.plateno}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("reportForm.vinno")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.vin}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.phoneNumber")}} : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.simnum}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">IMEI : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.imei}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">IMSI : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.simimsi}}
-                                </i-col>
-                            </Row>
-                            <Row>
-                                <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">ICCID : &nbsp;</i-col>
-                                <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
-                                    {{deviceBaseInfo.simiccid}}
-                                </i-col>
-                            </Row>
-                        </div>
+                        <Tabs v-model="deviceBaseTabs" :animated="false">
+                            <TabPane :label="$t('monitor.property')" name="property">
+                                <div style="text-align:center">
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.customer")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.creater}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.groupName")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.groupname}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.devNumber")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.deviceid}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.devName")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.devicename}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.platformType")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.deviceTypeStr}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.factoryNum")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.manufactureid}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.clientType")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.terminalmodelno}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.terminalNumber")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.terminalid}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.hardwareVersion")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.hardwareversion}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.firmwareVersion")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.firmwareversion}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.expireTime")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{ deviceBaseInfo.isfree==6 ? $t("charge.freelife") : deviceBaseInfo.overdueDateStr }}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.plateno")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.plateno}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("reportForm.vinno")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.vin}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">{{$t("monitor.phoneNumber")}} : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.simnum}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">IMEI : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.imei}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">IMSI : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.simimsi}}
+                                        </i-col>
+                                    </Row>
+                                    <Row>
+                                        <i-col span="5" style="height: 100%;text-align:right;line-height:25px;">ICCID : &nbsp;</i-col>
+                                        <i-col span="16" style="height: 100%;line-height:25px;text-align:left;">
+                                            {{deviceBaseInfo.simiccid}}
+                                        </i-col>
+                                    </Row>
+                                </div>
+                            </TabPane>
+                            <TabPane :label="$t('monitor.parameter')" name="parameter">标签三的内容</TabPane>
+                        </Tabs>
+
                         <div slot="footer" style="text-align:center;">
-                            <i-button type="primary" @click="queryDeviceBaseInfo(1)" :loading="loading" style="width: 200px">{{$t("reportForm.query")}}</i-button>
-                            <i-button type="primary" @click="deviceInfoModal=false" style="width: 200px">{{$t("monitor.close")}}</i-button>
+                            <i-button type="primary" @click="queryDeviceBaseInfo(1)" :loading="loading" style="width: 200px">{{$t('monitor.queryProperty')}}</i-button>
+                            <i-button type="primary" @click="queryDeviceBaseInfo(3)" style="width: 200px">{{$t('monitor.queryParameter')}}</i-button>
                         </div>
                     </Modal>
 
