@@ -1432,7 +1432,12 @@ function parkDetails(groupslist) {
                                     var callon = item.callon.toFixed(5);
                                     var callat = item.callat.toFixed(5);
                                     var parkTime = utils.timeStamp(item.endtime - item.starttime);
-                                    var address = LocalCacheMgr.getAddress(callon, callat);
+                                    var address = null;
+                                    if (item.address) {
+                                        address = item.address;
+                                    } else {
+                                        address = LocalCacheMgr.getAddress(callon, callat);
+                                    }
                                     newRecords.push({
                                         deviceName: deviceName,
                                         startDate: DateFormat.longToDateTimeStr(item.starttime, timeDifference),
