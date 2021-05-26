@@ -7599,12 +7599,10 @@ function refuelingReport(groupslist) {
             columns: [
                 { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename' },
+                { title: vRoot.$t('reportForm.oilChannel'), key: 'oilindex', width: 80 },
                 { title: vRoot.$t('reportForm.soil'), key: 'soil' },
                 { title: vRoot.$t('reportForm.eoil'), key: 'eoil' },
-                {
-                    title: vRoot.$t('reportForm.fuelVolume') + '(L)',
-                    key: 'addoil',
-                },
+                { title: vRoot.$t('reportForm.fuelVolume') + '(L)', key: 'addoil' },
                 { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr' },
                 { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr' },
                 {
@@ -8255,6 +8253,7 @@ function oilWorkingHours(groupslist) {
         data: {
             loading: false,
             isSpin: false,
+            tank: '0',
             startDate: DateFormat.longToDateStr(Date.now(), timeDifference),
             startTime: '00:00:00',
             endDate: DateFormat.longToDateStr(Date.now(), timeDifference),
@@ -8523,6 +8522,7 @@ function oilWorkingHours(groupslist) {
                     endtime: endtime,
                     timezone: timeDifference,
                     devices: deviceids,
+                    oilindex: Number(this.tank)
                 };
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilManHour(), data, function(resp) {
@@ -10205,11 +10205,12 @@ var reportForm = {
                     name: 'oilConsumption',
                     icon: 'ios-speedometer-outline',
                     children: [
-                        { title: me.$t("reportForm.dayOilConsumption"), name: 'dayOil', icon: 'ios-stopwatch-outline' },
+                        { title: me.$t("reportForm.oilWorkingHours"), name: 'oilWorkingHours', icon: 'ios-appstore-outline' },
+                        // { title: me.$t("reportForm.dayOilConsumption"), name: 'dayOil', icon: 'ios-stopwatch-outline' },
                         { title: me.$t("reportForm.dateOilConsumption"), name: 'timeOilConsumption', icon: 'ios-timer-outline' },
                         { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
-                        { title: me.$t("reportForm.oilWorkingHours"), name: 'oilWorkingHours', icon: 'ios-appstore-outline' },
+
                     ]
                 },
                 {

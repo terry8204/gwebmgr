@@ -169,11 +169,11 @@
                 retain: 'Retain',
             },
             monitor: {
-                parameterPlaceholder: '请先点击查询',
-                property: '设备属性',
-                parameter: '设备参数',
-                queryProperty: '查询属性',
-                queryParameter: '查询参数',
+                parameterPlaceholder: 'Please click query first',
+                property: 'Property',
+                parameter: 'Parameter',
+                queryProperty: 'Query Property',
+                queryParameter: 'Query Parameter',
                 notRealtime: "Not Realtime",
                 camera: 'Take Photo',
                 resolvingPower: 'Resolving power',
@@ -339,6 +339,7 @@
                 notSupportCanvas: "Your browser does not support canvas at this time",
             },
             reportForm: {
+                oilChannel: 'channel',
                 newEquipment: "New added ",
                 qitian: "Seven days",
                 yigeyue: "One month",
@@ -1638,6 +1639,7 @@
                 notSupportCanvas: "您的浏览器暂不支持canvas",
             },
             reportForm: {
+                oilChannel: '油液路',
                 newEquipment: "新增设备",
                 qitian: "七天内",
                 yigeyue: "一个月",
