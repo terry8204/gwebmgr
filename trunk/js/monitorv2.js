@@ -323,7 +323,7 @@ var monitor = {
             dispatchDirectiveModal: false, // 下发指令模态
             deviceInfoModal: false, // 设备基本信息模态
             deviceBaseTabs: 'property',
-            deviceBaseParameter: isZh ? '请先点击查询' : 'Please click query first',
+            deviceBaseParameter: '',
             directiveReportModal: false, //指令记录
             currentDeviceName: "",
             editDevData: { //编辑的设备信息
@@ -356,6 +356,7 @@ var monitor = {
             cmdParams: {},
             deviceBaseInfo: {},
             loading: false,
+            deviceParameterLoading: false,
             selectedTypeVal: null,
             cacheColumns: [
                 { title: isZh ? '编号' : 'index', key: "index", width: 80, align: 'center', sortable: true },
@@ -1783,6 +1784,7 @@ var monitor = {
                     this.$emit("jump-report", "reportForm");
                     break;
                 case 'devbaseinfo':
+                    this.deviceBaseParameter = "";
                     this.queryDeviceBaseInfo(0);
                     this.deviceInfoModal = true;
                     break;
@@ -1933,7 +1935,7 @@ var monitor = {
                 if (this.deviceBaseTabs != 'parameter') {
                     this.deviceBaseTabs = 'parameter';
                 }
-                that.loading = true;
+                that.deviceParameterLoading = true;
                 var url = myUrls.queryClientParametersSync();
                 var data = {
                     deviceid: globalDeviceId,
@@ -1959,9 +1961,9 @@ var monitor = {
                     } else if (status === CMD_SEND_SYNC_TIMEOUT) {
                         that.$Message.error(that.$t('monitor.CMD_SEND_SYNC_TIMEOUT'));
                     }
-                    that.loading = false;
+                    that.deviceParameterLoading = false;
                 }, function() {
-                    that.loading = false;
+                    that.deviceParameterLoading = false;
                     that.$Message.error(that.$t('monitor.queryFail'));
                 })
             }

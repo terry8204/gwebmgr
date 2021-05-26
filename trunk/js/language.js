@@ -169,6 +169,7 @@
                 retain: 'Retain',
             },
             monitor: {
+                parameterPlaceholder: '请先点击查询',
                 property: '设备属性',
                 parameter: '设备参数',
                 queryProperty: '查询属性',
@@ -1467,6 +1468,7 @@
                 retain: '保留',
             },
             monitor: {
+                parameterPlaceholder: '请先点击查询',
                 property: '设备属性',
                 parameter: '设备参数',
                 queryProperty: '查询属性',
