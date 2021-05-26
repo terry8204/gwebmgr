@@ -1868,7 +1868,7 @@
                 loadingStatusDetails: '载重明细',
                 addOil: '加油液报表',
                 reduceOil: '漏油液报表',
-                oilWorkingHours: '工时油耗',
+                oilWorkingHours: '工时油耗报表',
                 tempReport: '温湿度报表',
                 temperatureChart: '温湿度报表',
                 logisticsReport: '物流报表',
