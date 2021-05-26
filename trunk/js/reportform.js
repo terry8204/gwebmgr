@@ -10205,8 +10205,8 @@ var reportForm = {
                     name: 'oilConsumption',
                     icon: 'ios-speedometer-outline',
                     children: [
+                        { title: me.$t("reportForm.dayOilConsumption"), name: 'dayOil', icon: 'ios-stopwatch-outline' },
                         { title: me.$t("reportForm.oilWorkingHours"), name: 'oilWorkingHours', icon: 'ios-appstore-outline' },
-                        // { title: me.$t("reportForm.dayOilConsumption"), name: 'dayOil', icon: 'ios-stopwatch-outline' },
                         { title: me.$t("reportForm.dateOilConsumption"), name: 'timeOilConsumption', icon: 'ios-timer-outline' },
                         { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
