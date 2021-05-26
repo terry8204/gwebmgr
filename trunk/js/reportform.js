@@ -1399,7 +1399,8 @@ function parkDetails(groupslist) {
                     }
                 }
             ],
-            tableData: []
+            tableData: [],
+            interval: '5',
         },
         methods: {
             onChange: function(value) {
@@ -1410,7 +1411,6 @@ function parkDetails(groupslist) {
                 this.lastTableHeight = wHeight - 130;
                 this.posiDetailHeight = wHeight - 104;
             },
-
             onClickQuery: function() {
                 if (this.queryDeviceId) {
                     var me = this;
@@ -1419,7 +1419,8 @@ function parkDetails(groupslist) {
                         startday: this.dateVal[0],
                         endday: this.dateVal[1],
                         offset: timeDifference,
-                        deviceid: this.queryDeviceId
+                        deviceid: this.queryDeviceId,
+                        interval: Number(this.interval)
                     }
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
