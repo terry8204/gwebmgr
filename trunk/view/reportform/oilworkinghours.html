@@ -20,6 +20,9 @@
             <div style="margin-left:10px;float: left;line-height: 35px;">
                 {{$t("reportForm.selected")}}: <span v-text="selectedCount"></span>
             </div>
+            <div style="margin-left:10px;float: left;">
+                <i-button @click="cleanSelectedDev" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
+            </div>
             <div style="margin-left:10px;float: left;width: 80px;position: relative;">
                 <i-select v-model="tank">
                     <i-option value="0">{{$t("monitor.all")}}</i-option>
@@ -28,9 +31,6 @@
                     <i-option value="3">{{$t("device.oil3")}}</i-option>
                     <i-option value="4">{{$t("device.oil4")}}</i-option>
                 </i-select>
-            </div>
-            <div style="margin-left:10px;float: left;">
-                <i-button @click="cleanSelectedDev" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
             </div>
             <div style="float: left;padding-left: 10px;">
                 <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectTime")}}:&nbsp;</div>
