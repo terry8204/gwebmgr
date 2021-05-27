@@ -7500,11 +7500,12 @@ function dayOil(groupslist) {
                                     record.leakoil = record.leakoil / 100;
 
                                     record.distance = (record.distance / 1000).toFixed(2);
-                                    if (record.distance != 0) {
-                                        record.oilPercent = ((record.oil / (record.distance)) * 100).toFixed(2);
-                                    } else {
-                                        record.oilPercent = 0;
-                                    }
+                                    // if (record.distance != 0) {
+                                    // record.oilPercent = ((record.oil / (record.distance)) * 100).toFixed(2);
+                                    record.oilPercent = record.oilper100km;
+                                    // } else {
+                                    //     record.oilPercent = 0;
+                                    // }
                                     oil.push(record.oil);
                                     distance.push(record.distance);
                                     recvtime.push(record.statisticsday);
@@ -8305,31 +8306,11 @@ function oilWorkingHours(groupslist) {
                 },
                 {
                     title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
-                    render: function(h, pramas) {
-                        var row = pramas.row;
-                        var totaldistance = row.totaldistance;
-                        var totaloil = row.totaloil / 100;
-                        if (totaldistance && totaloil) {
-                            totaldistance = totaldistance / 1000;
-                            return h('sapn', {}, ((totaloil / totaldistance) * 100).toFixed(2));
-                        } else {
-                            return h('sapn', {}, '0');
-                        }
-                    },
+                    key: 'oilper100km',
                 },
                 {
                     title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
-                    render: function(h, pramas) {
-                        var row = pramas.row;
-                        var totalacc = row.totalacc;
-                        var totaloil = row.totaloil;
-                        if (totalacc && totaloil) {
-                            totalacc = totalacc / 1000 / 3600;
-                            return h('sapn', {}, (totaloil / 100 / totalacc).toFixed(2));
-                        } else {
-                            return h('sapn', {}, '0');
-                        }
-                    },
+                    key: 'oilperhour'
                 },
 
             ],
