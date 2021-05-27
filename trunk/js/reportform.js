@@ -7494,8 +7494,7 @@ function dayOil(groupslist) {
                                 records.forEach(function(record) {
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     record.distance = record.enddis - record.begindis;
-                                    record.oil = record.beginoil - record.endoil + record.addoil - record.leakoil;
-                                    record.oil = record.oil / 100;
+                                    record.oil = record.totaloil / 100;
                                     record.addoil = record.addoil / 100;
                                     record.leakoil = record.leakoil / 100;
 
