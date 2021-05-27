@@ -589,6 +589,10 @@
                             }
                         }
                         me.$Message.success(me.$t(isEditUser ? "message.changeSucc" : "message.addSucc"));
+                    } else if (resp.status == 1) {
+                        if (!isEditUser) {
+                            me.$Message.error(isZh ? '用户已存在' : 'User already exists');
+                        }
                     } else {
                         me.$Message.error(me.$t(isEditUser ? "message.changeFail" : "message.addFail") + ' ' + resp.cause);
                     }
