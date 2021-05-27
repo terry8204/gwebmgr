@@ -143,7 +143,11 @@
            var creater = newUser.creater;
            var foundUser = this.getUserByUserName(creater);
            console.log('foundUser', foundUser);
+
            if (foundUser) {
+               if (foundUser.subusers == null) {
+                   foundUser.subusers = [];
+               }
                var newGroups = [{ groupname: "Default", groupid: 0, devices: [] }];
                newUser.groups = newGroups;
                foundUser.subusers.push(newUser);
