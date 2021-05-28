@@ -2523,7 +2523,7 @@
                 noData: "没有数据",
             },
             videoback: {
-                channelNumber: '通道编号',
+                channelNumber: '通道',
                 selectDate: '选择日期',
                 startDate: '开始日期',
                 startTime: '开始时间',

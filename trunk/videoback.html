@@ -605,12 +605,18 @@
                 }],
                 downloadColumns: [{
                     title: lang.$t('alarm.action'),
-                    width: 325,
+                    width: 165,
                     render: function(h, params) {
                         var row = params.row,
                             index = params.index;
                         return h('div', {}, [
-                            h('Button', {
+
+                            h('Tooltip', {
+                                props: {
+                                    content: lang.$t('videoback.pause'),
+                                    placement: 'top',
+                                }
+                            }, [h('Button', {
                                 props: {
                                     size: "small",
                                     icon: "ios-square",
@@ -630,8 +636,13 @@
                                         });
                                     }
                                 }
-                            }, lang.$t('videoback.pause')),
-                            h('Button', {
+                            }, null)]),
+                            h('Tooltip', {
+                                props: {
+                                    content: lang.$t('videoback.continue'),
+                                    placement: 'top',
+                                }
+                            }, [h('Button', {
                                 props: {
                                     size: "small",
                                     icon: "ios-play",
@@ -653,8 +664,13 @@
                                         });
                                     }
                                 }
-                            }, lang.$t('videoback.continue')),
-                            h('Button', {
+                            }, null), ]),
+                            h('Tooltip', {
+                                props: {
+                                    content: lang.$t('videoback.cancel'),
+                                    placement: 'top',
+                                }
+                            }, [h('Button', {
                                 props: {
                                     size: "small",
                                     icon: "md-close-circle"
@@ -675,8 +691,13 @@
                                         });
                                     }
                                 }
-                            }, lang.$t('videoback.cancel')),
-                            h('Button', {
+                            }, null)]),
+                            h('Tooltip', {
+                                props: {
+                                    content: lang.$t('videoback.downloadToLocal'),
+                                    placement: 'top',
+                                }
+                            }, [h('Button', {
                                 props: {
                                     size: "small",
                                     icon: "md-arrow-down"
@@ -697,12 +718,13 @@
                                         ele.click();
                                     }
                                 }
-                            }, lang.$t('videoback.downloadToLocal')),
+                            }, null)]),
+
                         ])
                     }
                 }, {
                     title: lang.$t('videoback.downloadState'),
-                    width: 130,
+                    width: 100,
                     key: 'downloadstatus',
                     render: function(h, params) {
                         var state = '',
@@ -747,7 +769,7 @@
                 }, {
                     title: lang.$t('videoback.channelNumber'),
                     key: 'channel',
-                    width: 90,
+                    width: 65,
                 }, {
                     title: lang.$t('videoback.fileStartTime'),
                     key: 'needstarttime'
