@@ -432,6 +432,31 @@
         <div class="demo-spin-container" v-if="loading">
             <Spin size="large" fix></Spin>
         </div>
+        <Modal v-model="markerOilTableModal" width="800">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="ios-create-outline"></Icon>
+                <span>{{$t('oil.refuelingAndOilLeakage')}}</span>
+            </p>
+            <i-table :columns="oilColumns" :data="oilTable" height="400" border></i-table>
+            <div slot="footer"></div>
+        </Modal>
+        <Modal v-model="markerModal" width="500">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="ios-create-outline"></Icon>
+                <span>{{$t('oil.editMarker')}}</span>
+            </p>
+            <Row style="margin:10px 0;">
+                <i-col span="5" style="line-height: 32px;text-align: right;">
+                    {{$t('oil.remarks')}}:
+                </i-col>
+                <i-col span="14" offset="1">
+                    <i-input v-model.trim="marker"></i-input>
+                </i-col>
+            </Row>
+            <div slot="footer" style="text-align:center;">
+                <i-button type="primary" style="width: 240px" @click="editOilRecord">{{$t('oil.submit')}}</i-button>
+            </div>
+        </Modal>
         <div class="master-wraper">
             <div class="ctrl-wraper">
                 <div class="device">
@@ -601,6 +626,7 @@
                         <Page :total="total" show-total @on-change="onPageChange" :page-size="pageSize" :current="currentIndex" />
                     </div>
                 </tab-pane>
+                <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="queryAddOilStatus">{{$t("oil.oilRemarks")}} </i-button>
                 <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="settingModal=true">{{$t("main.setting")}}</i-button>
                 <i-button v-show="tabActive=='table'" type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="getAllTracksAddress">{{$t("main.queryAddress")}}</i-button>
             </Tabs>
@@ -708,6 +734,8 @@
         var devicename = utils.getParameterByName("devicename");
         var functionslong = utils.getParameterByName("functionslong");
         var vRoot = null;
+        var editObjectRow = null;
+        var isHasOil = utils.hasFunction(Number(functionslong), 0x0200);
         var currentTrack = null;
         var symbol = {
             'lineColor': '#41B883',
@@ -833,6 +861,13 @@
                     h: "h",
                     m: "m",
                     s: "s",
+                },
+                oil: {
+                    editMarker: 'Edit Marker',
+                    remarks: 'Remarks',
+                    submit: 'Submit',
+                    refuelingAndOilLeakage: 'Refueling and oil leakage',
+                    oilRemarks: 'Oil Remarks',
                 }
 
             },
@@ -907,6 +942,14 @@
                     h: "小时",
                     m: "分",
                     s: "秒",
+                },
+                oil: {
+                    editMarker: '编辑备注',
+                    remarks: '备注',
+                    submit: '提交',
+                    refuelingAndOilLeakage: '加油漏油',
+                    oilRemarks: '加漏油备注',
+
                 }
             }
         };
@@ -1025,6 +1068,7 @@
                 el: "#container",
                 i18n: utils.getI18n(),
                 data: {
+
                     modal: false,
                     modal1: false,
                     settingModal: false,
@@ -1035,6 +1079,66 @@
                     trackid: '',
                     trackStringify: "",
 
+                    markerModal: false,
+                    markerOilTableModal: false,
+                    marker: '',
+                    oilColumns: [{
+                        title: isZh ? '编号' : 'index',
+                        key: 'index',
+                        width: 70
+                    }, {
+                        title: isZh ? '油路' : 'oilindex',
+                        key: 'oilindex',
+                        width: 80
+                    }, {
+                        width: 80,
+                        title: (isZh ? '状态' : 'Status'),
+                        key: 'oilStatus'
+                    }, {
+                        width: 90,
+                        title: (isZh ? '油量' : 'Oil Volume') + '(L)',
+                        key: 'oilVolume'
+                    }, {
+                        width: 105,
+                        title: (isZh ? '开始油量' : 'oilindex') + '(L)',
+                        key: 'soil'
+                    }, {
+                        width: 105,
+                        title: (isZh ? '结束油量' : 'oilindex') + '(L)',
+                        key: 'eoil'
+                    }, {
+                        width: 160,
+                        title: isZh ? '开始时间' : 'oilindex',
+                        key: 'begintimeStr'
+                    }, {
+                        width: 160,
+                        title: isZh ? '结束时间' : 'oilindex',
+                        key: 'endtimeStr'
+                    }, {
+                        width: 150,
+                        title: isZh ? '备注' : 'oilindex',
+                        key: 'marker'
+                    }, {
+                        title: isZh ? '操作' : 'action',
+                        width: 105,
+                        render: function(h, params) {
+                            var row = params.row;
+                            return h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click: function() {
+                                        vRoot.marker = row.marker;
+                                        vRoot.markerModal = true;
+                                        editObjectRow = row;
+                                    }
+                                }
+                            }, isZh ? '编辑备注' : 'Edit')
+                        }
+                    }, ],
+                    oilTable: [],
 
                     queryLoading: false,
                     idx: 0,
@@ -1447,7 +1551,7 @@
                         this.weights = [];
                         this.selectedLegend = {
                             [recorderspeed]: false,
-                            [totalOil]: utils.hasFunction(Number(functionslong), 0x0200),
+                            [totalOil]: isHasOil,
                             [usoil1]: false,
                             [usoil2]: false,
                             [usoil3]: false,
@@ -2340,6 +2444,25 @@
                         this.onSwitchTraffic(traffic);
 
                     },
+                    editOilRecord: function() {
+                        var me = this;
+                        var url = myUrls.editOilRecord();
+                        var data = {
+                            oilrecordid: editObjectRow.oilrecordid,
+                            marker: this.marker,
+                            deviceid: editObjectRow.deviceid,
+                            oilindex: editObjectRow.oilindex
+                        };
+                        utils.sendAjax(url, data, function(resp) {
+                            if (resp.status == 0) {
+                                me.$Message.success(isZh ? '编辑成功' : 'Edited successfully');
+                                editObjectRow.marker = data.marker;
+                                me.markerModal = false;
+                            } else if (resp.status == 1) {
+                                me.$Message.error(isZh ? '正在加油或者漏油中，请稍后备注' : 'Adding or leaking, please marker later');
+                            }
+                        });
+                    },
                     createMarker(track, isRotate, markerFile, markerRotation) {
 
                         var isBMap = this.mapType == 'bMap';
@@ -2380,6 +2503,67 @@
                                 data: data
                             });
                         }
+                    },
+
+                    queryAddOilStatus: function() {
+                        var me = this;
+                        me.markerOilTableModal = true;
+                        var data = {
+                            startday: DateFormat.longToDateStr(this.startTimeValue, timeDifference),
+                            endday: DateFormat.longToDateStr(this.endTimeValue, timeDifference),
+                            offset: timeDifference,
+                            devices: [deviceid],
+                            oilstate: 99,
+                            oilindex: 0
+                        };
+                        utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
+                            self.loading = false;
+                            if (resp.status == 0) {
+                                if (resp.records) {
+                                    var oilArr = [];
+                                    resp.records.forEach(function(item) {
+                                        var index = 1;
+                                        item.records.forEach(function(record) {
+                                            var oilstate = record.oilstate;
+                                            if (oilstate == -1 || oilstate == 1) {
+                                                var oilStatus = '';
+                                                switch (oilstate) {
+                                                    case -1:
+                                                        oilStatus = isZh ? '漏油' : 'Oil leakage';
+                                                        break;
+                                                    case 1:
+                                                        oilStatus = isZh ? '加油' : 'Add Oil';
+                                                        break;
+                                                }
+                                                record.eoil = record.eoil / 100;
+                                                record.soil = record.soil / 100;
+                                                var oil = record.eoil - record.soil;
+                                                oilArr.push({
+                                                    index: index,
+                                                    oilindex: record.oilindex == 0 ? (isZh ? '全部' : 'All') : record.oilindex,
+                                                    oilrecordid: record.oilrecordid,
+                                                    oilVolume: oil.toFixed(2),
+                                                    soil: record.soil.toFixed(2),
+                                                    eoil: record.eoil.toFixed(2),
+                                                    begintimeStr: DateFormat.longToDateTimeStr(record.begintime, timeDifference),
+                                                    endtimeStr: DateFormat.longToDateTimeStr(record.endtime, timeDifference),
+                                                    marker: record.marker,
+                                                    oilStatus: oilStatus
+                                                        //   oilindex  oilStatus oilVolume soil eoil begintimeStr endtimeStr marker
+                                                })
+                                                index++;
+                                            }
+
+                                        });
+                                    });
+                                    me.oilTable = oilArr;
+                                } else {
+                                    me.$Message.error(self.$t("reportForm.noRecord"));
+                                }
+                            } else {
+                                me.$Message.error(resp.cause);
+                            }
+                        })
                     },
                     filtertracks: function(records) {
                         var exactTracks = [];
@@ -2620,7 +2804,7 @@
                         };
 
                         var oilStr = '';
-                        if (utils.hasFunction(Number(functionslong), 0x0200)) {
+                        if (isHasOil) {
                             oilStr = this.getOilStr(info);
                         };
 
