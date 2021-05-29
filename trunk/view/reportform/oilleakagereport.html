@@ -3,6 +3,23 @@
     <div class="demo-spin-container" v-if="isSpin">
         <Spin size="large" fix></Spin>
     </div>
+    <Modal v-model="markerModal" width="500">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="ios-create-outline"></Icon>
+            <span>{{$t('reportForm.editMarker')}}</span>
+        </p>
+        <Row style="margin:10px 0;">
+            <i-col span="5" style="line-height: 32px;text-align: right;">
+                {{$t('monitor.remarks')}}:
+            </i-col>
+            <i-col span="14" offset="1">
+                <i-input v-model.trim="marker"></i-input>
+            </i-col>
+        </Row>
+        <div slot="footer" style="text-align:center;">
+            <i-button type="primary" style="width: 240px" @click="editOilRecord">{{$t('header.submit')}}</i-button>
+        </div>
+    </Modal>
     <div class="report-item-header">
         <Row style="margin:10px;height: 35px;">
             <div style="float: left;">

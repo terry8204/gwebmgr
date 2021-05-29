@@ -904,6 +904,9 @@ var myUrls = {
     importDeviceInfos: function() {
         return this.apihosts + 'webapi?action=importdeviceinfos&token=' + token;
     },
+    editOilRecord: function() {
+        return this.apihosts + 'webapi?action=editoilrecord&token=' + token;
+    },
 }
 
 

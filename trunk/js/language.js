@@ -339,6 +339,7 @@
                 notSupportCanvas: "Your browser does not support canvas at this time",
             },
             reportForm: {
+                editMarker: 'Edit',
                 oilChannel: 'channel',
                 newEquipment: "New added ",
                 qitian: "Seven days",
@@ -1639,6 +1640,7 @@
                 notSupportCanvas: "您的浏览器暂不支持canvas",
             },
             reportForm: {
+                editMarker: '编辑备注',
                 oilChannel: '油液路',
                 newEquipment: "新增设备",
                 qitian: "七天内",

@@ -7550,6 +7550,8 @@ function refuelingReport(groupslist) {
         data: {
             loading: false,
             isSpin: false,
+            markerModal: false,
+            marker: '',
             tank: '0',
             activeTab: 'tabTotal',
             groupslist: [],
@@ -7641,6 +7643,27 @@ function refuelingReport(groupslist) {
                         }
                     },
                 },
+                { title: vRoot.$t('monitor.remarks'), key: 'marker' },
+                {
+                    title: vRoot.$t('alarm.action'),
+                    width: 100,
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h('Button', {
+                            props: {
+                                type: 'primary',
+                                size: 'small'
+                            },
+                            on: {
+                                click: function() {
+                                    vueInstanse.marker = row.marker;
+                                    vueInstanse.markerModal = true;
+                                    editObjectRow = row;
+                                }
+                            }
+                        }, vRoot.$t('reportForm.editMarker'))
+                    }
+                },
             ],
             tableData: [],
             recvtime: [],
@@ -7648,6 +7671,25 @@ function refuelingReport(groupslist) {
         },
         mixins: [treeMixin],
         methods: {
+            editOilRecord: function() {
+                var me = this;
+                var url = myUrls.editOilRecord();
+                var data = {
+                    oilrecordid: editObjectRow.oilrecordid,
+                    marker: this.marker,
+                    deviceid: editObjectRow.deviceid,
+                    oilindex: editObjectRow.oilindex
+                };
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        me.$Message.success(isZh ? '编辑成功' : 'Edited successfully');
+                        editObjectRow.marker = data.marker;
+                        me.markerModal = false;
+                    } else if (resp.status == 1) {
+                        me.$Message.error(isZh ? '正在加油或者漏油中，请稍后备注' : 'Adding or leaking, please marker later');
+                    }
+                });
+            },
             exportData: function() {
                 if (this.activeTab == 'tabTotal') {
                     var allColumns = deepClone(this.allColumns.filter(function(col, index) { return index != 1; }));
@@ -7900,6 +7942,8 @@ function oilLeakageReport(groupslist) {
         data: {
             loading: false,
             isSpin: false,
+            marker: '',
+            markerModal: false,
             tank: '0',
             activeTab: 'tabTotal',
             groupslist: [],
@@ -7993,6 +8037,27 @@ function oilLeakageReport(groupslist) {
                         }
                     },
                 },
+                { title: vRoot.$t('monitor.remarks'), key: 'marker' },
+                {
+                    title: vRoot.$t('alarm.action'),
+                    width: 100,
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h('Button', {
+                            props: {
+                                type: 'primary',
+                                size: 'small'
+                            },
+                            on: {
+                                click: function() {
+                                    vueInstanse.marker = row.marker;
+                                    vueInstanse.markerModal = true;
+                                    editObjectRow = row;
+                                }
+                            }
+                        }, vRoot.$t('reportForm.editMarker'))
+                    }
+                },
             ],
             tableData: [],
             recvtime: [],
@@ -8000,6 +8065,25 @@ function oilLeakageReport(groupslist) {
         },
         mixins: [treeMixin],
         methods: {
+            editOilRecord: function() {
+                var me = this;
+                var url = myUrls.editOilRecord();
+                var data = {
+                    oilrecordid: editObjectRow.oilrecordid,
+                    marker: this.marker,
+                    deviceid: editObjectRow.deviceid,
+                    oilindex: editObjectRow.oilindex
+                };
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        me.$Message.success(isZh ? '编辑成功' : 'Edited successfully');
+                        editObjectRow.marker = data.marker;
+                        me.markerModal = false;
+                    } else if (resp.status == 1) {
+                        me.$Message.error(isZh ? '正在加油或者漏油中，请稍后备注' : 'Adding or leaking, please marker later');
+                    }
+                });
+            },
             exportData: function() {
                 if (this.activeTab == 'tabTotal') {
                     var allColumns = deepClone(this.allColumns.filter(function(col, index) { return index != 1; }));
