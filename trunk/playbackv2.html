@@ -2509,8 +2509,8 @@
                         var me = this;
                         me.markerOilTableModal = true;
                         var data = {
-                            startday: DateFormat.longToDateStr(this.startTimeValue, timeDifference),
-                            endday: DateFormat.longToDateStr(this.endTimeValue, timeDifference),
+                            startday: DateFormat.format(this.startTimeValue, 'yyyy-MM-dd'),
+                            endday: DateFormat.format(this.endTimeValue, 'yyyy-MM-dd'),
                             offset: timeDifference,
                             devices: [deviceid],
                             oilstate: 99,
