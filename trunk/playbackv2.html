@@ -626,7 +626,7 @@
                         <Page :total="total" show-total @on-change="onPageChange" :page-size="pageSize" :current="currentIndex" />
                     </div>
                 </tab-pane>
-                <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="queryAddOilStatus">{{$t("oil.oilRemarks")}} </i-button>
+                <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" v-show="isHasOil" @click="queryAddOilStatus">{{$t("oil.oilRemarks")}} </i-button>
                 <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="settingModal=true">{{$t("main.setting")}}</i-button>
                 <i-button v-show="tabActive=='table'" type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="getAllTracksAddress">{{$t("main.queryAddress")}}</i-button>
             </Tabs>
@@ -1079,6 +1079,7 @@
                     trackid: '',
                     trackStringify: "",
 
+                    isHasOil: isHasOil,
                     markerModal: false,
                     markerOilTableModal: false,
                     marker: '',
