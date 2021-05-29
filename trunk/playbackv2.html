@@ -948,8 +948,7 @@
                     remarks: '备注',
                     submit: '提交',
                     refuelingAndOilLeakage: '加油漏油',
-                    oilRemarks: '加漏油备注',
-
+                    oilRemarks: '加漏油液体记录',
                 }
             }
         };
@@ -1089,7 +1088,7 @@
                         width: 70
                     }, {
                         title: isZh ? '油路' : 'oilindex',
-                        key: 'oilindex',
+                        key: 'oilindexStr',
                         width: 80
                     }, {
                         width: 80,
@@ -2541,7 +2540,8 @@
                                                 var oil = record.eoil - record.soil;
                                                 oilArr.push({
                                                     index: index,
-                                                    oilindex: record.oilindex == 0 ? (isZh ? '全部' : 'All') : record.oilindex,
+                                                    oilindex: record.oilindex,
+                                                    oilindexStr: record.oilindex == 0 ? (isZh ? '全部' : 'All') : record.oilindex,
                                                     oilrecordid: record.oilrecordid,
                                                     oilVolume: oil.toFixed(2),
                                                     soil: record.soil.toFixed(2),
