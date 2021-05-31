@@ -1400,7 +1400,7 @@ function parkDetails(groupslist) {
                 }
             ],
             tableData: [],
-            interval: '5',
+            interval: '3',
         },
         methods: {
             onChange: function(value) {
