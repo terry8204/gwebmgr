@@ -326,7 +326,7 @@ Vue.component('my-video', {
             if (this.deviceId && this.deviceId != device.deviceid) {
                 if (this.isPlaying) {
                     this.isTimerStop = false;
-                    this.handleStopVideos();
+                    this.handleStopVideos(false);
                 }
 
             } else {
@@ -350,7 +350,7 @@ Vue.component('my-video', {
             }
             if (this.isPlaying) {
                 this.isTimerStop = false;
-                this.handleStopVideos();
+                this.handleStopVideos(false);
             } else {
                 this.handleStartVideos();
             }
@@ -384,24 +384,41 @@ Vue.component('my-video', {
             //     lazyLoad: false,
             //     // fixAudioTimestampGap: false,  //主要是这个配置，直播时音频的码率会被降低，直播游戏时背景音会有回响，但是说话声音没问题
             // });
-            videoPlayer = mpegts.createPlayer({
-                type: 'flv',
-                url: url
-            }, {
-                enableWorker: true,
-                lazyLoadMaxDuration: 3 * 60,
-                seekType: 'range',
-                liveBufferLatencyChasing: true,
-            });
 
-            var me = this;
-            videoPlayer.attachMediaElement(this.$refs.player);
-            videoPlayer.load(); //加载
-            videoPlayer.play();
-            videoPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
-                me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
-            })
-            this.videoPlayer = videoPlayer;
+            if (this.playUrl != url) {
+                if (this.videoPlayer != null) {
+                    this.videoPlayer.pause();
+                    this.videoPlayer.unload();
+                    this.videoPlayer.detachMediaElement();
+                    this.videoPlayer.destroy();
+                    this.videoPlayer = null;
+                }
+
+                this.playUrl = url;
+                var videoPlayer = mpegts.createPlayer({
+                    type: 'flv',
+                    url: url
+                }, {
+                    enableWorker: true,
+                    lazyLoadMaxDuration: 3 * 60,
+                    seekType: 'range',
+                    liveBufferLatencyChasing: true,
+                });
+
+                var me = this;
+                videoPlayer.attachMediaElement(this.$refs.player);
+                videoPlayer.load(); //加载
+                videoPlayer.play();
+                videoPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
+                    me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
+                })
+                this.videoPlayer = videoPlayer;
+            } else {
+                // this.videoPlayer.load(); //加载
+                this.videoPlayer.play();
+                this.isPlaying = true;
+            }
+
         },
         initVideo: function(url, hasaudio) {
             if (isWebrtcPlay) {
@@ -462,19 +479,20 @@ Vue.component('my-video', {
                     this.videoPlayer.play();
 
                 } else {
-                    try {
-                        var videoPlayer = this.videoPlayer;
-                        if (videoPlayer != null) {
-                            videoPlayer.pause();
-                            videoPlayer.unload();
-                            videoPlayer.detachMediaElement();
-                            videoPlayer.destroy();
-                            this.videoPlayer = null;
-                        }
-                    } catch (error) {
+                    // try {
+                    //     var videoPlayer = this.videoPlayer;
+                    //     if (videoPlayer != null) {
+                    //         videoPlayer.pause();
+                    //         videoPlayer.unload();
+                    //         videoPlayer.detachMediaElement();
+                    //         videoPlayer.destroy();
+                    //         this.videoPlayer = null;
+                    //     }
+                    // } catch (error) {
 
-                    }
-                    this.playUrl = url;
+                    // }
+                    // this.playUrl = url;
+
                     this.initFlvVideo(url, hasaudio);
                 }
 
@@ -693,7 +711,7 @@ Vue.component('my-video', {
                 me.isSendAjaxState = false;
             })
         },
-        handleStopVideos: function() {
+        handleStopVideos: function(isTimeout) {
             try {
                 if (isWebrtcPlay) {
                     var player = this.videoPlayer;
@@ -701,14 +719,19 @@ Vue.component('my-video', {
                 } else {
                     var player = this.videoPlayer;
                     this.videoPlayer.pause();
-                    player.unload();
-                    player.detachMediaElement();
-                    player.destroy();
-                    this.videoPlayer = null;
+                    // player.unload();
+                    // player.detachMediaElement();
+                    // player.destroy();
+                    // this.videoPlayer = null;
+                    console.log('handleStopVideos---------');
                 }
             } catch (error) {};
             this.isPlaying = false;
-            this.setPlayerStateTips(vRoot.$t('video.pausePlay'));
+            if (isTimeout) {
+                this.setPlayerStateTips(vRoot.$t('video.threeMinutes'));
+            } else {
+                this.setPlayerStateTips(vRoot.$t('video.pausePlay'));
+            }
             this.isSendAjaxState = false;
             this.networkSpeed = '0KB/S';
             isWebrtcPlay && clearInterval(this.timer);
@@ -723,7 +746,7 @@ Vue.component('my-video', {
                 var nowTime = Date.now();
                 if ((nowTime - this.startTimes) > 1000 * 60 * 3) {
                     this.isTimerStop = true;
-                    this.handleStopVideos();
+                    this.handleStopVideos(true);
                 }
             }
         }
