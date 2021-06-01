@@ -1780,12 +1780,10 @@
                             color: '#C1232B',
                             data: this.oil,
                             smooth: true,
-                            markPoint: { // markLine 也是同理
+                            markPoint: {
+                                symbolSize: 36,
+                                symbolKeepAspect: true,
                                 data: this.markPointData
-                                    // data: [{
-                                    //     coord: [5, 166.4], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
-                                    //     value: '加5升',
-                                    // }]
                             }
                         }, {
                             name: usoil1,
@@ -1986,24 +1984,22 @@
                                     if (nearestTrack) {
                                         var oil = nearestTrack.totalad;
                                         var difference = (oilRecord.eoil - oilRecord.soil);
+                                        var color = '';
                                         if (difference > 0) {
-                                            var markPoint = {
-                                                coord: [nearestTrack.index, oil], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
-                                                value: difference.toFixed(0),
-                                                itemStyle: {
-                                                    color: 'green'
-                                                }
-                                            };
+                                            color = 'green';
                                         } else {
-                                            var markPoint = {
-                                                coord: [nearestTrack.index, oil], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
-                                                value: difference.toFixed(0),
-                                                itemStyle: {
-                                                    color: 'red'
-                                                }
-                                            };
+                                            color = 'red';
                                         }
-
+                                        var markPoint = {
+                                            coord: [nearestTrack.index, oil], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+                                            value: Math.abs(difference).toFixed(0),
+                                            itemStyle: {
+                                                color: color
+                                            },
+                                            label: {
+                                                fontSize: 8,
+                                            }
+                                        };
                                         markPoints.push(markPoint);
                                     }
                                 }

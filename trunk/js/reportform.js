@@ -6924,12 +6924,10 @@ function timeOilConsumption(groupslist) {
                             symbol: 'none',
                             color: '#C1232B',
                             data: this.totalad,
-                            markPoint: { // markLine 也是同理
-                                data: this.markPointData
-                                    // data: [{
-                                    //     coord: [5, 166.4], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
-                                    //     value: '加5升',
-                                    // }]
+                            markPoint: {
+                                data: this.markPointData,
+                                symbolSize: 36,
+                                symbolKeepAspect: true,
                             }
                         }, {
                             smooth: true,
@@ -7123,26 +7121,22 @@ function timeOilConsumption(groupslist) {
                                     var oilDifference = item - prevItem;
 
                                     if (Math.abs(oilDifference) > 5) {
-                                        // console.log(oilDifference, typeof oilDifference);
-                                        // console.log(index, item);
+                                        var color = '';
                                         if (oilDifference > 0) {
-                                            markPointData.push({
-                                                coord: [index, item],
-                                                value: oilDifference.toFixed(0),
-                                                itemStyle: {
-                                                    color: 'green'
-                                                }
-                                            })
+                                            color = 'green';
                                         } else {
-                                            markPointData.push({
-                                                coord: [index, item],
-                                                value: Math.abs(oilDifference).toFixed(0),
-                                                itemStyle: {
-                                                    color: 'red'
-                                                }
-                                            })
+                                            color = 'red';
                                         }
-
+                                        markPointData.push({
+                                            coord: [index, item],
+                                            value: Math.abs(oilDifference).toFixed(0),
+                                            itemStyle: {
+                                                color: color
+                                            },
+                                            label: {
+                                                fontSize: 8,
+                                            }
+                                        })
                                     }
                                 }
                             })
