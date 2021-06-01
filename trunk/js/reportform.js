@@ -6923,7 +6923,14 @@ function timeOilConsumption(groupslist) {
                             type: 'line',
                             symbol: 'none',
                             color: '#C1232B',
-                            data: this.totalad
+                            data: this.totalad,
+                            markPoint: { // markLine 也是同理
+                                data: this.markPointData
+                                    // data: [{
+                                    //     coord: [5, 166.4], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+                                    //     value: '加5升',
+                                    // }]
+                            }
                         }, {
                             smooth: true,
                             name: usoil1,
@@ -7032,6 +7039,7 @@ function timeOilConsumption(groupslist) {
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
                     self.loading = false;
+                    self.markPointData = [];
                     if (resp.status == 0) {
                         if (resp.records) {
                             var records = [],
@@ -7048,6 +7056,7 @@ function timeOilConsumption(groupslist) {
                                 srcad2 = [],
                                 srcad3 = [],
                                 devReissue = [],
+                                markPointData = [],
                                 devStates = [];
                             firstDistance = 0;
                             resp.records.forEach(function(item, index) {
@@ -7108,6 +7117,37 @@ function timeOilConsumption(groupslist) {
                                 });
                             });
 
+                            totalads.forEach(function(item, index) {
+                                if (index != 0) {
+                                    var prevItem = totalads[index - 1];
+                                    var oilDifference = item - prevItem;
+
+                                    if (Math.abs(oilDifference) > 5) {
+                                        // console.log(oilDifference, typeof oilDifference);
+                                        // console.log(index, item);
+                                        if (oilDifference > 0) {
+                                            markPointData.push({
+                                                coord: [index, item],
+                                                value: oilDifference.toFixed(0),
+                                                itemStyle: {
+                                                    color: 'green'
+                                                }
+                                            })
+                                        } else {
+                                            markPointData.push({
+                                                coord: [index, item],
+                                                value: Math.abs(oilDifference).toFixed(0),
+                                                itemStyle: {
+                                                    color: 'red'
+                                                }
+                                            })
+                                        }
+
+                                    }
+                                }
+                            })
+
+                            self.markPointData = markPointData;
                             self.totalad = totalads;
                             self.veo = veo;
                             self.distance = distance;
@@ -7350,7 +7390,7 @@ function dayOil(groupslist) {
             loading: false,
             groupslist: [],
             columns: [
-                { title: vRoot.$t('reportForm.index'), type: 'index', width: 70 },
+                { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename' },
                 { title: vRoot.$t('reportForm.date'), key: 'statisticsday', sortable: true },
                 { title: vRoot.$t('reportForm.mileage') + '(km)', key: 'distance', },
@@ -7367,6 +7407,14 @@ function dayOil(groupslist) {
         },
         mixins: [reportMixin],
         methods: {
+            exportData: function() {
+                this.$refs.table.exportCsv({
+                    filename: (isZh ? '日行油耗-' : 'Daily fuel consumption-') + this.queryDeviceId,
+                    original: false,
+                    columns: this.columns,
+                    data: this.tableData
+                });
+            },
             changePage: function(index) {
                 var offset = index * 20;
                 var start = (index - 1) * 20;
@@ -7492,7 +7540,8 @@ function dayOil(groupslist) {
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
                                 records.forEach(function(record) {
-                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
+                                    record.index = index + 1;
+                                    record.devicename = '\t' + vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     record.distance = record.enddis - record.begindis;
                                     record.oil = record.totaloil / 100;
                                     record.addoil = record.addoil / 100;
@@ -8411,18 +8460,13 @@ function oilWorkingHours(groupslist) {
 
                 var columns = deepClone(this.columns);
                 var tableData = deepClone(this.tableData);
-                columns.pop();
-                columns.push({
-                    title: isZh ? '地址' : 'Address',
-                    key: 'saddress',
-                })
                 tableData.forEach(function(item) {
                     item.deviceid = '\t' + item.deviceid;
                     item.devicename = '\t' + item.devicename;
                     item.begintimeStr = '\t' + item.begintimeStr;
                     item.endtimeStr = '\t' + item.endtimeStr;
                 });
-                this.$refs.detailTable.exportCsv({
+                this.$refs.table.exportCsv({
                     filename: vRoot.$t('reportForm.oilLeakageDetailed'),
                     original: false,
                     columns: columns,

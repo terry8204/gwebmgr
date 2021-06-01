@@ -626,7 +626,7 @@
                         <Page :total="total" show-total @on-change="onPageChange" :page-size="pageSize" :current="currentIndex" />
                     </div>
                 </tab-pane>
-                <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" v-show="isHasOil" @click="queryAddOilStatus">{{$t("oil.oilRemarks")}} </i-button>
+                <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" v-show="isHasOil" @click="markerOilTableModal=true">{{$t("oil.oilRemarks")}} </i-button>
                 <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="settingModal=true">{{$t("main.setting")}}</i-button>
                 <i-button v-show="tabActive=='table'" type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="getAllTracksAddress">{{$t("main.queryAddress")}}</i-button>
             </Tabs>
@@ -1549,6 +1549,7 @@
                         this.oil4 = [];
                         this.devStates = [];
                         this.weights = [];
+                        this.markPointData = [];
                         this.selectedLegend = {
                             [recorderspeed]: false,
                             [totalOil]: isHasOil,
@@ -1779,6 +1780,13 @@
                             color: '#C1232B',
                             data: this.oil,
                             smooth: true,
+                            markPoint: { // markLine 也是同理
+                                data: this.markPointData
+                                    // data: [{
+                                    //     coord: [5, 166.4], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+                                    //     value: '加5升',
+                                    // }]
+                            }
                         }, {
                             name: usoil1,
                             type: 'line',
@@ -1855,6 +1863,7 @@
                         }]
                         return seriesData;
                     },
+
                     redrawCharts: function() {
                         var records = this.getTypeRecords(),
                             me = this;
@@ -1867,6 +1876,7 @@
                         var oil2 = [];
                         var oil3 = [];
                         var oil4 = [];
+                        // var markPointData = [];
                         var devStates = [];
                         var devReissue = [];
                         var weights = [];
@@ -1880,7 +1890,7 @@
                             if (index == 0) {
                                 totalDistanceMin = item.totaldistance;
                             }
-                            var totalad = item.totalad;
+                            var totalad = item.totalad / 100;
                             var ad0 = item.ad0;
                             var ad1 = item.ad1;
                             var ad2 = item.ad2;
@@ -1891,7 +1901,7 @@
                             if (ad1 < 0) {
                                 ad1 = 0;
                             };
-                            item.totalad = totalad / 100
+                            item.totalad = totalad;
                             item.ad0 = ad0 / 100;
                             item.ad1 = ad1 / 100;
                             item.ad2 = ad2 / 100;
@@ -1913,6 +1923,8 @@
                             greenArr.push(to);
                         });
 
+
+
                         this.distance = distance;
                         this.recvtime = recvtime;
                         this.veo = veo;
@@ -1921,6 +1933,7 @@
                         this.oil2 = oil2;
                         this.oil3 = oil3;
                         this.oil4 = oil4;
+                        // this.markPointData = markPointData;
                         this.devStates = devStates;
                         this.devReissue = devReissue;
                         this.recorderspeed = recorderspeed;
@@ -1930,6 +1943,73 @@
                         this.charts.setOption({}, true);
                         this.charts.setOption(this.getChartsOption());
 
+
+                    },
+                    findNearestTracksByTime(tracks, needFoundTime) {
+                        var nearestTrack = null;
+                        if (tracks) {
+                            var detalTime = 24 * 3600 * 1000;
+                            for (var i = 0; i < tracks.length; ++i) {
+                                var tempTrack = tracks[i];
+                                var trackUpdateTime = tempTrack.updatetime;
+                                var tempDetal = trackUpdateTime - needFoundTime;
+                                var absTempDetal = Math.abs(tempDetal);
+                                if (absTempDetal < detalTime) {
+                                    if (tempDetal < 0) {
+                                        detalTime = absTempDetal;
+                                        nearestTrack = tempTrack;
+                                        nearestTrack.index = i;
+                                    } else if (tempDetal == 0) {
+                                        nearestTrack = tempTrack;
+                                        nearestTrack.index = i;
+                                        break;
+                                    } else if (tempDetal > 0) {
+                                        nearestTrack = tempTrack;
+                                        nearestTrack.index = i;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        return nearestTrack;
+                    },
+                    calMarkPoint: function(tracks, oilDeviceRecords) {
+                        var markPoints = [];
+                        if (oilDeviceRecords && oilDeviceRecords.length > 0) {
+                            var oilRecords = oilDeviceRecords[0].records;
+                            if (oilRecords && oilRecords.length > 0) {
+                                for (var i = 0; i < oilRecords.length; ++i) {
+                                    var oilRecord = oilRecords[i];
+                                    var oilEndTime = oilRecord.endtime;
+                                    var nearestTrack = this.findNearestTracksByTime(tracks, oilEndTime);
+                                    if (nearestTrack) {
+                                        var oil = nearestTrack.totalad;
+                                        var difference = (oilRecord.eoil - oilRecord.soil);
+                                        if (difference > 0) {
+                                            var markPoint = {
+                                                coord: [nearestTrack.index, oil], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+                                                value: difference.toFixed(0),
+                                                itemStyle: {
+                                                    color: 'green'
+                                                }
+                                            };
+                                        } else {
+                                            var markPoint = {
+                                                coord: [nearestTrack.index, oil], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+                                                value: difference.toFixed(0),
+                                                itemStyle: {
+                                                    color: 'red'
+                                                }
+                                            };
+                                        }
+
+                                        markPoints.push(markPoint);
+                                    }
+                                }
+                            }
+                        }
+                        return markPoints;
                     },
                     getMonthDays: function(date) {
                         var year = date.getFullYear();
@@ -2034,9 +2114,12 @@
                                 //     records[2].speed = 35 * 1000;
                                 //     records[3].speed = 15 * 1000;
                                 // }
-
+                                me.markPointData = [];
                                 me.filtertracks(records ? records : []);
                                 me.redrawCharts();
+                                if (isHasOil) {
+                                    me.queryAddOilStatus();
+                                }
                                 me.setTableData();
                                 setTimeout(function() {
                                     me.getAllNoLoadingTracksAddress(false);
@@ -2507,7 +2590,7 @@
 
                     queryAddOilStatus: function() {
                         var me = this;
-                        me.markerOilTableModal = true;
+                        // me.markerOilTableModal = true;
                         var data = {
                             startday: DateFormat.format(this.startTimeValue, 'yyyy-MM-dd'),
                             endday: DateFormat.format(this.endTimeValue, 'yyyy-MM-dd'),
@@ -2557,7 +2640,16 @@
 
                                         });
                                     });
+
                                     me.oilTable = oilArr;
+
+                                    var records = me.getTypeRecords();
+                                    var markPoints = me.calMarkPoint(records, resp.records);
+                                    me.markPointData = markPoints;
+                                    me.charts.setOption({}, true);
+                                    me.charts.setOption(me.getChartsOption());
+
+
                                 } else {
                                     me.$Message.error(self.$t("reportForm.noRecord"));
                                 }

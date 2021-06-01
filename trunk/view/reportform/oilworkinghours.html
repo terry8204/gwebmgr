@@ -36,18 +36,22 @@
                 <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectTime")}}:&nbsp;</div>
             </div>
             <div style="float: left;">
-                <date-picker type="date" v-model="startDate" style="width: 110px" :options="options"></date-picker>
-                <Time-Picker type="time" v-model="startTime" style="width: 100px"></Time-Picker>
+                <date-picker type="date" v-model="startDate" style="width: 100px" :options="options"></date-picker>
+                <Time-Picker type="time" v-model="startTime" style="width: 90px"></Time-Picker>
             </div>
             <div style="float: left;">
                 <div style="height: 32px; line-height: 32px;">&nbsp;&nbsp;-&nbsp;&nbsp; </div>
             </div>
             <div style="float: left;">
-                <date-picker type="date" v-model="endDate" style="width: 110px" :options="options"></date-picker>
-                <Time-Picker type="time" v-model="endTime" style="width: 100px"></Time-Picker>
+                <date-picker type="date" v-model="endDate" style="width: 100px" :options="options"></date-picker>
+                <Time-Picker type="time" v-model="endTime" style="width: 90px"></Time-Picker>
             </div>
             <div style="margin-left:10px;float: left;">
                 <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
+            </div>
+
+            <div style="margin-left:10px;float: right;">
+                <i-button @click="exportData" type="primary">{{$t("reportForm.exportData")}}</i-button>
             </div>
         </Row>
         <div style="width:100%;height: 225px;position: relative;">
