@@ -414,7 +414,8 @@ Vue.component('my-video', {
                 })
                 this.videoPlayer = videoPlayer;
             } else {
-                // this.videoPlayer.load(); //加载
+                this.videoPlayer.load(); //加载
+                this.videoPlayer.attachMediaElement(this.$refs.player);
                 this.videoPlayer.play();
                 this.isPlaying = true;
             }
@@ -719,7 +720,7 @@ Vue.component('my-video', {
                 } else {
                     var player = this.videoPlayer;
                     this.videoPlayer.pause();
-                    // player.unload();
+                    player.unload();
                     // player.detachMediaElement();
                     // player.destroy();
                     // this.videoPlayer = null;
