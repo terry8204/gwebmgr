@@ -438,7 +438,9 @@
                 <span>{{$t('oil.refuelingAndOilLeakage')}}</span>
             </p>
             <i-table :columns="oilColumns" :data="oilTable" height="400" border></i-table>
-            <div slot="footer"></div>
+            <div slot="footer">
+                <div v-text="statisticalOil" style="text-align: right;"></div>
+            </div>
         </Modal>
         <Modal v-model="markerModal" width="500">
             <p slot="header" style="color:#f60;text-align:center">
@@ -1082,6 +1084,7 @@
                     markerModal: false,
                     markerOilTableModal: false,
                     marker: '',
+                    statisticalOil: '',
                     oilColumns: [{
                         title: isZh ? '编号' : 'index',
                         key: 'index',
@@ -2600,23 +2603,27 @@
                             if (resp.status == 0) {
                                 if (resp.records) {
                                     var oilArr = [];
+                                    var increaseOil = 0;
+                                    var reduceOil = 0;
                                     resp.records.forEach(function(item) {
                                         var index = 1;
                                         item.records.forEach(function(record) {
                                             var oilstate = record.oilstate;
                                             if (oilstate == -1 || oilstate == 1) {
                                                 var oilStatus = '';
+                                                record.eoil = record.eoil / 100;
+                                                record.soil = record.soil / 100;
+                                                var oil = Math.abs(record.eoil - record.soil);
                                                 switch (oilstate) {
                                                     case -1:
+                                                        reduceOil += oil;
                                                         oilStatus = isZh ? '漏油' : 'Oil leakage';
                                                         break;
                                                     case 1:
+                                                        increaseOil += oil
                                                         oilStatus = isZh ? '加油' : 'Add Oil';
                                                         break;
                                                 }
-                                                record.eoil = record.eoil / 100;
-                                                record.soil = record.soil / 100;
-                                                var oil = record.eoil - record.soil;
                                                 oilArr.push({
                                                     index: index,
                                                     oilindex: record.oilindex,
@@ -2638,7 +2645,12 @@
                                     });
 
                                     me.oilTable = oilArr;
-
+                                    var variationOil = (increaseOil + reduceOil).toFixed(2);
+                                    if (isZh) {
+                                        me.statisticalOil = '变化量 : ' + variationOil + 'L , 总加油量 : ' + increaseOil.toFixed(2) + 'L , ' + '总漏油量 : ' + reduceOil.toFixed(2) + 'L ';
+                                    } else {
+                                        me.statisticalOil = 'Variation : ' + variationOil + 'L , Total fuel consumption : ' + increaseOil.toFixed(2) + 'L , ' + 'Total oil leakage : ' + reduceOil.toFixed(2) + 'L';
+                                    }
                                     var records = me.getTypeRecords();
                                     var markPoints = me.calMarkPoint(records, resp.records);
                                     me.markPointData = markPoints;
