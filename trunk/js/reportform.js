@@ -3450,7 +3450,7 @@ function messageRecords(groupslist) {
             setTimeout(function() {
                 me.timeChartsIns = echarts.init(document.getElementById('time_charts'));
                 me.chartsIns = echarts.init(document.getElementById('msg_charts'));
-                me.charts(isZh ? "上报比例" : 'Proportion');
+                me.charts();
                 me.timeCharts([], [], [], [], []);
 
                 me.timeChartsIns.getZr().on('click', function(params) {
@@ -3462,22 +3462,17 @@ function messageRecords(groupslist) {
                                 seriesIndex: 0
                             }, [params.offsetX, params.offsetY])[0];
 
-                            xIndex = tracks.length - xIndex;
-
-                            var currentIndex = Math.floor(xIndex / 20) + 1;
-
-                            var rowIndex = (xIndex % 20) - 1;
-
-                            if (rowIndex < 0) {
+                            var currentIndex = Math.ceil((tracks.length - xIndex) / 20);
+                            var rowIndex = (tracks.length - xIndex) % 20;
+                            if (rowIndex == 0) {
                                 rowIndex = 19;
-                                currentIndex -= 1;
+                            } else {
+                                rowIndex = rowIndex - 1;
                             }
-
                             me.onChange(currentIndex);
                             me.currentIndex = currentIndex;
 
                             setTimeout(function() {
-
                                 me.$refs.table.$refs.tbody.clickCurrentRow(rowIndex);
                                 var rowHeight = $('tr.ivu-table-row')[0].getBoundingClientRect().height
                                 $('div.ivu-table-body').animate({
