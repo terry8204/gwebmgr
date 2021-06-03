@@ -1,5 +1,5 @@
 <div id="messageRecords">
-    <div style="margin:10px;height: 35px;">
+    <div style="margin:10px 10px 0 10px;height: 35px;">
         <div style="float: left;">
             <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
         </div>
@@ -47,11 +47,20 @@
             <i-button @click="exportData" icon="ios-search" type="primary">{{$t("reportForm.exportData")}}</i-button>
         </div>
     </div>
-    <div style="height: 200px;">
-        <div id="msg_charts" style="width:900px;height:200px;margin: 0 auto;"></div>
-    </div>
-    <div style="margin:10px;">
-        <i-table ref="table" :columns="columns" size="small" :height="tableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick"></i-table>
+    <Tabs :animated="true">
+        <tab-pane label="时间进度" style="width:100%;">
+            <div style="height: 200px;width:100%;">
+                <div id="time_charts" style="height: 200px;width:100%;"></div>
+            </div>
+        </tab-pane>
+        <tab-pane label="上报比例">
+            <div style="height: 200px;">
+                <div id="msg_charts" style="width:900px;height:200px;margin: 0 auto;"></div>
+            </div>
+        </tab-pane>
+    </Tabs>
+    <div style="margin:0px 10px 10px 10px;">
+        <i-table ref="table" :columns="columns" size="small" :height="tableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick" highlight-row></i-table>
     </div>
     <div style="padding-left:10px;">
         <Page :total="total" show-total @on-change="onChange" :page-size="20" :current="currentIndex" />

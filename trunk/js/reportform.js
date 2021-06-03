@@ -3125,12 +3125,12 @@ function messageRecords(groupslist) {
                         orient: 'vertical',
                         left: 'right',
                     },
-                    // grid: {
-                    //     top: 5,
-                    //     left: 20,
-                    //     right: 5,
-                    //     bottom: 5,
-                    // },
+                    grid: {
+                        top: 5,
+                        left: 20,
+                        right: 5,
+                        bottom: 5,
+                    },
                     series: [{
                         type: 'pie',
                         radius: '70%',
@@ -3196,7 +3196,7 @@ function messageRecords(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.tableHeight = wHeight - 380;
+                this.tableHeight = wHeight - 380 - 30;
             },
             nextDay: function() {
                 this.startDate = new Date(this.startDate.getTime() + this.dayTime);
@@ -3227,9 +3227,14 @@ function messageRecords(groupslist) {
             },
             onClickQuery: function() {
                 var me = this;
+
                 this.requestTracks(function(resp) {
                     if (resp.status == 0 && resp.records) {
                         var seriesObj = {};
+                        var recvtime = [];
+                        var speeds = [];
+                        var mileages = [];
+                        var status = [];
                         resp.records.forEach(function(record) {
                             var type = null;
                             var copyType = null;
@@ -3253,6 +3258,7 @@ function messageRecords(groupslist) {
                             record.reportmodeStr = reportmodeStr = getReportModeStr(record.reportmode);
                             record.updatetimeStr = '\t' + DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                             record.arrivedtimeStr = '\t' + DateFormat.longToDateTimeStr(record.arrivedtime, timeDifference);
+
                             if (seriesObj[copyType] == undefined) {
                                 seriesObj[copyType] = {
                                     name: copyType,
@@ -3265,12 +3271,18 @@ function messageRecords(groupslist) {
                         resp.records.sort(function(a, b) {
                             return b.updatetime - a.updatetime;
                         });
-
+                        resp.records.forEach(function(item) {
+                            recvtime.push(item.updatetimeStr);
+                            speeds.push(Number((item.speed / 1000).toFixed(2)));
+                            mileages.push(Number((item.totaldistance / 1000).toFixed(2)));
+                            status.push(isZh ? item.strstatus : item.strstatusen);
+                        });
                         me.seriesData = Object.values(seriesObj);
                         me.seriesData.sort(function(a, b) {
                             return b.value - a.value;
                         });
                         me.charts(isZh ? "上报比例" : 'Proportion');
+                        me.timeCharts(recvtime, speeds, mileages, status);
                         me.data = Object.freeze(resp.records);
                         me.total = me.data.length;
                         me.tableData = me.data.slice(0, 20);
@@ -3281,6 +3293,136 @@ function messageRecords(groupslist) {
                         me.tableData = [];
                     }
                 })
+            },
+            timeCharts: function(recvtime, speeds, mileages, status) {
+                var speed = vRoot.$t('reportForm.speed');
+                var dis = vRoot.$t('reportForm.mileage');
+                var time = vRoot.$t('reportForm.time');
+                var weight = vRoot.$t('reportForm.weight');
+                var status = vRoot.$t('reportForm.status');
+                var option = {
+                    title: {
+                        text: time,
+                        x: 'center',
+                        textStyle: {
+                            fontSize: 12,
+                            fontWeight: 'bolder',
+                            color: '#333'
+                        }
+                    },
+                    grid: {
+                        x: 50,
+                        y: 40,
+                        x2: 50,
+                        y2: 40,
+                        bottom: 25
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: function(v) {
+                            var data = time + ' : ' + v[0].name + '<br/>';
+                            for (i in v) {
+                                if (v[i].seriesName && v[i].seriesName != time) {
+                                    if (v[i].seriesName == weight) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Kg<br/>';
+                                    } else if (v[i].seriesName == dis) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km<br/>';
+                                    } else if (v[i].seriesName == speed) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                    } else {
+                                        data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                    }
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                    legend: {
+                        data: [speed, dis],
+                        x: 'left'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: {
+                                show: true
+                            }
+                        },
+                        itemSize: 14
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLine: {
+                            onZero: false
+                        },
+                        data: recvtime
+                    }],
+                    yAxis: [{
+                        name: speed,
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 5,
+
+                    }, {
+                        name: dis,
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 2,
+                        min: this.disMin,
+                        axisLabel: {
+                            formatter: '{value} km',
+                        },
+                        axisTick: {
+                            show: false
+                        }
+                    }],
+                    series: [{
+                            name: time,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#F0805A',
+                            smooth: true,
+                            data: recvtime
+                        }, {
+                            name: speed,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 0,
+                            smooth: true,
+                            color: '#4876FF',
+                            data: speeds
+                        }, {
+                            name: dis,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#3CB371',
+                            smooth: true,
+                            data: mileages
+                        },
+                        {
+                            smooth: true,
+                            name: status,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000',
+                            data: status
+                        },
+                        {
+                            smooth: true,
+                            name: vRoot.$t('reportForm.loadstatus'),
+                            type: 'line',
+                            symbol: 'none',
+                            data: []
+                        },
+                    ]
+                };
+
+                this.timeChartsIns.setOption(option);
             }
         },
         watch: {
@@ -3296,8 +3438,39 @@ function messageRecords(groupslist) {
             this.calcTableHeight();
             this.dayTime = 60 * 60 * 24 * 1000;
             this.seriesData = [];
-            this.chartsIns = echarts.init(document.getElementById('msg_charts'));
-            this.charts(isZh ? "上报比例" : 'Proportion');
+            setTimeout(function() {
+                me.timeChartsIns = echarts.init(document.getElementById('time_charts'));
+                me.chartsIns = echarts.init(document.getElementById('msg_charts'));
+                me.charts(isZh ? "上报比例" : 'Proportion');
+                me.timeCharts([], [], [], []);
+
+                me.timeChartsIns.getZr().on('click', function(params) {
+                    var pointInPixel = [params.offsetX, params.offsetY];
+                    if (me.timeChartsIns.containPixel('grid', pointInPixel)) {
+                        var tracks = me.data;
+                        if (tracks.length) {
+                            var xIndex = me.timeChartsIns.convertFromPixel({
+                                seriesIndex: 0
+                            }, [params.offsetX, params.offsetY])[0];
+
+                            var currentIndex = Math.floor(xIndex / 20) + 1;
+                            var rowIndex = xIndex % 20;
+
+                            me.onChange(currentIndex);
+                            me.currentIndex = currentIndex;
+
+                            setTimeout(function() {
+
+                                me.$refs.table.$refs.tbody.clickCurrentRow(rowIndex);
+                                var rowHeight = $('tr.ivu-table-row')[0].getBoundingClientRect().height
+                                $('div.ivu-table-body').animate({
+                                    scrollTop: (rowIndex * rowHeight) + 'px'
+                                }, 300);
+                            }, 500)
+                        }
+                    }
+                });
+            }, 300);
             window.onresize = function() {
                 me.calcTableHeight();
             };

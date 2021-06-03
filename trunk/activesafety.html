@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>主动安全</title>
+    <title></title>
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="dist/styles/iview.css">
     <link rel="stylesheet" href="css/common.css">
@@ -173,7 +173,7 @@
                     <date-picker type="date" v-model="date" slot="extra" size="small" style="margin-top:5px;margin-right:8px;"></date-picker>
                     <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:5px;" @click="nextDay">{{$t('reportForm.afterDay')}}</i-button>
                     <i-button size="small" slot="extra" type="primary" style="margin-top:1px;margin-right:5px;" @click="queryActiveSafety">{{$t('reportForm.query')}}</i-button>
-                    <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="prevArticle">{{$t('activeSafety.previous')}}</i-button>  
+                    <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="prevArticle">{{$t('activeSafety.previous')}}</i-button>
                     <i-button size="small" v-if="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">{{detailIndex+1}}/{{detailTableData.length}}</i-button>
                     <i-button size="small" v-else="detailTableData.length" slot="extra" style="margin-top:1px;margin-right:5px;width:100px;">0/0</i-button>
                     <i-button size="small" slot="extra" type="success" style="margin-top:1px;margin-right:5px;" @click="nextArticle">{{$t('activeSafety.next')}}</i-button>
@@ -207,7 +207,9 @@
         var isZh = utils.locale === 'zh';
         var isLoadingMap = false;
         iview.lang(isZh ? 'zh-CN' : 'en-US');
-        var lang = new Vue({i18n: utils.getI18n()});
+        var lang = new Vue({
+            i18n: utils.getI18n()
+        });
         document.title = lang.$t('monitor.activeSafety');
         var vRoot = new Vue({
             el: '#dsm-wraper',
@@ -232,25 +234,25 @@
                         if (vRoot.tabsKey == 'forwardAlarm') {
                             switch (params.row.alarmevent) {
                                 case 1:
-                                    alarmevent = lang.$t('activeSafety.forwardCollision'); 
+                                    alarmevent = lang.$t('activeSafety.forwardCollision');
                                     break;
                                 case 2:
-                                    alarmevent = lang.$t('activeSafety.laneDeparture'); 
+                                    alarmevent = lang.$t('activeSafety.laneDeparture');
                                     break;
                                 case 3:
-                                    alarmevent = lang.$t('activeSafety.tooClose');  
+                                    alarmevent = lang.$t('activeSafety.tooClose');
                                     break;
                                 case 4:
-                                    alarmevent = lang.$t('activeSafety.pedestrianCollision');  
+                                    alarmevent = lang.$t('activeSafety.pedestrianCollision');
                                     break;
                                 case 5:
                                     alarmevent = lang.$t('activeSafety.frequentLaneChange');
                                     break;
                                 case 6:
-                                    alarmevent = lang.$t('activeSafety.logoOverrun'); 
+                                    alarmevent = lang.$t('activeSafety.logoOverrun');
                                     break;
                                 case 7:
-                                    alarmevent = lang.$t('activeSafety.obstacleAlarm'); 
+                                    alarmevent = lang.$t('activeSafety.obstacleAlarm');
                                     break;
                                 case 8:
                                 case 9:
@@ -260,13 +262,13 @@
                                 case 0xD:
                                 case 0xE:
                                 case 0xF:
-                                    alarmevent = lang.$t('activeSafety.userDefined'); 
+                                    alarmevent = lang.$t('activeSafety.userDefined');
                                     break;
                                 case 0x10:
-                                    alarmevent = lang.$t('activeSafety.signRecognition'); 
+                                    alarmevent = lang.$t('activeSafety.signRecognition');
                                     break;
                                 case 0x11:
-                                    alarmevent = lang.$t('activeSafety.activeCapture'); 
+                                    alarmevent = lang.$t('activeSafety.activeCapture');
                                     break;
                                 case 0x12:
                                 case 0x13:
@@ -282,32 +284,32 @@
                                 case 0x1D:
                                 case 0x1E:
                                 case 0x1F:
-                                    alarmevent = lang.$t('activeSafety.userDefined');  
-                                    break;
-                                default :
                                     alarmevent = lang.$t('activeSafety.userDefined');
-                                 break;
+                                    break;
+                                default:
+                                    alarmevent = lang.$t('activeSafety.userDefined');
+                                    break;
                             }
                         } else {
                             switch (params.row.alarmevent) {
                                 case 1:
-                                    alarmevent = lang.$t('activeSafety.fatigueDriving');  
+                                    alarmevent = lang.$t('activeSafety.fatigueDriving');
                                     break;
                                 case 2:
-                                    alarmevent = lang.$t('activeSafety.answerPhone'); 
+                                    alarmevent = lang.$t('activeSafety.answerPhone');
                                     break;
                                 case 3:
-                                    alarmevent = lang.$t('activeSafety.smokingAlarm'); 
+                                    alarmevent = lang.$t('activeSafety.smokingAlarm');
                                     break;
                                 case 4:
-                                    alarmevent = lang.$t('activeSafety.distractedDriving');  
+                                    alarmevent = lang.$t('activeSafety.distractedDriving');
                                     break;
                                 case 5:
-                                    alarmevent = lang.$t('activeSafety.abnormalDriver'); 
+                                    alarmevent = lang.$t('activeSafety.abnormalDriver');
                                     break;
                                 case 0x06:
-                                	alarmevent = lang.$t('activeSafety.safetyBeltAlarm');
-                                	break;
+                                    alarmevent = lang.$t('activeSafety.safetyBeltAlarm');
+                                    break;
                                 case 0x07:
                                 case 0x08:
                                 case 0x09:
@@ -317,7 +319,7 @@
                                 case 0x0D:
                                 case 0x0E:
                                 case 0x0F:
-                                    alarmevent = lang.$t('activeSafety.userDefined'); 
+                                    alarmevent = lang.$t('activeSafety.userDefined');
                                     break;
                                 case 0x10:
                                     alarmevent = lang.$t('activeSafety.autoCapture');
@@ -328,9 +330,9 @@
                                 case 0x12:
                                     alarmevent = lang.$t('activeSafety.customEvents');
                                     break;
-                                default :
+                                default:
                                     alarmevent = lang.$t('activeSafety.customEvents');
-                                 break;
+                                    break;
                             }
                         }
 
@@ -363,7 +365,7 @@
                                 alarmevent = lang.$t('activeSafety.forwardCollision');
                                 break;
                             case 2:
-                                alarmevent =   lang.$t('activeSafety.laneDeparture');
+                                alarmevent = lang.$t('activeSafety.laneDeparture');
                                 break;
                             case 3:
                                 alarmevent = lang.$t('activeSafety.tooClose');
@@ -375,10 +377,10 @@
                                 alarmevent = lang.$t('activeSafety.frequentLaneChange');
                                 break;
                             case 6:
-                                alarmevent =  lang.$t('activeSafety.logoOverrun');
+                                alarmevent = lang.$t('activeSafety.logoOverrun');
                                 break;
                             case 7:
-                                alarmevent = lang.$t('activeSafety.obstacleAlarm'); 
+                                alarmevent = lang.$t('activeSafety.obstacleAlarm');
                                 break;
                             case 8:
                             case 9:
@@ -388,7 +390,7 @@
                             case 0xD:
                             case 0xE:
                             case 0xF:
-                                alarmevent = lang.$t('activeSafety.userDefined'); 
+                                alarmevent = lang.$t('activeSafety.userDefined');
                                 break;
                             case 0x10:
                                 alarmevent = lang.$t('activeSafety.signRecognition');
@@ -412,7 +414,7 @@
                             case 0x1F:
                                 alarmevent = lang.$t('activeSafety.userDefined');
                                 break;
-                            default :
+                            default:
                                 alarmevent = lang.$t('activeSafety.userDefined');
                                 break;
                         }
@@ -463,7 +465,7 @@
                         var callat = params.row.startlat.toFixed(5);
                         var callon = params.row.startlon.toFixed(5);
                         var address = LocalCacheMgr.getAddress(callon, callat);
-                        
+
                         if (address) {
                             return h('span', {}, address);
                         } else {
@@ -476,7 +478,7 @@
                                     click: function(e) {
                                         e.preventDefault();
                                         vRoot.queryAddress(callon, callat, function(address) {
-                                            console.log('address',address);
+                                            console.log('address', address);
                                             if (vRoot.tabsKey === 'abnormalDriving') {
                                                 vRoot.abnormalDrivingList[params.index].address = address;
                                             } else {
@@ -496,7 +498,7 @@
                         var callat = params.row.endlat.toFixed(5);
                         var callon = params.row.endlon.toFixed(5);
                         var address = LocalCacheMgr.getAddress(callon, callat);
-                        
+
                         if (address) {
                             return h('span', {}, address);
                         } else {
@@ -528,7 +530,7 @@
                     width: 60,
                     align: 'center'
                 }, {
-                    title: lang.$t('activeSafety.alarmEvent') ,
+                    title: lang.$t('activeSafety.alarmEvent'),
                     key: 'alarmevent',
                     width: 150,
                     render: function(h, params) {
@@ -550,8 +552,8 @@
                                 alarmevent = lang.$t('activeSafety.abnormalDriver');
                                 break;
                             case 0x06:
-                            	alarmevent = lang.$t('activeSafety.safetyBeltAlarm');
-                            	break;
+                                alarmevent = lang.$t('activeSafety.safetyBeltAlarm');
+                                break;
                             case 0x07:
                             case 0x08:
                             case 0x09:
@@ -567,19 +569,19 @@
                                 alarmevent = lang.$t('activeSafety.autoCapture');
                                 break;
                             case 0x11:
-                                alarmevent =  lang.$t('activeSafety.driverChange');
+                                alarmevent = lang.$t('activeSafety.driverChange');
                                 break;
                             case 0x12:
-                                alarmevent =  lang.$t('activeSafety.customEvents');
+                                alarmevent = lang.$t('activeSafety.customEvents');
                                 break;
-                            default :
-                                    alarmevent = lang.$t('activeSafety.userDefined');
-                                 break;
+                            default:
+                                alarmevent = lang.$t('activeSafety.userDefined');
+                                break;
                         }
                         return h('span', {}, alarmevent);
                     }
                 }, {
-                    title:  lang.$t('activeSafety.alarmLevel'),
+                    title: lang.$t('activeSafety.alarmLevel'),
                     key: 'alarmlevel',
                     width: 120,
                 }, {
@@ -601,7 +603,7 @@
                         return h('span', {}, DateFormat.longToDateTimeStr(params.row.endalarmtime, timeDifference));
                     }
                 }, {
-                    title:  lang.$t('activeSafety.firstAlarmSpeed'),
+                    title: lang.$t('activeSafety.firstAlarmSpeed'),
                     key: 'startspeed',
                     width: 150,
                     render: function(h, params) {
@@ -646,7 +648,7 @@
                                         })
                                     }
                                 }
-                            }, lang.$t('reportForm.getAddress'));  
+                            }, lang.$t('reportForm.getAddress'));
                         }
                     }
                 }, {
@@ -962,12 +964,12 @@
                 queryAddress: function(callon, callat, callback) {
                     var that = this;
                     utils.getJiuHuAddressSyn(callon, callat, function(resp) {
-                        if(resp.status > 9900){
+                        if (resp.status > 9900) {
                             console.log('getJiuHuAddressSyn token失效,请重新登录')
-                        }else if(resp.status == 0){
+                        } else if (resp.status == 0) {
                             var j_address = resp.address;
                             callback(j_address);
-                        }else{
+                        } else {
                             console.log('getJiuHuAddressSyn 查询地址失败')
                         }
                     });
@@ -1123,7 +1125,7 @@
                         me.tableHeight = me.getTableHeight();
                     };
                 },
-                showRightDetail:function(newVal){
+                showRightDetail: function(newVal) {
                     var that = this;
                     this.detailIndex = 0;
                     that.detailTableData = [];
