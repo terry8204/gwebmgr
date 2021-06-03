@@ -48,19 +48,19 @@
         </div>
     </div>
     <Tabs :animated="true">
-        <tab-pane label="时间进度" style="width:100%;">
+        <tab-pane label="时间曲线" style="width:100%;">
             <div style="height: 200px;width:100%;">
                 <div id="time_charts" style="height: 200px;width:100%;"></div>
             </div>
         </tab-pane>
-        <tab-pane label="上报比例">
+        <tab-pane label="上报统计">
             <div style="height: 200px;">
                 <div id="msg_charts" style="width:900px;height:200px;margin: 0 auto;"></div>
             </div>
         </tab-pane>
     </Tabs>
     <div style="margin:0px 10px 10px 10px;">
-        <i-table ref="table" :columns="columns" size="small" :height="tableHeight" :data="tableData" :loading="loading" @on-row-click="onRowClick" highlight-row></i-table>
+        <i-table ref="table" :columns="columns" size="small" :height="tableHeight" :data="tableData" :loading="loading" @on-row-dblclick="onRowClick" highlight-row></i-table>
     </div>
     <div style="padding-left:10px;">
         <Page :total="total" show-total @on-change="onChange" :page-size="20" :current="currentIndex" />

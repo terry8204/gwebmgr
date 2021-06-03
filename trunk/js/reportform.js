@@ -3114,10 +3114,6 @@ function messageRecords(groupslist) {
             },
             charts: function(title) {
                 var option = {
-                    title: {
-                        text: title,
-                        bottom: 'auto'
-                    },
                     tooltip: {
                         trigger: 'item'
                     },
@@ -3235,7 +3231,9 @@ function messageRecords(groupslist) {
                         var speeds = [];
                         var mileages = [];
                         var status = [];
-                        resp.records.forEach(function(record) {
+                        var reissues = [];
+                        var records = resp.records;
+                        records.forEach(function(record) {
                             var type = null;
                             var copyType = null;
                             var status = record.status;
@@ -3254,6 +3252,8 @@ function messageRecords(groupslist) {
                                 type = paddedZeroMessageType + '(' + record.messagetype + ')';
                                 copyType = paddedZeroMessageType + '(' + record.typedescr + ')';
                             }
+
+
                             record.messagetype = type;
                             record.reportmodeStr = reportmodeStr = getReportModeStr(record.reportmode);
                             record.updatetimeStr = '\t' + DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
@@ -3268,22 +3268,29 @@ function messageRecords(groupslist) {
                                 seriesObj[copyType].value++;
                             }
                         });
-                        resp.records.sort(function(a, b) {
+                        records.sort(function(a, b) {
                             return b.updatetime - a.updatetime;
                         });
-                        resp.records.forEach(function(item) {
-                            recvtime.push(item.updatetimeStr);
-                            speeds.push(Number((item.speed / 1000).toFixed(2)));
-                            mileages.push(Number((item.totaldistance / 1000).toFixed(2)));
-                            status.push(isZh ? item.strstatus : item.strstatusen);
+                        var minMileage = 0;
+                        if (records.length > 0) {
+                            minMileage = records[records.length - 1].totaldistance;
+                        }
+                        records.forEach(function(item) {
+                            recvtime.unshift(item.updatetimeStr);
+                            speeds.unshift(Number((item.speed / 1000).toFixed(2)));
+                            mileages.unshift(Number(((item.totaldistance - minMileage) / 1000).toFixed(2)));
+                            status.unshift(isZh ? item.strstatus : item.strstatusen);
+                            reissues.unshift(item.reissue == 0 ? '否' : '是');
                         });
+
+
                         me.seriesData = Object.values(seriesObj);
                         me.seriesData.sort(function(a, b) {
                             return b.value - a.value;
                         });
-                        me.charts(isZh ? "上报比例" : 'Proportion');
-                        me.timeCharts(recvtime, speeds, mileages, status);
-                        me.data = Object.freeze(resp.records);
+                        me.charts();
+                        me.timeCharts(recvtime, speeds, mileages, status, reissues);
+                        me.data = Object.freeze(records);
                         me.total = me.data.length;
                         me.tableData = me.data.slice(0, 20);
                         me.currentIndex = 1;
@@ -3294,12 +3301,13 @@ function messageRecords(groupslist) {
                     }
                 })
             },
-            timeCharts: function(recvtime, speeds, mileages, status) {
+            timeCharts: function(recvtime, speeds, mileages, status, reissues) {
                 var speed = vRoot.$t('reportForm.speed');
                 var dis = vRoot.$t('reportForm.mileage');
                 var time = vRoot.$t('reportForm.time');
                 var weight = vRoot.$t('reportForm.weight');
-                var status = vRoot.$t('reportForm.status');
+                var statusStr = vRoot.$t('reportForm.status');
+                var reissue = vRoot.$t("reportForm.reissue");
                 var option = {
                     title: {
                         text: time,
@@ -3406,7 +3414,7 @@ function messageRecords(groupslist) {
                         },
                         {
                             smooth: true,
-                            name: status,
+                            name: statusStr,
                             type: 'line',
                             symbol: 'none',
                             color: '#000',
@@ -3414,11 +3422,12 @@ function messageRecords(groupslist) {
                         },
                         {
                             smooth: true,
-                            name: vRoot.$t('reportForm.loadstatus'),
+                            name: reissue,
                             type: 'line',
                             symbol: 'none',
-                            data: []
-                        },
+                            color: '#000',
+                            data: reissues
+                        }
                     ]
                 };
 
@@ -3442,7 +3451,7 @@ function messageRecords(groupslist) {
                 me.timeChartsIns = echarts.init(document.getElementById('time_charts'));
                 me.chartsIns = echarts.init(document.getElementById('msg_charts'));
                 me.charts(isZh ? "上报比例" : 'Proportion');
-                me.timeCharts([], [], [], []);
+                me.timeCharts([], [], [], [], []);
 
                 me.timeChartsIns.getZr().on('click', function(params) {
                     var pointInPixel = [params.offsetX, params.offsetY];
@@ -3453,8 +3462,16 @@ function messageRecords(groupslist) {
                                 seriesIndex: 0
                             }, [params.offsetX, params.offsetY])[0];
 
+                            xIndex = tracks.length - xIndex;
+
                             var currentIndex = Math.floor(xIndex / 20) + 1;
-                            var rowIndex = xIndex % 20;
+
+                            var rowIndex = (xIndex % 20) - 1;
+
+                            if (rowIndex < 0) {
+                                rowIndex = 19;
+                                currentIndex -= 1;
+                            }
 
                             me.onChange(currentIndex);
                             me.currentIndex = currentIndex;
@@ -7425,7 +7442,6 @@ function timeOilConsumption(groupslist) {
                         me.currentIndex = currentIndex;
 
                         setTimeout(function() {
-                            console.log(rowIndex);
                             me.$refs.table.$refs.tbody.clickCurrentRow(rowIndex);
                             var rowHeight = $('tr.ivu-table-row')[0].getBoundingClientRect().height
                             $('div.ivu-table-body').animate({
@@ -8829,7 +8845,7 @@ function oilWorkingHours(groupslist) {
 
                             self.tableData = resp.records;
                             self.chartDataList = chartDataList;
-                            console.log('chartDataList', chartDataList);
+
 
                             setTimeout(function() {
                                 self.initCharts();
