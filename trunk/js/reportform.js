@@ -8948,11 +8948,12 @@ function idleReport(groupslist) {
                 { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename' },
                 { title: vRoot.$t('reportForm.oilChannel'), key: 'oilindex', width: 80 },
-                { title: '怠速前油量(L)', key: 'soil' },
-                { title: '怠速后油量(L)', key: 'eoil' },
-                { title: '消耗油量(L)', key: 'addoil' },
-                { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr' },
-                { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr' },
+                { title: '怠速前油量(L)', key: 'soil', width: 115 },
+                { title: '怠速后油量(L)', key: 'eoil', width: 115 },
+                { title: '消耗油量(L)', key: 'addoil', width: 110 },
+                { title: vRoot.$t('reportForm.startDate'), width: 160, key: 'begintimeStr' },
+                { title: vRoot.$t('reportForm.endDate'), width: 160, key: 'endtimeStr' },
+                { title: '怠速时长', key: 'duration', width: 100, },
                 {
                     title: vRoot.$t('reportForm.saddress'),
                     render: function(h, params) {
@@ -9078,6 +9079,7 @@ function idleReport(groupslist) {
                     record.devicename = vstore.state.deviceInfos[deviceid].devicename;
                     record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
+                    record.duration = utils.timeStamp(record.endtime - record.begintime);
                     record.addoil = oil;
                 });
                 this.tableData = records;
