@@ -8951,9 +8951,9 @@ function idleReport(groupslist) {
                 { title: '怠速前油量(L)', key: 'soil', width: 115 },
                 { title: '怠速后油量(L)', key: 'eoil', width: 115 },
                 { title: '消耗油量(L)', key: 'addoil', width: 110 },
+                { title: '怠速时长', key: 'duration', width: 100, },
                 { title: vRoot.$t('reportForm.startDate'), width: 160, key: 'begintimeStr' },
                 { title: vRoot.$t('reportForm.endDate'), width: 160, key: 'endtimeStr' },
-                { title: '怠速时长', key: 'duration', width: 100, },
                 {
                     title: vRoot.$t('reportForm.saddress'),
                     render: function(h, params) {
@@ -8992,7 +8992,7 @@ function idleReport(groupslist) {
             ],
             tableData: [],
             recvtime: [],
-            interval: '0',
+            interval: '100',
         },
         mixins: [treeMixin],
         methods: {
@@ -9074,7 +9074,7 @@ function idleReport(groupslist) {
                     } else {
                         record.saddress = null;
                     };
-                    var oil = Math.abs(record.eoil - record.soil);
+                    var oil = Math.abs(record.soil - record.eoil);
                     oil = oil.toFixed(2);
                     record.devicename = vstore.state.deviceInfos[deviceid].devicename;
                     record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
@@ -9128,7 +9128,7 @@ function idleReport(groupslist) {
                                     record.eoil = record.eoil / 100;
                                     record.soil = record.soil / 100;
                                     var oil = record.eoil - record.soil;
-                                    totalOil += oil;
+                                    totalOil += Math.abs(oil);
 
 
                                     var lat = record.slat.toFixed(5);
