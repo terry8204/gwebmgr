@@ -8938,6 +8938,7 @@ function idleReport(groupslist) {
                     title: '消耗油量(L)',
                     key: 'totalOil'
                 },
+                { title: '怠速时长', key: 'duration', width: 100 },
                 {
                     title: '怠速次数',
                     key: 'count'
@@ -8951,7 +8952,7 @@ function idleReport(groupslist) {
                 { title: '怠速前油量(L)', key: 'soil', width: 115 },
                 { title: '怠速后油量(L)', key: 'eoil', width: 115 },
                 { title: '消耗油量(L)', key: 'addoil', width: 110 },
-                { title: '怠速时长', key: 'duration', width: 100, },
+                { title: '怠速时长', key: 'duration', width: 100 },
                 { title: vRoot.$t('reportForm.startDate'), width: 160, key: 'begintimeStr' },
                 { title: vRoot.$t('reportForm.endDate'), width: 160, key: 'endtimeStr' },
                 {
@@ -9123,6 +9124,7 @@ function idleReport(groupslist) {
                                 item.groupname = utils.getGroupName(groupslist, item.deviceid);
                                 var totalOil = 0;
                                 var records = item.records;
+                                var duration = 0;
                                 records.forEach(function(record) {
 
                                     record.eoil = record.eoil / 100;
@@ -9130,7 +9132,7 @@ function idleReport(groupslist) {
                                     var oil = record.eoil - record.soil;
                                     totalOil += Math.abs(oil);
 
-
+                                    duration += record.endtime - record.begintime;
                                     var lat = record.slat.toFixed(5);
                                     var lon = record.slon.toFixed(5);
                                     var saddress = LocalCacheMgr.getAddress(lon, lat);
@@ -9147,9 +9149,11 @@ function idleReport(groupslist) {
                                         })
                                     };
                                 });
+
                                 totalOil = totalOil.toFixed(2);
                                 item.totalOil = totalOil;
                                 item.count = records.length;
+                                item.duration = utils.timeStamp(duration);
                             });
 
                             self.allTableData = resp.records;
