@@ -33,6 +33,20 @@
                     <i-option value="4">{{$t("device.oil4")}}</i-option>
                 </i-select>
             </div>
+            <div style="margin-left:10px;float: left;width: 80px;position: relative;">
+                <i-select v-model="interval">
+                    <i-option value="0">0L</i-option>
+                    <i-option value="100">100ml</i-option>
+                    <i-option value="200">200ml</i-option>
+                    <i-option value="300">300ml</i-option>
+                    <i-option value="400">400ml</i-option>
+                    <i-option value="500">500ml</i-option>
+                    <i-option value="600">600ml</i-option>
+                    <i-option value="700">700ml</i-option>
+                    <i-option value="800">800ml</i-option>
+                    <i-option value="900">900ml</i-option>
+                </i-select>
+            </div>
             <div style="float: left;padding-left: 10px;">
                 <span>{{$t("reportForm.selectTime")}}:</span>
                 <date-picker type="daterange" :value="dateVal" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:180px" placement="bottom-start"></date-picker>

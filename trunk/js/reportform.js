@@ -8991,6 +8991,7 @@ function idleReport(groupslist) {
             ],
             tableData: [],
             recvtime: [],
+            interval: '0',
         },
         mixins: [treeMixin],
         methods: {
@@ -9105,7 +9106,8 @@ function idleReport(groupslist) {
                     offset: timeDifference,
                     devices: deviceids,
                     oilstate: 1,
-                    oilindex: Number(self.tank)
+                    oilindex: Number(self.tank),
+                    interval: Number(this.interval)
                 };
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilIdle(), data, function(resp) {
