@@ -8887,6 +8887,225 @@ function oilWorkingHours(groupslist) {
 }
 
 
+function idleReport(groupslist) {
+    vueInstanse = new Vue({
+        el: "#idle-report",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            groupslist: [],
+            columns: [
+                { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename' },
+                { title: vRoot.$t('reportForm.date'), key: 'statisticsday', sortable: true },
+                { title: vRoot.$t('reportForm.mileage') + '(km)', key: 'distance', },
+                { title: vRoot.$t('reportForm.oilConsumption') + '(L)', key: 'oil', },
+                { title: vRoot.$t('reportForm.fuelVolume') + '(L)', key: 'addoil' },
+                { title: vRoot.$t('reportForm.oilLeakage') + '(L)', key: 'leakoil' },
+                { title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)', key: 'oilPercent' },
+            ],
+            tableData: [],
+            recvtime: [],
+            oil: [],
+            distance: [],
+            currentIndex: 1,
+        },
+        mixins: [reportMixin],
+        methods: {
+            exportData: function() {
+                this.$refs.table.exportCsv({
+                    filename: (isZh ? '怠速报表-' : 'Idle Report-') + this.queryDeviceId,
+                    original: false,
+                    columns: this.columns,
+                    data: this.tableData
+                });
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentPageIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            charts: function() {
+                var dis = vRoot.$t('reportForm.mileage');
+                var cotgas = vRoot.$t('reportForm.oilConsumption');
+                var no_data = vRoot.$t('reportForm.empty');
+                var option = {
+                    tooltip: {
+                        show: true,
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: [dis, cotgas],
+                        y: 13,
+                        x: 'center'
+                    },
+
+                    grid: {
+                        x: 100,
+                        y: 40,
+                        x2: 80,
+                        y2: 30
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        //boundaryGap : false,
+                        axisLabel: {
+                            show: true,
+                            interval: 0, // {number}
+                            rotate: 0,
+                            margin: 8,
+                            textStyle: {
+                                fontSize: 12
+                            }
+                        },
+                        data: this.recvtime.length === 0 ? [no_data] : this.recvtime
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        position: 'bottom',
+                        nameLocation: 'end',
+                        boundaryGap: [0, 0.2],
+                        axisLabel: {
+                            formatter: '{value}'
+                        }
+                    }],
+                    series: [{
+                            name: dis,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                                //悬浮式样式
+                            },
+                            data: this.distance
+                        },
+                        {
+                            name: cotgas,
+                            type: 'bar',
+                            itemStyle: {
+                                //默认样式
+                                normal: {
+                                    label: {
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '12',
+                                            fontFamily: '微软雅黑',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }
+                            },
+                            data: this.oil
+                        }
+                    ]
+                };
+                this.chartsIns.setOption(option, true);
+            },
+
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 360;
+            },
+            onClickQuery: function() {
+                if (this.queryDeviceId == "") { return };
+                var self = this;
+                if (this.isSelectAll === null) {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                    return;
+                };
+
+                // startday: this.dateVal[0],
+                // endday: this.dateVal[1],
+                // offset: timeDifference,
+                // devices: deviceids,
+                // oilstate: -1,
+                // oilindex: Number(self.tank)
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                };
+                this.loading = true;
+                utils.sendAjax(myUrls.reportOilIdle(), data, function(resp) {
+                    self.loading = false;
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            console.log(resp.records);
+                            // var records = [],
+                            //     oil = [],
+                            //     distance = [],
+                            //     recvtime = [];
+                            // resp.records.forEach(function(item, index) {
+                            //     records = item.records;
+                            //     records.forEach(function(record) {
+                            //         record.index = index + 1;
+                            //         record.devicename = '\t' + vstore.state.deviceInfos[self.queryDeviceId].devicename;
+                            //         record.distance = record.enddis - record.begindis;
+                            //         record.oil = record.totaloil / 100;
+                            //         record.addoil = record.addoil / 100;
+                            //         record.leakoil = record.leakoil / 100;
+
+                            //         record.distance = (record.distance / 1000).toFixed(2);
+                            //         // if (record.distance != 0) {
+                            //         // record.oilPercent = ((record.oil / (record.distance)) * 100).toFixed(2);
+                            //         record.oilPercent = record.oilper100km;
+                            //         // } else {
+                            //         //     record.oilPercent = 0;
+                            //         // }
+                            //         oil.push(record.oil);
+                            //         distance.push(record.distance);
+                            //         recvtime.push(record.statisticsday);
+                            //     });
+                            // });
+                            // self.oil = oil;
+                            // self.distance = distance;
+                            // self.recvtime = recvtime;
+
+                            // self.records = records;
+                            // self.total = records.length;
+
+                            // self.currentPageIndex = 1;
+                            // self.tableData = records.slice(0, 20);
+                            // self.charts();
+                        } else {
+                            self.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
+                })
+            },
+            onSortChange: function(column) {
+
+            }
+        },
+        mounted: function() {
+            this.groupslist = groupslist;
+            this.myChart = null;
+            this.records = [];
+            this.chartsIns = echarts.init(document.getElementById('charts'));
+            this.charts();
+
+        }
+    });
+}
+
+
 
 function temperature(groupslist) {
     vueInstanse = new Vue({
@@ -10494,6 +10713,7 @@ var reportForm = {
                     children: [
                         { title: me.$t("reportForm.dayOilConsumption"), name: 'dayOil', icon: 'ios-stopwatch-outline' },
                         { title: me.$t("reportForm.oilWorkingHours"), name: 'oilWorkingHours', icon: 'ios-appstore-outline' },
+                        { title: me.$t("reportForm.idleReport"), name: 'idleReport', icon: 'md-speedometer' },
                         { title: me.$t("reportForm.dateOilConsumption"), name: 'timeOilConsumption', icon: 'ios-timer-outline' },
                         { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
@@ -10660,6 +10880,9 @@ var reportForm = {
                         break;
                     case 'oilworkinghours.html':
                         oilWorkingHours(groupslist);
+                        break;
+                    case 'idlereport.html':
+                        idleReport(groupslist);
                         break;
                     case 'temperature.html':
                         temperature(groupslist);

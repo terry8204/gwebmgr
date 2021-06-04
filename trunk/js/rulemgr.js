@@ -45,7 +45,7 @@ var ruleManager = {
     methods: {
         selectditem: function(name) {
             window.onresize = null;
-            var page = null
+            var page = null;
             switch (name) {
                 case 'chaosuRule':
                     page = 'exceedspeed.html'

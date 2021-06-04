@@ -907,6 +907,9 @@ var myUrls = {
     editOilRecord: function() {
         return this.apihosts + 'webapi?action=editoilrecord&token=' + token;
     },
+    reportOilIdle: function() {
+        return this.apihosts + 'webapi?action=reportoilidle&token=' + token;
+    },
 }
 
 
