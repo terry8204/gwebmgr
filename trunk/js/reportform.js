@@ -6850,7 +6850,7 @@ function timeOilConsumption(groupslist) {
             columns: [
                 { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 160 },
-                { title: vRoot.$t('reportForm.date'), key: 'updatetimeStr', sortable: true, width: 160 },
+                { title: vRoot.$t('reportForm.updateTime'), key: 'updatetimeStr', sortable: true, width: 160 },
                 { title: vRoot.$t('reportForm.arrivedtimeStr'), key: 'arrivedtimeStr', sortable: true, width: 160 },
                 { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 100 },
                 { title: vRoot.$t('reportForm.totalOil'), key: 'totalad', width: 100 },
