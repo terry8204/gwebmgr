@@ -887,7 +887,7 @@
                 getMediaTypeWithIndex: function(data, filetype, index) {
                     var playURL = null;
                     var foundCount = 0;
-                    for (var i = 1; i < 5; i++) {
+                    for (var i = 1; i < 6; i++) {
                         var attachfile = data['attachfile' + i];
                         if (attachfile && data['attachstatus' + i] === 1) {
                             if (data['attachfiletype' + i] === filetype) {
@@ -904,60 +904,56 @@
                 getImageAndVideoList: function(data) {
                     var defaultUrl = './images/tv_default.jpg';
                     var imageAndVideoList = [];
-                    var imageUrl1 = data.attachfile1;
-                    var imageUrl2 = data.attachfile2;
-                    var imageUrl3 = data.attachfile3;
-                    var imageUrl4 = data.attachfile4;
+                    // var imageUrl1 = data.attachfile1;
+                    // var imageUrl2 = data.attachfile2;
+                    // var imageUrl3 = data.attachfile3;
+                    // var imageUrl4 = data.attachfile4;
 
 
-                    // var videoUrl = this.getMediaTypeWithIndex(data, 2, 1);
-                    // var imageUrl1 = this.getMediaTypeWithIndex(data, 0, 1);
-                    // var imageUrl2 = this.getMediaTypeWithIndex(data, 0, 2);
-                    // var imageUrl3 = this.getMediaTypeWithIndex(data, 0, 3);
-                    if (imageUrl1 && data.attachstatus1 == 1) {
+                    var videoUrl = this.getMediaTypeWithIndex(data, 2, 1);
+                    var imageUrl1 = this.getMediaTypeWithIndex(data, 0, 1);
+                    var imageUrl2 = this.getMediaTypeWithIndex(data, 0, 2);
+                    var imageUrl3 = this.getMediaTypeWithIndex(data, 0, 3);
+
+                    if (videoUrl) {
                         imageAndVideoList.push({
-                            image: data.attachfiletype1 == 0,
-                            url: this.playRootPath + imageUrl1
+                            image: videoUrl ? false : true,
+                            url: videoUrl
                         })
-                    } else {
+                    }
+
+                    if (imageUrl1) {
+                        imageAndVideoList.push({
+                            image: true,
+                            url: imageUrl1
+                        })
+                    }
+
+                    if (imageUrl2) {
+                        imageAndVideoList.push({
+                            image: true,
+                            url: imageUrl2
+                        })
+                    }
+
+                    if (imageUrl3) {
+                        imageAndVideoList.push({
+                            image: true,
+                            url: imageUrl3
+                        })
+                    }
+
+
+
+
+                    for (var i = 0; i < (4 - imageAndVideoList.length); i++) {
                         imageAndVideoList.push({
                             image: true,
                             url: defaultUrl
                         })
-                    };
-                    if (imageUrl2 && data.attachstatus2 == 1) {
-                        imageAndVideoList.push({
-                            image: data.attachfiletype2 == 0,
-                            url: this.playRootPath + imageUrl2
-                        })
-                    } else {
-                        imageAndVideoList.push({
-                            image: true,
-                            url: defaultUrl
-                        })
-                    };
-                    if (imageUrl3 && data.attachstatus3 == 1) {
-                        imageAndVideoList.push({
-                            image: data.attachfiletype3 == 0,
-                            url: this.playRootPath + imageUrl3
-                        })
-                    } else {
-                        imageAndVideoList.push({
-                            image: true,
-                            url: defaultUrl
-                        })
-                    };
-                    if (imageUrl4 && data.attachstatus4 == 1) {
-                        imageAndVideoList.push({
-                            image: data.attachfiletype4 == 0,
-                            url: this.playRootPath + imageUrl4
-                        })
-                    } else {
-                        imageAndVideoList.push({
-                            image: true,
-                            url: defaultUrl
-                        })
-                    };
+                    }
+
+
 
                     return imageAndVideoList;
                 },

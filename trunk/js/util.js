@@ -1246,10 +1246,11 @@ var utils = {
                     'markerFile': './images/icon_st.png',
                     'markerWidth': 30,
                     'markerHeight': 30,
-                    'markerRotation': -sTrack.course,
+                    'markerRotation': 0,
                     'markerDy': 0,
                     'markerDx': 0,
                 },
+                zIndex: 999
             }
         );
         var eTrack = tracks[tracks.length - 1];
@@ -1259,10 +1260,11 @@ var utils = {
                     'markerFile': './images/icon_en.png',
                     'markerWidth': 30,
                     'markerHeight': 30,
-                    'markerRotation': -eTrack.course,
+                    'markerRotation': 0,
                     'markerDy': 0,
                     'markerDx': 0,
                 },
+                zIndex: 999
             }
         );
 

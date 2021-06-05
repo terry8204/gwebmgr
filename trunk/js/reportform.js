@@ -7875,31 +7875,77 @@ function refuelingReport(groupslist) {
                 { title: vRoot.$t('monitor.remarks'), key: 'marker' },
                 {
                     title: vRoot.$t('alarm.action'),
-                    width: 100,
+                    width: 180,
                     render: function(h, params) {
                         var row = params.row;
-                        return h('Button', {
-                            props: {
-                                type: 'primary',
-                                size: 'small'
-                            },
-                            on: {
-                                click: function() {
-                                    vueInstanse.marker = row.marker;
-                                    vueInstanse.markerModal = true;
-                                    editObjectRow = row;
+                        return h('div', {}, [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.queryTracks(row);
+                                    }
                                 }
-                            }
-                        }, vRoot.$t('reportForm.editMarker'))
+                            }, vRoot.$t('reportForm.viewTrack')),
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.marker = row.marker;
+                                        vueInstanse.markerModal = true;
+                                        editObjectRow = row;
+                                    }
+                                }
+                            }, vRoot.$t('reportForm.editMarker'))
+                        ])
                     }
                 },
             ],
             tableData: [],
             recvtime: [],
             oil: [],
+            trackDetailModal: false,
         },
         mixins: [treeMixin],
         methods: {
+            initMap: function() {
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('refueling-details-map');
+            },
+            queryTracks: function(row) {
+                var url = myUrls.queryTracks(),
+                    me = this,
+                    data = {
+                        deviceid: row.deviceid,
+                        begintime: row.begintimeStr,
+                        endtime: row.endtimeStr,
+                        interval: 5,
+                        timezone: timeDifference
+                    };
+                utils.sendAjax(url, data, function(respData) {
+                    if (respData.status === 0) {
+                        var records = respData.records;
+                        if (records && records.length) {
+                            me.trackDetailModal = true;
+                            utils.markersAndLineLayerToMap(me, records);
+                        } else {
+                            me.$Message.error(vRoot.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        me.$Message.error(vRoot.$t("reportForm.queryFail"));
+                    }
+
+                });
+            },
             editOilRecord: function() {
                 var me = this;
                 var url = myUrls.editOilRecord();
@@ -8157,6 +8203,7 @@ function refuelingReport(groupslist) {
             var me = this;
             this.myChart = null;
             this.records = [];
+            this.initMap();
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts();
             this.queryDevicesTree();
@@ -8269,31 +8316,80 @@ function oilLeakageReport(groupslist) {
                 { title: vRoot.$t('monitor.remarks'), key: 'marker' },
                 {
                     title: vRoot.$t('alarm.action'),
-                    width: 100,
+                    width: 180,
                     render: function(h, params) {
                         var row = params.row;
-                        return h('Button', {
-                            props: {
-                                type: 'primary',
-                                size: 'small'
-                            },
-                            on: {
-                                click: function() {
-                                    vueInstanse.marker = row.marker;
-                                    vueInstanse.markerModal = true;
-                                    editObjectRow = row;
+                        return h('div', {}, [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        console.log(row)
+                                        vueInstanse.queryTracks(row);
+                                    }
                                 }
-                            }
-                        }, vRoot.$t('reportForm.editMarker'))
+                            }, vRoot.$t('reportForm.viewTrack')),
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.marker = row.marker;
+                                        vueInstanse.markerModal = true;
+                                        editObjectRow = row;
+                                    }
+                                }
+                            }, vRoot.$t('reportForm.editMarker')),
+
+                        ])
                     }
                 },
             ],
             tableData: [],
             recvtime: [],
             oil: [],
+            trackDetailModal: false,
         },
         mixins: [treeMixin],
         methods: {
+            initMap: function() {
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('oil-leakage-details-map');
+                console.log('this.mapInstance', this.mapInstance);
+            },
+            queryTracks: function(row) {
+                var url = myUrls.queryTracks(),
+                    me = this,
+                    data = {
+                        deviceid: row.deviceid,
+                        begintime: row.begintimeStr,
+                        endtime: row.endtimeStr,
+                        interval: 5,
+                        timezone: timeDifference
+                    };
+                utils.sendAjax(url, data, function(respData) {
+                    if (respData.status === 0) {
+                        var records = respData.records;
+                        if (records && records.length) {
+                            me.trackDetailModal = true;
+                            utils.markersAndLineLayerToMap(me, records);
+                        } else {
+                            me.$Message.error(vRoot.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        me.$Message.error(vRoot.$t("reportForm.queryFail"));
+                    }
+
+                });
+            },
             editOilRecord: function() {
                 var me = this;
                 var url = myUrls.editOilRecord();
@@ -8551,6 +8647,7 @@ function oilLeakageReport(groupslist) {
             var me = this;
             this.myChart = null;
             this.records = [];
+            this.initMap();
             this.chartsIns = echarts.init(document.getElementById('charts'));
             this.charts();
             this.queryDevicesTree();
@@ -8938,7 +9035,8 @@ function idleReport(groupslist) {
                 },
                 {
                     title: '消耗油量(L)',
-                    key: 'totalOil'
+                    key: 'totalOil',
+                    sortable: true
                 },
                 { title: '怠速时长', key: 'duration', width: 100 },
                 {
@@ -8953,7 +9051,7 @@ function idleReport(groupslist) {
                 { title: vRoot.$t('reportForm.oilChannel'), key: 'oilindex', width: 80 },
                 { title: '怠速前油量(L)', key: 'soil', width: 120 },
                 { title: '怠速后油量(L)', key: 'eoil', width: 120 },
-                { title: '消耗油量(L)', key: 'addoil', width: 120 },
+                { title: '消耗油量(L)', key: 'addoil', width: 120, sortable: true },
                 { title: '怠速时长', key: 'duration', width: 110 },
                 { title: vRoot.$t('reportForm.startDate'), width: 160, key: 'begintimeStr', width: 170, },
                 { title: vRoot.$t('reportForm.endDate'), width: 160, key: 'endtimeStr', width: 170, },
@@ -8993,13 +9091,67 @@ function idleReport(groupslist) {
                         }
                     },
                 },
+                {
+                    title: vRoot.$t('alarm.action'),
+                    width: 100,
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h('div', {}, [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        vueInstanse.queryTracks(row);
+                                    }
+                                }
+                            }, vRoot.$t('reportForm.viewTrack')),
+                        ])
+                    }
+                },
             ],
             tableData: [],
             recvtime: [],
             interval: '100',
+            trackDetailModal: false,
         },
         mixins: [treeMixin],
         methods: {
+            initMap: function() {
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('idle-details-map');
+                console.log('this.mapInstance', this.mapInstance);
+            },
+            queryTracks: function(row) {
+                var url = myUrls.queryTracks(),
+                    me = this,
+                    data = {
+                        deviceid: row.deviceid,
+                        begintime: row.begintimeStr,
+                        endtime: row.endtimeStr,
+                        interval: 5,
+                        timezone: timeDifference
+                    };
+                utils.sendAjax(url, data, function(respData) {
+                    if (respData.status === 0) {
+                        var records = respData.records;
+                        if (records && records.length) {
+                            me.trackDetailModal = true;
+                            utils.markersAndLineLayerToMap(me, records);
+                        } else {
+                            me.$Message.error(vRoot.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        me.$Message.error(vRoot.$t("reportForm.queryFail"));
+                    }
+
+                });
+            },
             editOilRecord: function() {
                 var me = this;
                 var url = myUrls.editOilRecord();
@@ -9080,6 +9232,7 @@ function idleReport(groupslist) {
                     };
                     var oil = Math.abs(record.soil - record.eoil);
                     oil = oil.toFixed(2);
+                    record.deviceid = deviceid;
                     record.devicename = vstore.state.deviceInfos[deviceid].devicename;
                     record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
@@ -9087,6 +9240,93 @@ function idleReport(groupslist) {
                     record.addoil = oil;
                 });
                 this.tableData = records;
+                this.queryOiltime(deviceid);
+            },
+            queryOiltime: function(deviceid) {
+                var me = this;
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [deviceid],
+                };
+                // this.loading = true;
+                utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
+                    // me.loading = false;
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var records = [],
+                                totalads = [],
+                                speeds = [],
+                                distances = [],
+                                recvtime = [],
+                                idleArr = [],
+                                firstDistance = 0;
+                            resp.records.forEach(function(item) {
+                                records = item.records;
+
+                                records.forEach(function(record, index) {
+                                    if (index == 0) {
+                                        firstDistance = record.totaldistance;
+                                    };
+                                    var totalad = record.totalad;
+
+                                    record.totalad = totalad / 100;
+
+                                    record.speed = (record.speed / 1000).toFixed(2);
+                                    record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                                    // record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, timeDifference);
+
+                                    totalads.push(record.totalad);
+                                    speeds.push(record.speed);
+                                    record.totaldistance = ((record.totaldistance - firstDistance) / 1000).toFixed(2);
+                                    distances.push(record.totaldistance);
+                                    recvtime.push(record.updatetimeStr);
+                                    var isIdle = me.isIdleTrack(record);
+                                    if (isIdle) {
+                                        idleArr.push(record.totalad);
+                                    } else {
+                                        idleArr.push('-');
+                                    }
+
+                                });
+                            });
+
+                            // records.sort(function(a, b) {
+                            //     return b.updatetime - a.updatetime;
+                            // })
+
+                            me.recvtime = recvtime;
+                            me.speeds = speeds;
+                            me.distances = distances;
+                            me.totalad = totalads;
+                            me.idleArr = idleArr;
+                            me.charts();
+                        } else {
+                            me.$Message.error(me.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        me.$Message.error(resp.cause);
+                    }
+                }, function() {
+                    me.loading = false;
+                })
+
+            },
+
+            isIdleTrack: function(track) {
+                var isIdle = false;
+                var status = track.status;
+                //0 0：未启用Acc 2:ACC 关；3： ACC 开
+                var acc = (status & 0x03);
+                if (acc == 0x03) {
+                    var speed = track.speed;
+                    if (speed <= 0) {
+                        isIdle = true;
+                    }
+                }
+                return isIdle;
             },
             onClickQuery: function() {
                 var self = this;
@@ -9179,12 +9419,166 @@ function idleReport(groupslist) {
             },
             onSortChange: function(column) {
 
-            }
+            },
+            charts: function() {
+                var totoil = vRoot.$t('reportForm.oil');
+                var speed = vRoot.$t('reportForm.speed');
+                var dis = vRoot.$t('reportForm.mileage');
+                var time = vRoot.$t('reportForm.time');
+                var usoil1 = vRoot.$t('reportForm.oil1');
+                var usoil2 = vRoot.$t('reportForm.oil2');
+                var usoil3 = vRoot.$t('reportForm.oil3');
+                var usoil4 = vRoot.$t('reportForm.oil4');
+
+
+                var option = {
+
+                    grid: {
+                        top: 30,
+                        left: 60,
+                        right: 60,
+                        bottom: 40,
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: function(v) {
+                            var data = time + ' : ' + v[0].name + '<br/>';
+                            for (i in v) {
+                                if (v[i].seriesName && v[i].seriesName != time) {
+                                    if (v[i].seriesName == dis) {
+                                        var currentDistance = v[i].value;
+                                        var totalDistance = (Number(currentDistance) + firstDistance / 1000).toFixed(2);
+                                        data += v[i].seriesName + ' : ' + currentDistance + "(T:" + totalDistance + ")" + 'Km<br/>';
+
+                                    } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
+                                    } else if (v[i].seriesName == speed) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                    } else {
+                                        data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                    }
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                    legend: {
+                        data: [speed, dis, totoil, '怠速'],
+                        selected: this.selectedLegend,
+                        x: 'left',
+                        // width: 600,
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: {
+                                show: true
+                            }
+                        },
+                        itemSize: 14
+                    },
+                    dataZoom: [{
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        backgroundColor: '#EDEDED',
+                        fillerColor: 'rgb(54, 72, 96,0.5)',
+                        //fillerColor:'rgb(244,129,38,0.8)',
+                        bottom: 0
+                    }, {
+                        type: "inside",
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        bottom: 0
+                    }],
+                    xAxis: [{
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLine: {
+                            onZero: false
+                        },
+                        data: this.recvtime
+                    }],
+                    yAxis: [{
+                        name: '', //totoil + '/' + speed
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 5,
+
+                    }, {
+                        name: '', //dis
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 2,
+                        // min: this.disMin,
+                        axisLabel: {
+                            formatter: '{value} km',
+                        },
+                        axisTick: {
+                            show: false
+                        }
+                    }],
+                    series: [{
+                        name: time,
+                        type: 'line',
+                        symbol: 'none',
+                        yAxisIndex: 1,
+                        color: '#F0805A',
+                        smooth: true,
+                        data: this.recvtime
+                    }, {
+                        name: speed,
+                        type: 'line',
+                        symbol: 'none',
+                        yAxisIndex: 0,
+                        smooth: true,
+                        color: '#4876FF',
+                        data: this.speeds
+                    }, {
+                        name: dis,
+                        type: 'line',
+                        symbol: 'none',
+                        yAxisIndex: 1,
+                        color: '#3CB371',
+                        smooth: true,
+                        data: this.distances
+                    }, {
+                        smooth: true,
+                        name: totoil,
+                        type: 'line',
+                        symbol: 'none',
+                        color: 'black',
+                        data: this.totalad,
+                    }, {
+                        smooth: true,
+                        name: '怠速',
+                        type: 'line',
+                        symbol: 'none',
+                        color: 'red',
+                        data: this.idleArr,
+                    }, ]
+                };
+
+                this.chartsIns.setOption(option, true);
+            },
         },
         mounted: function() {
             var me = this;
-            this.myChart = null;
+            this.recvtime = [];
+            this.speeds = [];
+            this.distances = [];
+            this.totalad = [];
+            this.idleArr = [];
+            this.chartsIns = echarts.init(document.getElementById('idle-charts'));
+            this.charts();
             this.records = [];
+            this.initMap();
             this.queryDevicesTree();
         }
     });
@@ -9817,11 +10211,6 @@ function driverWorkDetails() {
                     quoted: true,
                 });
             },
-            initMap: function() {
-                this.markerLayer = null;
-                this.mapInstance = utils.initWindowMap('work-details-map');
-            },
-
             cleanSelected: function(treeDataFilter) {
                 var that = this;
                 for (var i = 0; i < treeDataFilter.length; i++) {
@@ -9834,8 +10223,12 @@ function driverWorkDetails() {
                     }
                 }
             },
+            initMap: function() {
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('work-details-map');
+            },
             queryTracks: function(row) {
-                this.mapInstance.clearOverlays();
+                // this.mapInstance.clearOverlays();
                 var url = myUrls.queryTracks(),
                     me = this,
                     data = {

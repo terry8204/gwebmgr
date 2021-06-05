@@ -61,15 +61,30 @@
             </div>
         </Row>
         <div style="margin:10px;">
-            <Tabs :value="activeTab" @on-click="onClickTab">
+            <Tabs :value="activeTab" @on-click="onClickTab" :animated="false">
                 <Tab-pane :label="$t('reportForm.idleStatistics')" name="tabTotal">
                     <i-table ref="totalTable" size="small" :columns="allColumns" :data="allTableData" :height="lastTableHeight" :loading="loading"></i-table>
                 </Tab-pane>
                 <Tab-pane :label="$t('reportForm.idleDetailed')" name="tabDetail">
-                    <i-table ref="detailTable" size="small" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
+                    <div style="width:100%;height: 180px;position: relative;margin-bottom: 10px;">
+                        <div id="idle-charts" style="height: 180px;width: 100%;"></div>
+                    </div>
+                    <i-table ref="detailTable" size="small" :columns="columns" :height="lastTableHeight-180" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
                 </Tab-pane>
                 <i-button type="primary" size="small" slot="extra" style="margin:7px 5px 0 0;" @click="exportData">{{$t("reportForm.exportData")}}</i-button>
             </Tabs>
         </div>
     </div>
+    <transition name="fade">
+        <div v-show="trackDetailModal" class="posi-map-wraper">
+            <div class="map-modal" @click="trackDetailModal=false"></div>
+            <div class="work-inner-map-wraper">
+                <div class="posi-map-title">
+                    {{$t("monitor.track")}}
+                    <div class="map-close"></div>
+                </div>
+                <div id="idle-details-map" class="work-details-map"></div>
+            </div>
+        </div>
+    </transition>
 </div>
