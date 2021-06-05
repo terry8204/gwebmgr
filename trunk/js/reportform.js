@@ -8955,10 +8955,11 @@ function idleReport(groupslist) {
                 { title: '怠速后油量(L)', key: 'eoil', width: 115 },
                 { title: '消耗油量(L)', key: 'addoil', width: 110 },
                 { title: '怠速时长', key: 'duration', width: 100 },
-                { title: vRoot.$t('reportForm.startDate'), width: 160, key: 'begintimeStr' },
-                { title: vRoot.$t('reportForm.endDate'), width: 160, key: 'endtimeStr' },
+                { title: vRoot.$t('reportForm.startDate'), width: 160, key: 'begintimeStr', width: 170, },
+                { title: vRoot.$t('reportForm.endDate'), width: 160, key: 'endtimeStr', width: 170, },
                 {
                     title: vRoot.$t('reportForm.saddress'),
+                    width: 500,
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.slat ? row.slat.toFixed(5) : null;
