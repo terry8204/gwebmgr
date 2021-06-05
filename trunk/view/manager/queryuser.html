@@ -468,6 +468,9 @@
                         "type": 20
                     }];
 
+                    var newArray = deepClone(vstore.state.userTypeDescrList);
+                    newArray.shift();
+                    newArray.pop();
                     if (userType == 0) {
 
                     } else if (userType == 1) {
