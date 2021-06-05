@@ -8949,17 +8949,17 @@ function idleReport(groupslist) {
             allTableData: [],
             columns: [
                 { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
-                { title: vRoot.$t('alarm.devName'), key: 'devicename' },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 150 },
                 { title: vRoot.$t('reportForm.oilChannel'), key: 'oilindex', width: 80 },
-                { title: '怠速前油量(L)', key: 'soil', width: 115 },
-                { title: '怠速后油量(L)', key: 'eoil', width: 115 },
-                { title: '消耗油量(L)', key: 'addoil', width: 110 },
-                { title: '怠速时长', key: 'duration', width: 100 },
+                { title: '怠速前油量(L)', key: 'soil', width: 120 },
+                { title: '怠速后油量(L)', key: 'eoil', width: 120 },
+                { title: '消耗油量(L)', key: 'addoil', width: 120 },
+                { title: '怠速时长', key: 'duration', width: 110 },
                 { title: vRoot.$t('reportForm.startDate'), width: 160, key: 'begintimeStr', width: 170, },
                 { title: vRoot.$t('reportForm.endDate'), width: 160, key: 'endtimeStr', width: 170, },
                 {
                     title: vRoot.$t('reportForm.saddress'),
-                    width: 500,
+                    width: 540,
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.slat ? row.slat.toFixed(5) : null;
