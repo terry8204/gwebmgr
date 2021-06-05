@@ -6851,6 +6851,7 @@ function timeOilConsumption(groupslist) {
                 { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 160 },
                 { title: vRoot.$t('reportForm.date'), key: 'updatetimeStr', sortable: true, width: 160 },
+                { title: vRoot.$t('reportForm.arrivedtimeStr'), key: 'arrivedtimeStr', sortable: true, width: 160 },
                 { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 100 },
                 { title: vRoot.$t('reportForm.totalOil'), key: 'totalad', width: 100 },
                 { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
@@ -7281,6 +7282,7 @@ function timeOilConsumption(groupslist) {
                                     record.ad3 = ad3 / 100;
                                     record.speed = (record.speed / 1000).toFixed(2);
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                                    record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
                                     totalads.push(record.totalad);
                                     veo.push(record.speed);
