@@ -61,7 +61,7 @@
             </div>
         </Row>
         <div style="margin:10px;">
-            <Tabs :value="activeTab" @on-click="onClickTab" :animated="false">
+            <Tabs :value="activeTab" @on-click="onClickTab" :animated="true">
                 <Tab-pane :label="$t('reportForm.idleStatistics')" name="tabTotal">
                     <i-table ref="totalTable" size="small" :columns="allColumns" :data="allTableData" :height="lastTableHeight" :loading="loading"></i-table>
                 </Tab-pane>
