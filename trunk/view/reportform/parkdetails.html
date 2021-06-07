@@ -47,9 +47,12 @@
         <div style="margin-left:10px;float: left;">
             <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
         </div>
+        <div style="margin-left:10px;float: right;">
+            <i-button @click="exportData" icon="ios-search" type="primary">{{$t("reportForm.exportData")}}</i-button>
+        </div>
     </Row>
     <div style="margin:10px;">
-        <i-table :columns="columns" size="small" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
+        <i-table ref="table" :columns="columns" size="small" :height="lastTableHeight" :data="tableData" :loading="loading"></i-table>
     </div>
     <transition name="fade">
         <div v-show="mapModal" class="posi-map-wraper">

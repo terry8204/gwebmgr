@@ -1311,7 +1311,7 @@ function parkDetails(groupslist) {
             groupslist: [],
             timeoutIns: null,
             columns: [
-                { type: 'index', width: 60, align: 'center' },
+                { title: vRoot.$t("reportForm.index"), key: 'index', width: 60, align: 'center' },
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName', width: 160 },
                 { title: vRoot.$t("reportForm.startDate"), key: 'startDate', width: 180 },
                 { title: vRoot.$t("reportForm.endDate"), key: 'endDate', width: 180 },
@@ -1403,6 +1403,22 @@ function parkDetails(groupslist) {
             interval: '3',
         },
         methods: {
+            exportData: function() {
+                var columns = deepClone(this.columns);
+                var tableData = deepClone(this.tableData);
+                columns.pop();
+                tableData.forEach(function(item) {
+                    item.deviceName = '\t' + item.deviceName;
+                    item.startDate = '\t' + item.startDate;
+                    item.endDate = '\t' + item.endDate;
+                });
+                this.$refs.table.exportCsv({
+                    filename: vRoot.$t('reportForm.parkDetails') + '-' + this.queryDeviceId,
+                    original: false,
+                    columns: columns,
+                    data: tableData
+                });
+            },
             onChange: function(value) {
                 this.dateVal = value;
             },
@@ -1429,7 +1445,7 @@ function parkDetails(groupslist) {
                             if (resp.records && resp.records.length) {
                                 var newRecords = [];
                                 var deviceName = vstore.state.deviceInfos[me.queryDeviceId].devicename;
-                                resp.records.forEach(function(item) {
+                                resp.records.forEach(function(item, index) {
                                     var callon = item.callon.toFixed(5);
                                     var callat = item.callat.toFixed(5);
                                     var parkTime = utils.timeStamp(item.endtime - item.starttime);
@@ -1440,6 +1456,7 @@ function parkDetails(groupslist) {
                                         address = LocalCacheMgr.getAddress(callon, callat);
                                     }
                                     newRecords.push({
+                                        index: index + 1,
                                         deviceName: deviceName,
                                         startDate: DateFormat.longToDateTimeStr(item.starttime, timeDifference),
                                         endDate: DateFormat.longToDateTimeStr(item.endtime, timeDifference),
