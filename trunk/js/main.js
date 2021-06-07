@@ -345,7 +345,7 @@ Vue.component('my-video', {
         },
         switchVideoPlayState: function() {
             if (this.deviceId == '') {
-                this.$Message.error(this.$t('monitor.deviceOffline'));
+                this.$Message.error(this.$t('reportForm.selectDevTip'));
                 return;
             }
             if (this.isPlaying) {
