@@ -9641,6 +9641,9 @@ function idleReport(groupslist) {
             this.records = [];
             this.initMap();
             this.queryDevicesTree();
+            window.onresize = function() {
+                me.chartsIns.resize();
+            }
         }
     });
 
