@@ -9079,12 +9079,14 @@ function idleReport(groupslist) {
                 {
                     title: '消耗油量(L)',
                     key: 'totalOil',
-                    sortable: true
+                    sortable: true,
+                    width: 120,
                 },
                 { title: '怠速时长', key: 'duration', width: 100 },
                 {
                     title: '怠速次数',
-                    key: 'count'
+                    key: 'count',
+                    width: 100,
                 },
             ],
             allTableData: [],
