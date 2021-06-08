@@ -1777,3 +1777,7 @@ div.icon_example>span {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+#idle-report .ivu-tabs {
+    overflow: visible;
+}
