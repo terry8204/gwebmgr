@@ -9170,7 +9170,6 @@ function idleReport(groupslist) {
             initMap: function() {
                 this.markerLayer = null;
                 this.mapInstance = utils.initWindowMap('idle-details-map');
-                console.log('this.mapInstance', this.mapInstance);
             },
             queryTracks: function(row) {
                 var url = myUrls.queryTracks(),
@@ -9312,11 +9311,12 @@ function idleReport(groupslist) {
                                 firstDistance = 0;
                             resp.records.forEach(function(item) {
                                 records = item.records;
-
                                 records.forEach(function(record, index) {
+
                                     if (index == 0) {
                                         firstDistance = record.totaldistance;
                                     };
+
                                     var totalad = record.totalad;
 
                                     record.totalad = totalad / 100;
@@ -9343,7 +9343,7 @@ function idleReport(groupslist) {
                             // records.sort(function(a, b) {
                             //     return b.updatetime - a.updatetime;
                             // })
-
+                            console.log('firstDistance - ', firstDistance);
                             me.recvtime = recvtime;
                             me.speeds = speeds;
                             me.distances = distances;
@@ -9480,6 +9480,7 @@ function idleReport(groupslist) {
                 var usoil3 = vRoot.$t('reportForm.oil3');
                 var usoil4 = vRoot.$t('reportForm.oil4');
                 var status = vRoot.$t('reportForm.status');
+                var idle = isZh ? '怠速' : 'Idle';
 
                 var option = {
 
@@ -9493,19 +9494,25 @@ function idleReport(groupslist) {
                         trigger: 'axis',
                         formatter: function(v) {
                             var data = time + ' : ' + v[0].name + '<br/>';
+
                             for (i in v) {
-                                if (v[i].seriesName && v[i].seriesName != time) {
-                                    if (v[i].seriesName == dis) {
+                                var seriesName = v[i].seriesName;
+                                if (seriesName && seriesName != time) {
+                                    if (seriesName == dis) {
                                         var currentDistance = v[i].value;
                                         var totalDistance = (Number(currentDistance) + firstDistance / 1000).toFixed(2);
-                                        data += v[i].seriesName + ' : ' + currentDistance + "(T:" + totalDistance + ")" + 'Km<br/>';
+                                        data += seriesName + ' : ' + currentDistance + "(T:" + totalDistance + ")" + 'Km<br/>';
 
-                                    } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
-                                        data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
-                                    } else if (v[i].seriesName == speed) {
-                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                    } else if (seriesName == totoil || seriesName == idle || seriesName == usoil1 || seriesName == usoil2 || seriesName == usoil3 || seriesName == usoil4) {
+                                        if (v[i].value != '-') {
+                                            data += seriesName + ' : ' + v[i].value + 'L<br/>';
+                                        } else {
+                                            data += seriesName + ' : ' + v[i].value + '<br/>';
+                                        }
+                                    } else if (seriesName == speed) {
+                                        data += seriesName + ' : ' + v[i].value + 'Km/h<br/>';
                                     } else {
-                                        data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                        data += seriesName + ' : ' + v[i].value + '<br/>';
                                     }
                                 }
                             }
@@ -9513,7 +9520,7 @@ function idleReport(groupslist) {
                         }
                     },
                     legend: {
-                        data: [speed, dis, totoil, '怠速'],
+                        data: [speed, dis, totoil, idle],
                         selected: this.selectedLegend,
                         x: 'left',
                         // width: 600,
@@ -9607,7 +9614,7 @@ function idleReport(groupslist) {
                         data: this.totalad,
                     }, {
                         smooth: true,
-                        name: '怠速',
+                        name: idle,
                         type: 'line',
                         symbol: 'none',
                         color: 'red',
