@@ -7019,7 +7019,7 @@ function timeOilConsumption(groupslist) {
                                 if (v[i].seriesName && v[i].seriesName != time) {
                                     if (v[i].seriesName == dis) {
                                         var currentDistance = v[i].value;
-                                        var totalDistance = (Number(currentDistance) + firstDistance / 1000).toFixed(2);
+                                        var totalDistance = ((Number(currentDistance) + firstDistance) / 1000).toFixed(2);
                                         data += v[i].seriesName + ' : ' + currentDistance + "(T:" + totalDistance + ")" + 'Km<br/>';
 
                                     } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
@@ -9307,8 +9307,8 @@ function idleReport(groupslist) {
                                 distances = [],
                                 recvtime = [],
                                 idleArr = [],
-                                devStates = [],
-                                firstDistance = 0;
+                                devStates = [];
+                            firstDistance = 0;
                             resp.records.forEach(function(item) {
                                 records = item.records;
                                 records.forEach(function(record, index) {
@@ -9340,10 +9340,6 @@ function idleReport(groupslist) {
                                 });
                             });
 
-                            // records.sort(function(a, b) {
-                            //     return b.updatetime - a.updatetime;
-                            // })
-                            console.log('firstDistance - ', firstDistance);
                             me.recvtime = recvtime;
                             me.speeds = speeds;
                             me.distances = distances;
@@ -9500,7 +9496,7 @@ function idleReport(groupslist) {
                                 if (seriesName && seriesName != time) {
                                     if (seriesName == dis) {
                                         var currentDistance = v[i].value;
-                                        var totalDistance = (Number(currentDistance) + firstDistance / 1000).toFixed(2);
+                                        var totalDistance = ((Number(currentDistance) + firstDistance) / 1000).toFixed(2);
                                         data += seriesName + ' : ' + currentDistance + "(T:" + totalDistance + ")" + 'Km<br/>';
 
                                     } else if (seriesName == totoil || seriesName == idle || seriesName == usoil1 || seriesName == usoil2 || seriesName == usoil3 || seriesName == usoil4) {
