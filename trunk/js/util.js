@@ -1057,6 +1057,22 @@ var utils = {
         }
         return content;
     },
+    getAccSwitchStatusStr: function(track) {
+        var result = false;
+        if (track) {
+            var statusLong = track['status'];
+            //byte acc = 0;                   //0 0：未启用Acc 2:ACC 关；3： ACC 开
+            var accByte = statusLong & 0x03;
+            if (accByte == 0x03) {
+                result = true;
+            }
+        }
+        if (isZh) {
+            return result ? "ACC 开" : "ACC关";
+        } else {
+            return result ? "ACC Open" : "ACC Close";
+        }
+    },
     getIsAddExtendBtns: function() {
         var deviceTypes = vRoot.$children[1].deviceTypes;
         var currentDeviceType = vRoot.$children[1].currentDeviceType;

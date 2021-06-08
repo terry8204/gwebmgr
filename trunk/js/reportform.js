@@ -7807,7 +7807,7 @@ function refuelingReport(groupslist) {
                     width: 70,
                 }, {
                     title: vRoot.$t("alarm.action"),
-                    width: 160,
+                    width: 70,
                     render: function(h, params) {
                         return h('span', {
                             on: {
@@ -7836,12 +7836,18 @@ function refuelingReport(groupslist) {
                     key: 'groupname',
                 },
                 {
+                    title: vRoot.$t("reportForm.selectTime"),
+                    key: 'dateStr',
+                },
+                {
                     title: vRoot.$t('reportForm.fuelVolume'),
-                    key: 'totalOil'
+                    key: 'totalOil',
+                    width: 100,
                 },
                 {
                     title: vRoot.$t('reportForm.refuelingTimes'),
-                    key: 'count'
+                    key: 'count',
+                    width: 100,
                 },
             ],
             allTableData: [],
@@ -7989,6 +7995,7 @@ function refuelingReport(groupslist) {
                     allTableData.forEach(function(item) {
                         item.deviceid = '\t' + item.deviceid;
                         item.devicename = '\t' + item.devicename;
+                        item.dateStr = '\t' + item.dateStr;
                     });
                     this.$refs.totalTable.exportCsv({
                         filename: vRoot.$t('reportForm.addOilStatistics'),
@@ -8000,6 +8007,8 @@ function refuelingReport(groupslist) {
                     var columns = deepClone(this.columns);
                     var tableData = deepClone(this.tableData);
                     columns.pop();
+                    columns.pop();
+                    columns.push({ title: vRoot.$t('monitor.remarks'), key: 'marker' })
                     columns.push({
                         title: isZh ? '地址' : 'Address',
                         key: 'saddress',
@@ -8146,6 +8155,7 @@ function refuelingReport(groupslist) {
                     oilstate: 1,
                     oilindex: Number(self.tank)
                 };
+                var dateStr = data.startday + ' - ' + data.endday;
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
                     self.loading = false;
@@ -8155,6 +8165,7 @@ function refuelingReport(groupslist) {
                                 recvtime = [];
                             resp.records.forEach(function(item, index) {
                                 item.index = index + 1;
+                                item.dateStr = dateStr;
                                 item.devicename = vstore.state.deviceInfos[item.deviceid].devicename;
                                 item.groupname = utils.getGroupName(groupslist, item.deviceid);
                                 var totalOil = 0;
@@ -8246,7 +8257,7 @@ function oilLeakageReport(groupslist) {
                     width: 70,
                 }, {
                     title: vRoot.$t("alarm.action"),
-                    width: 160,
+                    width: 70,
                     render: function(h, params) {
                         return h('span', {
                             on: {
@@ -8275,12 +8286,18 @@ function oilLeakageReport(groupslist) {
                     key: 'groupname',
                 },
                 {
+                    title: vRoot.$t("reportForm.selectTime"),
+                    key: 'dateStr',
+                },
+                {
                     title: vRoot.$t('reportForm.oilLeakage'),
-                    key: 'totalOil'
+                    key: 'totalOil',
+                    width: 100
                 },
                 {
                     title: vRoot.$t('reportForm.oilLeakageTimes'),
-                    key: 'count'
+                    key: 'count',
+                    width: 100
                 },
             ],
             allTableData: [],
@@ -8444,6 +8461,8 @@ function oilLeakageReport(groupslist) {
                     var columns = deepClone(this.columns);
                     var tableData = deepClone(this.tableData);
                     columns.pop();
+                    columns.pop();
+                    columns.push({ title: vRoot.$t('monitor.remarks'), key: 'marker' })
                     columns.push({
                         title: isZh ? '地址' : 'Address',
                         key: 'saddress',
@@ -8590,6 +8609,7 @@ function oilLeakageReport(groupslist) {
                     oilstate: -1,
                     oilindex: Number(self.tank)
                 };
+                var dateStr = data.startday + ' - ' + data.endday;
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
                     self.loading = false;
@@ -8599,6 +8619,7 @@ function oilLeakageReport(groupslist) {
                                 recvtime = [];
                             resp.records.forEach(function(item, index) {
                                 item.index = index + 1;
+                                item.dateStr = dateStr;
                                 item.devicename = vstore.state.deviceInfos[item.deviceid].devicename;
                                 item.groupname = utils.getGroupName(groupslist, item.deviceid);
                                 var totalOil = 0;
@@ -9022,7 +9043,7 @@ function idleReport(groupslist) {
                     width: 70,
                 }, {
                     title: vRoot.$t("alarm.action"),
-                    width: 160,
+                    width: 70,
                     render: function(h, params) {
                         return h('span', {
                             on: {
@@ -9049,6 +9070,11 @@ function idleReport(groupslist) {
                 {
                     title: vRoot.$t("monitor.groupName"),
                     key: 'groupname',
+                    width: 100,
+                },
+                {
+                    title: vRoot.$t("reportForm.selectTime"),
+                    key: 'dateStr',
                 },
                 {
                     title: '消耗油量(L)',
@@ -9197,7 +9223,7 @@ function idleReport(groupslist) {
                         item.devicename = '\t' + item.devicename;
                     });
                     this.$refs.totalTable.exportCsv({
-                        filename: vRoot.$t('reportForm.addOilStatistics'),
+                        filename: vRoot.$t('reportForm.idleStatistics'),
                         original: false,
                         columns: allColumns,
                         data: allTableData
@@ -9217,7 +9243,7 @@ function idleReport(groupslist) {
                         item.endtimeStr = '\t' + item.endtimeStr;
                     });
                     this.$refs.detailTable.exportCsv({
-                        filename: vRoot.$t('reportForm.addOilDetailed'),
+                        filename: vRoot.$t('reportForm.idleDetailed'),
                         original: false,
                         columns: columns,
                         data: tableData
@@ -9268,6 +9294,7 @@ function idleReport(groupslist) {
                     offset: timeDifference,
                     devices: [deviceid],
                 };
+
                 // this.loading = true;
                 utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
                     // me.loading = false;
@@ -9279,6 +9306,7 @@ function idleReport(groupslist) {
                                 distances = [],
                                 recvtime = [],
                                 idleArr = [],
+                                devStates = [],
                                 firstDistance = 0;
                             resp.records.forEach(function(item) {
                                 records = item.records;
@@ -9294,7 +9322,7 @@ function idleReport(groupslist) {
                                     record.speed = (record.speed / 1000).toFixed(2);
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     // record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, timeDifference);
-
+                                    devStates.push(utils.getAccSwitchStatusStr(record));
                                     totalads.push(record.totalad);
                                     speeds.push(record.speed);
                                     record.totaldistance = ((record.totaldistance - firstDistance) / 1000).toFixed(2);
@@ -9319,6 +9347,7 @@ function idleReport(groupslist) {
                             me.distances = distances;
                             me.totalad = totalads;
                             me.idleArr = idleArr;
+                            me.devStates = devStates;
                             me.charts();
                         } else {
                             me.$Message.error(me.$t("reportForm.noRecord"));
@@ -9372,6 +9401,7 @@ function idleReport(groupslist) {
                     oilindex: Number(self.tank),
                     interval: Number(this.interval)
                 };
+                var dateStr = data.startday + ' - ' + data.endday;
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilIdle(), data, function(resp) {
                     self.loading = false;
@@ -9380,6 +9410,7 @@ function idleReport(groupslist) {
 
                             resp.records.forEach(function(item, index) {
                                 item.index = index + 1;
+                                item.dateStr = dateStr;
                                 item.devicename = vstore.state.deviceInfos[item.deviceid].devicename;
                                 item.groupname = utils.getGroupName(groupslist, item.deviceid);
                                 var totalOil = 0;
@@ -9446,7 +9477,7 @@ function idleReport(groupslist) {
                 var usoil2 = vRoot.$t('reportForm.oil2');
                 var usoil3 = vRoot.$t('reportForm.oil3');
                 var usoil4 = vRoot.$t('reportForm.oil4');
-
+                var status = vRoot.$t('reportForm.status');
 
                 var option = {
 
@@ -9579,6 +9610,13 @@ function idleReport(groupslist) {
                         symbol: 'none',
                         color: 'red',
                         data: this.idleArr,
+                    }, {
+                        name: status,
+                        type: 'line',
+                        symbol: 'none',
+                        color: '#000',
+                        data: this.devStates,
+                        smooth: true,
                     }, ]
                 };
 
@@ -9592,6 +9630,7 @@ function idleReport(groupslist) {
             this.distances = [];
             this.totalad = [];
             this.idleArr = [];
+            this.devStates = [];
             this.chartsIns = echarts.init(document.getElementById('idle-charts'));
             this.charts();
             this.records = [];
