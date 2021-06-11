@@ -7,14 +7,15 @@ var waringComponent = {
             isMute: false,
             isPopup: false,
             isLargen: 0,
-            index: 4,
+            index: 6,
             waringRowIndex: null,
-            componentName: 'emergencyAlarm',
+            componentName: 'realtimeInfo',
             searchValue: '',
             checkAll: false,
             disposeModal: false,
             settingModal: false,
             checkboxObj: {},
+            realtimeList: [],
             waringRecords: [],
             overdueDevice: [],
             alarmTypeList: [],
@@ -101,6 +102,116 @@ var waringComponent = {
         }
     },
     methods: {
+        onSortChange: function(data) {
+            var key = data.key;
+            var order = data.order;
+            if (key == 'totalDistanceStr') {
+                key = 'totaldistance';
+            } else if (key == 'speedStr') {
+                key = 'speed';
+            }
+            var realtimeList = deepClone(this.realtimeList);
+            realtimeList.sort(function(a, b) {
+                var result = 0;
+                var avalue = a[key];
+                var bvalue = b[key];
+
+                if (order == 'desc') {
+                    if (avalue == "-" && bvalue != "-") {
+                        result = 1;
+                    } else if (avalue != "-" && bvalue == "-") {
+                        result = -1;
+                    } else {
+                        if (avalue < bvalue) {
+                            result = 1;
+                        } else if (avalue > bvalue) {
+                            result = -1;
+                        }
+                    }
+                } else {
+                    if (avalue == "-" && bvalue != "-") {
+                        result = 1;
+                    } else if (avalue != "-" && bvalue == "-") {
+                        result = -1;
+                    } else {
+                        if (avalue > bvalue) {
+                            result = 1;
+                        } else if (avalue < bvalue) {
+                            result = -1;
+                        }
+                    }
+
+                }
+                return result;
+            })
+
+            gRealtimeDeviceIdList = realtimeList.map(function(item) {
+                return item.deviceid;
+            })
+
+            this.realtimeList = realtimeList;
+
+        },
+        refreshRealtimeInfoList: function() {
+            var deviceids = gRealtimeDeviceIdList;
+            var realtimeList = [];
+            var lastPositions = vstore.state.deviceLastPositions;
+            deviceids.forEach(function(deviceid) {
+                var track = lastPositions[deviceid];
+                if (track) {
+                    var onlineStatus = '';
+                    var address = '';
+                    var callon = track.callon.toFixed(5);
+                    var callat = track.callat.toFixed(5);
+                    var localAddress = LocalCacheMgr.getAddress(callon, callat);
+                    if (localAddress) {
+                        address = localAddress;
+                    }
+                    if (utils.getIsOnline(track)) {
+                        onlineStatus = vRoot.$t('monitor.online');
+                    } else {
+                        onlineStatus = vRoot.$t('monitor.offline') + '(' + utils.timeStampNoSecond(Date.now() - track.updatetime) + ')';
+                    }
+
+                    realtimeList.push({
+                        deviceid: deviceid,
+                        deviceName: vstore.state.deviceInfos[deviceid].devicename,
+                        strstatus: isZh ? track.strstatus : track.strstatusen,
+                        fixedLon: callon,
+                        fixedLat: callat,
+                        totalDistanceStr: utils.getMileage(track.totaldistance),
+                        totaldistance: track.totaldistance,
+                        direction: utils.getCarDirection(track.course),
+                        updatetimeStr: DateFormat.longToDateTimeStr(track.updatetime, timeDifference),
+                        validpoistiontimeStr: DateFormat.longToDateTimeStr(track.validpoistiontime, timeDifference),
+                        speedStr: track.speed == 0 ? track.speed : (track.speed / 1000).toFixed(2) + "h/km",
+                        speed: track.speed,
+                        onlineStatus: onlineStatus,
+                        address: address
+                    });
+
+                } else {
+                    realtimeList.push({
+                        deviceid: deviceid,
+                        deviceName: vstore.state.deviceInfos[deviceid].devicename,
+                        strstatus: '-',
+                        fixedLon: '-',
+                        fixedLat: '-',
+                        totalDistanceStr: '-',
+                        direction: '-',
+                        totaldistance: '-',
+                        updatetimeStr: '-',
+                        speedStr: '-',
+                        validpoistiontimeStr: '-',
+                        speed: '-',
+                        address: '-',
+                        onlineStatus: isZh ? '未上报' : 'Empty record',
+                    })
+                }
+
+            });
+            this.realtimeList = realtimeList;
+        },
         checkingSelectState: function() {
             var me = this;
             setTimeout(function() {
@@ -255,6 +366,9 @@ var waringComponent = {
                     break;
                 case 5:
                     this.componentName = 'mediaFiles'
+                    break;
+                case 6:
+                    this.componentName = 'realtimeInfo'
                     break;
             }
         },
@@ -581,6 +695,112 @@ var waringComponent = {
         }
     },
     components: {
+        realtimeInfo: {
+            template: '<Table size="small" :height="tabheight" border :columns="columns" @on-row-click="onRowClick" @on-sort-change="onSortChange" :data="realtimeList"></Table>',
+            props: ['realtimeList', 'tabletype', 'wrapperheight'],
+            data: function() {
+                var me = this;
+                return {
+                    columns: [{
+                            type: 'index',
+                            width: 70,
+                        },
+                        {
+                            title: me.$t("alarm.onlineStatus"),
+                            key: 'onlineStatus',
+                            width: 140,
+
+                        },
+                        {
+                            title: me.$t("alarm.devName"),
+                            key: 'deviceName',
+                            width: 150,
+                            sortable: 'custom',
+                        },
+                        {
+                            title: me.$t("alarm.devNum"),
+                            key: 'deviceid',
+                            width: 150,
+                            sortable: 'custom',
+                        },
+
+                        {
+                            title: me.$t("reportForm.updatetimeStr"),
+                            key: 'updatetimeStr',
+                            width: 160,
+                            sortable: 'custom',
+                        },
+                        {
+                            title: me.$t("reportForm.validpoistiontimeStr"),
+                            key: 'validpoistiontimeStr',
+                            width: 160,
+                            sortable: 'custom',
+                        },
+                        { title: me.$t("reportForm.direction"), key: 'direction', width: 100 },
+                        { title: me.$t("reportForm.speed"), key: 'speedStr', width: 100, sortable: 'custom', },
+                        {
+                            title: me.$t("reportForm.totaldistance"),
+                            key: 'totalDistanceStr',
+                            width: 130,
+                            sortable: 'custom',
+                        },
+                        { title: me.$t("reportForm.lon"), key: 'fixedLon', width: 100 },
+                        { title: me.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
+                        { title: me.$t("reportForm.status"), key: 'strstatus', width: 180 },
+                        {
+                            title: me.$t("reportForm.address"),
+                            width: 300,
+                            render: function(h, param) {
+                                var row = param.row;
+                                var address = row.address;
+                                if (address == '') {
+                                    return h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small',
+                                        },
+                                        on: {
+                                            click: function() {
+                                                // utils.queryAddress(row, function(address) {
+                                                //     row.address = address;
+                                                //     LocalCacheMgr.setAddress(row.fixedLon, row.fixedLat, address);
+                                                // });
+                                                setTimeout(function() {
+                                                    communicate.$emit("realtimeList");
+                                                }, 1000)
+                                            }
+                                        }
+                                    }, vRoot.$t("reportForm.getAddress"))
+                                } else {
+                                    return h("div", {}, address)
+                                }
+                            }
+                        },
+                    ],
+                }
+            },
+            methods: {
+                onSortChange: function(column, key, order) {
+                    this.$emit('on-sort-change', {
+                        key: column.key,
+                        order: column.order,
+                    })
+                },
+                onRowClick: function(row) {
+                    var $monitor = vRoot.$children[1];
+                    var deviceid = row.deviceid;
+                    var marker = $monitor.mapAllMarkers[deviceid];
+                    if (marker) {
+                        $monitor.scrollToCurrentDevice(deviceid, marker);
+                    }
+                }
+            },
+            computed: {
+                tabheight: function() {
+                    return this.wrapperheight - 24;
+                }
+            },
+        },
         waringMsg: {
             template: '<Table size="small" :height="tabheight" border :columns="columns" @on-row-click="onRowClick" :data="waringrecords"></Table>',
             props: ['waringrecords', 'tabletype', 'wrapperheight'],
@@ -646,8 +866,12 @@ var waringComponent = {
             },
             methods: {
                 onRowClick: function(row) {
-                    vRoot.$children[1].selectedDev(row);
-                    communicate.$emit("on-click-marker", row.deviceid);
+                    var $monitor = vRoot.$children[1];
+                    var deviceid = row.deviceid;
+                    var marker = $monitor.mapAllMarkers[deviceid];
+                    if (marker) {
+                        $monitor.scrollToCurrentDevice(deviceid, marker);
+                    }
                 }
             },
             watch: {
@@ -729,8 +953,12 @@ var waringComponent = {
             },
             methods: {
                 onRowClick: function(row) {
-                    vRoot.$children[1].selectedDev(row);
-                    communicate.$emit("on-click-marker", row.deviceid);
+                    var $monitor = vRoot.$children[1];
+                    var deviceid = row.deviceid;
+                    var marker = $monitor.mapAllMarkers[deviceid];
+                    if (marker) {
+                        $monitor.scrollToCurrentDevice(deviceid, marker);
+                    }
                 }
             },
             mounted: function() {
@@ -805,8 +1033,12 @@ var waringComponent = {
             },
             methods: {
                 onRowClick: function(row) {
-                    vRoot.$children[1].selectedDev(row);
-                    communicate.$emit("on-click-marker", row.deviceid);
+                    var $monitor = vRoot.$children[1];
+                    var deviceid = row.deviceid;
+                    var marker = $monitor.mapAllMarkers[deviceid];
+                    if (marker) {
+                        $monitor.scrollToCurrentDevice(deviceid, marker);
+                    }
                 }
             },
         },
@@ -943,9 +1175,12 @@ var waringComponent = {
             },
             methods: {
                 onRowClick: function(row) {
-                    vRoot.$children[1].selectedDev(row);
-                    communicate.$emit("on-click-marker", row.deviceid);
-
+                    var $monitor = vRoot.$children[1];
+                    var deviceid = row.deviceid;
+                    var marker = $monitor.mapAllMarkers[deviceid];
+                    if (marker) {
+                        $monitor.scrollToCurrentDevice(deviceid, marker);
+                    }
                 },
                 clickImage: function(row) {
                     vRoot.$children[1].cameraImgUrl = row.url
@@ -1040,8 +1275,12 @@ var waringComponent = {
             },
             methods: {
                 onRowClick: function(row) {
-                    vRoot.$children[1].selectedDev(row);
-                    communicate.$emit("on-click-marker", row.deviceid);
+                    var $monitor = vRoot.$children[1];
+                    var deviceid = row.deviceid;
+                    var marker = $monitor.mapAllMarkers[deviceid];
+                    if (marker) {
+                        $monitor.scrollToCurrentDevice(deviceid, marker);
+                    }
                 }
             },
         }
@@ -1093,6 +1332,9 @@ var waringComponent = {
         });
         communicate.$on("monitorlist", function(groups) {
             me.overdueinfolist = me.getOverdueInfoList(groups).slice(0, 100);
+        });
+        communicate.$on("realtimeList", function() {
+            me.refreshRealtimeInfoList();
         });
         // timeout定时器
         var timeout = null;

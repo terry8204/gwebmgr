@@ -19,6 +19,7 @@ var isNeedRefreshMapUI = false;
 var timeDifference = DateFormat.getOffset();
 var voiceQueue = []; //语音报警队列
 var alarmTypeList = []; //全部报警类型
+var gRealtimeDeviceIdList = [];
 var isPlayAlarmVoice = false;
 var firstDistance = 0;
 

@@ -1678,7 +1678,6 @@ var monitor = {
         },
 
         handleWebSocket: function(data) {
-
             var me = this;
             var deviceid = data.deviceid;
             data.devicename = this.deviceInfos[deviceid] ? this.deviceInfos[deviceid].devicename : "";
@@ -2458,7 +2457,8 @@ var monitor = {
             }, 300);
         },
         selectedDev: function(deviceInfo) {
-            var device = this.deviceInfos[deviceInfo.deviceid];
+            var deviceid = deviceInfo.deviceid;
+            var device = this.deviceInfos[deviceid];
             var devicetype = device.devicetype;
             if (devicetype != this.currentDeviceType) {
                 this.currentDeviceType = devicetype;
@@ -2466,7 +2466,20 @@ var monitor = {
             this.cancelSelected();
             deviceInfo.isSelected = true;
             this.selectedDevObj = deviceInfo;
-            this.handleClickDev(deviceInfo.deviceid);
+            this.handleClickDev(deviceid);
+            this.updateRealtimeInfoList(deviceid);
+        },
+        updateRealtimeInfoList: function(deviceid) {
+            var index = gRealtimeDeviceIdList.indexOf(deviceid);
+            if (index != -1) {
+                gRealtimeDeviceIdList.splice(1, 1);
+            } else {
+                if (gRealtimeDeviceIdList.length > 200) {
+                    gRealtimeDeviceIdList.pop();
+                }
+            }
+            gRealtimeDeviceIdList.unshift(deviceid);
+            communicate.$emit("realtimeList");
         },
         queryCurrentDevReportMileageDetail: function(deviceid, callback) {
             var track = this.positionLastrecords[deviceid];
@@ -2520,6 +2533,7 @@ var monitor = {
                         me.showMapInfoWindow(sContent, marker.getCoordinates());
                     }
                 });
+
             } else {
                 this.$Message.error(this.$t("monitor.noRecordTrack"))
                 this.$store.commit('currentDeviceId', deviceid);
@@ -2854,6 +2868,7 @@ var monitor = {
         filterGroups: function(groups) {
             var me = this,
                 all = 0;
+            gRealtimeDeviceIdList = [];
             groups.forEach(function(group) {
                 var devCount = 0;
                 if (group.groupname == 'Default') {
@@ -2897,6 +2912,9 @@ var monitor = {
                         device.isVedio = false;
                     }
 
+                    if (gRealtimeDeviceIdList.length < 200) {
+                        gRealtimeDeviceIdList.push(deviceid);
+                    }
                 });
 
                 group.devCount = devCount;
@@ -3241,6 +3259,7 @@ var monitor = {
                     this.updateLastTracks(globalDeviceId);
                     this.updateTreeOnlineState();
                     this.caclOnlineCount();
+                    communicate.$emit("realtimeList");
                 }
             }
         },
@@ -3477,7 +3496,7 @@ var monitor = {
                 }, function(error) {});
                 me.isLoadGroup = false;
                 me.setIntervalReqRecords();
-                if (userName) {
+                if (userName && userName != 'admin') {
                     var initIsPass = initWebSocket(wsHost, userName, me.wsCallback); // 连接webSocket
                     if (!initIsPass) {
                         this.$Message.error("浏览器不支持webSocket");
@@ -3627,12 +3646,13 @@ var monitor = {
             this.map.addLayer(this.clusterLayer);
         },
         onClickMarker: function(e) {
-
-            var me = this;
             var marker = e.target;
             var deviceid = marker.deviceid;
+            this.scrollToCurrentDevice(deviceid, marker);
+        },
+        scrollToCurrentDevice: function(deviceid, marker) {
+            var me = this;
             var point = marker.getCoordinates();
-
             var track = this.getSingleDeviceInfo(deviceid);
             me.currentDeviceType = vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicetype : 1;
             me.map.setCenter(point);

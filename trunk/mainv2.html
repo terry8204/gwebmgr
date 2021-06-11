@@ -2564,6 +2564,7 @@
 
                 <div class="msg_header">
                     <ul>
+                        <li :class="{selected:index == 6}" @click="changeComponent(6)">{{$t("alarm.realtimeInfo")}}</li>
                         <li :class="{selected:index == 4}" @click="changeComponent(4)">{{$t("alarm.emergencyAlarm")}}</li>
                         <li :class="{selected:index == 1}" @click="changeComponent(1)">{{$t("alarm.allAlarms")}}</li>
                         <li :class="{selected:index == 2}" @click="changeComponent(2)">{{$t("alarm.devMsg")}}</li>
@@ -2590,8 +2591,8 @@
                 </div>
                 <div class="msg_content">
                     <keep-alive>
-                        <component :is="componentName" :tabletype="isLargen" :waringrecords="waringRecords" :wrapperheight="wrapperHeight" :deviceinfolist="overdueDevice" :emergencyAlarmList="emergencyAlarmList" :overdueinfolist="overdueinfolist" :mediaFileList="mediaFileLists"
-                            @deletemsg="deleteMsg" @showdisposemodal="showDisposeModalFrame">
+                        <component :is="componentName" :tabletype="isLargen" :realtimeList="realtimeList" :waringrecords="waringRecords" :wrapperheight="wrapperHeight" :deviceinfolist="overdueDevice" :emergencyAlarmList="emergencyAlarmList" :overdueinfolist="overdueinfolist"
+                            :mediaFileList="mediaFileLists" @on-sort-change="onSortChange" @deletemsg="deleteMsg" @showdisposemodal="showDisposeModalFrame">
                         </component>
                     </keep-alive>
                 </div>
