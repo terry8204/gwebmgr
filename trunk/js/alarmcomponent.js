@@ -703,12 +703,12 @@ var waringComponent = {
                 return {
                     columns: [{
                             type: 'index',
-                            width: 70,
+                            width: 65,
                         },
                         {
                             title: me.$t("alarm.onlineStatus"),
                             key: 'onlineStatus',
-                            width: 140,
+                            width: 110,
 
                         },
                         {
@@ -720,36 +720,29 @@ var waringComponent = {
                         {
                             title: me.$t("alarm.devNum"),
                             key: 'deviceid',
-                            width: 150,
+                            width: 130,
                             sortable: 'custom',
                         },
 
                         {
                             title: me.$t("reportForm.updatetimeStr"),
                             key: 'updatetimeStr',
-                            width: 160,
+                            width: 155,
                             sortable: 'custom',
                         },
                         {
                             title: me.$t("reportForm.validpoistiontimeStr"),
                             key: 'validpoistiontimeStr',
-                            width: 160,
+                            width: 155,
                             sortable: 'custom',
                         },
-                        { title: me.$t("reportForm.direction"), key: 'direction', width: 100 },
-                        { title: me.$t("reportForm.speed"), key: 'speedStr', width: 100, sortable: 'custom', },
-                        {
-                            title: me.$t("reportForm.totaldistance"),
-                            key: 'totalDistanceStr',
-                            width: 130,
-                            sortable: 'custom',
-                        },
-                        { title: me.$t("reportForm.lon"), key: 'fixedLon', width: 100 },
-                        { title: me.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
-                        { title: me.$t("reportForm.status"), key: 'strstatus', width: 180 },
+
+
+
+                        { title: me.$t("reportForm.status"), key: 'strstatus', width: 220 },
                         {
                             title: me.$t("reportForm.address"),
-                            width: 300,
+                            width: 360,
                             render: function(h, param) {
                                 var row = param.row;
                                 var address = row.address;
@@ -776,6 +769,16 @@ var waringComponent = {
                                 }
                             }
                         },
+                        { title: me.$t("reportForm.speed"), key: 'speedStr', width: 100, sortable: 'custom', },
+                        {
+                            title: me.$t("reportForm.totaldistance"),
+                            key: 'totalDistanceStr',
+                            width: 130,
+                            sortable: 'custom',
+                        },
+                        { title: me.$t("reportForm.direction"), key: 'direction', width: 100 },
+                        { title: me.$t("reportForm.lon"), key: 'fixedLon', width: 100 },
+                        { title: me.$t("reportForm.lat"), key: 'fixedLat', width: 100 },
                     ],
                 }
             },

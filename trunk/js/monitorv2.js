@@ -2471,8 +2471,8 @@ var monitor = {
         },
         updateRealtimeInfoList: function(deviceid) {
             var index = gRealtimeDeviceIdList.indexOf(deviceid);
-            if (index != -1) {
-                gRealtimeDeviceIdList.splice(1, 1);
+            if (index > -1) {
+                gRealtimeDeviceIdList.splice(index, 1);
             } else {
                 if (gRealtimeDeviceIdList.length > 200) {
                     gRealtimeDeviceIdList.pop();

@@ -1443,7 +1443,7 @@ div.my-total>span {
     }
 }
 
-div.waring-wraper {
+div.warning-wraper {
     position: absolute;
     right: 2px;
     bottom: 2px;
@@ -1780,4 +1780,8 @@ div.icon_example>span {
 
 #idle-report .ivu-tabs {
     overflow: visible;
+}
+
+div.warning-wraper .ivu-table-small td {
+    height: 30px;
 }
