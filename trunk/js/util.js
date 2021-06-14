@@ -571,7 +571,7 @@ var utils = {
                 type = isZh ? "基站定位" : "LBS";
                 break;
             case 'gps':
-                type = isZh ? "卫星定位" : "GPS";
+                type = isZh ? "北斗卫星" : "GPS";
                 break;
             case 'wifi':
                 type = isZh ? "WiFi定位" : "WiFi";
