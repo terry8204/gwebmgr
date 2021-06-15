@@ -2742,7 +2742,7 @@
     <script type="text/x-template" id="video-template">
         <div class='my-video-wrapper'>
             <div class='player-wraper' @dblclick="onDbClick">
-                <video ref='player' :muted="isMute"></video>
+                <video ref='player'></video>
                 <div class="resolving-power" v-show="isPlaying">
                     <span v-text='resolvingPower.width'></span> *
                     <span v-text='resolvingPower.height'></span>
@@ -2754,6 +2754,7 @@
                     <span v-text='deviceName'></span>
                     <span v-text='channelStr'></span>
                     <span v-text='networkSpeed'></span>
+                    <video ref='audio' style="display: none;"></video>
                 </div>
                 <div class='video-controls'>
                     <span @click="switchVideoPlayState"><i class="icon iconfont" :class="{'icon-bofang':!isPlaying,'icon-zanting':isPlaying}"></i></span>

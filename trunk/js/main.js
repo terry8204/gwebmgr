@@ -294,7 +294,7 @@ Vue.component('my-video', {
     data: function() {
         return {
             isPlaying: false,
-            isMute: false,
+            isMute: true,
             playerStateTips: '',
             resolvingPower: { width: 0, height: 0 },
             deviceName: '',
@@ -398,7 +398,10 @@ Vue.component('my-video', {
                 this.playUrl = url;
                 var videoPlayer = mpegts.createPlayer({
                     type: 'flv',
-                    url: url
+                    url: url,
+                    isLive: true,
+                    hasAudio: false,
+                    hasVideo: true,
                 }, {
                     enableWorker: true,
                     lazyLoadMaxDuration: 3 * 60,
@@ -415,24 +418,64 @@ Vue.component('my-video', {
                 })
                 this.videoPlayer = videoPlayer;
             } else {
-                this.videoPlayer.load(); //加载
                 this.videoPlayer.attachMediaElement(this.$refs.player);
+                this.videoPlayer.load(); //加载
                 this.videoPlayer.play();
                 this.isPlaying = true;
             }
 
         },
-        initVideo: function(url, hasaudio) {
+        initFlvAudio: function(url) {
+            if (this.audioUrl != url) {
+                if (this.audioPlayer != null) {
+                    this.audioPlayer.pause();
+                    this.audioPlayer.unload();
+                    this.audioPlayer.detachMediaElement();
+                    this.audioPlayer.destroy();
+                    this.audioPlayer = null;
+                }
+                console.log('url - ' + url);
+                this.audioUrl = url;
+                var audioPlayer = mpegts.createPlayer({
+                    type: 'flv',
+                    url: url,
+                    isLive: true,
+                    hasAudio: true,
+                    hasVideo: false,
+                }, {
+                    enableWorker: true,
+                    lazyLoadMaxDuration: 3 * 60,
+                    seekType: 'range',
+                    liveBufferLatencyChasing: true,
+                });
+
+                audioPlayer.attachMediaElement(this.$refs.audio);
+                if (!this.isMute) {
+                    console.log('播放语音');
+                    audioPlayer.load(); //加载
+                    audioPlayer.play();
+                }
+                this.audioPlayer = audioPlayer;
+            } else {
+                if (this.audioPlayer) {
+                    this.audioPlayer.attachMediaElement(this.$refs.audio);
+                    this.audioPlayer.load(); //加载
+                    this.audioPlayer.play();
+                }
+            }
+        },
+        initVideo: function(videoUrl, audioUrl, hasaudio) {
             if (isWebrtcPlay) {
                 this.initWebRtcVideo(url, hasaudio);
             } else {
-                this.initFlvVideo(url, hasaudio);
+                this.initFlvVideo(videoUrl, hasaudio);
+                this.initFlvAudio(audioUrl);
             }
         },
         setPlayerStateTips: function(tips) {
             this.playerStateTips = tips + '-' + this.getAccSwitchStatusStr();
         },
-        switchrtcPlayer: function(url, hasaudio) {
+        switchrtcPlayer: function(videoUrl, audioUrl, hasaudio) {
             var me = this;
             if (isWebrtcPlay) {
                 try {
@@ -457,7 +500,7 @@ Vue.component('my-video', {
                                 }
                                 videoPlayer.destroy();
                                 this.videoPlayer = null;
-                                this.initVideo(url, hasaudio);
+                                this.initVideo(videoUrl, audioUrl, hasaudio);
                             }
                         }
                     } else {
@@ -494,8 +537,10 @@ Vue.component('my-video', {
 
                     // }
                     // this.playUrl = url;
-
-                    this.initFlvVideo(url, hasaudio);
+                    console.log(videoUrl);
+                    console.log(audioUrl);
+                    this.initFlvVideo(videoUrl, false);
+                    this.initFlvAudio(audioUrl);
                 }
 
             }
@@ -631,9 +676,20 @@ Vue.component('my-video', {
         },
         handlePlayerMute: function() {
             this.isMute = !this.isMute;
-        },
-        changePlayerMute: function(isMute) {
-            this.isMute = isMute;
+            if (!this.isMute) {
+                if (this.audioPlayer) {
+                    console.log('播放 语音');
+                    this.audioPlayer.attachMediaElement(this.$refs.audio);
+                    this.audioPlayer.load(); //加载
+                    this.audioPlayer.play();
+                }
+            } else {
+                if (this.audioPlayer) {
+                    console.log('暂停 语音');
+                    this.audioPlayer.pause();
+                    this.audioPlayer.unload();
+                }
+            }
         },
         onDbClick: function(e) {
             e.stopPropagation();
@@ -665,7 +721,8 @@ Vue.component('my-video', {
                 me.isSendAjaxState = false;
                 var records = resp.records;
                 var status = resp.status;
-                var playUrl = records[0].playurl;
+                var videoUrl = records[0].playurlvideo;
+                var audioUrl = records[0].playurlaudio;
                 if (status == CMD_SEND_RESULT_UNCONFIRM) {
                     me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                 } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
@@ -687,7 +744,7 @@ Vue.component('my-video', {
                         accState = me.$t('video.accClose');
                     }
                     me.$Message.success(accState + me.$t('video.requestPlaySucc'));
-                    me.switchrtcPlayer(playUrl, records[0].hasaudio);
+                    me.switchrtcPlayer(videoUrl, audioUrl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
                     isWebrtcPlay && me.caclBits();
@@ -702,7 +759,7 @@ Vue.component('my-video', {
                         accState = me.$t('video.accClose');
                     }
                     me.$Message.error(accState + me.$t('video.requestPlayTimeout'));
-                    me.switchrtcPlayer(playUrl, records[0].hasaudio);
+                    me.switchrtcPlayer(videoUrl, audioUrl, records[0].hasaudio);
                     me.isPlaying = true;
                     me.startTimes = Date.now();
                     isWebrtcPlay && me.caclBits();
