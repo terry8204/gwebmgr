@@ -736,6 +736,7 @@ Vue.component('my-video', {
                 } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
                     me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
                 } else if (status === CMD_SEND_CONFIRMED) {
+                    me.startTimes = Date.now();
                     var acc = resp.acc
                     var accState = '';
                     if (acc === 3) {
@@ -746,12 +747,12 @@ Vue.component('my-video', {
                     me.$Message.success(accState + me.$t('video.requestPlaySucc'));
                     me.switchrtcPlayer(videoUrl, audioUrl, records[0].hasaudio);
                     me.isPlaying = true;
-                    me.startTimes = Date.now();
+
                     isWebrtcPlay && me.caclBits();
                 } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                     me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                 } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-
+                    me.startTimes = Date.now();
                     var accState = '';
                     if (acc === 3) {
                         accState = me.$t('video.accOpen');
@@ -761,7 +762,7 @@ Vue.component('my-video', {
                     me.$Message.error(accState + me.$t('video.requestPlayTimeout'));
                     me.switchrtcPlayer(videoUrl, audioUrl, records[0].hasaudio);
                     me.isPlaying = true;
-                    me.startTimes = Date.now();
+
                     isWebrtcPlay && me.caclBits();
                 }
 
