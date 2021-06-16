@@ -407,7 +407,7 @@
     </Layout>
     </div>
     <script src="js/polyfill.min.js"></script>
-    <script src="js/flv.min.js"></script>
+    <script src="js/mpegts.js"></script>
     <script src="dist/vue.min.js"></script>
     <script src="dist/iview.min.js"></script>
     <script src="js/vue-i18n.min.js"></script>
@@ -1125,7 +1125,8 @@
                             isRequsetPlaying = false;
                             var record = resp.record,
                                 status = resp.status;
-
+                            var videoUrl = record.playurlvideo;
+                            var audioUrl = record.playurlaudio;
                             if (status == CMD_SEND_RESULT_UNCONFIRM) {
                                 me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                             } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
@@ -1143,7 +1144,7 @@
                                 if (startPlayerTimer) {
                                     clearTimeout(startPlayerTimer);
                                 }
-                                me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
+                                me.switchflvPlayer(videoUrl, audioUrl);
                             } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                                 me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                             } else if (status === CMD_SEND_SYNC_TIMEOUT) {
@@ -1152,7 +1153,7 @@
                                     clearTimeout(startPlayerTimer);
                                 }
                                 if (record) {
-                                    me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
+                                    me.switchflvPlayer(videoUrl, audioUrl);
                                 }
                             }
 
@@ -1220,6 +1221,7 @@
                             status = resp.status;
                         var videoUrl = record[0].playurlvideo;
                         var audioUrl = record[0].playurlaudio;
+
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
                             me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                         } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
@@ -1340,46 +1342,45 @@
                     })
                 },
                 initVideo: function(url) {
-                    this.flvPlayer = flvjs.createPlayer({
+                    this.flvPlayer = mpegts.createPlayer({
                         type: 'flv',
                         url: url,
                         isLive: true,
                         hasAudio: false,
                         hasVideo: true,
-                        withCredentials: false,
                     }, {
-                        enableWorker: false,
-                        enableStashBuffer: false,
-                        isLive: true,
-                        lazyLoad: false,
-                        fixAudioTimestampGap: false, //主要是这个配置，直播时音频的码率会被降低，直播游戏时背景音会有回响，但是说话声音没问题
+                        enableWorker: true,
+                        lazyLoadMaxDuration: 3 * 60,
+                        seekType: 'range',
+                        liveBufferLatencyChasing: true,
                     });
-                    this.flvPlayer.on(flvjs.Events.LOADING_COMPLETE, function() {
-                        // alert("加载完成");
-                    });
+
+
                     this.flvPlayer.attachMediaElement(player);
                     this.flvPlayer.load(); //加载
                     this.flvPlayer.play(); // canplay;
                     var me = this;
-                    this.flvPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
+                    this.flvPlayer.on(mpegts.Events.STATISTICS_INFO, function(e) {
                         me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
                     })
                 },
                 initAudio: function(url) {
-                    this.audioPlayer = flvjs.createPlayer({
+
+                    console.log(url);
+
+                    this.audioPlayer = mpegts.createPlayer({
                         type: 'flv',
                         url: url,
                         isLive: true,
                         hasAudio: true,
                         hasVideo: false,
-                        withCredentials: false,
                     }, {
-                        enableWorker: false,
-                        enableStashBuffer: false,
-                        isLive: true,
-                        lazyLoad: false,
-                        fixAudioTimestampGap: false,
+                        enableWorker: true,
+                        lazyLoadMaxDuration: 3 * 60,
+                        seekType: 'range',
+                        liveBufferLatencyChasing: true,
                     });
+
                     this.audioPlayer.attachMediaElement(this.$refs.audio);
                     this.audioPlayer.load(); //加载
                     this.audioPlayer.play(); // canplay;

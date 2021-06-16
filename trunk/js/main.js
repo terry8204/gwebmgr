@@ -469,9 +469,9 @@ Vue.component('my-video', {
 
                 var me = this;
                 videoPlayer.attachMediaElement(this.$refs.player);
-                videoPlayer.load(); //加载
+                videoPlayer.load(); //加载  
                 videoPlayer.play();
-                videoPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
+                videoPlayer.on(mpegts.Events.STATISTICS_INFO, function(e) {
                     me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
                 })
                 this.videoPlayer = videoPlayer;
