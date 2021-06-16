@@ -185,6 +185,7 @@
         </div>
     </div>
     <div id="container">
+        <video ref='audio' style="display: none;"></video>
         <div class="spin-wraper" v-if="isSpin" style="z-index:10">
             <Spin fix size="large"></Spin>
         </div>
@@ -1161,7 +1162,12 @@
                         });
                     }
                 },
-                switchflvPlayer: function(url, hasaudio) {
+                switchflvPlayer: function(videoUrl, audioUrl) {
+                    this.destroyPlayer();
+                    this.initVideo(videoUrl);
+                    this.initAudio(audioUrl);
+                },
+                destroyPlayer: function() {
                     if (this.flvPlayer != null) {
                         this.flvPlayer.pause();
                         this.flvPlayer.unload();
@@ -1169,7 +1175,13 @@
                         this.flvPlayer.destroy();
                         this.flvPlayer = null;
                     }
-                    this.initVideo(url, hasaudio);
+                    if (this.audioPlayer != null) {
+                        this.audioPlayer.pause();
+                        this.audioPlayer.unload();
+                        this.audioPlayer.detachMediaElement();
+                        this.audioPlayer.destroy();
+                        this.audioPlayer = null;
+                    }
                 },
                 // String deviceid;
                 // short channel;
@@ -1206,6 +1218,8 @@
                         isRequsetPlaying = false;
                         var record = resp.record,
                             status = resp.status;
+                        var videoUrl = record[0].playurlvideo;
+                        var audioUrl = record[0].playurlaudio;
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
                             me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
                         } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
@@ -1223,7 +1237,7 @@
                             if (startPlayerTimer) {
                                 clearTimeout(startPlayerTimer);
                             }
-                            me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
+                            me.switchflvPlayer(videoUrl, audioUrl);
                         } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                             me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
                         } else if (status === CMD_SEND_SYNC_TIMEOUT) {
@@ -1231,7 +1245,7 @@
                             if (startPlayerTimer) {
                                 clearTimeout(startPlayerTimer);
                             }
-                            me.switchflvPlayer(resp.record.playurl, resp.record.hasaudio);
+                            me.switchflvPlayer(videoUrl, audioUrl);
                         }
                     }, function() {
                         me.$Message.error(lang.$t('message.networkError'));
@@ -1325,12 +1339,12 @@
                         }
                     })
                 },
-                initVideo: function(url, hasaudio) {
+                initVideo: function(url) {
                     this.flvPlayer = flvjs.createPlayer({
                         type: 'flv',
                         url: url,
                         isLive: true,
-                        hasAudio: hasaudio === 1,
+                        hasAudio: false,
                         hasVideo: true,
                         withCredentials: false,
                     }, {
@@ -1350,6 +1364,25 @@
                     this.flvPlayer.on(flvjs.Events.STATISTICS_INFO, function(e) {
                         me.networkSpeed = parseInt(e.speed * 10) / 10 + 'KB/S';
                     })
+                },
+                initAudio: function(url) {
+                    this.audioPlayer = flvjs.createPlayer({
+                        type: 'flv',
+                        url: url,
+                        isLive: true,
+                        hasAudio: true,
+                        hasVideo: false,
+                        withCredentials: false,
+                    }, {
+                        enableWorker: false,
+                        enableStashBuffer: false,
+                        isLive: true,
+                        lazyLoad: false,
+                        fixAudioTimestampGap: false,
+                    });
+                    this.audioPlayer.attachMediaElement(this.$refs.audio);
+                    this.audioPlayer.load(); //加载
+                    this.audioPlayer.play(); // canplay;
                 },
                 initChart: function() {
                     chart = echarts.init(document.getElementById('videoTime'));
@@ -1587,7 +1620,6 @@
                     player.addEventListener('waiting', function() {
                         that.playerStateTip = lang.$t('video.waiting');
                     });
-                    // that.initVideo();
                     that.initChart();
                     that.onWindowResize();
                     that.maskEl = that.$refs.videoTimeMask;

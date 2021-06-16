@@ -695,14 +695,15 @@ Vue.component('my-video', {
             this.isMute = !this.isMute;
             if (!this.isMute) {
                 if (this.audioPlayer) {
-                    console.log('播放 语音');
+                    if (this.isPlaying) {
+                        this.audioPlayer.unload();
+                    }
                     this.audioPlayer.attachMediaElement(this.$refs.audio);
                     this.audioPlayer.load(); //加载
                     this.audioPlayer.play();
                 }
             } else {
                 if (this.audioPlayer) {
-                    console.log('暂停 语音');
                     this.audioPlayer.pause();
                     this.audioPlayer.unload();
                 }

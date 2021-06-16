@@ -2743,7 +2743,7 @@
         <div class='my-video-wrapper'>
             <div class='player-wraper' @dblclick="onDbClick">
                 <video ref='player'></video>
-                <div class="resolving-power" v-show="isPlaying">
+                <div class="resolving-power" v-show="resolvingPower.width">
                     <span v-text='resolvingPower.width'></span> *
                     <span v-text='resolvingPower.height'></span>
                 </div>
