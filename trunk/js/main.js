@@ -323,20 +323,82 @@ Vue.component('my-video', {
             this.addEventListenerToPlayer();
         },
         setDevicedInfoAndPlay: function(device) {
+
             this.cleanDevicedInfo();
-            if (this.deviceId && this.deviceId != device.deviceid) {
-                if (this.isPlaying) {
-                    this.isTimerStop = false;
-                    this.handleStopVideos(false);
+            this.deviceId = device.deviceid;
+            this.deviceName = device.devicename;
+            this.channel = device.channel;
+            this.isTimerStop = false;
+            this.renewInsAndPlay();
+
+        },
+        renewInsAndPlay: function() {
+            var me = this;
+            this.reqeustStartPlay(function(videoUrl, audioUrl) {
+                me.initFlvVideo(videoUrl, true);
+                me.initFlvAudio(audioUrl, true);
+            });
+        },
+        reqeustStartPlay: function(callback) {
+            clearInterval(this.timer);
+            var url = myUrls.startVideos(),
+                me = this;
+            me.setPlayerStateTips(vRoot.$t('video.requestPlay'));
+            utils.sendAjax(url, {
+                deviceid: this.deviceId,
+                channels: [Number(this.channel)],
+                playtype: isWebrtcPlay ? 'webrtc' : (ishttps ? 'flvs' : 'flv'),
+            }, function(resp) {
+                me.isSendAjaxState = false;
+                var records = resp.records;
+                var status = resp.status;
+                var videoUrl = records[0].playurlvideo;
+                var audioUrl = records[0].playurlaudio;
+                if (status == CMD_SEND_RESULT_UNCONFIRM) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+                } else if (status === CMD_SEND_CONFIRMED) {
+                    me.startTimes = Date.now();
+                    var acc = resp.acc
+                    var accState = '';
+                    if (acc === 3) {
+                        accState = me.$t('video.accOpen');
+                    } else if (acc === 2) {
+                        accState = me.$t('video.accClose');
+                    }
+                    me.$Message.success(accState + me.$t('video.requestPlaySucc'));
+                    me.isPlaying = true;
+                    callback && callback(videoUrl, audioUrl);
+                    isWebrtcPlay && me.caclBits();
+                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+                    me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+                    me.startTimes = Date.now();
+                    var accState = '';
+                    if (acc === 3) {
+                        accState = me.$t('video.accOpen');
+                    } else if (acc === 2) {
+                        accState = me.$t('video.accClose');
+                    }
+                    me.$Message.error(accState + me.$t('video.requestPlayTimeout'));
+                    me.isPlaying = true;
+                    callback && callback(videoUrl, audioUrl);
+                    isWebrtcPlay && me.caclBits();
                 }
 
-            } else {
-                this.deviceId = device.deviceid;
-                this.deviceName = device.devicename;
-                this.channel = device.channel;
-                this.handleStartVideos();
-            }
-
+            }, function() {
+                me.$Message.error(me.$t('video.requestTimeout'));
+                me.isSendAjaxState = false;
+            })
         },
         cleanDevicedInfo: function() {
             this.deviceId = '';
@@ -356,6 +418,24 @@ Vue.component('my-video', {
                 this.handleStartVideos();
             }
         },
+        destroyVideoPlayer: function() {
+            if (this.videoPlayer != null) {
+                this.videoPlayer.pause();
+                this.videoPlayer.unload();
+                this.videoPlayer.detachMediaElement();
+                this.videoPlayer.destroy();
+                this.videoPlayer = null;
+            }
+        },
+        destroyAudioPlayer: function() {
+            if (this.audioPlayer != null) {
+                this.audioPlayer.pause();
+                this.audioPlayer.unload();
+                this.audioPlayer.detachMediaElement();
+                this.audioPlayer.destroy();
+                this.audioPlayer = null;
+            }
+        },
         initWebRtcVideo: function(url, hasaudio) {
             var me = this;
             var video = this.$refs.player;
@@ -369,31 +449,9 @@ Vue.component('my-video', {
             this.videoPlayer = videoPlayer;
             this.$refs.player.play();
         },
-        initFlvVideo: function(url, hasaudio) {
-            // var videoPlayer = flvjs.createPlayer({
-            //     type: 'flv',
-            //     url: url,
-            //     isLive: true,
-            //     hasAudio: hasaudio === 1,
-            //     hasVideo: true,
-            //     withCredentials: false,
-            //     // url: 'http://video.gps51.com:81/live/teststream.flv'
-            // }, {
-            //     enableWorker: false,
-            //     enableStashBuffer: false,
-            //     isLive: true,
-            //     lazyLoad: false,
-            //     // fixAudioTimestampGap: false,  //主要是这个配置，直播时音频的码率会被降低，直播游戏时背景音会有回响，但是说话声音没问题
-            // });
-
-            if (this.playUrl != url) {
-                if (this.videoPlayer != null) {
-                    this.videoPlayer.pause();
-                    this.videoPlayer.unload();
-                    this.videoPlayer.detachMediaElement();
-                    this.videoPlayer.destroy();
-                    this.videoPlayer = null;
-                }
+        initFlvVideo: function(url, renew) {
+            if (renew || this.playUrl != url) {
+                this.destroyVideoPlayer();
 
                 this.playUrl = url;
                 var videoPlayer = mpegts.createPlayer({
@@ -425,16 +483,10 @@ Vue.component('my-video', {
             }
 
         },
-        initFlvAudio: function(url) {
-            if (this.audioUrl != url) {
-                if (this.audioPlayer != null) {
-                    this.audioPlayer.pause();
-                    this.audioPlayer.unload();
-                    this.audioPlayer.detachMediaElement();
-                    this.audioPlayer.destroy();
-                    this.audioPlayer = null;
-                }
-                console.log('url - ' + url);
+        initFlvAudio: function(url, renew) {
+            if (renew || this.audioUrl != url) {
+                this.destroyAudioPlayer();
+
                 this.audioUrl = url;
                 var audioPlayer = mpegts.createPlayer({
                     type: 'flv',
@@ -464,13 +516,8 @@ Vue.component('my-video', {
                 }
             }
         },
-        initVideo: function(videoUrl, audioUrl, hasaudio) {
-            if (isWebrtcPlay) {
-                this.initWebRtcVideo(url, hasaudio);
-            } else {
-                this.initFlvVideo(videoUrl, hasaudio);
-                this.initFlvAudio(audioUrl);
-            }
+        initWebrtcVideo: function(videoUrl, audioUrl, hasaudio) {
+            this.initWebRtcVideo(videoUrl, hasaudio);
         },
         setPlayerStateTips: function(tips) {
             this.playerStateTips = tips + '-' + this.getAccSwitchStatusStr();
@@ -500,7 +547,7 @@ Vue.component('my-video', {
                                 }
                                 videoPlayer.destroy();
                                 this.videoPlayer = null;
-                                this.initVideo(videoUrl, audioUrl, hasaudio);
+                                this.initWebrtcVideo(videoUrl, audioUrl, hasaudio);
                             }
                         }
                     } else {
@@ -511,38 +558,8 @@ Vue.component('my-video', {
                     vRoot.$Message.error('该浏览器不支持视频播放,请换谷歌浏览器');
                 }
             } else {
-                if (false && this.playUrl == url) {
-                    var video = this.$refs.player;
-                    if (video.buffered.length && video.buffered.length > 0) {
-                        var end = video.buffered.end(0);
-                        var diff = end - video.currentTime;
-                        if (diff >= 1.5) {
-                            video.currentTime = end;
-                        }
-                    }
-
-                    this.videoPlayer.play();
-
-                } else {
-                    // try {
-                    //     var videoPlayer = this.videoPlayer;
-                    //     if (videoPlayer != null) {
-                    //         videoPlayer.pause();
-                    //         videoPlayer.unload();
-                    //         videoPlayer.detachMediaElement();
-                    //         videoPlayer.destroy();
-                    //         this.videoPlayer = null;
-                    //     }
-                    // } catch (error) {
-
-                    // }
-                    // this.playUrl = url;
-                    console.log(videoUrl);
-                    console.log(audioUrl);
-                    this.initFlvVideo(videoUrl, false);
-                    this.initFlvAudio(audioUrl);
-                }
-
+                this.initFlvVideo(videoUrl, false);
+                this.initFlvAudio(audioUrl, false);
             }
         },
         getAccSwitchStatusStr: function() {
@@ -709,67 +726,71 @@ Vue.component('my-video', {
             }
         },
         handleStartVideos: function() {
-            clearInterval(this.timer);
-            var url = myUrls.startVideos(),
-                me = this;
-            me.setPlayerStateTips(vRoot.$t('video.requestPlay'));
-            utils.sendAjax(url, {
-                deviceid: this.deviceId,
-                channels: [Number(this.channel)],
-                playtype: isWebrtcPlay ? 'webrtc' : (ishttps ? 'flvs' : 'flv'),
-            }, function(resp) {
-                me.isSendAjaxState = false;
-                var records = resp.records;
-                var status = resp.status;
-                var videoUrl = records[0].playurlvideo;
-                var audioUrl = records[0].playurlaudio;
-                if (status == CMD_SEND_RESULT_UNCONFIRM) {
-                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
-                } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
-                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
-                } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
-                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
-                } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
-                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
-                } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
-                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
-                } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
-                    me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
-                } else if (status === CMD_SEND_CONFIRMED) {
-                    me.startTimes = Date.now();
-                    var acc = resp.acc
-                    var accState = '';
-                    if (acc === 3) {
-                        accState = me.$t('video.accOpen');
-                    } else if (acc === 2) {
-                        accState = me.$t('video.accClose');
-                    }
-                    me.$Message.success(accState + me.$t('video.requestPlaySucc'));
-                    me.switchrtcPlayer(videoUrl, audioUrl, records[0].hasaudio);
-                    me.isPlaying = true;
 
-                    isWebrtcPlay && me.caclBits();
-                } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
-                    me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
-                } else if (status === CMD_SEND_SYNC_TIMEOUT) {
-                    me.startTimes = Date.now();
-                    var accState = '';
-                    if (acc === 3) {
-                        accState = me.$t('video.accOpen');
-                    } else if (acc === 2) {
-                        accState = me.$t('video.accClose');
-                    }
-                    me.$Message.error(accState + me.$t('video.requestPlayTimeout'));
-                    me.switchrtcPlayer(videoUrl, audioUrl, records[0].hasaudio);
-                    me.isPlaying = true;
+            var me = this;
 
-                    isWebrtcPlay && me.caclBits();
-                }
+            this.reqeustStartPlay(function(videoUrl, audioUrl) {
+                me.switchrtcPlayer(videoUrl, audioUrl);
+            });
 
-            }, function() {
-                me.$Message.error(me.$t('video.requestTimeout'));
-                me.isSendAjaxState = false;
-            })
+            // me.setPlayerStateTips(vRoot.$t('video.requestPlay'));
+            // utils.sendAjax(url, {
+            //     deviceid: this.deviceId,
+            //     channels: [Number(this.channel)],
+            //     playtype: isWebrtcPlay ? 'webrtc' : (ishttps ? 'flvs' : 'flv'),
+            // }, function(resp) {
+            //     me.isSendAjaxState = false;
+            //     var records = resp.records;
+            //     var status = resp.status;
+            //     var videoUrl = records[0].playurlvideo;
+            //     var audioUrl = records[0].playurlaudio;
+            //     if (status == CMD_SEND_RESULT_UNCONFIRM) {
+            //         me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
+            //     } else if (status === CMD_SEND_RESULT_PASSWORD_ERROR) {
+            //         me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_PASSWORD_ERROR'));
+            //     } else if (status === CMD_SEND_RESULT_OFFLINE_NOT_CACHE) {
+            //         me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_NOT_CACHE'));
+            //     } else if (status === CMD_SEND_RESULT_OFFLINE_CACHED) {
+            //         me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_OFFLINE_CACHED'));
+            //     } else if (status === CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD) {
+            //         me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_MODIFY_DEFAULT_PASSWORD'));
+            //     } else if (status === CMD_SEND_RESULT_DETAIL_ERROR) {
+            //         me.$Message.error(me.$t('monitor.CMD_SEND_RESULT_DETAIL_ERROR') + resp.cause);
+            //     } else if (status === CMD_SEND_CONFIRMED) {
+            //         me.startTimes = Date.now();
+            //         var acc = resp.acc
+            //         var accState = '';
+            //         if (acc === 3) {
+            //             accState = me.$t('video.accOpen');
+            //         } else if (acc === 2) {
+            //             accState = me.$t('video.accClose');
+            //         }
+            //         me.$Message.success(accState + me.$t('video.requestPlaySucc'));
+            //         me.switchrtcPlayer(videoUrl, audioUrl, records[0].hasaudio);
+            //         me.isPlaying = true;
+
+            //         isWebrtcPlay && me.caclBits();
+            //     } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
+            //         me.$Message.error(me.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
+            //     } else if (status === CMD_SEND_SYNC_TIMEOUT) {
+            //         me.startTimes = Date.now();
+            //         var accState = '';
+            //         if (acc === 3) {
+            //             accState = me.$t('video.accOpen');
+            //         } else if (acc === 2) {
+            //             accState = me.$t('video.accClose');
+            //         }
+            //         me.$Message.error(accState + me.$t('video.requestPlayTimeout'));
+            //         me.switchrtcPlayer(videoUrl, audioUrl, records[0].hasaudio);
+            //         me.isPlaying = true;
+
+            //         isWebrtcPlay && me.caclBits();
+            //     }
+
+            // }, function() {
+            //     me.$Message.error(me.$t('video.requestTimeout'));
+            //     me.isSendAjaxState = false;
+            // })
         },
         handleStopVideos: function(isTimeout) {
             try {
@@ -777,13 +798,12 @@ Vue.component('my-video', {
                     var player = this.videoPlayer;
                     player.stop();
                 } else {
-                    var player = this.videoPlayer;
+
                     this.videoPlayer.pause();
-                    player.unload();
-                    // player.detachMediaElement();
-                    // player.destroy();
-                    // this.videoPlayer = null;
-                    console.log('handleStopVideos---------');
+                    this.videoPlayer.unload();
+
+                    this.audioPlayer.pause();
+                    this.audioPlayer.unload();
                 }
             } catch (error) {};
             this.isPlaying = false;
