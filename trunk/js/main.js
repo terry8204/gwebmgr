@@ -495,10 +495,13 @@ Vue.component('my-video', {
                     hasAudio: true,
                     hasVideo: false,
                 }, {
-                    enableWorker: true,
-                    lazyLoadMaxDuration: 3 * 60,
-                    seekType: 'range',
-                    liveBufferLatencyChasing: true,
+                    // enableWorker: true,
+                    // lazyLoadMaxDuration: 3 * 60,
+                    // seekType: 'range',
+                    // liveBufferLatencyChasing: true,
+                    enableStashBuffer: !1,
+                    stashInitialSize: 128,
+                    fixAudioTimestampGap: !1
                 });
 
                 audioPlayer.attachMediaElement(this.$refs.audio);
