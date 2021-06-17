@@ -1365,9 +1365,6 @@
                     })
                 },
                 initAudio: function(url) {
-
-                    console.log(url);
-
                     this.audioPlayer = mpegts.createPlayer({
                         type: 'flv',
                         url: url,
@@ -1375,10 +1372,13 @@
                         hasAudio: true,
                         hasVideo: false,
                     }, {
-                        enableWorker: true,
-                        lazyLoadMaxDuration: 3 * 60,
-                        seekType: 'range',
-                        liveBufferLatencyChasing: true,
+                        // enableWorker: true,
+                        // lazyLoadMaxDuration: 3 * 60,
+                        // seekType: 'range',
+                        // liveBufferLatencyChasing: true,
+                        enableStashBuffer: !1,
+                        stashInitialSize: 128,
+                        fixAudioTimestampGap: !1
                     });
 
                     this.audioPlayer.attachMediaElement(this.$refs.audio);
