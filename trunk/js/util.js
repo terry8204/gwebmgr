@@ -701,7 +701,7 @@ var utils = {
             (thirdoil > 0) ||
             (fourthoil > 0)) {
             var isNotFirst = false;
-            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ';
+            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'Fuel') + '</span>: ';
             var srcAdStr = "";
             if (totalOil > 0) {
                 oilStr += totalOil.toFixed(0) + "LT";
@@ -727,7 +727,6 @@ var utils = {
                 if (isNotFirst) {
                     isNotFirst = true;
                     oilStr += '/';
-
                 }
                 oilStr += thirdoil.toFixed(0) + "L3";
 
@@ -746,7 +745,7 @@ var utils = {
             oilStr += '(' + srcAdStr + ")";
         } else if (srcad0 > 0 || srcad1 > 0 || srcad2 > 0 || srcad3 > 0) {
             //没设置油杆的时候显示原始ad值
-            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'oil') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
+            oilStr = '<span class="window_title">' + (isZh ? '油液数据' : 'Fuel') + '</span>: ' + 'Ad:' + srcad0 + '/' + srcad1 + '/' + srcad2 + '/' + srcad3;
         };
         return oilStr;
     },
@@ -1000,7 +999,7 @@ var utils = {
             '<p><span class="window_title">' + (isZh ? '设备状态' : 'Device Status') + '</span>: ' + strstatus + '</p>' +
             (oilStr !== '' ? '<p>' + oilStr + '</p>' : '') +
             (loadstatusStr ? ('<p><span class="window_title">' + (isZh ? '载重数据' : 'Weight') + '</span>: ' + loadstatusStr + '</p>') : '') +
-            (extendsBtns.video ? ('<p><span class="window_title">' + (isZh ? '视频状态' : 'video') + '</span>: ' + videoState + '</p>') : ("")) +
+            (extendsBtns.video ? ('<p><span class="window_title">' + (isZh ? '视频状态' : 'Video') + '</span>: ' + videoState + '</p>') : ("")) +
             '<p class="last-address">' + b_address + '</p>' +
             '<p class="operation">' +
             '<span class="map-window-btn" onclick="playBack(' +
