@@ -522,6 +522,24 @@ Vue.component('my-video', {
         setPlayerStateTips: function(tips) {
             this.playerStateTips = tips + '-' + this.getAccSwitchStatusStr();
         },
+        changePlayerMute: function(mute) {
+            this.isMute = mute;
+            if (!mute) {
+                if (this.audioPlayer) {
+                    if (this.isPlaying) {
+                        this.audioPlayer.unload();
+                    }
+                    this.audioPlayer.attachMediaElement(this.$refs.audio);
+                    this.audioPlayer.load(); //加载
+                    this.audioPlayer.play();
+                }
+            } else {
+                if (this.audioPlayer) {
+                    this.audioPlayer.pause();
+                    this.audioPlayer.unload();
+                }
+            }
+        },
         switchrtcPlayer: function(videoUrl, audioUrl, hasaudio) {
             var me = this;
             if (isWebrtcPlay) {
