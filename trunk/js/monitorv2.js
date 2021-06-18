@@ -682,12 +682,18 @@ var monitor = {
             // });
             audioPlayer = mpegts.createPlayer({
                 type: 'flv',
-                url: url
+                url: url,
+                isLive: true,
+                hasAudio: true,
+                hasVideo: false,
             }, {
-                enableWorker: true,
-                lazyLoadMaxDuration: 3 * 60,
-                seekType: 'range',
-                liveBufferLatencyChasing: true,
+//                enableWorker: true,
+//                lazyLoadMaxDuration: 3 * 60,
+//                seekType: 'range',
+//                liveBufferLatencyChasing: true,
+                enableStashBuffer: !1,
+                stashInitialSize: 128,
+                fixAudioTimestampGap: !1
             });
             var player = document.getElementById('audio-player');
             audioPlayer.attachMediaElement(player);
