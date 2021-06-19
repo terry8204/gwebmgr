@@ -8,7 +8,7 @@
             <div style="float: left;">
                 <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
             </div>
-            <div style="float: left;position: relative;width: 240px;">
+            <div style="float: left;position: relative;width: 200px;">
                 <div class="search-wrapper" v-click-outside.capture="onClickOutside">
                     <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-focus="focus" :placeholder="placeholder"></i-input>
                     <transition name="fade">
@@ -45,6 +45,14 @@
                     <i-option value="700">700ml</i-option>
                     <i-option value="800">800ml</i-option>
                     <i-option value="900">900ml</i-option>
+                </i-select>
+            </div>
+            <div style="margin-left:10px;float: left;width: 72px;position: relative;">
+                <i-select v-model="intervalminutes">
+                    <i-option value="0">0{{$t("reportForm.minute")}}</i-option>
+                    <i-option value="5">5{{$t("reportForm.minute")}}</i-option>
+                    <i-option value="10">10{{$t("reportForm.minute")}}</i-option>
+                    <i-option value="30">30{{$t("reportForm.minute")}}</i-option>
                 </i-select>
             </div>
             <div style="float: left;padding-left: 10px;">

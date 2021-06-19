@@ -9035,6 +9035,7 @@ function idleReport(groupslist) {
             markerModal: false,
             marker: '',
             tank: '0',
+            intervalminutes: '5',
             activeTab: 'tabTotal',
             groupslist: [],
             allColumns: [{
@@ -9397,7 +9398,8 @@ function idleReport(groupslist) {
                     devices: deviceids,
                     oilstate: 1,
                     oilindex: Number(self.tank),
-                    interval: Number(this.interval)
+                    interval: Number(this.interval),
+                    intervalminutes: Number(this.intervalminutes)
                 };
                 var dateStr = data.startday + ' - ' + data.endday;
                 this.loading = true;

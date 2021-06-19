@@ -341,6 +341,7 @@
                 notSupportCanvas: "Your browser does not support canvas at this time",
             },
             reportForm: {
+                minute: 'min',
                 editMarker: 'Edit',
                 oilChannel: 'channel',
                 newEquipment: "New added ",
@@ -1648,6 +1649,7 @@
                 notSupportCanvas: "您的浏览器暂不支持canvas",
             },
             reportForm: {
+                minute: '分钟',
                 editMarker: '编辑备注',
                 oilChannel: '油液路',
                 newEquipment: "新增设备",
