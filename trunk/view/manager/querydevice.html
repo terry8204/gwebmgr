@@ -281,6 +281,11 @@
                                                     <img :src="'./images/carstate/1_green_0.png'" style="width: 28px;height: 28px;">
                                                 </div>
                                             </li>
+                                            <li @click="selectedIcon(2)" :class="{'ivu-select-item-focus':icon == '1'}">
+                                                <div>
+                                                    <img :src="'./images/carstate/2_green_0.png'" style="width: 28px;height: 28px;">
+                                                </div>
+                                            </li>
                                         </ul>
                                     </transition>
                                 </div>

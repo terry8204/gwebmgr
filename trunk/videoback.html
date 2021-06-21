@@ -825,7 +825,7 @@
                         this.flvPlayer.destroy();
                         this.flvPlayer = null;
                         this.playerStateTip = lang.$t('videoback.stopPlay');
-
+                        this.startTimes = null;
                     };
 
 
@@ -1144,6 +1144,7 @@
                                 if (startPlayerTimer) {
                                     clearTimeout(startPlayerTimer);
                                 }
+                                me.startTimes = Date.now();
                                 me.switchflvPlayer(videoUrl, audioUrl);
                             } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                                 me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
@@ -1153,6 +1154,7 @@
                                     clearTimeout(startPlayerTimer);
                                 }
                                 if (record) {
+                                    me.startTimes = Date.now();
                                     me.switchflvPlayer(videoUrl, audioUrl);
                                 }
                             }
@@ -1239,6 +1241,7 @@
                             if (startPlayerTimer) {
                                 clearTimeout(startPlayerTimer);
                             }
+                            me.startTimes = Date.now();
                             me.switchflvPlayer(videoUrl, audioUrl);
                         } else if (status === CMD_SEND_OVER_RETRY_TIMES) {
                             me.$Message.error(lang.$t('monitor.CMD_SEND_OVER_RETRY_TIMES'));
@@ -1247,6 +1250,7 @@
                             if (startPlayerTimer) {
                                 clearTimeout(startPlayerTimer);
                             }
+                            me.startTimes = Date.now();
                             me.switchflvPlayer(videoUrl, audioUrl);
                         }
                     }, function() {
@@ -1617,6 +1621,7 @@
                     });
                     player.addEventListener('pause', function() {
                         that.playerStateTip = lang.$t('video.pause');
+                        that.startTimes = null;
                     });
                     player.addEventListener('waiting', function() {
                         that.playerStateTip = lang.$t('video.waiting');
@@ -1629,11 +1634,31 @@
 
                     that.queryDownloadTasks();
 
+                    var interval = 0;
+
+                    that.startTimes = null;
+
                     setInterval(function() {
-                        if (that.isTable == 'downloadfile') {
+
+                        if (that.isTable == 'downloadfile' && interval >= 10) {
                             that.queryDownloadTasks();
+                            interval = 0;
                         }
-                    }, 10000)
+
+                        interval++;
+                        var nowTime = Date.now();
+
+                        if (that.startTimes != null && (nowTime - that.startTimes) > 1000 * 60 * 3) {
+                            if (that.flvPlayer) {
+                                that.flvPlayer.pause();
+                                that.flvPlayer.unload();
+                                setTimeout(function() {
+                                    that.startTimes = null;
+                                    that.playerStateTip = that.$t('video.threeMinutes');
+                                }, 1000)
+                            }
+                        }
+                    }, 1000)
 
                     that.initWebSocket();
                 });
