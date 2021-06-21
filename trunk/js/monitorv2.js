@@ -721,7 +721,12 @@ var monitor = {
                     }, 1000);
                 };
             } catch (error) {
-                vRoot.$Message.error(this.$t('monitor.browserDoesNotSupportRecording'));
+                if (!ishttps) {
+                    this.$Message.error(this.$t('monitor.httpsTips'));
+                    return;
+                } else {
+                    vRoot.$Message.error(this.$t('monitor.browserDoesNotSupportRecording'));
+                }
             }
             return false;
         },
@@ -749,6 +754,10 @@ var monitor = {
         },
         openDuijiang: function() {
             if (this.currentVideoDeviceInfo.deviceId == null) {
+                return;
+            }
+            if (!ishttps) {
+                this.$Message.error(this.$t('monitor.httpsTips'));
                 return;
             }
             if (isRecordingRights == false) {
