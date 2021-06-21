@@ -214,6 +214,7 @@ var monitor = {
             isMouseoverTop35: false,
             isLuyin: false,
             isShowYunTai: false,
+            isOpenDuijiang: false,
             isOpenJianting: false,
             listingChoice: 'duijiang',
             brightness: 128, //1     亮度
@@ -667,19 +668,7 @@ var monitor = {
                 audioPlayer.destroy();
                 audioPlayer = null;
             };
-            // audioPlayer = flvjs.createPlayer({
-            //     type: 'flv',
-            //     url: url,
-            //     isLive: true,
-            //     hasAudio: true,
-            //     hasVideo: false,
-            //     withCredentials: false,
-            // }, {
-            //     enableWorker: false,
-            //     enableStashBuffer: false,
-            //     isLive: true,
-            //     lazyLoad: false
-            // });
+
             audioPlayer = mpegts.createPlayer({
                 type: 'flv',
                 url: url,
@@ -687,10 +676,6 @@ var monitor = {
                 hasAudio: true,
                 hasVideo: false,
             }, {
-                //                enableWorker: true,
-                //                lazyLoadMaxDuration: 3 * 60,
-                //                seekType: 'range',
-                //                liveBufferLatencyChasing: true,
                 enableStashBuffer: !1,
                 stashInitialSize: 128,
                 fixAudioTimestampGap: !1
@@ -701,11 +686,23 @@ var monitor = {
             audioPlayer.play();
         },
         onMousedown: function() {
+
             var that = this;
-            if (!that.isOpenJianting) {
+
+            if (!that.isOpenDuijiang) {
                 that.$Message.error(this.$t('monitor.openJianTingTip'));
                 return;
             };
+
+            if (!ishttps) {
+                this.$Message.error(this.$t('monitor.httpsTips'));
+                return;
+            }
+            if (isRecordingRights == false) {
+                this.$Message.error(this.$t('monitor.browserDoesNotSupportRecording'));
+                return;
+            };
+
             try {
                 that.isLuyin = true;
                 that.setSpeechTimer();
@@ -730,6 +727,98 @@ var monitor = {
             }
             return false;
         },
+        openDuijiang: function() {
+            if (this.currentVideoDeviceInfo.deviceId == null) {
+                return;
+            }
+            var me = this;
+            if (this.isOpenDuijiang) {
+                this.isOpenDuijiang = false;
+                audioPlayer.pause();
+                audioPlayerTime = 0;
+                me.$Message.success(me.$t('monitor.closeSucc'));
+                me.audioPlayerTip = me.$t('monitor.duiJiangYiclose');
+                var url = myUrls.stopAudio();
+                utils.sendAjax(url, {
+                    deviceid: this.currentVideoDeviceInfo.deviceId,
+                    channel: Number(this.audiochannel),
+                }, function() {});
+            } else {
+
+                this.loading = true;
+                var datatype = 2;
+                // if (this.listingChoice == "duijiang") {
+                //     datatype = 2;
+                // }
+
+                var url = myUrls.startAudio();
+                var data = {
+                    deviceid: this.currentVideoDeviceInfo.deviceId,
+                    channel: Number(this.audiochannel),
+                    datatype: datatype,
+                    playtype: ishttps ? 'flvs' : 'flv',
+                }
+                utils.sendAjax(url, data, function(resp) {
+                    me.loading = false;
+                    if (resp.status === 6) {
+                        me.isOpenDuijiang = true;
+                        me.isOpenJianting = false;
+                        me.$Message.success(me.$t('monitor.openSucc'));
+                        audioPlayerTime = Date.now();
+                        me.initAudioPlayer(resp.record.playurlaudio);
+                        me.audioPlayerTip = me.$t('monitor.openDuiJianTip1');
+                    } else {
+                        me.$Message.error(me.$t('monitor.openFail'));
+                    }
+                });
+            }
+
+        },
+        openJianTing: function() {
+
+            if (this.currentVideoDeviceInfo.deviceId == null) {
+                return;
+            }
+            var me = this;
+            if (this.isOpenJianting) {
+                this.isOpenJianting = false;
+                audioPlayer.pause();
+                audioPlayerTime = 0;
+                me.$Message.success(me.$t('monitor.closeSucc'));
+                me.audioPlayerTip = me.$t('monitor.jiantingYiclose');
+                var url = myUrls.stopAudio();
+                utils.sendAjax(url, {
+                    deviceid: this.currentVideoDeviceInfo.deviceId,
+                    channel: Number(this.audiochannel),
+                }, function() {});
+            } else {
+
+                this.loading = true;
+                var datatype = 3;
+                var url = myUrls.startAudio();
+                var data = {
+                    deviceid: this.currentVideoDeviceInfo.deviceId,
+                    channel: Number(this.audiochannel),
+                    datatype: datatype,
+                    playtype: ishttps ? 'flvs' : 'flv',
+                }
+                utils.sendAjax(url, data, function(resp) {
+                    me.loading = false;
+                    if (resp.status === 6) {
+                        me.isOpenJianting = true;
+                        me.isOpenDuijiang = false;
+                        me.$Message.success(me.$t('monitor.openSucc'));
+                        audioPlayerTime = Date.now();
+                        me.initAudioPlayer(resp.record.playurlaudio);
+                        me.audioPlayerTip = me.$t('monitor.openJianTingTip1');
+                    } else {
+                        me.$Message.error(me.$t('monitor.openFail'));
+                    }
+                });
+            }
+
+
+        },
         setSpeechTimer: function() {
             var index = [9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6, 7, 8, 9];
             var num = index.length,
@@ -752,59 +841,7 @@ var monitor = {
             me.saturate = 128;
             me.exposure = 128;
         },
-        openDuijiang: function() {
-            if (this.currentVideoDeviceInfo.deviceId == null) {
-                return;
-            }
-            if (!ishttps) {
-                this.$Message.error(this.$t('monitor.httpsTips'));
-                return;
-            }
-            if (isRecordingRights == false) {
-                this.$Message.error(this.$t('monitor.browserDoesNotSupportRecording'));
-                return;
-            };
-            var me = this;
-            if (this.isOpenJianting) {
-                this.isOpenJianting = false;
-                audioPlayer.pause();
-                audioPlayerTime = 0;
-                me.$Message.success(me.$t('monitor.closeSucc'));
-                me.audioPlayerTip = me.$t('monitor.jiantingYiclose');
-                var url = myUrls.stopAudio();
-                utils.sendAjax(url, {
-                    deviceid: this.currentVideoDeviceInfo.deviceId,
-                    channel: Number(this.audiochannel),
-                }, function() {});
-            } else {
-                this.loading = true;
-                var datatype = 3;
-                if (this.listingChoice == "duijiang") {
-                    datatype = 2;
-                }
 
-                var url = myUrls.startAudio();
-                var data = {
-                    deviceid: this.currentVideoDeviceInfo.deviceId,
-                    channel: Number(this.audiochannel),
-                    datatype: datatype,
-                    playtype: ishttps ? 'flvs' : 'flv',
-                }
-                utils.sendAjax(url, data, function(resp) {
-                    me.loading = false;
-                    if (resp.status === 6) {
-                        me.isOpenJianting = true;
-                        me.$Message.success(me.$t('monitor.openSucc'));
-                        audioPlayerTime = Date.now();
-                        me.initAudioPlayer(resp.record.playurl);
-                        me.audioPlayerTip = me.$t('monitor.openJianTingTip1');
-                    } else {
-                        me.$Message.error(me.$t('monitor.openFail'));
-                    }
-                });
-            }
-
-        },
         handleSetPlayParamter: function() {
 
             if (this.currentVideoDeviceInfo.deviceId == null) {
