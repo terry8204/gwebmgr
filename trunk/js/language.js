@@ -578,7 +578,7 @@
                 loadingStatusDetails: 'Loading Status Details',
                 addOil: 'Refuel Report',
                 reduceOil: 'Fuel Down Report',
-                oilWorkingHours: 'Oil Working Hours',
+                oilWorkingHours: 'Fuel Working Hours',
                 idleReport: 'Idle Report',
                 tempReport: 'Temperature Reports',
                 temperatureChart: 'Temperature Chart',
