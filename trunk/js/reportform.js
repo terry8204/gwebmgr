@@ -6871,9 +6871,9 @@ function timeOilConsumption(groupslist) {
                 { title: vRoot.$t('reportForm.arrivedtimeStr'), key: 'arrivedtimeStr', sortable: true, width: 160 },
                 { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 110 },
                 { title: vRoot.$t('reportForm.totalOil'), key: 'totalad', width: 110 },
-                { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 90 },
-                { title: vRoot.$t('reportForm.reissue'), key: 'reissue', width: 80 },
-                { title: vRoot.$t('reportForm.status'), key: 'strstatus', width: 500 },
+                { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 110 },
+                { title: vRoot.$t('reportForm.reissue'), key: 'reissue', width: 120 },
+                { title: vRoot.$t('reportForm.status'), key: 'strstatus', width: 300 },
                 {
                     title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
                     width: 210,
