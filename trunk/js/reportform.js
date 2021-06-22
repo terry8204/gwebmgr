@@ -7314,6 +7314,9 @@ function timeOilConsumption(groupslist) {
                                     srcad1.push(record.srcad1);
                                     srcad2.push(record.srcad2);
                                     srcad3.push(record.srcad3);
+                                    if (!isZh) {
+                                        record.strstatus = record.strstatusen;
+                                    }
                                     devStates.push(record.strstatus);
                                     devReissue.push(record.reissue == 0 ? self.$t('header.no') : self.$t('header.yes'));
                                 });

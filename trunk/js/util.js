@@ -660,22 +660,22 @@ var utils = {
         var statusStr = '';
         switch (loadstatus) {
             case 0x00:
-                statusStr = isZh ? '空车' : '';
+                statusStr = isZh ? '空车' : 'Empty';
                 break;
             case 0x01:
-                statusStr = isZh ? '半载' : '';
+                statusStr = isZh ? '半载' : 'Half';
                 break;
             case 0x02:
-                statusStr = isZh ? '超载' : '';
+                statusStr = isZh ? '超载' : 'Over';
                 break;
             case 0x03:
-                statusStr = isZh ? '满载' : '';
+                statusStr = isZh ? '满载' : 'Full';
                 break;
             case 0x04:
-                statusStr = isZh ? '装载' : '';
+                statusStr = isZh ? '装载' : 'Loading';
                 break;
             case 0x05:
-                statusStr = isZh ? '卸载' : '';
+                statusStr = isZh ? '卸载' : 'Unloading';
                 break;
         }
 
