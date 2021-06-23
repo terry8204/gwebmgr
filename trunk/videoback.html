@@ -1221,8 +1221,8 @@
                         isRequsetPlaying = false;
                         var record = resp.record,
                             status = resp.status;
-                        var videoUrl = record[0].playurlvideo;
-                        var audioUrl = record[0].playurlaudio;
+                        var videoUrl = record.playurlvideo;
+                        var audioUrl = record.playurlaudio;
 
                         if (status == CMD_SEND_RESULT_UNCONFIRM) {
                             me.$Message.error(lang.$t('monitor.CMD_SEND_RESULT_UNCONFIRM'));
