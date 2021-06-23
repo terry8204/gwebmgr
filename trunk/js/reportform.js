@@ -9774,13 +9774,16 @@ function temperature(groupslist) {
                         formatter: function(v) {
                             var data = time + ' : ' + v[0].name + '<br/>';
                             for (i in v) {
-                                if (v[i].seriesName != time) {
-                                    if (v[i].seriesName == speed) {
-                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
-                                    } else {
-                                        data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                if (v[i].seriesName) {
+                                    if (v[i].seriesName != time) {
+                                        if (v[i].seriesName == speed) {
+                                            data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                        } else {
+                                            data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                        }
                                     }
                                 }
+
                             }
                             return data;
                         }
