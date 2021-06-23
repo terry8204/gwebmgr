@@ -1082,7 +1082,7 @@
                         </div> -->
                     </div>
 
-                    <Modal v-model="setupVideoModal" width="800">
+                    <Modal v-model="setupVideoModal" width="800" :mask-closable="false">
                         <p slot="header" style="color:#f60;text-align:center">
                             <Icon type="ios-settings"></Icon>
                             <span>{{$t('monitor.videoSettings')}} - {{currentDeviceName}}</span>
@@ -1255,102 +1255,6 @@
                                     <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
                                     <i-Col span="12" style="height: 100%;line-height:32px;padding-left: 3px;">
                                         <Input-Number :max="8" :min="1" v-model="videochannelcount"></Input-Number>
-                                    </i-Col>
-                                </Row>
-                                <Row style="height:32px;margin: 10px 0;">
-                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        {{$t('videoSettings.channel1')}}
-                                    </i-Col>
-                                    <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                    <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                        <i-select placement="top" v-model="physicalchannel1" style="width:100px">
-                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
-                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
-                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
-                                        </i-select>
-                                    </i-Col>
-                                    <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 1">
-                                        {{$t('videoSettings.channel2')}}
-                                    </i-Col>
-                                    <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 1">:</i-Col>
-                                    <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 1">
-                                        <i-select placement="top" v-model="physicalchannel2" style="width:100px" v-show="videochannelcount > 1">
-                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
-                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
-                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
-                                        </i-select>
-                                    </i-Col>
-                                </Row>
-                                <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 2">
-                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        {{$t('videoSettings.channel3')}}
-                                    </i-Col>
-                                    <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                    <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                        <i-select placement="top" v-model="physicalchannel3" style="width:100px">
-                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
-                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
-                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
-                                        </i-select>
-                                    </i-Col>
-                                    <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 3">
-                                        {{$t('videoSettings.channel4')}}
-                                    </i-Col>
-                                    <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 3">:</i-Col>
-                                    <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 3">
-                                        <i-select placement="top" v-model="physicalchannel4" style="width:100px">
-                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
-                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
-                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
-                                        </i-select>
-                                    </i-Col>
-                                </Row>
-                                <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 4">
-                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        {{$t('videoSettings.channel5')}}
-                                    </i-Col>
-                                    <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                    <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                        <i-select placement="top" v-model="physicalchannel5" style="width:100px">
-                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
-                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
-                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
-                                        </i-select>
-                                    </i-Col>
-                                    <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 5">
-                                        {{$t('videoSettings.channel6')}}
-                                    </i-Col>
-                                    <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 5">:</i-Col>
-                                    <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 5">
-                                        <i-select placement="top" v-model="physicalchannel6" style="width:100px">
-                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
-                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
-                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
-                                        </i-select>
-                                    </i-Col>
-                                </Row>
-                                <Row style="height:32px;margin: 10px 0;" v-show="videochannelcount > 6">
-                                    <i-Col span="5" style="height: 100%;line-height:32px;text-align: right;">
-                                        {{$t('videoSettings.channel7')}}
-                                    </i-Col>
-                                    <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;">:</i-Col>
-                                    <i-Col span="4" style="height: 100%;line-height:32px;padding-left: 3px;">
-                                        <i-select placement="top" v-model="physicalchannel7" style="width:100px">
-                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
-                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
-                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
-                                        </i-select>
-                                    </i-Col>
-                                    <i-Col span="2" style="height: 100%;line-height:32px;text-align: right;" v-show="videochannelcount > 7">
-                                        {{$t('videoSettings.channel8')}}
-                                    </i-Col>
-                                    <i-Col span="1" style="height: 100%;line-height:32px;text-align: center;" v-show="videochannelcount > 7">:</i-Col>
-                                    <i-Col span="5" style="height: 100%;line-height:32px;padding-left: 3px;" v-show="videochannelcount > 7">
-                                        <i-select placement="top" v-model="physicalchannel8" style="width:100px">
-                                            <i-option value="0">{{$t('videoSettings.audioAndVideo')}}</i-option>
-                                            <i-option value="1">{{$t('videoSettings.audio')}}</i-option>
-                                            <i-option value="2">{{$t('videoSettings.video')}}</i-option>
-                                        </i-select>
                                     </i-Col>
                                 </Row>
                                 <Row style="height:32px;margin: 10px 0;">

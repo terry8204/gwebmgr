@@ -238,14 +238,7 @@ var monitor = {
                 deviceName: '',
                 videochannelcount: 4,
             },
-            physicalchannel1: '2',
-            physicalchannel2: '2',
-            physicalchannel3: '2',
-            physicalchannel4: '2',
-            physicalchannel5: '2',
-            physicalchannel6: '2',
-            physicalchannel7: '2',
-            physicalchannel8: '2',
+
             // 音视频参数设置
             realtimebitratemode: '',
             storebitratemode: '',
@@ -867,15 +860,8 @@ var monitor = {
                 needuploadfilename: this.needuploadfilename ? 1 : 0,
                 videotimestamptype: Number(this.videotimestamptype),
                 videochannelcount: this.videochannelcount,
-                channelinfos: []
             }
 
-            for (var i = 1; i <= this.videochannelcount; i++) {
-                data.channelinfos.push({
-                    physicalchannel: i,
-                    channeltype: Number(this['physicalchannel' + i])
-                });
-            }
 
             this.loading = true;
             utils.sendAjax(url, data, function(resp) {
@@ -908,26 +894,26 @@ var monitor = {
                     me.needuploadfilename = respData.needuploadfilename == 1 ? true : false;
                     me.videotimestamptype = String(respData.videotimestamptype);
                     me.videochannelcount = Number(respData.videochannelcount);
-                    var channelinfos = respData.channelinfos;
-                    channelinfos.forEach(function(item) {
-                        if (item.physicalchannel == 1) {
-                            me.physicalchannel1 = String(item.channeltype);
-                        } else if (item.physicalchannel == 2) {
-                            me.physicalchannel2 = String(item.channeltype);
-                        } else if (item.physicalchannel == 3) {
-                            me.physicalchannel3 = String(item.channeltype);
-                        } else if (item.physicalchannel == 4) {
-                            me.physicalchannel4 = String(item.channeltype);
-                        } else if (item.physicalchannel == 5) {
-                            me.physicalchannel5 = String(item.channeltype);
-                        } else if (item.physicalchannel == 6) {
-                            me.physicalchannel6 = String(item.channeltype);
-                        } else if (item.physicalchannel == 7) {
-                            me.physicalchannel7 = String(item.channeltype);
-                        } else if (item.physicalchannel == 8) {
-                            me.physicalchannel8 = String(item.channeltype);
-                        }
-                    });
+                    // var channelinfos = respData.channelinfos;
+                    // channelinfos.forEach(function(item) {
+                    //     if (item.physicalchannel == 1) {
+                    //         me.physicalchannel1 = String(item.channeltype);
+                    //     } else if (item.physicalchannel == 2) {
+                    //         me.physicalchannel2 = String(item.channeltype);
+                    //     } else if (item.physicalchannel == 3) {
+                    //         me.physicalchannel3 = String(item.channeltype);
+                    //     } else if (item.physicalchannel == 4) {
+                    //         me.physicalchannel4 = String(item.channeltype);
+                    //     } else if (item.physicalchannel == 5) {
+                    //         me.physicalchannel5 = String(item.channeltype);
+                    //     } else if (item.physicalchannel == 6) {
+                    //         me.physicalchannel6 = String(item.channeltype);
+                    //     } else if (item.physicalchannel == 7) {
+                    //         me.physicalchannel7 = String(item.channeltype);
+                    //     } else if (item.physicalchannel == 8) {
+                    //         me.physicalchannel8 = String(item.channeltype);
+                    //     }
+                    // });
                     me.$Message.success(me.$t('monitor.querySucc'));
                 } else {
                     me.$Message.error(me.$t('monitor.queryFail'));
