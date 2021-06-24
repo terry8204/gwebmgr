@@ -8698,6 +8698,160 @@ function oilLeakageReport(groupslist) {
 
 }
 
+
+function powerWaste(groupslist) {
+    vueInstanse = new Vue({
+        el: "#power-waste",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            groupslist: [],
+        },
+        mixins: [reportMixin],
+        methods: {
+            onClickQuery: function() {
+                var self = this;
+                if (!this.queryDeviceId) {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                    return;
+                };
+                var data = {
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                    offset: timeDifference
+                };
+                this.loading = true;
+                utils.sendAjax(myUrls.reportOilConsumptionRate(), data, function(resp) {
+                    self.loading = false;
+                    if (resp.status == 0) {
+                        var record = resp.records[0];
+                        if (record) {
+                            console.log(record);
+                        } else {
+                            self.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
+                })
+            },
+            calcTableHeight: function() {},
+            getChartsOption: function() {
+                var time = "时间"
+                return {
+                    title: {
+                        text: time,
+                        // x: 'center',
+                        // textStyle: {
+                        //     fontSize: 12,
+                        //     fontWeight: 'bolder',
+                        //     color: '#333'
+                        // }
+                    },
+                    grid: {
+                        top: 30,
+                        left: 60,
+                        right: 60,
+                        bottom: 40,
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: function(v) {
+                            var data = time + ' : ' + v[0].name + '<br/>';
+                            for (i in v) {
+                                if (v[i].seriesName && v[i].seriesName != time) {
+                                    data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: {
+                                show: true
+                            }
+                        },
+                        itemSize: 14
+                    },
+                    dataZoom: [{
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        backgroundColor: '#EDEDED',
+                        fillerColor: 'rgb(54, 72, 96,0.5)',
+                        //fillerColor:'rgb(244,129,38,0.8)',
+                        bottom: 0
+                    }, {
+                        type: "inside",
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        bottom: 0
+                    }],
+                    xAxis: [{
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLine: {
+                            onZero: false
+                        },
+                        data: this.recvtime
+                    }],
+                    yAxis: [{
+                            name: '', //totoil + '/' + speed
+                            type: 'value',
+                            nameTextStyle: 10,
+                            nameGap: 5,
+
+                        },
+                        // {
+                        //     name: '', //dis
+                        //     type: 'value',
+                        //     nameTextStyle: 10,
+                        //     nameGap: 2,
+                        //     min: this.disMin,
+                        //     axisLabel: {
+                        //         formatter: '{value} km',
+                        //     },
+                        //     axisTick: {
+                        //         show: false
+                        //     }
+                        // }
+                    ],
+                    series: [{
+                        name: time,
+                        type: 'line',
+                        symbol: 'none',
+                        yAxisIndex: 1,
+                        color: '#F0805A',
+                        smooth: true,
+                        data: this.recvtime
+                    }]
+                };
+            },
+        },
+        mounted: function() {
+            this.groupslist = groupslist;
+
+            // this.chartsIns = echarts.init(document.getElementById('charts'));
+            // this.charts();
+
+        }
+    });
+
+}
+
+
+
+
 function oilWorkingHours(groupslist) {
     vueInstanse = new Vue({
         el: "#oil-working-hours",
@@ -11268,7 +11422,7 @@ var reportForm = {
                         { title: me.$t("reportForm.dateOilConsumption"), name: 'timeOilConsumption', icon: 'ios-timer-outline' },
                         { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
-
+                        { title: "功耗率", name: 'powerWaste', icon: 'ios-trending-down' },
                     ]
                 },
                 {
@@ -11428,6 +11582,9 @@ var reportForm = {
                         break;
                     case 'oilleakagereport.html':
                         oilLeakageReport(groupslist);
+                        break;
+                    case 'powerwaste.html':
+                        powerWaste(groupslist);
                         break;
                     case 'oilworkinghours.html':
                         oilWorkingHours(groupslist);

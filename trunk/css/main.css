@@ -1785,3 +1785,17 @@ div.icon_example>span {
 div.warning-wraper .ivu-table-small td {
     height: 30px;
 }
+
+#power-waste .chats-container {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    top: 55px;
+}
+
+#power-waste .chats-container>div {
+    height: 50%;
+    width: 33.333%;
+    float: left;
+}

@@ -910,6 +910,9 @@ var myUrls = {
     reportOilIdle: function() {
         return this.apihosts + 'webapi?action=reportoilidle&token=' + token;
     },
+    reportOilConsumptionRate: function() {
+        return this.apihosts + 'webapi?action=reportoilconsumptionrate&token=' + token;
+    },
 }
 
 
