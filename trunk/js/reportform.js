@@ -8792,7 +8792,7 @@ function powerWaste(groupslist) {
                         }
                     },
                     legend: {
-                        data: [mileage, oilrate, speed, altitude, voltage, oil]
+                        data: [mileage, oil, oilrate, speed, altitude, voltage, ]
                     },
                     grid: {
                         top: 30,
@@ -8800,6 +8800,23 @@ function powerWaste(groupslist) {
                         right: 60,
                         bottom: 40,
                     },
+                    dataZoom: [{
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        backgroundColor: '#EDEDED',
+                        fillerColor: 'rgb(54, 72, 96,0.5)',
+                        bottom: 0
+                    }, {
+                        type: "inside",
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        bottom: 0
+                    }],
                     tooltip: {
                         trigger: 'axis',
                         formatter: function(v) {
@@ -8836,42 +8853,43 @@ function powerWaste(groupslist) {
                             data: this.mileages,
                             type: 'line',
                             smooth: true,
-                            color: '#29DB6F'
-                        }, {
-                            name: oilrate,
-                            data: this.oilrates,
-                            type: 'line',
-                            smooth: true,
-                            color: '#e4393c'
-                        },
-                        {
-                            name: speed,
-                            data: this.speeds,
-                            type: 'line',
-                            smooth: true,
-                            color: '#996179'
-                        },
-                        {
-                            name: altitude,
-                            data: this.altitudes,
-                            type: 'line',
-                            smooth: true,
-                            color: '#ECC849'
-                        },
-                        {
-                            name: voltage,
-                            data: this.voltages,
-                            type: 'line',
-                            smooth: true,
-                            color: '#00A846'
+                            color: '#3CB371'
                         },
                         {
                             name: oil,
                             data: this.oils,
                             type: 'line',
                             smooth: true,
-                            color: '#007ACC'
+                            color: '#C1232B'
+                        }, {
+                            name: oilrate,
+                            data: this.oilrates,
+                            type: 'line',
+                            smooth: true,
+                            color: '#FF4500'
                         },
+                        {
+                            name: speed,
+                            data: this.speeds,
+                            type: 'line',
+                            smooth: true,
+                            color: '#4876FF'
+                        },
+                        {
+                            name: altitude,
+                            data: this.altitudes,
+                            type: 'line',
+                            smooth: true,
+                            color: '#881280'
+                        },
+                        {
+                            name: voltage,
+                            data: this.voltages,
+                            type: 'line',
+                            smooth: true,
+                            color: '#710000'
+                        },
+
                     ]
 
                 };
