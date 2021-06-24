@@ -1804,3 +1804,14 @@ div.warning-wraper .ivu-table-small td {
     width: 100%;
     height: 100%;
 }
+
+#idle-report .ivu-tabs-nav .ivu-tabs-tab:last-child,
+#acc-details .ivu-tabs-nav .ivu-tabs-tab:last-child,
+#rotate-report .ivu-tabs-nav .ivu-tabs-tab:last-child,
+#io-record .ivu-tabs-nav .ivu-tabs-tab:last-child,
+#speeding-report .ivu-tabs-nav .ivu-tabs-tab:last-child,
+#refueling-report .ivu-tabs-nav .ivu-tabs-tab:last-child,
+#oil-leakage-report .ivu-tabs-nav .ivu-tabs-tab:last-child,
+#weight-summary .ivu-tabs-nav .ivu-tabs-tab:last-child {
+    visibility: hidden;
+}
