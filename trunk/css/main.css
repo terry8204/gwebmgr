@@ -1795,9 +1795,8 @@ div.warning-wraper .ivu-table-small td {
 }
 
 #power-waste .chats-container>div {
-    height: 50%;
-    width: 50%;
-    float: left;
+    height: 100%;
+    width: 100%;
 }
 
 #power-waste .chats-container>div>div {

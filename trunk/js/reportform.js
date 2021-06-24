@@ -8735,25 +8735,32 @@ function powerWaste(groupslist) {
                     if (resp.status == 0) {
                         var record = resp.records[0];
                         if (record) {
-                            console.log(record);
                             var records = record.records;
                             var recvtime = [];
                             var oilrates = [];
                             var speeds = [];
                             var altitudes = [];
                             var voltages = [];
-                            records.forEach(function(item) {
+                            var mileages = [];
+                            var firstMile = 0;
+                            records.forEach(function(item, index) {
+                                if (index == 0) {
+                                    firstMile = item.totaldistance;
+                                };
                                 oilrates.push(item.oilrate);
                                 speeds.push(item.speed / 1000);
                                 altitudes.push(item.altitude);
                                 voltages.push(item.voltage / 10);
-                                recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference))
+                                recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
+                                mileages.push((item.totaldistance - firstMile) / 1000)
                             })
                             me.recvtime = recvtime;
-                            me.chartsIns1.setOption(me.getChartsOption('oilrate', oilrates));
-                            me.chartsIns2.setOption(me.getChartsOption('speed', speeds));
-                            me.chartsIns3.setOption(me.getChartsOption('altitude', altitudes));
-                            me.chartsIns4.setOption(me.getChartsOption('voltage', voltages));
+                            me.oilrates = oilrates;
+                            me.speeds = speeds;
+                            me.altitudes = altitudes;
+                            me.voltages = voltages;
+                            me.mileages = mileages;
+                            me.chartsIns1.setOption(me.getChartsOption());
                         } else {
                             me.$Message.error(me.$t("reportForm.noRecord"));
                         }
@@ -8762,18 +8769,26 @@ function powerWaste(groupslist) {
                     }
                 })
             },
-            getChartsOption: function(titleKey, seriesData) {
+            getChartsOption: function() {
                 var time = vRoot.$t('reportForm.time');
-                var titleStr = vRoot.$t('reportForm.' + titleKey);
+                var oilrate = vRoot.$t('reportForm.oilrate');
+                var speed = vRoot.$t('reportForm.speed');
+                var altitude = vRoot.$t('reportForm.altitude');
+                var voltage = vRoot.$t('reportForm.voltage');
+                var mileage = vRoot.$t('reportForm.mileage');
+
                 return {
                     title: {
-                        text: titleStr,
-                        x: 'center',
+                        text: oilrate,
+                        x: 'left',
                         textStyle: {
-                            fontSize: 12,
+                            fontSize: 16,
                             fontWeight: 'bolder',
                             color: '#333'
                         }
+                    },
+                    legend: {
+                        data: [mileage, oilrate, speed, altitude, voltage]
                     },
                     grid: {
                         top: 30,
@@ -8784,23 +8799,23 @@ function powerWaste(groupslist) {
                     tooltip: {
                         trigger: 'axis',
                         formatter: function(v) {
-                            var data = '';
+                            var axisValue = v[0].axisValue;
+                            var data = time + ' : ' + axisValue + '<br/>';
                             for (i in v) {
-                                if (v[i].seriesName) {
-                                    var axisValue = v[i].axisValue;
-                                    var value = v[i].value;
-                                    data += time + ' ：' + axisValue + '<br/>';
-                                    data += titleStr + ' ：' + value;
+                                var seriesName = v[i].seriesName;
+                                if (seriesName) {
+                                    if (seriesName == mileage) {
+                                        data += seriesName + ' : ' + v[i].value + 'Km' + '<br/>';
+                                    } else if (seriesName == oilrate) {
+                                        data += seriesName + ' : ' + v[i].value + 'L' + '<br/>';
+                                    } else if (seriesName == speed) {
+                                        data += seriesName + ' : ' + v[i].value + 'Km/h' + '<br/>';
+                                    } else if (seriesName == altitude) {
+                                        data += seriesName + ' : ' + v[i].value + 'm' + '<br/>';
+                                    } else if (seriesName == voltage) {
+                                        data += seriesName + ' : ' + v[i].value + 'V' + '<br/>';
+                                    }
 
-                                    if (titleKey == 'speed') {
-                                        data += 'Km/h';
-                                    } else if (titleKey == 'altitude') {
-                                        data += 'm';
-                                    } else if (titleKey == 'voltage') {
-                                        data += 'V';
-                                    } else {
-                                        data += 'L';
-                                    };
                                 }
                             }
                             return data;
@@ -8814,9 +8829,35 @@ function powerWaste(groupslist) {
                         type: 'value'
                     },
                     series: [{
-                        data: seriesData,
-                        type: 'line'
-                    }]
+                            name: mileage,
+                            data: this.mileages,
+                            type: 'line',
+                            smooth: true,
+                        }, {
+                            name: oilrate,
+                            data: this.oilrates,
+                            type: 'line',
+                            smooth: true,
+                        },
+                        {
+                            name: speed,
+                            data: this.speeds,
+                            type: 'line',
+                            smooth: true,
+                        },
+                        {
+                            name: altitude,
+                            data: this.altitudes,
+                            type: 'line',
+                            smooth: true,
+                        },
+                        {
+                            name: voltage,
+                            data: this.voltages,
+                            type: 'line',
+                            smooth: true,
+                        },
+                    ]
 
                 };
             },
@@ -8825,22 +8866,18 @@ function powerWaste(groupslist) {
             var me = this;
             this.groupslist = groupslist;
             this.recvtime = [];
+            this.oilrates = [];
+            this.speeds = [];
+            this.altitudes = [];
+            this.voltages = [];
+            this.mileages = [];
             this.chartsIns1 = echarts.init(document.getElementById('charts1'));
-            this.chartsIns2 = echarts.init(document.getElementById('charts2'));
-            this.chartsIns3 = echarts.init(document.getElementById('charts3'));
-            this.chartsIns4 = echarts.init(document.getElementById('charts4'));
             setTimeout(function() {
-                me.chartsIns1.setOption(me.getChartsOption('oilrate', []));
-                me.chartsIns2.setOption(me.getChartsOption('speed', []));
-                me.chartsIns3.setOption(me.getChartsOption('altitude', []));
-                me.chartsIns4.setOption(me.getChartsOption('voltage', []));
+                me.chartsIns1.setOption(me.getChartsOption());
             }, 500);
 
             window.onresize = function() {
                 me.chartsIns1.resize();
-                me.chartsIns2.resize();
-                me.chartsIns3.resize();
-                me.chartsIns4.resize();
             }
         }
     });
