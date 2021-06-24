@@ -1796,6 +1796,11 @@ div.warning-wraper .ivu-table-small td {
 
 #power-waste .chats-container>div {
     height: 50%;
-    width: 33.333%;
+    width: 50%;
     float: left;
+}
+
+#power-waste .chats-container>div>div {
+    width: 100%;
+    height: 100%;
 }

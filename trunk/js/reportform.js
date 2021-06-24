@@ -8710,7 +8710,7 @@ function powerWaste(groupslist) {
         mixins: [reportMixin],
         methods: {
             onClickQuery: function() {
-                var self = this;
+                var me = this;
                 if (!this.queryDeviceId) {
                     this.$Message.error(this.$t("reportForm.selectDevTip"));
                     return;
@@ -8724,31 +8724,49 @@ function powerWaste(groupslist) {
                 };
                 this.loading = true;
                 utils.sendAjax(myUrls.reportOilConsumptionRate(), data, function(resp) {
-                    self.loading = false;
+                    me.loading = false;
                     if (resp.status == 0) {
                         var record = resp.records[0];
                         if (record) {
                             console.log(record);
+                            var records = record.records;
+                            var recvtime = [];
+                            var oilrates = [];
+                            var speeds = [];
+                            var altitudes = [];
+                            var voltages = [];
+                            records.forEach(function(item) {
+                                oilrates.push(item.oilrate);
+                                speeds.push(item.speed);
+                                altitudes.push(item.altitude);
+                                voltages.push(item.voltage);
+                                recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference))
+                            })
+                            me.recvtime = recvtime;
+                            me.chartsIns1.setOption(me.getChartsOption('功率', oilrates));
+                            me.chartsIns2.setOption(me.getChartsOption('速度', speeds));
+                            me.chartsIns3.setOption(me.getChartsOption('高度', altitudes));
+                            me.chartsIns4.setOption(me.getChartsOption('电压', voltages));
                         } else {
-                            self.$Message.error(self.$t("reportForm.noRecord"));
+                            me.$Message.error(me.$t("reportForm.noRecord"));
                         }
                     } else {
-                        self.$Message.error(resp.cause);
+                        me.$Message.error(resp.cause);
                     }
                 })
             },
             calcTableHeight: function() {},
-            getChartsOption: function() {
-                var time = "时间"
+            getChartsOption: function(title, seriesData) {
+                var time = vRoot.$t('reportForm.time');
                 return {
                     title: {
-                        text: time,
-                        // x: 'center',
-                        // textStyle: {
-                        //     fontSize: 12,
-                        //     fontWeight: 'bolder',
-                        //     color: '#333'
-                        // }
+                        text: title,
+                        x: 'center',
+                        textStyle: {
+                            fontSize: 12,
+                            fontWeight: 'bolder',
+                            color: '#333'
+                        }
                     },
                     grid: {
                         top: 30,
@@ -8759,91 +8777,47 @@ function powerWaste(groupslist) {
                     tooltip: {
                         trigger: 'axis',
                         formatter: function(v) {
-                            var data = time + ' : ' + v[0].name + '<br/>';
+                            var data = '';
                             for (i in v) {
-                                if (v[i].seriesName && v[i].seriesName != time) {
-                                    data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                if (v[i].seriesName) {
+                                    var axisValue = v[i].axisValue;
+                                    var value = v[i].value;
+                                    data += time + ' ：' + axisValue + '<br/>';
+                                    data += title + ' ：' + value;
                                 }
                             }
                             return data;
                         }
                     },
-                    toolbox: {
-                        show: true,
-                        feature: {
-                            magicType: { show: true, type: ['line', 'bar'] },
-                            restore: { show: true },
-                            saveAsImage: {
-                                show: true
-                            }
-                        },
-                        itemSize: 14
-                    },
-                    dataZoom: [{
-                        show: true,
-                        realtime: true,
-                        start: 0,
-                        end: 100,
-                        height: 20,
-                        backgroundColor: '#EDEDED',
-                        fillerColor: 'rgb(54, 72, 96,0.5)',
-                        //fillerColor:'rgb(244,129,38,0.8)',
-                        bottom: 0
-                    }, {
-                        type: "inside",
-                        realtime: true,
-                        start: 0,
-                        end: 100,
-                        height: 20,
-                        bottom: 0
-                    }],
-                    xAxis: [{
+                    xAxis: {
                         type: 'category',
-                        boundaryGap: false,
-                        axisLine: {
-                            onZero: false
-                        },
                         data: this.recvtime
-                    }],
-                    yAxis: [{
-                            name: '', //totoil + '/' + speed
-                            type: 'value',
-                            nameTextStyle: 10,
-                            nameGap: 5,
-
-                        },
-                        // {
-                        //     name: '', //dis
-                        //     type: 'value',
-                        //     nameTextStyle: 10,
-                        //     nameGap: 2,
-                        //     min: this.disMin,
-                        //     axisLabel: {
-                        //         formatter: '{value} km',
-                        //     },
-                        //     axisTick: {
-                        //         show: false
-                        //     }
-                        // }
-                    ],
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
                     series: [{
-                        name: time,
-                        type: 'line',
-                        symbol: 'none',
-                        yAxisIndex: 1,
-                        color: '#F0805A',
-                        smooth: true,
-                        data: this.recvtime
+                        data: seriesData,
+                        type: 'line'
                     }]
+
                 };
             },
         },
         mounted: function() {
+            var me = this;
             this.groupslist = groupslist;
-
-            // this.chartsIns = echarts.init(document.getElementById('charts'));
-            // this.charts();
-
+            this.recvtime = [];
+            this.chartsIns1 = echarts.init(document.getElementById('charts1'));
+            this.chartsIns2 = echarts.init(document.getElementById('charts2'));
+            this.chartsIns3 = echarts.init(document.getElementById('charts3'));
+            this.chartsIns4 = echarts.init(document.getElementById('charts4'));
+            setTimeout(function() {
+                me.chartsIns1.setOption(me.getChartsOption('功率', []));
+                me.chartsIns2.setOption(me.getChartsOption('速度', []));
+                me.chartsIns3.setOption(me.getChartsOption('高度', []));
+                me.chartsIns4.setOption(me.getChartsOption('电压', []));
+            }, 500);
         }
     });
 
