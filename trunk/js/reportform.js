@@ -8742,6 +8742,7 @@ function powerWaste(groupslist) {
                             var altitudes = [];
                             var voltages = [];
                             var mileages = [];
+                            var oils = [];
                             var firstMile = 0;
                             records.forEach(function(item, index) {
                                 if (index == 0) {
@@ -8751,8 +8752,9 @@ function powerWaste(groupslist) {
                                 speeds.push(item.speed / 1000);
                                 altitudes.push(item.altitude);
                                 voltages.push(item.voltage / 10);
+                                oils.push(item.totalad / 100);
                                 recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
-                                mileages.push((item.totaldistance - firstMile) / 1000)
+                                mileages.push((item.totaldistance - firstMile) / 1000);
                             })
                             me.recvtime = recvtime;
                             me.oilrates = oilrates;
@@ -8760,6 +8762,7 @@ function powerWaste(groupslist) {
                             me.altitudes = altitudes;
                             me.voltages = voltages;
                             me.mileages = mileages;
+                            me.oils = oils;
                             me.chartsIns1.setOption(me.getChartsOption());
                         } else {
                             me.$Message.error(me.$t("reportForm.noRecord"));
@@ -8776,6 +8779,7 @@ function powerWaste(groupslist) {
                 var altitude = vRoot.$t('reportForm.altitude');
                 var voltage = vRoot.$t('reportForm.voltage');
                 var mileage = vRoot.$t('reportForm.mileage');
+                var oil = vRoot.$t('reportForm.oil');
 
                 return {
                     title: {
@@ -8788,7 +8792,7 @@ function powerWaste(groupslist) {
                         }
                     },
                     legend: {
-                        data: [mileage, oilrate, speed, altitude, voltage]
+                        data: [mileage, oilrate, speed, altitude, voltage, oil]
                     },
                     grid: {
                         top: 30,
@@ -8806,7 +8810,7 @@ function powerWaste(groupslist) {
                                 if (seriesName) {
                                     if (seriesName == mileage) {
                                         data += seriesName + ' : ' + v[i].value + 'Km' + '<br/>';
-                                    } else if (seriesName == oilrate) {
+                                    } else if (seriesName == oilrate || seriesName == oil) {
                                         data += seriesName + ' : ' + v[i].value + 'L' + '<br/>';
                                     } else if (seriesName == speed) {
                                         data += seriesName + ' : ' + v[i].value + 'Km/h' + '<br/>';
@@ -8815,7 +8819,6 @@ function powerWaste(groupslist) {
                                     } else if (seriesName == voltage) {
                                         data += seriesName + ' : ' + v[i].value + 'V' + '<br/>';
                                     }
-
                                 }
                             }
                             return data;
@@ -8833,29 +8836,41 @@ function powerWaste(groupslist) {
                             data: this.mileages,
                             type: 'line',
                             smooth: true,
+                            color: '#29DB6F'
                         }, {
                             name: oilrate,
                             data: this.oilrates,
                             type: 'line',
                             smooth: true,
+                            color: '#e4393c'
                         },
                         {
                             name: speed,
                             data: this.speeds,
                             type: 'line',
                             smooth: true,
+                            color: '#996179'
                         },
                         {
                             name: altitude,
                             data: this.altitudes,
                             type: 'line',
                             smooth: true,
+                            color: '#ECC849'
                         },
                         {
                             name: voltage,
                             data: this.voltages,
                             type: 'line',
                             smooth: true,
+                            color: '#00A846'
+                        },
+                        {
+                            name: oil,
+                            data: this.oils,
+                            type: 'line',
+                            smooth: true,
+                            color: '#007ACC'
                         },
                     ]
 
@@ -8871,6 +8886,7 @@ function powerWaste(groupslist) {
             this.altitudes = [];
             this.voltages = [];
             this.mileages = [];
+            this.oils = [];
             this.chartsIns1 = echarts.init(document.getElementById('charts1'));
             setTimeout(function() {
                 me.chartsIns1.setOption(me.getChartsOption());
