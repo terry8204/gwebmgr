@@ -213,10 +213,12 @@ var treeMixin = {
     },
     mounted: function() {
         var me = this;
-        this.calcTableHeight();
-        window.onresize = function() {
-            me.calcTableHeight();
-        }
+        try {
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        } catch (error) {}
     },
     destroyed: function() {
         this.zTreeObj && this.zTreeObj.destroy();
@@ -385,16 +387,21 @@ var reportMixin = {
     },
     mounted: function() {
         var me = this;
-        this.calcTableHeight();
+
         this.$nextTick(function() {
             if (reportDeviceId) {
                 me.queryDeviceId = reportDeviceId;
                 me.sosoValue = me.getDeviceTitle(reportDeviceId);
             }
         });
-        window.onresize = function() {
-            me.calcTableHeight();
-            me.chartsIns && me.chartsIns.resize();
+        try {
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+                me.chartsIns && me.chartsIns.resize();
+            }
+        } catch (error) {
+
         }
     }
 }
@@ -3102,7 +3109,7 @@ function messageRecords(groupslist) {
                 { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 80 },
                 { title: vRoot.$t("reportForm.recorderspeed"), key: 'recorderspeed', width: 120 },
                 { title: vRoot.$t("reportForm.totaldistance"), key: 'totaldistance', width: 120 },
-                { title: vRoot.$t("reportForm.altitude"), key: 'altitude', width: 100 },
+                { title: vRoot.$t("reportForm.altitude") + '(m)', key: 'altitude', width: 100 },
                 { title: vRoot.$t("reportForm.course"), key: 'course', width: 100 },
                 { title: vRoot.$t("reportForm.gotsrc"), key: 'gotsrc', width: 100 },
                 { title: vRoot.$t("reportForm.rxlevel"), key: 'rxlevel', width: 100 },
@@ -8737,16 +8744,16 @@ function powerWaste(groupslist) {
                             var voltages = [];
                             records.forEach(function(item) {
                                 oilrates.push(item.oilrate);
-                                speeds.push(item.speed);
+                                speeds.push(item.speed / 1000);
                                 altitudes.push(item.altitude);
-                                voltages.push(item.voltage);
+                                voltages.push(item.voltage / 10);
                                 recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference))
                             })
                             me.recvtime = recvtime;
-                            me.chartsIns1.setOption(me.getChartsOption('功率', oilrates));
-                            me.chartsIns2.setOption(me.getChartsOption('速度', speeds));
-                            me.chartsIns3.setOption(me.getChartsOption('高度', altitudes));
-                            me.chartsIns4.setOption(me.getChartsOption('电压', voltages));
+                            me.chartsIns1.setOption(me.getChartsOption('oilrate', oilrates));
+                            me.chartsIns2.setOption(me.getChartsOption('speed', speeds));
+                            me.chartsIns3.setOption(me.getChartsOption('altitude', altitudes));
+                            me.chartsIns4.setOption(me.getChartsOption('voltage', voltages));
                         } else {
                             me.$Message.error(me.$t("reportForm.noRecord"));
                         }
@@ -8755,12 +8762,12 @@ function powerWaste(groupslist) {
                     }
                 })
             },
-            calcTableHeight: function() {},
-            getChartsOption: function(title, seriesData) {
+            getChartsOption: function(titleKey, seriesData) {
                 var time = vRoot.$t('reportForm.time');
+                var titleStr = vRoot.$t('reportForm.' + titleKey);
                 return {
                     title: {
-                        text: title,
+                        text: titleStr,
                         x: 'center',
                         textStyle: {
                             fontSize: 12,
@@ -8783,7 +8790,17 @@ function powerWaste(groupslist) {
                                     var axisValue = v[i].axisValue;
                                     var value = v[i].value;
                                     data += time + ' ：' + axisValue + '<br/>';
-                                    data += title + ' ：' + value;
+                                    data += titleStr + ' ：' + value;
+
+                                    if (titleKey == 'speed') {
+                                        data += 'Km/h';
+                                    } else if (titleKey == 'altitude') {
+                                        data += 'm';
+                                    } else if (titleKey == 'voltage') {
+                                        data += 'V';
+                                    } else {
+                                        data += 'L';
+                                    };
                                 }
                             }
                             return data;
@@ -8813,11 +8830,18 @@ function powerWaste(groupslist) {
             this.chartsIns3 = echarts.init(document.getElementById('charts3'));
             this.chartsIns4 = echarts.init(document.getElementById('charts4'));
             setTimeout(function() {
-                me.chartsIns1.setOption(me.getChartsOption('功率', []));
-                me.chartsIns2.setOption(me.getChartsOption('速度', []));
-                me.chartsIns3.setOption(me.getChartsOption('高度', []));
-                me.chartsIns4.setOption(me.getChartsOption('电压', []));
+                me.chartsIns1.setOption(me.getChartsOption('oilrate', []));
+                me.chartsIns2.setOption(me.getChartsOption('speed', []));
+                me.chartsIns3.setOption(me.getChartsOption('altitude', []));
+                me.chartsIns4.setOption(me.getChartsOption('voltage', []));
             }, 500);
+
+            window.onresize = function() {
+                me.chartsIns1.resize();
+                me.chartsIns2.resize();
+                me.chartsIns3.resize();
+                me.chartsIns4.resize();
+            }
         }
     });
 
@@ -11396,7 +11420,7 @@ var reportForm = {
                         { title: me.$t("reportForm.dateOilConsumption"), name: 'timeOilConsumption', icon: 'ios-timer-outline' },
                         { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
-                        { title: "功耗率", name: 'powerWaste', icon: 'ios-trending-down' },
+                        { title: me.$t("reportForm.fuelRate"), name: 'powerWaste', icon: 'ios-trending-down' },
                     ]
                 },
                 {
