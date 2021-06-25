@@ -6944,6 +6944,8 @@ function timeOilConsumption(groupslist) {
             srcad1: [],
             srcad2: [],
             srcad3: [],
+            altitudes: [],
+            voltages: [],
             devReissue: [],
             currentIndex: 1,
         },
@@ -6998,6 +7000,9 @@ function timeOilConsumption(groupslist) {
                 var status = vRoot.$t('reportForm.status');
                 var reissue = vRoot.$t('reportForm.reissue');
 
+                var altitude = vRoot.$t('reportForm.altitude');
+                var voltage = vRoot.$t('reportForm.voltage');
+
                 var option = {
                     title: {
                         // text: time + '/' + cotgasus,
@@ -7033,6 +7038,10 @@ function timeOilConsumption(groupslist) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
                                     } else if (v[i].seriesName == speed) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                    } else if (v[i].seriesName == altitude) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'm<br/>';
+                                    } else if (v[i].seriesName == voltage) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'v<br/>';
                                     } else {
                                         data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                     }
@@ -7042,7 +7051,7 @@ function timeOilConsumption(groupslist) {
                         }
                     },
                     legend: {
-                        data: [speed, dis, totoil, usoil1, usoil2, usoil3, usoil4, srcad0, srcad1, srcad2, srcad3],
+                        data: [speed, dis, totoil, usoil1, usoil2, usoil3, usoil4, srcad0, srcad1, srcad2, srcad3, altitude, voltage],
                         selected: this.selectedLegend,
                         x: 'left',
                         // width: 600,
@@ -7221,8 +7230,26 @@ function timeOilConsumption(groupslist) {
                             color: '#000',
                             data: this.devReissue
                         },
+                        {
+                            smooth: true,
+                            name: altitude,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#245779',
+                            data: this.altitudes
+                        },
+                        {
+                            smooth: true,
+                            name: voltage,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#8CDCDA',
+                            data: this.voltages
+                        },
                     ]
                 };
+
+
 
                 this.chartsIns.setOption(option, true);
             },
@@ -7265,8 +7292,12 @@ function timeOilConsumption(groupslist) {
                                 srcad3 = [],
                                 devReissue = [],
                                 markPointData = [],
+                                altitudes = [],
+                                voltages = [],
                                 devStates = [];
                             firstDistance = 0;
+
+
                             resp.records.forEach(function(item, index) {
                                 records = item.records;
                                 // var independent = item.independent === 0;
@@ -7326,6 +7357,9 @@ function timeOilConsumption(groupslist) {
                                     }
                                     devStates.push(record.strstatus);
                                     devReissue.push(record.reissue == 0 ? self.$t('header.no') : self.$t('header.yes'));
+
+                                    altitudes.push(record.altitude);
+                                    voltages.push(record.voltage / 10);
                                 });
                             });
 
@@ -7371,6 +7405,9 @@ function timeOilConsumption(groupslist) {
                             self.records = records;
                             self.devStates = devStates;
                             self.devReissue = devReissue;
+                            self.altitudes = altitudes;
+                            self.voltages = voltages;
+
                             self.total = records.length;
                             records.sort(function(a, b) {
                                 return b.updatetime - a.updatetime;
@@ -7409,6 +7446,9 @@ function timeOilConsumption(groupslist) {
             var srcad2 = vRoot.$t('reportForm.srcad2');
             var srcad3 = vRoot.$t('reportForm.srcad3');
 
+            var altitude = vRoot.$t('reportForm.altitude');
+            var voltage = vRoot.$t('reportForm.voltage');
+
             if (isZh) {
                 this.selectedLegend = {
                     "油液1(L)": false,
@@ -7419,6 +7459,8 @@ function timeOilConsumption(groupslist) {
                     "模拟量2": false,
                     "模拟量3": false,
                     "模拟量4": false,
+                    "海拔": false,
+                    "电压": false,
                 }
             } else {
                 this.selectedLegend = {
@@ -7430,6 +7472,8 @@ function timeOilConsumption(groupslist) {
                     "srcad1": false,
                     "srcad2": false,
                     "srcad3": false,
+                    "Altitude": false,
+                    "Voltage": false,
                 }
             }
             // this.selectedLegend = {
@@ -7524,6 +7568,12 @@ function timeOilConsumption(groupslist) {
                 }
                 if (selected[srcad3]) {
                     columns.push({ title: vRoot.$t('reportForm.srcad3'), key: 'srcad3', width: 90 })
+                }
+                if (selected[altitude]) {
+                    columns.push({ title: vRoot.$t('reportForm.altitude') + isZh ? "(米)" : "(m)", key: 'altitude', width: 90 })
+                }
+                if (selected[voltage]) {
+                    columns.push({ title: vRoot.$t('reportForm.voltage') + '(V)', key: 'voltage', width: 90 })
                 }
 
 
