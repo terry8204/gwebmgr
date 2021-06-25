@@ -7604,6 +7604,8 @@ function dayOil(groupslist) {
                 { title: vRoot.$t('reportForm.oilConsumption') + '(L)', key: 'oil', },
                 { title: vRoot.$t('reportForm.fuelVolume') + '(L)', key: 'addoil' },
                 { title: vRoot.$t('reportForm.oilLeakage') + '(L)', key: 'leakoil' },
+                { title: vRoot.$t('reportForm.idleoil') + '(L)', key: 'idleoil' },
+                { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 140 },
                 { title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)', key: 'oilPercent' },
             ],
             tableData: [],
@@ -7753,6 +7755,8 @@ function dayOil(groupslist) {
                                     record.oil = record.totaloil / 100;
                                     record.addoil = record.addoil / 100;
                                     record.leakoil = record.leakoil / 100;
+                                    record.idleoil = record.idleoil / 100;
+                                    record.runoilper100km = record.runoilper100km;
 
                                     record.distance = (record.distance / 1000).toFixed(2);
                                     // if (record.distance != 0) {
@@ -8992,6 +8996,8 @@ function oilWorkingHours(groupslist) {
                         return h('sapn', {}, utils.timeStamp(row.totalacc));
                     },
                 },
+                { title: vRoot.$t('reportForm.idleoil') + '(L)', key: 'idleoil' },
+                { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 140 },
                 {
                     title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
                     key: 'oilper100km',
@@ -9208,6 +9214,9 @@ function oilWorkingHours(groupslist) {
                                     })
                                 }
                                 var len = chartDataList.length - 1;
+
+                                item.idleoil = item.idleoil / 100;
+                                item.runoilper100km = item.runoilper100km;
 
                                 chartDataList[len].data.push(item.devicename);
                                 chartDataList[len].oil.push(item.totaloil / 100);
