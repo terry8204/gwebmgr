@@ -7041,7 +7041,7 @@ function timeOilConsumption(groupslist) {
                                     } else if (v[i].seriesName == altitude) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'm<br/>';
                                     } else if (v[i].seriesName == voltage) {
-                                        data += v[i].seriesName + ' : ' + v[i].value + 'v<br/>';
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'V<br/>';
                                     } else {
                                         data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                     }
