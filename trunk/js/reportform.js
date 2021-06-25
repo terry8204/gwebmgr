@@ -9006,6 +9006,10 @@ function oilWorkingHours(groupslist) {
                     title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
                     key: 'oilperhour'
                 },
+                {
+                    title: vRoot.$t('reportForm.averageSpeed') + '(Km/h)',
+                    key: 'averagespeed'
+                },
 
             ],
             tableData: [],
@@ -9222,6 +9226,8 @@ function oilWorkingHours(groupslist) {
                                 chartDataList[len].oil.push(item.totaloil / 100);
                                 chartDataList[len].dis.push(Number((item.totaldistance / 1000).toFixed(2)));
                                 chartDataList[len].hours.push(Number((item.totalacc / 1000 / 3600).toFixed(2)));
+
+                                item.averagespeed = ((item.totaldistance / 1000) / (item.totalacc / 1000 / 3600)).toFixed(2);
 
                             });
 
@@ -11515,7 +11521,7 @@ var reportForm = {
                         { title: me.$t("reportForm.dateOilConsumption"), name: 'timeOilConsumption', icon: 'ios-timer-outline' },
                         { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
-                        { title: me.$t("reportForm.fuelRate"), name: 'powerWaste', icon: 'ios-pulse-outline' },
+                        // { title: me.$t("reportForm.fuelRate"), name: 'powerWaste', icon: 'ios-pulse-outline' },
                     ]
                 },
                 {
