@@ -9012,19 +9012,22 @@ function oilWorkingHours(groupslist) {
             columns: [{
                     title: vRoot.$t("reportForm.index"),
                     key: 'index',
-                    width: 70,
+                    width: 65,
                 },
                 {
                     title: vRoot.$t("alarm.devName"),
-                    key: 'devicename'
+                    key: 'devicename',
+                    width: 125,
                 },
                 {
                     title: vRoot.$t("alarm.devNum"),
-                    key: 'deviceid'
+                    key: 'deviceid',
+                    width: 125,
                 },
                 {
                     title: vRoot.$t('reportForm.mileage') + '(Km)',
                     key: 'totaldistance',
+                    width: 90,
                     render: function(h, pramas) {
                         var row = pramas.row;
                         return h('sapn', {}, (row.totaldistance / 1000).toFixed(2));
@@ -9033,6 +9036,7 @@ function oilWorkingHours(groupslist) {
                 {
                     title: vRoot.$t("reportForm.oilConsumption") + '(L)',
                     key: 'totaloil',
+                    width: 120,
                     render: function(h, pramas) {
                         var row = pramas.row;
                         return h('sapn', {}, (row.totaloil / 100).toFixed(2));
@@ -9041,24 +9045,28 @@ function oilWorkingHours(groupslist) {
                 {
                     title: vRoot.$t("reportForm.workingHours"),
                     key: 'totalacc',
+                    width: 120,
                     render: function(h, pramas) {
                         var row = pramas.row;
                         return h('sapn', {}, utils.timeStamp(row.totalacc));
                     },
                 },
-                { title: vRoot.$t('reportForm.idleoil') + '(L)', key: 'idleoil' },
+                { title: vRoot.$t('reportForm.idleoil') + '(L)', key: 'idleoil', width: 120, },
                 { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 140 },
                 {
                     title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
                     key: 'oilper100km',
+                    width: 120,
                 },
                 {
                     title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
-                    key: 'oilperhour'
+                    key: 'oilperhour',
+                    width: 120,
                 },
                 {
                     title: vRoot.$t('reportForm.averageSpeed') + '(Km/h)',
-                    key: 'averagespeed'
+                    key: 'averagespeed',
+                    width: 130,
                 },
 
             ],
