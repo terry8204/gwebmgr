@@ -8743,6 +8743,7 @@ function powerWaste(groupslist) {
                             var voltages = [];
                             var mileages = [];
                             var oils = [];
+                            var devStates = [];
                             var firstMile = 0;
                             records.forEach(function(item, index) {
                                 if (index == 0) {
@@ -8753,6 +8754,7 @@ function powerWaste(groupslist) {
                                 altitudes.push(item.altitude);
                                 voltages.push(item.voltage / 10);
                                 oils.push(item.totalad / 100);
+                                devStates.push(isZh ? item.strstatus : item.strstatusen);
                                 recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
                                 mileages.push((item.totaldistance - firstMile) / 1000);
                             })
@@ -8762,6 +8764,7 @@ function powerWaste(groupslist) {
                             me.altitudes = altitudes;
                             me.voltages = voltages;
                             me.mileages = mileages;
+                            me.devStates = devStates;
                             me.oils = oils;
                             me.chartsIns1.setOption(me.getChartsOption());
                         } else {
@@ -8779,6 +8782,7 @@ function powerWaste(groupslist) {
                 var altitude = vRoot.$t('reportForm.altitude');
                 var voltage = vRoot.$t('reportForm.voltage');
                 var mileage = vRoot.$t('reportForm.mileage');
+                var status = vRoot.$t('reportForm.status');
                 var oil = vRoot.$t('reportForm.oil');
 
                 return {
@@ -8835,6 +8839,8 @@ function powerWaste(groupslist) {
                                         data += seriesName + ' : ' + v[i].value + 'm' + '<br/>';
                                     } else if (seriesName == voltage) {
                                         data += seriesName + ' : ' + v[i].value + 'V' + '<br/>';
+                                    } else {
+                                        data += seriesName + ' : ' + v[i].value;
                                     }
                                 }
                             }
@@ -8889,6 +8895,14 @@ function powerWaste(groupslist) {
                             smooth: true,
                             color: '#710000'
                         },
+                        {
+                            name: status,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000',
+                            data: this.devStates,
+                            smooth: true,
+                        },
 
                     ]
 
@@ -8904,6 +8918,7 @@ function powerWaste(groupslist) {
             this.altitudes = [];
             this.voltages = [];
             this.mileages = [];
+            this.devStates = [];
             this.oils = [];
             this.chartsIns1 = echarts.init(document.getElementById('charts1'));
             setTimeout(function() {
