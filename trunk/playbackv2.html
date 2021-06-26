@@ -1381,7 +1381,7 @@
 
                             this.carMarker.setCoordinates(point);
 
-                            this.carMarker.setSymbol(this.getMarkerSymbol('./images/carstate/0_green_0.png', track.course, 15));
+                            this.carMarker.setSymbol(this.getMarkerSymbol('./images/carstate/' + icon + '_green_0.png', track.course, 15));
 
                             var sContent = this.getInfoWindowContent(track);
                             this.globalInfoWindow.setContent(sContent);
@@ -2209,7 +2209,7 @@
                         this.currentTracksLenth = tracks.length;
 
                         // 创建地图上所有marker    
-                        this.carMarker = this.createMarker(tracks[this.currentMarkerIndex], true, './images/carstate/0_green_0.png', 15);
+                        this.carMarker = this.createMarker(tracks[this.currentMarkerIndex], true, './images/carstate/' + icon + '_green_0.png', 15);
                         this.startMarker = this.createMarker(tracks[0], false, './images/map/marker_qidian.png', 0);
                         this.endMarker = this.createMarker(tracks[tracks.length - 1], false, './images/map/marker_zhongdian.png', 0);
                         this.carMarker.setZIndex(5555);
