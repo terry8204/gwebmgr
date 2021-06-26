@@ -7336,6 +7336,7 @@ function timeOilConsumption(groupslist) {
                                     record.ad2 = ad2 / 100;
                                     record.ad3 = ad3 / 100;
                                     record.speed = (record.speed / 1000).toFixed(2);
+                                    record.voltage = record.voltage / 100.0;
                                     record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
                                     record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, timeDifference);
                                     record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
@@ -7359,7 +7360,7 @@ function timeOilConsumption(groupslist) {
                                     devReissue.push(record.reissue == 0 ? self.$t('header.no') : self.$t('header.yes'));
 
                                     altitudes.push(record.altitude);
-                                    voltages.push(record.voltage / 10);
+                                    voltages.push(record.voltage);
                                 });
                             });
 
@@ -8806,7 +8807,7 @@ function powerWaste(groupslist) {
                                 oilrates.push(item.oilrate);
                                 speeds.push(item.speed / 1000);
                                 altitudes.push(item.altitude);
-                                voltages.push(item.voltage / 10);
+                                voltages.push(item.voltage / 100.0);
                                 oils.push(item.totalad / 100);
                                 devStates.push(isZh ? item.strstatus : item.strstatusen);
                                 recvtime.push(DateFormat.longToDateTimeStr(item.updatetime, timeDifference));
