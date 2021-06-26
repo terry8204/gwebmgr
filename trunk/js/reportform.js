@@ -3109,7 +3109,7 @@ function messageRecords(groupslist) {
                 { title: vRoot.$t("reportForm.speed"), key: 'speed', width: 80 },
                 { title: vRoot.$t("reportForm.recorderspeed"), key: 'recorderspeed', width: 120 },
                 { title: vRoot.$t("reportForm.totaldistance"), key: 'totaldistance', width: 120 },
-                { title: vRoot.$t("reportForm.altitude") + '(m)', key: 'altitude', width: 100 },
+                { title: vRoot.$t("reportForm.altitude") + '(M)', key: 'altitude', width: 100 },
                 { title: vRoot.$t("reportForm.course"), key: 'course', width: 100 },
                 { title: vRoot.$t("reportForm.gotsrc"), key: 'gotsrc', width: 100 },
                 { title: vRoot.$t("reportForm.rxlevel"), key: 'rxlevel', width: 100 },
@@ -7571,7 +7571,7 @@ function timeOilConsumption(groupslist) {
                     columns.push({ title: vRoot.$t('reportForm.srcad3'), key: 'srcad3', width: 90 })
                 }
                 if (selected[altitude]) {
-                    columns.push({ title: vRoot.$t('reportForm.altitude') + (isZh ? "(米)" : "(m)"), key: 'altitude', width: 90 })
+                    columns.push({ title: vRoot.$t('reportForm.altitude') + (isZh ? "(米)" : "(M)"), key: 'altitude', width: 90 })
                 }
                 if (selected[voltage]) {
                     columns.push({ title: vRoot.$t('reportForm.voltage') + '(V)', key: 'voltage', width: 90 })
