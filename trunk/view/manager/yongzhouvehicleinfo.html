@@ -21,11 +21,11 @@
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">选择车辆 : &nbsp;</i-col>
                     <i-col span="8">
                         <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                            <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus"  @on-click="focus"></i-input>
+                            <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                             <transition name="fade">
                                 <ul class="search-item-wrapper" v-show="isShowMatchDev">
                                     <li class="demo-auto-complete-item" v-for="item in filterData">
-                                        <div class="demo-auto-complete-group" v-show="item.devices.length">
+                                        <div class="demo-auto-complete-group" v-show="item.devices.length" @click="sosoSelectGroup(item.groupname)">
                                             <span>{{ item.groupname }}</span>
                                         </div>
                                         <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
@@ -54,7 +54,7 @@
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">统一社会信用代码 : &nbsp;</i-col>
                     <i-col span="8">
-                        <i-input v-model.trim="identifier"></i-input> 
+                        <i-input v-model.trim="identifier"></i-input>
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;车牌颜色 : &nbsp;</i-col>
                     <i-col span="8">
@@ -175,259 +175,297 @@
             el: "#yongzhouvehicleinfo",
             i18n: utils.getI18n(),
             data: {
-                filterData:[],
-                isShowMatchDev:false,
-                sosoValue:'',
+                filterData: [],
+                isShowMatchDev: false,
+                sosoValue: '',
                 groupslist: vRoot.$children[1].groups,
 
-                deviceid:'',
-                plateNum:'',//车牌号码' 
-                roadTransportLicense:'',//道路运输许可证号
-                identifier:'',//统一社会信用代码' ,
-                category:'1',//1:巡游出租企业 2:网约出租企业 0:其他' ,
-                color:'1',
-                brand:'',//车辆厂牌' 
-                type:'',//车辆类型' ,
-                model:'',//车辆型号' ,
-                engineNum:'',//车辆发动机号' ,
-                registrationDate:new Date(),//行驶注册日期' ,
-                vim:'',//车辆VIN码' ,
-                ownerType:'',//车辆所有人类型' ,
-                ownerName:'',//车辆所有人名称' ,
-                ownerID:'',//车辆所有人身份证 号码' ,
+                deviceid: '',
+                plateNum: '', //车牌号码' 
+                roadTransportLicense: '', //道路运输许可证号
+                identifier: '', //统一社会信用代码' ,
+                category: '1', //1:巡游出租企业 2:网约出租企业 0:其他' ,
+                color: '1',
+                brand: '', //车辆厂牌' 
+                type: '', //车辆类型' ,
+                model: '', //车辆型号' ,
+                engineNum: '', //车辆发动机号' ,
+                registrationDate: new Date(), //行驶注册日期' ,
+                vim: '', //车辆VIN码' ,
+                ownerType: '', //车辆所有人类型' ,
+                ownerName: '', //车辆所有人名称' ,
+                ownerID: '', //车辆所有人身份证 号码' ,
 
-                seatNum:'',//座位数' ,
-                length:'',//车辆长单位毫米' ,
-                width:'',//车辆宽 单位:毫米' ,
-                height:'',//车辆高 单位:毫米' ,
+                seatNum: '', //座位数' ,
+                length: '', //车辆长单位毫米' ,
+                width: '', //车辆宽 单位:毫米' ,
+                height: '', //车辆高 单位:毫米' ,
 
-                scope:'',//经营范围' ,
-                issuOrganization:'',//核发机关' ,
-                issuDate:new Date(),//核发日期' ,
+                scope: '', //经营范围' ,
+                issuOrganization: '', //核发机关' ,
+                issuDate: new Date(), //核发日期' ,
 
 
-                fuelType:'A',
-                fuelTypeList:[
-                    {label:'汽油',value:"A"},
-                    {label:'柴油',value:"B"},
-                    {label:'电',value:"C"},
-                    {label:'混合油',value:"D"},
-                    {label:'天然气',value:"E"},
-                    {label:'液化石油气',value:"F"},
-                    {label:'甲醇',value:"L"},
-                    {label:'乙醇',value:"M"},
-                    {label:'太阳能',value:"N"},
-                    {label:'混合动力',value:"O"},
-                    {label:'无',value:"Y"},
-                    {label:'其他',value:"Z"},
-                ],
-    
-                isEdit:false,
+                fuelType: 'A',
+                fuelTypeList: [{
+                    label: '汽油',
+                    value: "A"
+                }, {
+                    label: '柴油',
+                    value: "B"
+                }, {
+                    label: '电',
+                    value: "C"
+                }, {
+                    label: '混合油',
+                    value: "D"
+                }, {
+                    label: '天然气',
+                    value: "E"
+                }, {
+                    label: '液化石油气',
+                    value: "F"
+                }, {
+                    label: '甲醇',
+                    value: "L"
+                }, {
+                    label: '乙醇',
+                    value: "M"
+                }, {
+                    label: '太阳能',
+                    value: "N"
+                }, {
+                    label: '混合动力',
+                    value: "O"
+                }, {
+                    label: '无',
+                    value: "Y"
+                }, {
+                    label: '其他',
+                    value: "Z"
+                }, ],
+
+                isEdit: false,
                 modal: false,
                 queryParameter: "",
                 loading: true,
-                columns: [
-                        {
-                            title: vRoot.$t("bgMgr.action"),
-                            key: 'action',
-                            width: 130,
-                            render: function(h, params) {
-                                return h('div', [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                editObject = params.row;
-                                                vueInstanse.isEdit = true;
-                                                vueInstanse.modal = true;
-                                                vueInstanse.setRowInfo(editObject);
-            
-                                            }
-                                        }
-                                    }, vRoot.$t("bgMgr.edit")),
+                columns: [{
+                    title: vRoot.$t("bgMgr.action"),
+                    key: 'action',
+                    width: 130,
+                    render: function(h, params) {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        editObject = params.row;
+                                        vueInstanse.isEdit = true;
+                                        vueInstanse.modal = true;
+                                        vueInstanse.setRowInfo(editObject);
 
-                                    h('Poptip', {
-                                        props: {
-                                            confirm: true,
-                                            title: vRoot.$t("message.confirmDel")
-                                        },
-                                        style: {
-                                            marginRight: '5px',
-                                        },
-                                        on: {
-                                            'on-ok': function() {
-                                                vueInstanse.handleDelete(params);
-                                            }
-                                        }
-                                    }, [
-                                        h('Button', {
-                                            props: {
-                                                type: 'error',
-                                                size: 'small'
-                                            }
-                                        }, vRoot.$t("bgMgr.delete"))
-                                    ]),
-                                ]);
-                            }
+                                    }
+                                }
+                            }, vRoot.$t("bgMgr.edit")),
+
+                            h('Poptip', {
+                                props: {
+                                    confirm: true,
+                                    title: vRoot.$t("message.confirmDel")
+                                },
+                                style: {
+                                    marginRight: '5px',
+                                },
+                                on: {
+                                    'on-ok': function() {
+                                        vueInstanse.handleDelete(params);
+                                    }
+                                }
+                            }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    }
+                                }, vRoot.$t("bgMgr.delete"))
+                            ]),
+                        ]);
+                    }
+                }, {
+                    title: '设备序号',
+                    key: 'deviceid',
+                    width: 160,
+                }, {
+                    title: '企业类别',
+                    width: 120,
+                    render: function(h, params) {
+                        var category = params.row.category;
+                        var str = '';
+                        switch (category) {
+                            case 1:
+                                str = '巡游出租企业';
+                                break;
+                            case 2:
+                                str = '网约出租企业';
+                                break;
+                            case 3:
+                                str = '其他';
+                                break;
+                            default:
+                                break;
+                        }
+                        return h('span', {}, str);
                     },
-                    {
-                        title: '设备序号',key: 'deviceid', width:160,
-                    }, 
-                    {
-                        title: '企业类别',width:120,
-                        render:function(h,params) {
-                            var category = params.row.category;
-                            var str = '';
-                            switch (category) {
-                                case 1:
-                                    str = '巡游出租企业';
-                                    break;
-                                case 2:
-                                    str = '网约出租企业';  
-                                    break;
-                                case 3:
-                                    str = '其他';
-                                    break;
-                                default:
-                                    break;
-                            }
-                            return h('span',{},str);
-                        },
-                    }, 
-                    { 
-                        title: '颜色', width:120,
-                        render:function(h,params) {
-                            var color = params.row.color;
-                            var str = '';
-                            switch (color) {
-                                case 1:
-                                    str = '蓝色';
-                                    break;
-                                case 2:
-                                    str = '黄色';
-                                    break;
-                                case 3:
-                                    str = '黑色';
-                                    break;
-                                case 4:
-                                    str = '白色';
-                                    break;
-                                case 5:
-                                    str = '绿色';
-                                    break;
-                                case 9:
-                                    str = '其他';
-                                    break;
-                                default:
-                                    str='其他'
-                                    break;
-                            }
-                            return h('span',{},str);
-                        },
-                    }, 
-                    {
-                        title: '车辆厂牌',key: 'brand', width: 90,
-                    }, 
-                    {
-                        title: '车辆类型',key: 'type', width:160,
-                    }, 
-                    { 
-                        title: '车辆型号',key: 'model', width:120,
-                    }, 
-                    {
-                        title: '车辆发动机号',key: 'engineNum', width:160,
+                }, {
+                    title: '颜色',
+                    width: 120,
+                    render: function(h, params) {
+                        var color = params.row.color;
+                        var str = '';
+                        switch (color) {
+                            case 1:
+                                str = '蓝色';
+                                break;
+                            case 2:
+                                str = '黄色';
+                                break;
+                            case 3:
+                                str = '黑色';
+                                break;
+                            case 4:
+                                str = '白色';
+                                break;
+                            case 5:
+                                str = '绿色';
+                                break;
+                            case 9:
+                                str = '其他';
+                                break;
+                            default:
+                                str = '其他'
+                                break;
+                        }
+                        return h('span', {}, str);
                     },
-                    {
-                        title: '行驶注册日期',key: 'registrationDate', width:160,
+                }, {
+                    title: '车辆厂牌',
+                    key: 'brand',
+                    width: 90,
+                }, {
+                    title: '车辆类型',
+                    key: 'type',
+                    width: 160,
+                }, {
+                    title: '车辆型号',
+                    key: 'model',
+                    width: 120,
+                }, {
+                    title: '车辆发动机号',
+                    key: 'engineNum',
+                    width: 160,
+                }, {
+                    title: '行驶注册日期',
+                    key: 'registrationDate',
+                    width: 160,
+                }, {
+                    title: '车辆VIN码',
+                    key: 'vim',
+                    width: 160,
+                }, {
+                    title: '车辆所有人类型',
+                    key: 'ownerType',
+                    width: 160,
+                }, {
+                    title: '车辆所有人名称',
+                    key: 'ownerName',
+                    width: 160,
+                }, {
+                    title: '车辆所有人身份证',
+                    key: 'ownerID',
+                    width: 160,
+                }, {
+                    title: '车辆燃料类型',
+                    width: 100,
+                    render: function(h, params) {
+                        var fuelType = params.row.fuelType;
+                        var str = '';
+                        switch (fuelType) {
+                            case 'A':
+                                str = '汽油';
+                                break;
+                            case 'B':
+                                str = '柴油';
+                                break;
+                            case 'C':
+                                str = '电';
+                                break;
+                            case 'D':
+                                str = '混合油';
+                                break;
+                            case 'E':
+                                str = '天然气';
+                                break;
+                            case 'F':
+                                str = '液化石油气';
+                                break;
+                            case 'L':
+                                str = '甲醇';
+                                break;
+                            case 'M':
+                                str = '乙醇';
+                                break;
+                            case 'N':
+                                str = '太阳能';
+                                break;
+                            case 'O':
+                                str = '混合动力';
+                                break;
+                            case 'Y':
+                                str = '无';
+                                break;
+                            case 'Z':
+                                str = '其他';
+                                break;
+                            default:
+                                break;
+                        }
+                        return h('span', {}, str);
                     },
-                    {
-                        title: '车辆VIN码',key: 'vim', width:160,
-                    },
-                    {
-                        title: '车辆所有人类型',key: 'ownerType', width:160,
-                    },
-                    {
-                        title: '车辆所有人名称',key: 'ownerName', width:160,
-                    },
-                    {
-                        title: '车辆所有人身份证',key: 'ownerID', width:160,
-                    },
-                    {
-                        title: '车辆燃料类型', width:100,
-                        render:function(h,params) {
-                            var fuelType = params.row.fuelType;
-                            var str = '';
-                            switch (fuelType) {
-                                case 'A':
-                                    str = '汽油';
-                                    break;
-                                case 'B':
-                                    str = '柴油';  
-                                    break;
-                                case 'C':
-                                    str = '电';
-                                    break;
-                                case 'D':
-                                    str = '混合油';
-                                    break;
-                                case 'E':
-                                    str = '天然气';
-                                    break;
-                                case 'F':
-                                    str = '液化石油气';
-                                    break;
-                                case 'L':
-                                    str = '甲醇';
-                                    break;
-                                case 'M':
-                                    str = '乙醇';
-                                    break;
-                                case 'N':
-                                    str = '太阳能';
-                                    break;
-                                case 'O':
-                                    str = '混合动力';
-                                    break;
-                                case 'Y':
-                                    str = '无';
-                                    break;
-                                case 'Z':
-                                    str = '其他';
-                                    break;
-                                default:
-                                    break;
-                            }
-                            return h('span',{},str);
-                        },
-                    },
-                    {
-                        title: '座位数',key: 'seatNum', width:100,
-                    },
-                    {
-                        title: '车辆长(毫米)',key: 'length', width:120,
-                    },
-                    {
-                        title: '车辆宽(毫米)',key: 'width', width:120,
-                    },
-                    {
-                        title: '车辆高(毫米)',key: 'height', width:120,
-                    },
-                    {
-                        title: '经营范围',key: 'scope', width:160,
-                    },
-                    {
-                        title: '核发日期',key: 'issuDate', width:160,
-                    },
-                    {
-                        title: '核发机关',key: 'issuOrganization', width:160,
-                    },
-                ],
+                }, {
+                    title: '座位数',
+                    key: 'seatNum',
+                    width: 100,
+                }, {
+                    title: '车辆长(毫米)',
+                    key: 'length',
+                    width: 120,
+                }, {
+                    title: '车辆宽(毫米)',
+                    key: 'width',
+                    width: 120,
+                }, {
+                    title: '车辆高(毫米)',
+                    key: 'height',
+                    width: 120,
+                }, {
+                    title: '经营范围',
+                    key: 'scope',
+                    width: 160,
+                }, {
+                    title: '核发日期',
+                    key: 'issuDate',
+                    width: 160,
+                }, {
+                    title: '核发机关',
+                    key: 'issuOrganization',
+                    width: 160,
+                }, ],
                 tableData: [],
                 taleHeight: 300,
             },
@@ -464,6 +502,9 @@
                     this.timeoutIns = setTimeout(function() {
                         me.filterMethod(value);
                     }, 300);
+                },
+                sosoSelectGroup: function(groupName) {
+                    this.filterMethod(groupName);
                 },
                 filterMethod: function(value) {
                     var filterData = [];
@@ -541,55 +582,57 @@
                                 return false;
                             }
                         });
-                        if (isReturn) { return false };
+                        if (isReturn) {
+                            return false
+                        };
                     });
                     return title;
                 },
-                setRowInfo:function(row){
+                setRowInfo: function(row) {
 
-                    this.deviceid=row.deviceid;
-                    this.plateNum=row.plateNum;
-                    this.identifier=row.identifier;
-                    this.roadTransportLicense=row.roadTransportLicense;
-                    this.category=String(row.category);//1:巡游出租企业 2:网约出租企业 0:其他' ,
-                    this.scope=row.scope;//经营范围' ,
-                    this.color=String(row.color);
-                    this.brand=row.brand;
-                    this.type=row.type;//
-                    this.model=row.model;//
-                    this.engineNum=row.engineNum;//
-                    this.registrationDate=new Date(row.registrationDate);//证件有效期YYYYMMDD' ,
+                    this.deviceid = row.deviceid;
+                    this.plateNum = row.plateNum;
+                    this.identifier = row.identifier;
+                    this.roadTransportLicense = row.roadTransportLicense;
+                    this.category = String(row.category); //1:巡游出租企业 2:网约出租企业 0:其他' ,
+                    this.scope = row.scope; //经营范围' ,
+                    this.color = String(row.color);
+                    this.brand = row.brand;
+                    this.type = row.type; //
+                    this.model = row.model; //
+                    this.engineNum = row.engineNum; //
+                    this.registrationDate = new Date(row.registrationDate); //证件有效期YYYYMMDD' ,
 
-                    this.vim=row.vim;
-                    this.ownerType=row.ownerType;
-                    this.ownerName=row.ownerName;
-                    this.ownerID=row.ownerID;
-                    this.seatNum=row.seatNum;
-                    this.length=row.length;
-                    this.width=row.width;
-                    this.height=row.height;
-                    this.fuelType=row.fuelType;
-                    this.issuOrganization=row.issuOrganization;//核发机关' ,
-                    this.issuDate=new Date(row.issuDate);//核发日期' ,
+                    this.vim = row.vim;
+                    this.ownerType = row.ownerType;
+                    this.ownerName = row.ownerName;
+                    this.ownerID = row.ownerID;
+                    this.seatNum = row.seatNum;
+                    this.length = row.length;
+                    this.width = row.width;
+                    this.height = row.height;
+                    this.fuelType = row.fuelType;
+                    this.issuOrganization = row.issuOrganization; //核发机关' ,
+                    this.issuDate = new Date(row.issuDate); //核发日期' ,
                 },
-                handlerNewAdd:function(){
+                handlerNewAdd: function() {
                     this.isEdit = false;
                     this.modal = true;
                 },
                 handlerClickQuery() {
-                   this.queryYongZhouVehicles();
+                    this.queryYongZhouVehicles();
                 },
                 handleDelete: function(params) {
                     var me = this;
                     var url = myUrls.deleteYongZhouVehicles();
                     var data = {
-                        vehicles:[params.row.vehicleId],
+                        vehicles: [params.row.vehicleId],
                     }
-                    utils.sendAjax(url,data,function(resp){
-                        if(resp.status === 0){
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status === 0) {
                             me.$Message.success("删除成功");
-                            me.$delete(me.tableData,params.index);
-                        }else{
+                            me.$delete(me.tableData, params.index);
+                        } else {
                             me.$Message.error(resp.cause);
                         }
                     });
@@ -602,75 +645,75 @@
                     var me = this;
                     var url = '';
                     var data = {
-                        deviceid:this.deviceid,
-                        plateNum:this.plateNum ,
-                        roadTransportLicense:this.roadTransportLicense ,
-                        identifier:this.identifier ,
-                        category:Number(this.category),
-                        color:Number(this.color) ,
-                        brand:this.brand ,
-                        type:this.type ,
-                        model:this.model ,
-                        engineNum:this.engineNum ,
-                        registrationDate:DateFormat.format(this.registrationDate,'yyyy-MM-dd') + " 00:00:00",//行驶注册日期' , 
-                        vim:this.model ,
-                        ownerType:this.ownerType ,
-                        ownerName:this.ownerName ,
-                        ownerID:this.ownerID ,
-                        fuelType:this.fuelType ,
-                        seatNum:this.seatNum ,
-                        length:this.length ,
-                        width:this.width ,
-                        height:this.height,
-                        scope:this.scope,
-                        issuOrganization:this.issuOrganization,
-                        issuDate:DateFormat.format(this.issuDate,'yyyy-MM-dd') + " 00:00:00",// 核发日期' ,
+                        deviceid: this.deviceid,
+                        plateNum: this.plateNum,
+                        roadTransportLicense: this.roadTransportLicense,
+                        identifier: this.identifier,
+                        category: Number(this.category),
+                        color: Number(this.color),
+                        brand: this.brand,
+                        type: this.type,
+                        model: this.model,
+                        engineNum: this.engineNum,
+                        registrationDate: DateFormat.format(this.registrationDate, 'yyyy-MM-dd') + " 00:00:00", //行驶注册日期' , 
+                        vim: this.model,
+                        ownerType: this.ownerType,
+                        ownerName: this.ownerName,
+                        ownerID: this.ownerID,
+                        fuelType: this.fuelType,
+                        seatNum: this.seatNum,
+                        length: this.length,
+                        width: this.width,
+                        height: this.height,
+                        scope: this.scope,
+                        issuOrganization: this.issuOrganization,
+                        issuDate: DateFormat.format(this.issuDate, 'yyyy-MM-dd') + " 00:00:00", // 核发日期' ,
                         // int operateFlag;//操作标识 1:新增 2:更新 3:删除' ,  
-                        creater:userName
+                        creater: userName
                     };
-                    if(this.isEdit){
+                    if (this.isEdit) {
                         data.operateFlag = 2;
                         data.vehicleId = editObject.vehicleId;
                         url = myUrls.editYongZhouVehicle();
-                  
-                    }else{
+
+                    } else {
                         data.operateFlag = 1;
                         url = myUrls.createYongZhouVehicle();
                     };
-           
-                    utils.sendAjax(url,data,function(resp){
-                        if(resp.status == 0){
-                            if(me.isEdit){
-                                Object.assign(editObject,data);
+
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            if (me.isEdit) {
+                                Object.assign(editObject, data);
                                 me.$Message.success('编辑成功');
-                            }else{
+                            } else {
                                 me.queryYongZhouVehicles();
                                 me.$Message.success('新增成功');
                             }
                             me.modal = false;
-                        }else{
+                        } else {
                             me.$Message.error(resp.cause);
                         }
                     });
                 },
-                queryYongZhouVehicles:function(){
+                queryYongZhouVehicles: function() {
                     var me = this;
                     var url = myUrls.queryYongZhouVehicles();
                     var data = {
-                        creater:userName,
-                        keyword:this.queryParameter,
+                        creater: userName,
+                        keyword: this.queryParameter,
                     };
                     me.loading = true;
-                    utils.sendAjax(url,data,function(resp){
+                    utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
-                        if(resp.status == 0){
+                        if (resp.status == 0) {
                             me.tableData = resp.vehicles;
                         }
                     });
                 },
-            },   
+            },
             computed: {
-                modalTile:function(){
+                modalTile: function() {
                     return this.isEdit ? '编辑车辆信息' : '新增车辆信息';
                 },
             },

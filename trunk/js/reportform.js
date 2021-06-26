@@ -244,6 +244,9 @@ var reportMixin = {
         dayNumberType: 0,
     },
     methods: {
+        sosoSelectGroup: function(groupName) {
+            this.filterMethod(groupName);
+        },
         changePage: function(index) {
             var offset = index * 20;
             var start = (index - 1) * 20;
@@ -313,7 +316,7 @@ var reportMixin = {
                         device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
                     })
                     var copyGroup = deepClone(group);
-                    copyGroup.devices = copyGroup.devices.slice(0, 9);
+                    copyGroup.devices = copyGroup.devices.slice(0, 50);
                     filterData.push(copyGroup)
                 } else {
                     var devices = group.devices
@@ -338,13 +341,13 @@ var reportMixin = {
                                 };
                             };
                         };
-                        if (obj.devices.length >= 10) {
+                        if (obj.devices.length >= 50) {
                             break;
                         }
                     }
                     if (obj.devices.length) {
                         filterData.push(obj);
-                        if (filterData.length >= 10) {
+                        if (filterData.length >= 50) {
                             break;
                         }
                     };

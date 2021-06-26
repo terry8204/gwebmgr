@@ -110,6 +110,7 @@ div.maptalks-attribution {
 .demo-auto-complete-group {
     font-size: 12px;
     padding: 4px 6px;
+    cursor: pointer;
 }
 
 .demo-auto-complete-group span {
