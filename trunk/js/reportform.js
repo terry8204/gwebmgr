@@ -7571,7 +7571,7 @@ function timeOilConsumption(groupslist) {
                     columns.push({ title: vRoot.$t('reportForm.srcad3'), key: 'srcad3', width: 90 })
                 }
                 if (selected[altitude]) {
-                    columns.push({ title: vRoot.$t('reportForm.altitude') + isZh ? "(米)" : "(m)", key: 'altitude', width: 90 })
+                    columns.push({ title: vRoot.$t('reportForm.altitude') + (isZh ? "(米)" : "(m)"), key: 'altitude', width: 90 })
                 }
                 if (selected[voltage]) {
                     columns.push({ title: vRoot.$t('reportForm.voltage') + '(V)', key: 'voltage', width: 90 })
