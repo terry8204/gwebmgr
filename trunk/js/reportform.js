@@ -8891,7 +8891,7 @@ function powerWaste(groupslist) {
                                     } else if (seriesName == speed) {
                                         data += seriesName + ' : ' + v[i].value + 'Km/h' + '<br/>';
                                     } else if (seriesName == altitude) {
-                                        data += seriesName + ' : ' + v[i].value + 'm' + '<br/>';
+                                        data += seriesName + ' : ' + v[i].value + 'M' + '<br/>';
                                     } else if (seriesName == voltage) {
                                         data += seriesName + ' : ' + v[i].value + 'V' + '<br/>';
                                     } else {
