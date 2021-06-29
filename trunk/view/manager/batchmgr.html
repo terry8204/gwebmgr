@@ -914,11 +914,13 @@
                     targetusername: this.selectedUserName,
                 }
                 var lock = true;
+                var devices = [];
                 this.tableData.forEach(function(item) {
                     if (item.resultType === 3) {
                         lock = false;
                     }
                     data.deviceids.push(item.deviceid);
+                    devices.push(item);
                 });
                 if (!lock) {
                     me.$Message.error(vRoot.$t('device.exportErrorTips'));
@@ -928,15 +930,27 @@
                     if (respData.status === 0) {
                         if (respData.total == respData.success) {
                             me.$Message.success(vRoot.$t('device.actionSucc'));
+                            me.tableData = [];
                         } else {
+                            me.updatedActionState(respData.errorrecords);
                             var successArr = [];
                             me.$Message.error(vRoot.$t('message.changeFail') + ' : ' + respData.fail);
                         }
-                        me.updatedActionState(respData.errorrecords);
+                        me.updateRootuserData(devices, data);
                         me.queryDevicesTree();
                     } else {
                         me.$Message.error(respData.cause);
                     }
+                });
+            },
+            updateRootuserData: function(devices, data) {
+                var groupid = data.targetgroupid;
+                var creater = data.targetusername;
+                devices.forEach(function(device) {
+                    GlobalOrgan.getInstance().removeDevice(device.creater, device.groupid, device.deviceid);
+                    device.creater = creater;
+                    device.groupid = groupid;
+                    GlobalOrgan.getInstance().addDevice(device);
                 });
             },
             updatedActionState: function(errorrecords) {
@@ -1005,7 +1019,7 @@
             queryDevicesTree: function() {
                 var me = this;
                 this.loading = true;
-                GlobalOrgan.getInstance().clearData();
+                // GlobalOrgan.getInstance().clearData();
                 GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
                     me.loading = false;
                     me.setTreeDataList(rootuser);

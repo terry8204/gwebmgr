@@ -149,8 +149,6 @@
        if (newUser) {
            var creater = newUser.creater;
            var foundUser = this.getUserByUserName(creater);
-           console.log('foundUser', foundUser);
-
            if (foundUser) {
                if (foundUser.subusers == null) {
                    foundUser.subusers = [];
@@ -262,7 +260,7 @@
        }
        var foundGroup = this.getGroupByUserNameAndGroupId(creater, groupid);
        if (foundGroup) {
-           foundGroup.push(newDevice);
+           foundGroup.devices.push(newDevice);
        }
        this.globalSelectedTreeData = null;
    };
@@ -280,7 +278,7 @@
                for (var i = 0; i < devices.length; ++i) {
                    var device = devices[i];
                    if (device.deviceid == deviceid) {
-                       devices.splice(i, 1);
+                       device = devices.splice(i, 1);
                        break;
                    }
                }
