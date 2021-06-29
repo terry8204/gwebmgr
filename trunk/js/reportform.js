@@ -7034,8 +7034,8 @@ function timeOilConsumption(groupslist) {
                                 if (v[i].seriesName && v[i].seriesName != time) {
                                     if (v[i].seriesName == dis) {
                                         var currentDistance = v[i].value;
-                                        var totalDistance = ((Number(currentDistance) + firstDistance) / 1000).toFixed(2);
-                                        data += v[i].seriesName + ' : ' + currentDistance + "(T:" + totalDistance + ")" + 'Km<br/>';
+                                        var totalDistance = ((Number(currentDistance) + firstDistance / 1000)).toFixed(2);
+                                        data += v[i].seriesName + ' : ' + currentDistance + "Km(T:" + totalDistance + 'Km)<br/>';
 
                                     } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
                                         data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
