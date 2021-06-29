@@ -1005,6 +1005,7 @@
             queryDevicesTree: function() {
                 var me = this;
                 this.loading = true;
+                GlobalOrgan.getInstance().clearData();
                 GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
                     me.loading = false;
                     me.setTreeDataList(rootuser);

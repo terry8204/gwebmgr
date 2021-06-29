@@ -31,6 +31,13 @@
        return this.globalOrgan;
    }
 
+
+   GlobalOrgan.prototype.clearData = function() {
+       this.globalOrganData = null; //store the data from server;
+       this.isRequesting = false;
+       this.globalSelectedTreeData = null;
+   }
+
    GlobalOrgan.prototype.getGlobalOrganData = function(callback) {
        if (this.globalOrganData == null && this.isRequesting == false) {
            //get from remote server
