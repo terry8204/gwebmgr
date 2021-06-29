@@ -1815,3 +1815,7 @@ div.warning-wraper .ivu-table-small td {
 #weight-summary .ivu-tabs-nav .ivu-tabs-tab:last-child {
     visibility: hidden;
 }
+
+div.ivu-modal-body>div.ivu-tabs {
+    overflow: visible;
+}
