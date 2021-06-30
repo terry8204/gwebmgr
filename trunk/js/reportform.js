@@ -7929,8 +7929,8 @@ function refuelingReport(groupslist) {
                 { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr', width: 160 },
                 { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr', width: 160 },
                 { title: isZh ? '距离(米)' : 'Distance(m)', key: 'distance', width: 100 },
-                { title: isZh ? '平均速度(Km/h)' : 'Average speed (km / h)', key: 'avgspeed', width: 130 },
-                { title: isZh ? '时长' : 'Duration', key: 'durationStr', width: 100 },
+                { title: isZh ? '平均速度(Km/h)' : 'Average speed (km / h)', key: 'avgspeed', width: 140 },
+                { title: isZh ? '时长' : 'Duration', key: 'durationStr', width: 110 },
                 { title: isZh ? '阀值(L)' : 'Threshold', key: 'threshold', width: 100 },
                 {
                     title: vRoot.$t('reportForm.saddress'),
@@ -8198,7 +8198,7 @@ function refuelingReport(groupslist) {
                     record.devicename = vstore.state.deviceInfos[deviceid].devicename;
                     record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
-                    record.durationStr = utils.timeStampNoSecond(record.duration);
+                    record.durationStr = utils.timeStamp(record.duration);
                     record.addoil = oil;
                 });
                 this.tableData = records;
@@ -8390,7 +8390,7 @@ function oilLeakageReport(groupslist) {
                 { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr', width: 160 },
                 { title: isZh ? '距离(米)' : 'Distance(m)', key: 'distance', width: 100 },
                 { title: isZh ? '平均速度(Km/h)' : 'Average speed (km / h)', key: 'avgspeed', width: 130 },
-                { title: isZh ? '时长' : 'Duration', key: 'durationStr', width: 100 },
+                { title: isZh ? '时长' : 'Duration', key: 'durationStr', width: 110 },
                 { title: isZh ? '阀值(L)' : 'Threshold', key: 'threshold', width: 100 },
                 {
                     title: vRoot.$t('reportForm.saddress'),
@@ -8661,7 +8661,7 @@ function oilLeakageReport(groupslist) {
                     record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
                     record.addoil = oil;
-                    record.durationStr = utils.timeStampNoSecond(record.duration);
+                    record.durationStr = utils.timeStamp(record.duration);
                 });
                 this.tableData = records;
             },
