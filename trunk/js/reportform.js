@@ -7921,15 +7921,20 @@ function refuelingReport(groupslist) {
             allTableData: [],
             columns: [
                 { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
-                { title: vRoot.$t('alarm.devName'), key: 'devicename' },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 120 },
                 { title: vRoot.$t('reportForm.oilChannel'), key: 'oilindex', width: 80 },
-                { title: vRoot.$t('reportForm.soil'), key: 'soil' },
-                { title: vRoot.$t('reportForm.eoil'), key: 'eoil' },
-                { title: vRoot.$t('reportForm.fuelVolume') + '(L)', key: 'addoil' },
-                { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr' },
-                { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr' },
+                { title: vRoot.$t('reportForm.soil'), key: 'soil', width: 136 },
+                { title: vRoot.$t('reportForm.eoil'), key: 'eoil', width: 136 },
+                { title: vRoot.$t('reportForm.fuelVolume') + '(L)', key: 'addoil', width: 120 },
+                { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr', width: 160 },
+                { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr', width: 160 },
+                { title: isZh ? '距离(米)' : 'Distance(m)', key: 'distance', width: 100 },
+                { title: isZh ? '平均速度(Km/h)' : 'Average speed (km / h)', key: 'avgspeed', width: 130 },
+                { title: isZh ? '时长' : 'Duration', key: 'durationStr', width: 100 },
+                { title: isZh ? '阀值(L)' : 'Threshold', key: 'threshold', width: 100 },
                 {
                     title: vRoot.$t('reportForm.saddress'),
+                    width: 300,
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.slat ? row.slat.toFixed(5) : null;
@@ -7963,7 +7968,7 @@ function refuelingReport(groupslist) {
                         }
                     },
                 },
-                { title: vRoot.$t('monitor.remarks'), key: 'marker' },
+                { title: vRoot.$t('monitor.remarks'), key: 'marker', width: 100 },
                 {
                     title: vRoot.$t('alarm.action'),
                     width: 180,
@@ -8193,6 +8198,7 @@ function refuelingReport(groupslist) {
                     record.devicename = vstore.state.deviceInfos[deviceid].devicename;
                     record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
+                    record.durationStr = utils.timeStampNoSecond(record.duration);
                     record.addoil = oil;
                 });
                 this.tableData = records;
@@ -8371,17 +8377,24 @@ function oilLeakageReport(groupslist) {
             allTableData: [],
             columns: [
                 { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
-                { title: vRoot.$t('alarm.devName'), key: 'devicename' },
-                { title: vRoot.$t('reportForm.lsoil'), key: 'soil' },
-                { title: vRoot.$t('reportForm.leoil'), key: 'eoil' },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 120 },
+                { title: vRoot.$t('reportForm.oilChannel'), key: 'oilindex', width: 80 },
+                { title: vRoot.$t('reportForm.lsoil'), key: 'soil', width: 136 },
+                { title: vRoot.$t('reportForm.leoil'), key: 'eoil', width: 136 },
                 {
                     title: vRoot.$t('reportForm.oilLeakage') + '(L)',
                     key: 'addoil',
+                    width: 120
                 },
-                { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr' },
-                { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr' },
+                { title: vRoot.$t('reportForm.startDate'), key: 'begintimeStr', width: 160 },
+                { title: vRoot.$t('reportForm.endDate'), key: 'endtimeStr', width: 160 },
+                { title: isZh ? '距离(米)' : 'Distance(m)', key: 'distance', width: 100 },
+                { title: isZh ? '平均速度(Km/h)' : 'Average speed (km / h)', key: 'avgspeed', width: 130 },
+                { title: isZh ? '时长' : 'Duration', key: 'durationStr', width: 100 },
+                { title: isZh ? '阀值(L)' : 'Threshold', key: 'threshold', width: 100 },
                 {
                     title: vRoot.$t('reportForm.saddress'),
+                    width: 300,
                     render: function(h, params) {
                         var row = params.row;
                         var lat = row.slat ? row.slat.toFixed(5) : null;
@@ -8415,7 +8428,7 @@ function oilLeakageReport(groupslist) {
                         }
                     },
                 },
-                { title: vRoot.$t('monitor.remarks'), key: 'marker' },
+                { title: vRoot.$t('monitor.remarks'), key: 'marker', width: 100 },
                 {
                     title: vRoot.$t('alarm.action'),
                     width: 180,
@@ -8648,6 +8661,7 @@ function oilLeakageReport(groupslist) {
                     record.begintimeStr = DateFormat.longToDateTimeStr(record.begintime, timeDifference);
                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
                     record.addoil = oil;
+                    record.durationStr = utils.timeStampNoSecond(record.duration);
                 });
                 this.tableData = records;
             },
