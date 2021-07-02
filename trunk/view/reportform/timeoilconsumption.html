@@ -48,20 +48,19 @@
         </div>
 
         <div style="margin:10px;">
-            <Tabs :value="activeTab" @on-click="onClickTab">
-                <Tab-pane :label="$t('reportForm.accStatistics')" name="trackDetail">
+            <Tabs>
+                <Tab-pane :label="$t('reportForm.addOrLeakOilList')">
                     <i-table :columns="columns" size="small" :height="lastTableHeight" border :data="tableData" ref="table" highlight-row @on-row-dblclick="onRowClick"></i-table>
                     <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
                 </Tab-pane>
-                <Tab-pane :label="$t('reportForm.accDetailed')" name="oilDetail">
+                <Tab-pane :label="$t('reportForm.oilRecordList')">
                     <i-table :columns="oilColumns" :data="oilTable" :height="lastTableHeight" border></i-table>
                     <div style="padding:5px">
-                        <i-button type="primary" @click="addOilRecord">{{$t("reportForm.add")}}</i-button>
+                        <i-button type="primary" @click="addOilRecord">{{$t("user.add")}}</i-button>
                     </div>
                 </Tab-pane>
             </Tabs>
         </div>
-
     </div>
     <div class="content-wrap" v-show="isShowCard">
         <Card style="width:650px">

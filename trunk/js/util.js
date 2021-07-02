@@ -1858,7 +1858,7 @@ function openCamera() {
 
 
 function openActiveSafety(deviceid, name) {
-    console.log(deviceid, name);
+
     var mapType = utils.getMapType();
     mapType = mapType ? mapType : 'bMap';
     var url = myUrls.viewhosts + 'activesafety.html?deviceid=' + deviceid + "&maptype=" + mapType + '&token=' + token + '&name=' + name;
@@ -2111,26 +2111,37 @@ var editButton = function(vm, h, currentRow, index) {
         props: {
             size: 'small',
             type: currentRow.editting ? 'success' : 'primary',
-            loading: currentRow.saving
+            // loading: currentRow.saving
         },
         style: {
             margin: '0 5px'
         },
         on: {
             click: function() {
+
                 // 点击按钮时改变当前行的编辑状态,当数据被更新时,render函数会再次执行,详情参考https://cn.vuejs.org/v2/api/#render
                 // handleBackdata是用来删除当前行的editting属性与saving属性
                 var tempData = vm.handleBackdata(currentRow)
+
                 if (!currentRow.editting) {
                     currentRow.editting = true;
                 } else {
                     // 这里也是简单的点击编辑后的数据与原始数据做对比,一致则不做操作,其实更好的应该遍历所有属性并判断
                     if (JSON.stringify(tempData) == JSON.stringify(vm.oilTable[index])) {
                         console.log('未更改');
+                        var object = vm.handleBackdata(currentRow);
+                        object.saving = false;
+                        object.editting = false;
+                        vm.$set(vm.oilTable, index, object);
                         return currentRow.editting = false;
+                    } else {
+                        currentRow.begintime = new Date(tempData.begintime).getTime();
+                        currentRow.endtime = new Date(tempData.endtime).getTime();
+
+                        vm.saveData(currentRow, index)
+                        currentRow.saving = true;
                     }
-                    vm.saveData(currentRow, index)
-                    currentRow.saving = true;
+
                 }
             }
         }
@@ -2143,37 +2154,22 @@ var deleteButton = function(vm, h, currentRow, index) {
     return h('Poptip', {
         props: {
             confirm: true,
-            title: currentRow.WRAPDATASTATUS != '删除' ? '您确定要删除这条数据吗?' : '您确定要对条数据撤销删除吗?',
-            transfer: true,
-            placement: 'left'
+            title: vRoot.$t("message.confirmDel")
+        },
+        style: {
+            marginRight: '5px',
         },
         on: {
             'on-ok': function() {
-                vm.deleteData(currentRow, index)
+                vm.handleDeleteOilRecord(currentRow, index);
             }
         }
     }, [
         h('Button', {
-            style: {
-                color: '#ed3f14',
-                fontSize: '18px',
-                padding: '2px 7px 0',
-                border: 'none',
-                outline: 'none',
-                focus: {
-                    '-webkit-box-shadow': 'none',
-                    'box-shadow': 'none'
-                }
-            },
-            domProps: {
-                title: '删除'
-            },
             props: {
-                size: 'small',
-                type: 'ghost',
-                icon: 'android-delete',
-                placement: 'left'
+                type: 'error',
+                size: 'small'
             }
-        })
+        }, vRoot.$t("bgMgr.delete"))
     ]);
 };

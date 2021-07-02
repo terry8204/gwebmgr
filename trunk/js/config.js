@@ -916,6 +916,12 @@ var myUrls = {
     addOilRecord: function() {
         return this.apihosts + 'webapi?action=addoilrecord&token=' + token;
     },
+    delOilRecord: function() {
+        return this.apihosts + 'webapi?action=deloilrecord&token=' + token;
+    },
+    editOilRecordAll: function() {
+        return this.apihosts + 'webapi?action=editoilrecordall&token=' + token;
+    },
 }
 
 

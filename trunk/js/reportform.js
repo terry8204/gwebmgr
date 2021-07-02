@@ -6952,7 +6952,6 @@ function timeOilConsumption(groupslist) {
             devReissue: [],
             currentIndex: 1,
 
-            activeTab: 'oilDetail',
             oilColumns: [{
                     // title: isZh ? '编号' : 'index',
                     type: 'index',
@@ -6962,7 +6961,7 @@ function timeOilConsumption(groupslist) {
                     title: isZh ? '油路' : 'oilindex',
                     key: 'oilindex',
                     option: [{ label: '全部', value: '0' }, { label: '油路1', value: '1' }, { label: '油路2', value: '2' }, { label: '油路3', value: '3' }, { label: '油路4', value: '4' }],
-                    width: 100,
+                    width: 120,
                     editable: true
                 }, {
                     width: 100,
@@ -6976,11 +6975,11 @@ function timeOilConsumption(groupslist) {
                     width: 100,
                     render: function(h, params) {
                         var row = params.row;
-                        return h('span', row.eoil - row.soil);
+                        return h('span', Math.abs(row.eoil - row.soil));
                     }
                 }, {
                     title: (isZh ? '开始油量' : 'Start Oil Volume') + '(L)',
-                    width: 100,
+                    width: 110,
                     key: 'soil',
                     input: 'number',
                     editable: true,
@@ -6988,7 +6987,7 @@ function timeOilConsumption(groupslist) {
                     title: (isZh ? '结束油量' : 'End Oil Volume') + '(L)',
                     key: 'eoil',
                     input: 'number',
-                    width: 100,
+                    width: 110,
                     editable: true,
                 }, {
                     title: isZh ? '开始时间' : 'Begin Time',
@@ -7018,11 +7017,6 @@ function timeOilConsumption(groupslist) {
         },
         mixins: [reportMixin],
         methods: {
-            onClickTab: function(name) {
-                if (name == 'oilDetail') {
-                    this.queryAddOilStatus();
-                }
-            },
             queryAddOilStatus: function() {
                 var me = this;
                 var data = {
@@ -7545,8 +7539,11 @@ function timeOilConsumption(groupslist) {
                 }, function() {
                     self.loading = false;
                 })
+
+                this.queryAddOilStatus();
             },
             addOilRecord: function() {
+                var me = this;
                 var url = myUrls.addOilRecord();
                 var data = {
                     deviceid: this.queryDeviceId,
@@ -7554,7 +7551,33 @@ function timeOilConsumption(groupslist) {
                     endtime: DateFormat.dateTimeStrToLong(this.dateVal[1] + ' 23:59:59', 0) //结束时间' ,
                 };
                 utils.sendAjax(url, data, function(resp) {
-                    console.log(resp);
+                    if (resp.status == 0) {
+                        var oilRecord = resp.oilRecord;
+                        oilRecord.oilindex = String(oilRecord.oilindex);
+                        oilRecord.oilstate = String(oilRecord.oilstate);
+                        oilRecord.saving = false;
+                        oilRecord.editting = false;
+                        me.cloneDataList.push(oilRecord);
+                        me.oilTable.push(deepClone(oilRecord));
+                        me.$Message.success(isZh ? '添加成功' : "Added successfully");
+                    } else {
+                        me.$Message.error(isZh ? '添加失败' : "Add failed");
+                    }
+                });
+            },
+            handleDeleteOilRecord(row, index) {
+                row = deepClone(row);
+                row.oilindex = Number(row.oilindex);
+                var me = this;
+                var url = myUrls.delOilRecord();
+                utils.sendAjax(url, row, function(resp) {
+                    if (resp.status == 0) {
+                        me.oilTable.splice(index, 1);
+                        me.cloneDataList.splice(index, 1);
+                        me.$Message.success(isZh ? '删除成功' : "Delete successfully");
+                    } else {
+                        me.$Message.error(isZh ? '删除失败' : "Delete failed");
+                    }
                 });
             },
             initOilColumns: function() {
@@ -7573,7 +7596,7 @@ function timeOilConsumption(groupslist) {
                                     children.push(deleteButton(self, h, currentRow, param.index));
                                 }
                             });
-                            console.log(children);
+
                             return h('div', children);
                         };
                     }
@@ -7598,29 +7621,43 @@ function timeOilConsumption(groupslist) {
                                 return h('span', currentRow[item.key]);
                             } else {
                                 if (item.option && Array.isArray(item.option)) {
-                                    return h('Select', {
-                                        props: {
-                                            // ***重点***: 这里要写currentRow[params.column.key],绑定的是cloneDataList里的数据
-                                            value: currentRow[params.column.key]
-                                        },
-                                        on: {
-                                            'on-change': function(value) {
-                                                self.$set(currentRow, params.column.key, value)
-                                            }
+
+
+                                    return h('div', {
+                                        style: {
+
+                                            // width: '100%',
+                                            // height: '100%',
+                                            // position: 'absolute',
+                                            // let: '50%',
+                                            // top: '50%',
+                                            // 'marginTop': '-16px',
+                                            // 'marginLeft': '-50px',
                                         }
-                                    }, item.option.map(function(item) {
-                                        return h('Option', {
+                                    }, [
+                                        h('Select', {
                                             props: {
-                                                value: item.value || item,
-                                                label: item.label || item
+                                                // ***重点***: 这里要写currentRow[params.column.key],绑定的是cloneDataList里的数据
+                                                value: currentRow[params.column.key]
+                                            },
+                                            on: {
+                                                'on-change': function(value) {
+                                                    self.$set(currentRow, params.column.key, value)
+                                                }
                                             }
-                                        }, item.label || item);
-                                    }));
+                                        }, item.option.map(function(item) {
+                                            return h('Option', {
+                                                props: {
+                                                    value: item.value || item,
+                                                    label: item.label || item
+                                                }
+                                            }, item.label || item);
+                                        }))
+                                    ]);
                                 } else if (item.date) {
 
                                     //如果含有date属性
                                     return h('DatePicker', {
-
                                         props: {
                                             type: item.date.split('_')[0] || 'date',
                                             clearable: false,
@@ -7661,14 +7698,29 @@ function timeOilConsumption(groupslist) {
                 this.$set(this.oilTable, index, this.handleBackdata(currentRow))
                     // 需要保存的数据
                     // 模拟ajax
-                setTimeout(function() {
-                    // 重置编辑与保存状态
-                    currentRow.saving = false;
-                    currentRow.editting = false;
-                    self.$Message.success('保存完成');
-                    console.log(self.oilTable);
-                }, 1000)
+                    // setTimeout(function() {
+                    //     // 重置编辑与保存状态
+                    //     currentRow.saving = false;
+                    //     currentRow.editting = false;
+                    //     self.$Message.success('保存完成');
 
+                // }, 1000)
+
+                var url = myUrls.editOilRecordAll();
+                var data = deepClone(currentRow);
+                data.oilindex = Number(data.oilindex);
+                data.oilstate = Number(data.oilstate);
+                data.soil = data.soil * 100;
+                data.eoil = data.eoil * 100;
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        currentRow.saving = false;
+                        currentRow.editting = false;
+                        self.$Message.success('编辑完成');
+                    } else {
+                        self.$Message.error('编辑失败');
+                    }
+                });
 
             },
             // 删除数据
@@ -12099,4 +12151,4 @@ var reportForm = {
             me.selectditem('reportNav');
         }
     }
-};
+}
