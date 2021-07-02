@@ -6951,9 +6951,123 @@ function timeOilConsumption(groupslist) {
             voltages: [],
             devReissue: [],
             currentIndex: 1,
+
+            activeTab: 'oilDetail',
+            oilColumns: [{
+                    // title: isZh ? '编号' : 'index',
+                    type: 'index',
+                    width: 70
+                },
+                {
+                    title: isZh ? '油路' : 'oilindex',
+                    key: 'oilindex',
+                    option: [{ label: '全部', value: '0' }, { label: '油路1', value: '1' }, { label: '油路2', value: '2' }, { label: '油路3', value: '3' }, { label: '油路4', value: '4' }],
+                    width: 100,
+                    editable: true
+                }, {
+                    width: 100,
+                    key: 'oilstate',
+                    title: (isZh ? '状态' : 'Status'),
+                    option: [{ label: '加油', value: '1' }, { label: '漏油', value: '-1' }],
+                    editable: true
+                }, {
+                    title: (isZh ? '油量' : 'Oil Volume') + '(L)',
+                    key: 'oilVolume',
+                    width: 100,
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h('span', row.eoil - row.soil);
+                    }
+                }, {
+                    title: (isZh ? '开始油量' : 'Start Oil Volume') + '(L)',
+                    width: 100,
+                    key: 'soil',
+                    input: 'number',
+                    editable: true,
+                }, {
+                    title: (isZh ? '结束油量' : 'End Oil Volume') + '(L)',
+                    key: 'eoil',
+                    input: 'number',
+                    width: 100,
+                    editable: true,
+                }, {
+                    title: isZh ? '开始时间' : 'Begin Time',
+                    key: 'begintime',
+                    date: 'datetime_yyyy-MM-dd hh:mm:ss',
+                    editable: true,
+                }, {
+                    title: isZh ? '结束时间' : 'End Time',
+                    key: 'endtime',
+                    date: 'datetime_yyyy-MM-dd hh:mm:ss',
+                    editable: true,
+                }, {
+                    title: isZh ? '备注' : 'Marker',
+                    key: 'marker',
+                    input: 'text',
+                    editable: true,
+                }, {
+                    title: isZh ? '操作' : 'action',
+                    width: 145,
+                    key: 'handle',
+                    handle: ['edit', 'delete'],
+                    render: function(h) {}
+                },
+            ],
+            oilTable: [],
+            cloneDataList: []
         },
         mixins: [reportMixin],
         methods: {
+            onClickTab: function(name) {
+                if (name == 'oilDetail') {
+                    this.queryAddOilStatus();
+                }
+            },
+            queryAddOilStatus: function() {
+                var me = this;
+                var data = {
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                    oilstate: 99,
+                    oilindex: 0
+                };
+                utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
+                    self.loading = false;
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var oilArr = [];
+                            var increaseOil = 0;
+                            var reduceOil = 0;
+                            resp.records.forEach(function(item) {
+                                var index = 1;
+                                item.records.forEach(function(record) {
+                                    var oilstate = record.oilstate;
+                                    if (oilstate == -1 || oilstate == 1) {
+                                        record.eoil = record.eoil / 100;
+                                        record.soil = record.soil / 100;
+                                        record.oilstate = String(oilstate);
+                                        record.oilindex = String(record.oilindex);
+                                        record.editting = false;
+                                        record.saving = false;
+                                        oilArr.push(record);
+                                        index++;
+                                    }
+                                });
+                            });
+
+                            me.oilTable = oilArr;
+                            me.cloneDataList = deepClone(oilArr);
+
+                        } else {
+                            me.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        me.$Message.error(resp.cause);
+                    }
+                })
+            },
             onRowClick: function(row) {
                 var me = this;
                 this.isShowCard = true;
@@ -7258,7 +7372,7 @@ function timeOilConsumption(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.lastTableHeight = wHeight - 360;
+                this.lastTableHeight = wHeight - 400;
             },
             onClickQuery: function() {
                 if (this.queryDeviceId == "") { return };
@@ -7431,6 +7545,142 @@ function timeOilConsumption(groupslist) {
                 }, function() {
                     self.loading = false;
                 })
+            },
+            addOilRecord: function() {
+                var url = myUrls.addOilRecord();
+                utils.sendAjax(url, { deviceid: this.queryDeviceId, }, function(resp) {
+                    console.log(resp);
+                });
+            },
+            initOilColumns: function() {
+                var self = this;
+
+                self.oilColumns.forEach(function(item) {
+                    if (item.handle) {
+                        console.log(item);
+                        item.render = function(h, param) {
+                            var currentRow = self.cloneDataList[param.index];
+                            var children = [];
+                            item.handle.forEach(function(item) {
+                                if (item === 'edit') {
+                                    children.push(editButton(self, h, currentRow, param.index));
+                                } else if (item === 'delete') {
+                                    children.push(deleteButton(self, h, currentRow, param.index));
+                                }
+                            });
+                            // console.log(children);
+                            return h('div', children);
+                        };
+                    }
+
+                    if (item.editable) {
+                        item.render = function(h, params) {
+                            var currentRow = self.cloneDataList[params.index];
+                            // 非编辑状态
+                            if (!currentRow.editting) {
+                                // 日期类型单独 渲染(利用工具暴力的formatDate格式化日期)
+                                if (item.date) {
+                                    return h('span', DateFormat.longToDateTimeStr(Number(currentRow[item.key]), 8))
+                                }
+                                // 下拉类型中value与label不一致时单独渲染
+                                if (item.option && Array.isArray(item.option)) {
+                                    // 我这里为了简单的判断了第一个元素为object的情况,其实最好用every来判断所有元素
+                                    if (typeof item.option[0] === 'object') {
+
+                                        return h('span', item.option.find(findObjectInOption(currentRow[item.key])).label);
+                                    }
+                                }
+                                return h('span', currentRow[item.key]);
+                            } else {
+                                if (item.option && Array.isArray(item.option)) {
+                                    return h('Select', {
+                                        props: {
+                                            // ***重点***: 这里要写currentRow[params.column.key],绑定的是cloneDataList里的数据
+                                            value: currentRow[params.column.key]
+                                        },
+                                        on: {
+                                            'on-change': function(value) {
+                                                self.$set(currentRow, params.column.key, value)
+                                            }
+                                        }
+                                    }, item.option.map(function(item) {
+                                        return h('Option', {
+                                            props: {
+                                                value: item.value || item,
+                                                label: item.label || item
+                                            }
+                                        }, item.label || item);
+                                    }));
+                                } else if (item.date) {
+
+                                    //如果含有date属性
+                                    return h('DatePicker', {
+
+                                        props: {
+                                            type: item.date.split('_')[0] || 'date',
+                                            clearable: false,
+                                            value: new Date(currentRow[params.column.key])
+                                        },
+                                        on: {
+                                            'on-change': function(value) {
+                                                self.$set(currentRow, params.column.key, value)
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    // 默认input
+                                    return h('Input', {
+                                        props: {
+                                            // type类型也是自定的属性
+                                            type: item.input || 'text',
+                                            // rows只有在input 为textarea时才会起作用
+                                            rows: 3,
+                                            value: currentRow[params.column.key]
+                                        },
+                                        on: {
+                                            'on-change' (event) {
+                                                self.$set(currentRow, params.column.key, event.target.value)
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            saveData: function(currentRow, index) {
+
+                var self = this;
+                // 修改当前的原始数据, 就不需要再从服务端获取了
+                this.$set(this.oilTable, index, this.handleBackdata(currentRow))
+                    // 需要保存的数据
+                    // 模拟ajax
+                setTimeout(function() {
+                    // 重置编辑与保存状态
+                    currentRow.saving = false;
+                    currentRow.editting = false;
+                    self.$Message.success('保存完成');
+                    console.log(self.oilTable);
+                }, 1000)
+
+
+            },
+            // 删除数据
+            deleteData: function(currentRow, index) {
+                var self = this;
+                setTimeout(function() {
+                    self.$delete(self.dataList, index)
+                    self.$delete(self.cloneDataList, index)
+                    vm.$Message.success('删除成功');
+                }, 1000)
+            },
+            // 还原数据,用来与原始数据作对比的
+            handleBackdata: function(object) {
+                var clonedData = JSON.parse(JSON.stringify(object));
+                delete clonedData.editting;
+                delete clonedData.saving;
+                return clonedData;
             }
         },
         mounted: function() {
@@ -7439,6 +7689,8 @@ function timeOilConsumption(groupslist) {
             this.myChart = null;
             this.records = [];
             this.disMin = 0;
+
+            this.initOilColumns();
 
             var usoil1 = vRoot.$t('reportForm.oil1');
             var usoil2 = vRoot.$t('reportForm.oil2');
@@ -7452,6 +7704,8 @@ function timeOilConsumption(groupslist) {
 
             var altitude = vRoot.$t('reportForm.altitude');
             var voltage = vRoot.$t('reportForm.voltage');
+
+
 
             if (isZh) {
                 this.selectedLegend = {

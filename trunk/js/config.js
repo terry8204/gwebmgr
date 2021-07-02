@@ -913,6 +913,9 @@ var myUrls = {
     reportOilConsumptionRate: function() {
         return this.apihosts + 'webapi?action=reportoilconsumptionrate&token=' + token;
     },
+    addOilRecord: function() {
+        return this.apihosts + 'webapi?action=addoilrecord&token=' + token;
+    },
 }
 
 
