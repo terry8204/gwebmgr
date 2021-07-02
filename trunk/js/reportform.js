@@ -7548,27 +7548,32 @@ function timeOilConsumption(groupslist) {
             },
             addOilRecord: function() {
                 var url = myUrls.addOilRecord();
-                utils.sendAjax(url, { deviceid: this.queryDeviceId, }, function(resp) {
+                var data = {
+                    deviceid: this.queryDeviceId,
+                    begintime: DateFormat.dateTimeStrToLong(this.dateVal[0] + ' 00:00:00', 0),
+                    endtime: DateFormat.dateTimeStrToLong(this.dateVal[1] + ' 23:59:59', 0) //结束时间' ,
+                };
+                utils.sendAjax(url, data, function(resp) {
                     console.log(resp);
                 });
             },
             initOilColumns: function() {
                 var self = this;
-
                 self.oilColumns.forEach(function(item) {
                     if (item.handle) {
-                        console.log(item);
+
                         item.render = function(h, param) {
                             var currentRow = self.cloneDataList[param.index];
                             var children = [];
                             item.handle.forEach(function(item) {
+
                                 if (item === 'edit') {
                                     children.push(editButton(self, h, currentRow, param.index));
                                 } else if (item === 'delete') {
                                     children.push(deleteButton(self, h, currentRow, param.index));
                                 }
                             });
-                            // console.log(children);
+                            console.log(children);
                             return h('div', children);
                         };
                     }
