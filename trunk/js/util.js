@@ -2145,7 +2145,7 @@ var editButton = function(vm, h, currentRow, index) {
                 }
             }
         }
-    }, currentRow.editting ? '保存' : '编辑');
+    }, currentRow.editting ? (isZh ? '保存' : 'Save') : (isZh ? '编辑' : 'Edit'));
 };
 
 
@@ -2172,4 +2172,19 @@ var deleteButton = function(vm, h, currentRow, index) {
             }
         }, vRoot.$t("bgMgr.delete"))
     ]);
+};
+
+var mapButton = function(vm, h, currentRow, index) {
+    return h('Button', {
+        props: {
+            size: 'small',
+            type: 'info',
+        },
+        style: {},
+        on: {
+            click: function() {
+                vm.queryTracks(currentRow);
+            }
+        }
+    }, isZh ? '轨迹' : 'Track');
 };

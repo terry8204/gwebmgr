@@ -78,4 +78,16 @@
             </div>
         </Card>
     </div>
+    <transition name="fade">
+        <div v-show="trackDetailModal" class="posi-map-wraper">
+            <div class="map-modal" @click="trackDetailModal=false"></div>
+            <div class="work-inner-map-wraper">
+                <div class="posi-map-title">
+                    {{$t("monitor.track")}}
+                    <div class="map-close"></div>
+                </div>
+                <div id="oil-details-map" class="work-details-map"></div>
+            </div>
+        </div>
+    </transition>
 </div>

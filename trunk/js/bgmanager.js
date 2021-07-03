@@ -19,126 +19,9 @@ var bgManager = {
             if (this.currentPage == name) {
                 return
             }
-            var page = null
-            switch (name) {
-                case 'bgNav':
-                    page = 'bgnav.html'
-                    break
-                case 'addCustomer':
-                    page = 'addcustomer.html'
-                    break
-                case 'queryCustomer':
-                    page = 'querycustomer.html'
-                    break
-                case 'addGroup':
-                    page = 'addgroup.html'
-                    break
-                case 'queryGroup':
-                    page = 'querygroup.html'
-                    break
-                case 'addDevice':
-                    page = 'adddevice.html'
-                    break
-                case 'batchAddDevice':
-                    page = 'batchadddevice.html'
-                    break
-                case 'deviceTypes':
-                    page = 'devicetypes.html'
-                    break
-                case 'queryDevice':
-                    page = 'querydevice.html'
-                    break
-                case 'addUser':
-                    page = 'adduser.html'
-                    break
-                case 'queryUser':
-                    page = 'queryuser.html'
-                    break
-                case 'employees':
-                    page = 'employees.html'
-                    break
-                case 'onlineUsers':
-                    page = 'onlineusers.html'
-                    break
-                case 'loginRecords':
-                    page = 'loginrecords.html'
-                    break
-                case 'organStructure':
-                    page = 'organstructure.html'
-                    break
-                case 'chargeMgr':
-                    page = 'chargemgr.html'
-                    break
-                case 'batchMgrDevice':
-                    page = 'batchmgr.html'
-                    break
-                case 'travelingDataRecorder':
-                    page = 'travelingdatarecorder.html'
-                    break
-                case 'stockDev':
-                    page = 'stockdev.html'
-                    break
-                case 'notPutIntoStorage':
-                    page = 'notputintostorage.html'
-                    break
-                case 'ImportOwner':
-                    page = 'importowner.html'
-                    break
-                case 'ImportInsure':
-                    page = 'importinsure.html'
-                    break
-                case 'ImportInsure2':
-                    page = 'importinsure2.html'
-                    break
-                case 'ImportVehicleNumber':
-                    page = 'Importvehiclenumber.html'
-                    break
-                case 'ImportOfflineInsure':
-                    page = 'importofflineinsure.html'
-                    break
-                case 'ImportSim':
-                    page = 'importsim.html'
-                    break
-                case 'ImportDeviceName':
-                    page = 'importdevicename.html'
-                    break
-                case 'repairRecord':
-                    page = 'repairrecord.html'
-                    break
-                case 'addRepair':
-                    page = 'addrepair.html'
-                    break
-                case 'clearRecord':
-                    page = 'clearrecord.html'
-                    break
-                case 'setMileage':
-                    page = 'setmileage.html'
-                    break
-                case 'priceList':
-                    page = 'pricelist.html'
-                    break
-                case 'bonusList':
-                    page = 'bonuslist.html'
-                    break
-                case 'transferRecord':
-                    page = 'transferrecord.html'
-                    break
-                case 'accessPlatformList':
-                    page = 'accessplatformlist.html'
-                    break
-                case 'forwardingSetting':
-                    page = 'forwardingsetting.html'
-                    break
-                case 'yongZhouEnterpriseInfo':
-                    page = 'yongzhouenterpriseinfo.html'
-                    break
-                case 'yongZhouVehicleInfo':
-                    page = 'yongzhouvehicleinfo.html'
-                    break
-                case 'yongZhouDriverInfo':
-                    page = 'yongzhoudriverinfo.html'
-                    break
-            }
+
+            var page = name.toLocaleLowerCase() + '.html';
+
             this.currentPage = name;
             this.loadPage(page)
         },
@@ -209,6 +92,8 @@ var bgManager = {
                         { title: me.$t("bgMgr.unclaimed"), name: 'notPutIntoStorage', icon: 'md-basket', maxShowUserType: 99 },
                         // { title: me.$t("bgMgr.clearRecord"), name: "clearRecord", icon: "ios-paw" },
                         // { title: me.$t("bgMgr.setMileage"), name: "setMileage", icon: "md-paper" },
+                        { title: me.$t("device.oilMarking"), name: "oilMarking", icon: "md-paper", maxShowUserType: 99 },
+
                     ]
                 },
                 {

@@ -6998,7 +6998,7 @@ function timeOilConsumption(groupslist) {
                     width: 100,
                     render: function(h, params) {
                         var row = params.row;
-                        return h('span', Math.abs(row.eoil - row.soil));
+                        return h('span', Math.abs(row.eoil - row.soil).toFixed(2));
                     }
                 }, {
                     title: (isZh ? '开始油量' : 'Start Oil Volume') + '(L)',
@@ -7029,18 +7029,115 @@ function timeOilConsumption(groupslist) {
                     editable: true,
                 }, {
                     title: isZh ? '操作' : 'action',
-                    width: 145,
+                    width: 185,
                     key: 'handle',
-                    handle: ['edit', 'delete'],
+                    handle: ['edit', 'delete', 'map'],
                     render: function(h) {}
                 },
             ],
             oilTable: [],
-            cloneDataList: []
+            cloneDataList: [],
+            trackDetailModal: false,
         },
         mixins: [reportMixin],
         methods: {
-            queryAddOilStatus: function() {
+            initMap: function() {
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('oil-details-map');
+            },
+            queryTracks: function(row) {
+                var url = myUrls.queryTracks(),
+                    me = this,
+                    data = {
+                        deviceid: row.deviceid,
+                        begintime: DateFormat.longToDateTimeStr(row.begintime, timeDifference),
+                        endtime: DateFormat.longToDateTimeStr(row.endtime, timeDifference),
+                        interval: 5,
+                        timezone: timeDifference
+                    };
+                utils.sendAjax(url, data, function(respData) {
+                    if (respData.status === 0) {
+                        var records = respData.records;
+                        if (records && records.length) {
+                            me.trackDetailModal = true;
+                            utils.markersAndLineLayerToMap(me, records);
+                        } else {
+                            me.$Message.error(vRoot.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        me.$Message.error(vRoot.$t("reportForm.queryFail"));
+                    }
+
+                });
+            },
+            calMarkPoint: function(tracks, oilDeviceRecords) {
+                var markPoints = [];
+                if (oilDeviceRecords && oilDeviceRecords.length > 0) {
+                    var oilRecords = oilDeviceRecords[0].records;
+                    if (oilRecords && oilRecords.length > 0) {
+                        for (var i = 0; i < oilRecords.length; ++i) {
+                            var oilRecord = oilRecords[i];
+                            var oilEndTime = oilRecord.endtime;
+                            var nearestTrack = this.findNearestTracksByTime(tracks, oilEndTime);
+                            if (nearestTrack) {
+                                var oil = nearestTrack.totalad;
+                                var difference = (oilRecord.eoil - oilRecord.soil);
+                                var color = '';
+                                if (difference > 0) {
+                                    color = 'green';
+                                } else {
+                                    color = 'red';
+                                }
+                                var markPoint = {
+                                    coord: [nearestTrack.index, oil], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+                                    value: Math.abs(difference).toFixed(0),
+                                    itemStyle: {
+                                        color: color
+                                    },
+                                    label: {
+                                        fontSize: 8,
+                                    }
+                                };
+                                markPoints.push(markPoint);
+                            }
+                        }
+                    }
+                }
+                return markPoints;
+            },
+            findNearestTracksByTime(tracks, needFoundTime) {
+                var nearestTrack = null;
+                if (tracks) {
+                    var detalTime = 24 * 3600 * 1000;
+                    for (var i = 0; i < tracks.length; ++i) {
+                        var tempTrack = tracks[i];
+                        var trackUpdateTime = tempTrack.updatetime;
+                        var tempDetal = trackUpdateTime - needFoundTime;
+                        var absTempDetal = Math.abs(tempDetal);
+                        if (absTempDetal < detalTime) {
+                            if (tempDetal < 0) {
+                                detalTime = absTempDetal;
+                                nearestTrack = tempTrack;
+                                nearestTrack.index = i;
+                            } else if (tempDetal == 0) {
+                                nearestTrack = tempTrack;
+                                nearestTrack.index = i;
+                                break;
+                            } else if (tempDetal > 0) {
+                                nearestTrack = tempTrack;
+                                nearestTrack.index = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return nearestTrack;
+            },
+            queryAddOilStatus: function(tracks) {
+                tracks.forEach(function(tracks, index) {
+                    tracks.index = index;
+                });
                 var me = this;
                 var data = {
                     startday: this.dateVal[0],
@@ -7076,6 +7173,12 @@ function timeOilConsumption(groupslist) {
 
                             me.oilTable = oilArr;
                             me.cloneDataList = deepClone(oilArr);
+
+                            var markPoints = me.calMarkPoint(tracks, resp.records);
+                            console.log(markPoints);
+                            me.markPointData = markPoints;
+
+                            me.charts();
 
                         } else {
                             me.$Message.error(self.$t("reportForm.noRecord"));
@@ -7148,10 +7251,6 @@ function timeOilConsumption(groupslist) {
                         // }
                     },
                     grid: {
-                        // x: 50,
-                        // y: 40,
-                        // x2: 50,
-                        // y2: 40
                         top: 30,
                         left: 60,
                         right: 60,
@@ -7498,33 +7597,33 @@ function timeOilConsumption(groupslist) {
                                 });
                             });
 
-                            totalads.forEach(function(item, index) {
-                                if (index != 0) {
-                                    var prevItem = totalads[index - 1];
-                                    var oilDifference = item - prevItem;
+                            // totalads.forEach(function(item, index) {
+                            //     if (index != 0) {
+                            //         var prevItem = totalads[index - 1];
+                            //         var oilDifference = item - prevItem;
 
-                                    if (Math.abs(oilDifference) > 5) {
-                                        var color = '';
-                                        if (oilDifference > 0) {
-                                            color = 'green';
-                                        } else {
-                                            color = 'red';
-                                        }
-                                        markPointData.push({
-                                            coord: [index, item],
-                                            value: Math.abs(oilDifference).toFixed(0),
-                                            itemStyle: {
-                                                color: color
-                                            },
-                                            label: {
-                                                fontSize: 8,
-                                            }
-                                        })
-                                    }
-                                }
-                            })
+                            //         if (Math.abs(oilDifference) > 5) {
+                            //             var color = '';
+                            //             if (oilDifference > 0) {
+                            //                 color = 'green';
+                            //             } else {
+                            //                 color = 'red';
+                            //             }
+                            //             markPointData.push({
+                            //                 coord: [index, item],
+                            //                 value: Math.abs(oilDifference).toFixed(0),
+                            //                 itemStyle: {
+                            //                     color: color
+                            //                 },
+                            //                 label: {
+                            //                     fontSize: 8,
+                            //                 }
+                            //             })
+                            //         }
+                            //     }
+                            // })
 
-                            self.markPointData = markPointData;
+                            // self.markPointData = markPointData;
                             self.totalad = totalads;
                             self.veo = veo;
                             self.distance = distance;
@@ -7543,6 +7642,8 @@ function timeOilConsumption(groupslist) {
                             self.altitudes = altitudes;
                             self.voltages = voltages;
 
+                            self.queryAddOilStatus(deepClone(records));
+
                             self.total = records.length;
                             records.sort(function(a, b) {
                                 return b.updatetime - a.updatetime;
@@ -7552,7 +7653,9 @@ function timeOilConsumption(groupslist) {
                             })
                             self.currentPageIndex = 1;
                             self.tableData = records.slice(0, 20);
-                            self.charts();
+
+
+
                         } else {
                             self.$Message.error(self.$t("reportForm.noRecord"));
                         }
@@ -7563,7 +7666,7 @@ function timeOilConsumption(groupslist) {
                     self.loading = false;
                 })
 
-                this.queryAddOilStatus();
+
             },
             addOilRecord: function() {
                 var me = this;
@@ -7605,6 +7708,60 @@ function timeOilConsumption(groupslist) {
                     }
                 });
             },
+            getTrackInfoContent: function(row, h, key) {
+
+                var totoil = vRoot.$t('reportForm.totalOil');
+                var speed = vRoot.$t('reportForm.speed');
+
+                var usoil1 = vRoot.$t('reportForm.oil1');
+                var usoil2 = vRoot.$t('reportForm.oil2');
+                var usoil3 = vRoot.$t('reportForm.oil3');
+                var usoil4 = vRoot.$t('reportForm.oil4');
+
+                var srcad0 = vRoot.$t('reportForm.srcad0');
+                var srcad1 = vRoot.$t('reportForm.srcad1');
+                var srcad2 = vRoot.$t('reportForm.srcad2');
+                var srcad3 = vRoot.$t('reportForm.srcad3');
+
+
+                var status = vRoot.$t('reportForm.status');
+                var reissue = vRoot.$t('reportForm.reissue');
+
+                var voltage = isZh ? "电压" : "Voltage";
+
+                var content = [];
+                var track = null;
+                for (var i = 0; i < this.records.length; i++) {
+                    var item = this.records[i];
+                    if (row[key] == item.updatetime) {
+                        track = item;
+                        break;
+                    }
+                }
+
+                if (track) {
+
+                    content.push(h('p', {}, DateFormat.longToDateTimeStr(track.updatetime, 8)));
+                    content.push(h('p', {}, speed + " : " + track.speed + "Km/h"));
+                    content.push(h('p', {}, totoil + " : " + track.totalad + "L"));
+                    this.selectedLegend[usoil1] && content.push(h('p', {}, usoil1 + " : " + track.ad0 + "L"));
+                    this.selectedLegend[usoil2] && content.push(h('p', {}, usoil2 + " : " + track.ad1 + "L"));
+                    this.selectedLegend[usoil3] && content.push(h('p', {}, usoil3 + " : " + track.ad2 + "L"));
+                    this.selectedLegend[usoil4] && content.push(h('p', {}, usoil4 + " : " + track.ad3 + "L"));
+                    this.selectedLegend[srcad0] && content.push(h('p', {}, srcad0 + " : " + track.srcad0 + "L"));
+                    this.selectedLegend[srcad1] && content.push(h('p', {}, srcad1 + " : " + track.srcad1 + "L"));
+                    this.selectedLegend[srcad2] && content.push(h('p', {}, srcad2 + " : " + track.srcad2 + "L"));
+                    this.selectedLegend[srcad3] && content.push(h('p', {}, srcad3 + " : " + track.srcad3 + "L"));
+                    content.push(h('p', {}, status + " : " + (isZh ? track.strstatus : track.strstatusen)));
+                    content.push(h('p', {}, reissue + " : " + (isZh ? (track.reissue == 0 ? '否' : '是') : (track.reissue == 0 ? 'No' : 'Yes'))));
+                    this.selectedLegend[voltage] && content.push(h('p', {}, voltage + " : " + track.voltage + "V"));
+
+                }
+
+
+
+                return content;
+            },
             initOilColumns: function() {
                 var self = this;
                 self.oilColumns.forEach(function(item) {
@@ -7619,7 +7776,10 @@ function timeOilConsumption(groupslist) {
                                     children.push(editButton(self, h, currentRow, param.index));
                                 } else if (item === 'delete') {
                                     children.push(deleteButton(self, h, currentRow, param.index));
+                                } else if (item === 'map') {
+                                    children.push(mapButton(self, h, currentRow, param.index));
                                 }
+
                             });
 
                             return h('div', children);
@@ -7633,7 +7793,46 @@ function timeOilConsumption(groupslist) {
                             if (!currentRow.editting) {
                                 // 日期类型单独 渲染(利用工具暴力的formatDate格式化日期)
                                 if (item.date) {
-                                    return h('span', DateFormat.longToDateTimeStr(Number(currentRow[item.key]), 8))
+                                    // return h('Button', {
+                                    //     props: {
+                                    //         size: 'small',
+                                    //         type: 'info',
+                                    //     },
+                                    //     style: {},
+                                    //     on: {
+                                    //         click: function(e) {
+                                    //             e.stopPropagation();
+                                    //             e.preventDefault();
+                                    //             console.log(currentRow);
+                                    //             console.log(self.records);
+                                    //         }
+                                    //     }
+                                    // }, DateFormat.longToDateTimeStr(Number(currentRow[item.key]), 8));
+
+                                    // return h('span', DateFormat.longToDateTimeStr(Number(currentRow[item.key]), 8))
+                                    var contentChildren = self.getTrackInfoContent(currentRow, h, item.key);
+                                    return h('Tooltip', {
+                                        props: {
+                                            // width: 240,
+                                            // height: 60,
+                                            // content: content
+                                        },
+                                    }, [
+                                        h('Button', {
+                                            props: {
+                                                type: 'info',
+                                                size: 'small'
+                                            }
+                                        }, DateFormat.longToDateTimeStr(Number(currentRow[item.key]), 8)),
+                                        h(
+                                            'div', {
+                                                slot: 'content',
+                                                attrs: {
+                                                    slot: "content"
+                                                }
+                                            }, contentChildren
+                                        )
+                                    ]);
                                 }
                                 // 下拉类型中value与label不一致时单独渲染
                                 if (item.option && Array.isArray(item.option)) {
@@ -7643,7 +7842,11 @@ function timeOilConsumption(groupslist) {
                                         return h('span', item.option.find(findObjectInOption(currentRow[item.key])).label);
                                     }
                                 }
+
+
                                 return h('span', currentRow[item.key]);
+
+
                             } else {
                                 if (item.option && Array.isArray(item.option)) {
 
@@ -7764,7 +7967,7 @@ function timeOilConsumption(groupslist) {
             this.myChart = null;
             this.records = [];
             this.disMin = 0;
-
+            this.initMap();
             this.initOilColumns();
 
             var usoil1 = vRoot.$t('reportForm.oil1');
@@ -7877,6 +8080,7 @@ function timeOilConsumption(groupslist) {
                 me.selectedLegend[srcad1] = !!selected[srcad1];
                 me.selectedLegend[srcad2] = !!selected[srcad2];
                 me.selectedLegend[srcad3] = !!selected[srcad3];
+                me.selectedLegend[voltage] = selected[voltage];
 
                 if (selected[usoil1]) {
                     columns.push({ title: vRoot.$t('reportForm.oil1'), key: 'ad0', width: 90 })
@@ -7909,6 +8113,8 @@ function timeOilConsumption(groupslist) {
                     columns.push({ title: vRoot.$t('reportForm.voltage') + '(V)', key: 'voltage', width: 90 })
                 }
 
+
+                me.initOilColumns();
 
                 me.columns = columns.concat([
                     { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },

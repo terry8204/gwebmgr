@@ -2653,7 +2653,9 @@
                                     }
                                     var records = me.getTypeRecords();
                                     var markPoints = me.calMarkPoint(records, resp.records);
+                                    console.log(markPoints);
                                     me.markPointData = markPoints;
+
                                     me.charts.setOption({}, true);
                                     me.charts.setOption(me.getChartsOption());
 
