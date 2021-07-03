@@ -1782,8 +1782,17 @@ div.icon_example>span {
     overflow: visible;
 }
 
-div.warning-wraper .ivu-table-small td {
+div.warning-wraper .ivu-table-small td,
+body .device-oil-modal .ivu-table-small td {
     height: 30px;
+}
+
+body .device-oil-modal .ivu-modal-body {
+    padding: 16px 16px 0px 16px;
+}
+
+body .device-oil-modal .ivu-alert {
+    padding: 4px 16px;
 }
 
 #power-waste .chats-container {

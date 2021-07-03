@@ -528,7 +528,7 @@
             </div>
         </Modal>
 
-        <Modal v-model="oilModal" width="650" :mask-closable="false">
+        <Modal v-model="oilModal" width="650" :mask-closable="false" class="device-oil-modal">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="ios-create-outline"></Icon>
                 <span>{{$t("device.oilMarking")}} - {{devicename}}</span>
@@ -668,15 +668,15 @@
                                     <i-button type="primary" @click="addTaggingRowData1">{{$t("user.add")}}</i-button>
                                 </i-col>
                             </Row>
-                            <i-table border :columns="taggingColumns1" ref="taggingTab1" :data="taggingData1" height="200"></i-table>
+                            <i-table border :columns="taggingColumns1" size="small" ref="taggingTab1" :data="taggingData1" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
-                                <i-button type="primary" @click="importTownerInfo1">{{$t("device.import")}}</i-button>
+                                <i-button type="primary" @click="importTownerInfo1">{{$t("device.importData")}}</i-button>
                                 <i-button type="info" @click="exportDevice1">{{$t("reportForm.exportData")}}</i-button>
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
                         <Row :style="{marginTop:tankShape1 == 4?'10px':'0px'}">
-                            <i-col offset="4" span="16" style="line-height: 32px;text-align: center;">
+                            <i-col offset="4" span="16" style="text-align: center;">
                                 <Alert type="warning">
                                     {{$t("device.theBoxCapacity")}}{{capacity1}}L
                                 </Alert>
@@ -818,13 +818,13 @@
                             </Row>
                             <i-table border :columns="taggingColumns2" ref="taggingTab2" :data="taggingData2" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
-                                <i-button type="primary" style="width:80px;" @click="importTownerInfo2">{{$t("device.import")}}</i-button>
+                                <i-button type="primary" style="width:80px;" @click="importTownerInfo2">{{$t("device.importData")}}</i-button>
                                 <i-button type="info" style="width:80px;" @click="exportDevice2">{{$t("reportForm.exportData")}}</i-button>
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
                         <Row :style="{marginTop:tankShape2 == 4?'10px':'0px'}">
-                            <i-col offset="4" span="16" style="line-height: 32px;text-align: center;">
+                            <i-col offset="4" span="16" style="text-align: center;">
                                 <Alert type="warning">
                                     {{$t("device.theBoxCapacity")}}{{capacity2}}L
                                 </Alert>
@@ -966,13 +966,13 @@
                             </Row>
                             <i-table border :columns="taggingColumns3" ref="taggingTab3" :data="taggingData3" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
-                                <i-button type="primary" style="width:80px;" @click="importTownerInfo3">{{$t("device.import")}}</i-button>
+                                <i-button type="primary" style="width:80px;" @click="importTownerInfo3">{{$t("device.importData")}}</i-button>
                                 <i-button type="info" style="width:80px;" @click="exportDevice3">{{$t("reportForm.exportData")}}</i-button>
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
                         <Row :style="{marginTop:tankShape3 == 4?'10px':'0px'}">
-                            <i-col offset="4" span="16" style="line-height: 32px;text-align: center;">
+                            <i-col offset="4" span="16" style="text-align: center;">
                                 <Alert type="warning">
                                     {{$t("device.theBoxCapacity")}}{{capacity3}}L
                                 </Alert>
@@ -1114,13 +1114,13 @@
                             </Row>
                             <i-table border :columns="taggingColumns4" ref="taggingTab4" :data="taggingData4" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
-                                <i-button type="primary" style="width:80px;" @click="importTownerInfo4">{{$t("device.import")}}</i-button>
+                                <i-button type="primary" style="width:80px;" @click="importTownerInfo4">{{$t("device.importData")}}</i-button>
                                 <i-button type="info" style="width:80px;" @click="exportDevice4">{{$t("reportForm.exportData")}}</i-button>
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
                         <Row :style="{marginTop:tankShape4 == 4?'10px':'0px'}">
-                            <i-col offset="4" span="16" style="line-height: 32px;text-align: center;">
+                            <i-col offset="4" span="16" style="text-align: center;">
                                 <Alert type="warning">
                                     {{$t("device.theBoxCapacity")}}{{capacity4}}L
                                 </Alert>

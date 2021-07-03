@@ -8807,7 +8807,6 @@ function oilLeakageReport(groupslist) {
             initMap: function() {
                 this.markerLayer = null;
                 this.mapInstance = utils.initWindowMap('oil-leakage-details-map');
-                console.log('this.mapInstance', this.mapInstance);
             },
             queryTracks: function(row) {
                 var url = myUrls.queryTracks(),
