@@ -56,7 +56,9 @@
                     </div>
                 </Tab-pane>
                 <Tab-pane :label="$t('reportForm.oilRecordList')">
-                    <i-table :columns="columns" size="small" :height="lastTableHeight" border :data="tableData" ref="table" highlight-row @on-row-dblclick="onRowClick"></i-table>
+                    <div id="oil-track">
+                        <i-table :columns="columns" size="small" :height="lastTableHeight" border :data="tableData" ref="table" highlight-row @on-row-dblclick="onRowClick"></i-table>
+                    </div>
                     <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
                 </Tab-pane>
             </Tabs>

@@ -3154,6 +3154,12 @@ function messageRecords(groupslist) {
                         right: 5,
                         bottom: 5,
                     },
+                    // dataZoom: [{
+                    //     show: true,
+                    //     realtime: true,
+                    //     start: 1,
+                    //     end: 10000
+                    // }],
                     series: [{
                         type: 'pie',
                         radius: '70%',
@@ -3350,7 +3356,7 @@ function messageRecords(groupslist) {
                         y: 40,
                         x2: 50,
                         y2: 40,
-                        bottom: 25
+                        bottom: 55
                     },
                     tooltip: {
                         trigger: 'axis',
@@ -3394,6 +3400,23 @@ function messageRecords(groupslist) {
                             onZero: false
                         },
                         data: recvtime
+                    }],
+                    dataZoom: [{
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        backgroundColor: '#EDEDED',
+                        fillerColor: 'rgb(54, 72, 96,0.5)',
+                        bottom: 10
+                    }, {
+                        type: "inside",
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        bottom: 0
                     }],
                     yAxis: [{
                         name: speed,
@@ -7821,7 +7844,7 @@ function timeOilConsumption(groupslist) {
 
                         setTimeout(function() {
                             me.$refs.table.$refs.tbody.clickCurrentRow(rowIndex);
-                            var rowHeight = $('tr.ivu-table-row')[0].getBoundingClientRect().height
+                            var rowHeight = $('#oil-track tr.ivu-table-row')[0].getBoundingClientRect().height
                             $('div.ivu-table-body').animate({
                                 scrollTop: (rowIndex * rowHeight) + 'px'
                             }, 300);

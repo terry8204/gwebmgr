@@ -675,6 +675,13 @@
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
+                        <Row :style="{marginTop:tankShape1 == 4?'10px':'0px'}">
+                            <i-col offset="4" span="16" style="line-height: 32px;text-align: center;">
+                                <Alert type="warning">
+                                    {{$t("device.theBoxCapacity")}}{{capacity1}}L
+                                </Alert>
+                            </i-col>
+                        </Row>
                     </tab-pane>
                     <tab-pane :label="$t('device.oil2')" style="min-height: 210px;" name="oil2">
                         <Row style="margin: 10px 0;">
@@ -816,6 +823,13 @@
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
+                        <Row :style="{marginTop:tankShape2 == 4?'10px':'0px'}">
+                            <i-col offset="4" span="16" style="line-height: 32px;text-align: center;">
+                                <Alert type="warning">
+                                    {{$t("device.theBoxCapacity")}}{{capacity2}}L
+                                </Alert>
+                            </i-col>
+                        </Row>
                     </tab-pane>
                     <tab-pane :label="$t('device.oil3')" style="min-height: 210px;" name="oil3">
                         <Row style="margin: 10px 0;">
@@ -957,6 +971,13 @@
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
+                        <Row :style="{marginTop:tankShape3 == 4?'10px':'0px'}">
+                            <i-col offset="4" span="16" style="line-height: 32px;text-align: center;">
+                                <Alert type="warning">
+                                    {{$t("device.theBoxCapacity")}}{{capacity3}}L
+                                </Alert>
+                            </i-col>
+                        </Row>
                     </tab-pane>
                     <tab-pane :label="$t('device.oil4')" style="min-height: 210px;" name="oil4">
                         <Row style="margin: 10px 0;">
@@ -1098,6 +1119,13 @@
                                 <i-button type="info" @click="downloadTemplate">{{$t('insure.templateDownload')}}</i-button>
                             </div>
                         </div>
+                        <Row :style="{marginTop:tankShape4 == 4?'10px':'0px'}">
+                            <i-col offset="4" span="16" style="line-height: 32px;text-align: center;">
+                                <Alert type="warning">
+                                    {{$t("device.theBoxCapacity")}}{{capacity4}}L
+                                </Alert>
+                            </i-col>
+                        </Row>
                     </tab-pane>
                     <tab-pane :label="$t('device.addTempInfo')" style="min-height: 210px;" name="templateInfo">
                         <Row style="margin: 10px 0;">
@@ -1323,9 +1351,13 @@
                 tagging4: 0,
                 taggingOil4: 0,
                 taggingData4: [],
+                capacity1: 0,
+                capacity2: 0,
+                capacity3: 0,
+                capacity4: 0,
                 taggingColumns1: [{
                     type: 'index',
-                    width: 50
+                    width: 65
                 }, {
                     key: 'height',
                     title: vRoot.$t('device.scale'),
@@ -1352,7 +1384,7 @@
                 }],
                 taggingColumns2: [{
                     type: 'index',
-                    width: 50
+                    width: 65
                 }, {
                     key: 'height',
                     title: vRoot.$t('device.scale'),
@@ -1379,7 +1411,7 @@
                 }],
                 taggingColumns3: [{
                     type: 'index',
-                    width: 50
+                    width: 65
                 }, {
                     key: 'height',
                     title: vRoot.$t('device.scale'),
@@ -1406,7 +1438,7 @@
                 }],
                 taggingColumns4: [{
                     type: 'index',
-                    width: 50
+                    width: 65
                 }, {
                     key: 'height',
                     title: vRoot.$t('device.scale'),
@@ -1433,7 +1465,7 @@
                 }],
                 weightColumns: [{
                     type: 'index',
-                    width: 50
+                    width: 65
                 }, {
                     key: 'advalue',
                     title: '模拟量(AD)',
@@ -1607,6 +1639,8 @@
                                                     vueInstanse.maxAdValue1 = item.maxAdValue;
                                                     vueInstanse.taggingData1 = item.markers;
                                                     vueInstanse.threshold1 = item.threshold;
+                                                    vueInstanse.capacity1 = item.capacity;
+
                                                 } else if (index == 1) {
                                                     vueInstanse.tankShape2 = String(item.appearance);
                                                     vueInstanse.diameter2 = item.diameter;
@@ -1616,6 +1650,7 @@
                                                     vueInstanse.maxAdValue2 = item.maxAdValue;
                                                     vueInstanse.taggingData2 = item.markers;
                                                     vueInstanse.threshold2 = item.threshold;
+                                                    vueInstanse.capacity2 = item.capacity;
                                                 } else if (index == 2) {
                                                     vueInstanse.tankShape3 = String(item.appearance);
                                                     vueInstanse.diameter3 = item.diameter;
@@ -1625,6 +1660,7 @@
                                                     vueInstanse.maxAdValue3 = item.maxAdValue;
                                                     vueInstanse.taggingData3 = item.markers;
                                                     vueInstanse.threshold3 = item.threshold;
+                                                    vueInstanse.capacity3 = item.capacity;
                                                 } else if (index == 3) {
                                                     vueInstanse.tankShape4 = String(item.appearance);
                                                     vueInstanse.diameter4 = item.diameter;
@@ -1634,7 +1670,7 @@
                                                     vueInstanse.maxAdValue4 = item.maxAdValue;
                                                     vueInstanse.taggingData4 = item.markers;
                                                     vueInstanse.threshold4 = item.threshold;
-
+                                                    vueInstanse.capacity4 = item.capacity;
                                                 }
                                             });
                                             vueInstanse.$Message.success(vRoot.$t('device.importSucc'));
@@ -2161,8 +2197,7 @@
                             threshold: this.threshold4
                         };
                         var oildetectors = [oilDetector1, oilDetector2, oilDetector3, oilDetector4];
-                        var url = myUrls.saveOilDetectors(),
-                            me = this;
+                        var me = this;
                         var data = {
                             templatename: this.templatename,
                             deviceid: editObject.deviceid,
@@ -2614,6 +2649,11 @@
                     };
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
+                            if (resp.oildetectors) {
+                                resp.oildetectors.forEach(function(item, index) {
+                                    me['capacity' + (index + 1)] = item.capacity;
+                                })
+                            }
                             me.$Message.success(vRoot.$t('message.saveSucc'));
                         } else {
                             me.$Message.error(resp.cause);
@@ -3110,7 +3150,41 @@
                 },
             },
             watch: {
-
+                oilModal: function(newVal) {
+                    if (newVal && this.tankShape1 == 4) {
+                        var me = this;
+                        me.taggingColumns1 = [];
+                        setTimeout(function() {
+                            me.taggingColumns1 = [{
+                                type: 'index',
+                                width: 65
+                            }, {
+                                key: 'height',
+                                title: vRoot.$t('device.scale'),
+                            }, {
+                                key: 'volume',
+                                title: vRoot.$t('reportForm.oil'),
+                            }, {
+                                title: vRoot.$t('alarm.action'),
+                                width: 100,
+                                render: function(h, params) {
+                                    var index = params.index;
+                                    return h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                vueInstanse.taggingData1.splice(index, 1);
+                                            }
+                                        }
+                                    }, vRoot.$t('monitor.delete'))
+                                },
+                            }]
+                        }, 100)
+                    }
+                },
                 isShowMatchDev: function() {
                     if (!this.isShowMatchDev) {
                         this.iconState = "ios-arrow-down";
