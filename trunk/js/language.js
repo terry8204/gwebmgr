@@ -11,6 +11,7 @@
         defaultLang: 'zh',
         en: {
             message: {
+                deleteOilRecordTip: "Cannot operate, the record is using",
                 captureFail: "Capture failed. Please check if the device is online",
                 deleteUserTips: "Deletion failed. The user still has a device",
                 changeSucc: "Modified success",
@@ -1331,6 +1332,7 @@
         //简体中文
         zh: {
             message: {
+                deleteOilRecordTip: "记录正在使用中,禁止操作",
                 deleteUserTips: "删除失败,该用户还有设备",
                 captureFail: "抓拍失败,请检查设备是否在线",
                 changeSucc: "修改成功",

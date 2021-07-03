@@ -7559,9 +7559,9 @@ function timeOilConsumption(groupslist) {
                         oilRecord.editting = false;
                         me.cloneDataList.push(oilRecord);
                         me.oilTable.push(deepClone(oilRecord));
-                        me.$Message.success(isZh ? '添加成功' : "Added successfully");
+                        me.$Message.success(vRoot.$t('message.addSucc'));
                     } else {
-                        me.$Message.error(isZh ? '添加失败' : "Add failed");
+                        me.$Message.error(vRoot.$t('message.addFail'));
                     }
                 });
             },
@@ -7574,9 +7574,11 @@ function timeOilConsumption(groupslist) {
                     if (resp.status == 0) {
                         me.oilTable.splice(index, 1);
                         me.cloneDataList.splice(index, 1);
-                        me.$Message.success(isZh ? '删除成功' : "Delete successfully");
+                        me.$Message.success(vRoot.$t('message.deleteSucc'));
+                    } else if (resp.status == 1) {
+                        me.$Message.success(vRoot.$t('message.deleteOilRecordTip'));
                     } else {
-                        me.$Message.error(isZh ? '删除失败' : "Delete failed");
+                        me.$Message.error(vRoot.$t('message.deleteFail'));
                     }
                 });
             },
@@ -7716,21 +7718,14 @@ function timeOilConsumption(groupslist) {
                     if (resp.status == 0) {
                         currentRow.saving = false;
                         currentRow.editting = false;
-                        self.$Message.success('编辑完成');
+                        self.$Message.success(vRoot.$t('message.changeSucc'));
+                    } else if (resp.status == 1) {
+                        self.$Message.success(vRoot.$t('message.deleteOilRecordTip'));
                     } else {
-                        self.$Message.error('编辑失败');
+                        self.$Message.error(vRoot.$t('message.clearFail'));
                     }
                 });
 
-            },
-            // 删除数据
-            deleteData: function(currentRow, index) {
-                var self = this;
-                setTimeout(function() {
-                    self.$delete(self.dataList, index)
-                    self.$delete(self.cloneDataList, index)
-                    vm.$Message.success('删除成功');
-                }, 1000)
             },
             // 还原数据,用来与原始数据作对比的
             handleBackdata: function(object) {

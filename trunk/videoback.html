@@ -818,16 +818,9 @@
                     this.endValue = DateFormat.longToDateTimeStr(startTimes + endInterval, DateFormat.getOffset()).split(' ')[1];
                 },
                 stopVideo: function() {
-                    if (this.flvPlayer != null) {
-                        this.flvPlayer.pause();
-                        this.flvPlayer.unload();
-                        this.flvPlayer.detachMediaElement();
-                        this.flvPlayer.destroy();
-                        this.flvPlayer = null;
-                        this.playerStateTip = lang.$t('videoback.stopPlay');
-                        this.startTimes = null;
-                    };
 
+                    this.destroyPlayer();
+                    this.playerStateTip = lang.$t('videoback.stopPlay');
 
                     var url = myUrls.playRecordControl(),
                         me = this;

@@ -50,14 +50,14 @@
         <div style="margin:10px;">
             <Tabs>
                 <Tab-pane :label="$t('reportForm.addOrLeakOilList')">
-                    <i-table :columns="columns" size="small" :height="lastTableHeight" border :data="tableData" ref="table" highlight-row @on-row-dblclick="onRowClick"></i-table>
-                    <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
-                </Tab-pane>
-                <Tab-pane :label="$t('reportForm.oilRecordList')">
                     <i-table :columns="oilColumns" :data="oilTable" :height="lastTableHeight" border></i-table>
                     <div style="padding:5px">
                         <i-button type="primary" @click="addOilRecord">{{$t("user.add")}}</i-button>
                     </div>
+                </Tab-pane>
+                <Tab-pane :label="$t('reportForm.oilRecordList')">
+                    <i-table :columns="columns" size="small" :height="lastTableHeight" border :data="tableData" ref="table" highlight-row @on-row-dblclick="onRowClick"></i-table>
+                    <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
                 </Tab-pane>
             </Tabs>
         </div>
