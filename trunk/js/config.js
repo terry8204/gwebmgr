@@ -922,6 +922,9 @@ var myUrls = {
     editOilRecordAll: function() {
         return this.apihosts + 'webapi?action=editoilrecordall&token=' + token;
     },
+    preViewOilDetectors: function() {
+        return this.apihosts + 'webapi?action=previewoildetectors&token=' + token;
+    },
 }
 
 

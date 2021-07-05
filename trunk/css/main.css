@@ -11,6 +11,12 @@
     overflow: hidden;
 }
 
+div.fl {
+    float: left;
+    height: 32px;
+    line-height: 32px;
+}
+
 
 /* 头部 */
 
