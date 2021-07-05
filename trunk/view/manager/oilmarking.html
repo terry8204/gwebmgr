@@ -25,26 +25,16 @@
         </div>
         <div style="float: left;padding-left: 10px;">
             <span>{{$t("reportForm.selectTime")}}:</span>
-            <date-picker type="date" :value="date" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:180px" placement="bottom-start"></date-picker>
+            <date-picker type="date" v-model="date" :editable="false" :clearable="false" @on-change="onChange" show-week-numbers style="width:180px" placement="bottom-start"></date-picker>
         </div>
         <div style="margin-left:10px;float: left;">
             <i-button @click="onClickQuery">{{$t("reportForm.query")}}</i-button>
         </div>
     </Row>
     <div>
-        <div style="width: 200px;margin: 0px auto;">
-            <Alert type="warning">
-                原标注曲线
-            </Alert>
-        </div>
         <div id="old-chart" style="width: 100%;height: 180px;"></div>
     </div>
     <div>
-        <div style="width: 200px;margin: 0px auto;">
-            <Alert type="warning">
-                现标注曲线
-            </Alert>
-        </div>
         <div id="new-chart" style="width: 100%;height: 180px;"></div>
     </div>
     <script>
@@ -142,31 +132,31 @@
                                 });
                             });
 
-                            totalads.forEach(function(item, index) {
-                                if (index != 0) {
-                                    var prevItem = totalads[index - 1];
-                                    var oilDifference = item - prevItem;
+                            // totalads.forEach(function(item, index) {
+                            //     if (index != 0) {
+                            //         var prevItem = totalads[index - 1];
+                            //         var oilDifference = item - prevItem;
 
-                                    if (Math.abs(oilDifference) > 5) {
-                                        var color = '';
-                                        if (oilDifference > 0) {
-                                            color = 'green';
-                                        } else {
-                                            color = 'red';
-                                        }
-                                        markPointData.push({
-                                            coord: [index, item],
-                                            value: Math.abs(oilDifference).toFixed(0),
-                                            itemStyle: {
-                                                color: color
-                                            },
-                                            label: {
-                                                fontSize: 8,
-                                            }
-                                        })
-                                    }
-                                }
-                            })
+                            //         if (Math.abs(oilDifference) > 5) {
+                            //             var color = '';
+                            //             if (oilDifference > 0) {
+                            //                 color = 'green';
+                            //             } else {
+                            //                 color = 'red';
+                            //             }
+                            //             markPointData.push({
+                            //                 coord: [index, item],
+                            //                 value: Math.abs(oilDifference).toFixed(0),
+                            //                 itemStyle: {
+                            //                     color: color
+                            //                 },
+                            //                 label: {
+                            //                     fontSize: 8,
+                            //                 }
+                            //             })
+                            //         }
+                            //     }
+                            // })
 
 
                             var data1 = {
@@ -214,9 +204,8 @@
 
                     return {
                         title: {
-                            // text: dataInfo.title,
-                            // x: 'right',
-                            // right: 30,
+                            // text: time + '/' + cotgasus,
+                            // x: 'center',
                             // textStyle: {
                             //     fontSize: 12,
                             //     fontWeight: 'bolder',
@@ -259,11 +248,11 @@
                         legend: {
                             data: [totoil, usoil1, usoil2, usoil3, usoil4, srcad0, srcad1, srcad2, srcad3],
                             selected: this.selectedLegend,
-                            x: 'left',
+                            // x: 'left',
                             // width: 600,
                         },
                         toolbox: {
-                            show: true,
+                            show: false,
                             feature: {
                                 magicType: {
                                     show: true,
@@ -305,33 +294,13 @@
                             data: dataInfo.recvtime
                         }],
                         yAxis: [{
-                            name: '', //totoil + '/' + speed
+                            name: totoil, //totoil + '/' + speed
                             type: 'value',
                             nameTextStyle: 10,
                             nameGap: 5,
 
-                        }, {
-                            name: '', //dis
-                            type: 'value',
-                            nameTextStyle: 10,
-                            nameGap: 2,
-                            min: this.disMin,
-                            axisLabel: {
-                                formatter: '{value} km',
-                            },
-                            axisTick: {
-                                show: false
-                            }
-                        }],
+                        }, ],
                         series: [{
-                                name: time,
-                                type: 'line',
-                                symbol: 'none',
-                                yAxisIndex: 1,
-                                color: '#F0805A',
-                                smooth: true,
-                                data: dataInfo.recvtime
-                            }, {
                                 smooth: true,
                                 name: totoil,
                                 type: 'line',
@@ -403,21 +372,22 @@
                                 symbol: 'none',
                                 color: '#000000',
                                 data: dataInfo.srcad3
-                            }, {
-                                smooth: true,
-                                name: status,
-                                type: 'line',
-                                symbol: 'none',
-                                color: '#000',
-                                data: dataInfo.devStates
-                            }, {
-                                smooth: true,
-                                name: reissue,
-                                type: 'line',
-                                symbol: 'none',
-                                color: '#000',
-                                data: dataInfo.devReissue
                             },
+                            // {
+                            //     smooth: true,
+                            //     name: status,
+                            //     type: 'line',
+                            //     symbol: 'none',
+                            //     color: '#000',
+                            //     data: dataInfo.devStates
+                            // }, {
+                            //     smooth: true,
+                            //     name: reissue,
+                            //     type: 'line',
+                            //     symbol: 'none',
+                            //     color: '#000',
+                            //     data: dataInfo.devReissue
+                            // },
                         ]
                     };
 
@@ -432,6 +402,8 @@
                         recvtime: [],
                         markPointData: [],
                         totalad: [],
+                        distance: [],
+                        veo: [],
                         oil1: [],
                         oil2: [],
                         oil3: [],
@@ -442,12 +414,49 @@
                         srcad3: [],
                         devStates: [],
                         devReissue: [],
+                        altitudes: [],
+                        voltages: []
                     }
                     // recvtime markPointData totalad oil 1 - 4 srcad 0 - 3 devStates devReissue
                 var data2 = deepClone(data1);
 
-                this.oldChartsIns.setOption(this.getChartsOption(data1));
-                this.newChartsIns.setOption(this.getChartsOption(data2));
+
+                if (isZh) {
+                    this.selectedLegend = {
+                        "油液1(L)": false,
+                        "油液2(L)": false,
+                        "油液3(L)": false,
+                        "油液4(L)": false,
+                        "模拟量1": false,
+                        "模拟量2": false,
+                        "模拟量3": false,
+                        "模拟量4": false,
+                        "海拔": false,
+                        "电压": false,
+                    }
+                } else {
+                    this.selectedLegend = {
+                        "Sensor 1(L)": false,
+                        "Sensor 2(L)": false,
+                        "Sensor 3(L)": false,
+                        "Sensor 4(L)": false,
+                        "srcad0": false,
+                        "srcad1": false,
+                        "srcad2": false,
+                        "srcad3": false,
+                        "Altitude": false,
+                        "Voltage": false,
+                    }
+                }
+
+                var _this = this;
+                // setTimeout(function() {
+                _this.oldChartsIns.setOption(_this.getChartsOption(data1));
+                _this.newChartsIns.setOption(_this.getChartsOption(data2));
+                // }, 1000)
+
+
+
             }
         })
     </script>

@@ -2230,7 +2230,7 @@ function rotateReport(groupslist) {
                         x: 'center'
                     },
                     toolbox: {
-                        show: true,
+                        show: false,
                         feature: {
                             magicType: { show: true, type: ['line', 'bar'] },
                             restore: { show: true },
@@ -2760,7 +2760,7 @@ function speedingReport(groupslist) {
                         x: 'center'
                     },
                     toolbox: {
-                        show: true,
+                        show: false,
                         feature: {
                             magicType: { show: true, type: ['line', 'bar'] },
                             restore: { show: true },
@@ -2867,7 +2867,7 @@ function speedingReport(groupslist) {
                         x: 'left'
                     },
                     toolbox: {
-                        show: true,
+                        show: false,
                         feature: {
                             magicType: {
                                 show: true,
@@ -3383,7 +3383,7 @@ function messageRecords(groupslist) {
                         x: 'left'
                     },
                     toolbox: {
-                        show: true,
+                        show: false,
                         feature: {
                             magicType: { show: true, type: ['line', 'bar'] },
                             restore: { show: true },
@@ -5981,6 +5981,7 @@ function newEquipmentReport() {
                         containLabel: true
                     },
                     toolbox: {
+                        show: false,
                         feature: {
                             saveAsImage: {}
                         }
@@ -7016,14 +7017,17 @@ function timeOilConsumption(groupslist) {
                     title: isZh ? '开始时间' : 'Begin Time',
                     key: 'begintime',
                     date: 'datetime_yyyy-MM-dd hh:mm:ss',
+                    width: 165,
                     editable: true,
                 }, {
                     title: isZh ? '结束时间' : 'End Time',
                     key: 'endtime',
                     date: 'datetime_yyyy-MM-dd hh:mm:ss',
+                    width: 165,
                     editable: true,
                 }, {
                     title: isZh ? '备注' : 'Marker',
+                    width: 185,
                     key: 'marker',
                     input: 'text',
                     editable: true,
@@ -7034,6 +7038,47 @@ function timeOilConsumption(groupslist) {
                     handle: ['edit', 'delete', 'map'],
                     render: function(h) {}
                 },
+                {
+                    title: vRoot.$t('reportForm.saddress'),
+                    width: 300,
+                    render: function(h, params) {
+                        var row = params.row;
+                        var lat = row.slat ? row.slat.toFixed(5) : null;
+                        var lon = row.slon ? row.slon.toFixed(5) : null;
+                        if (lat && lon) {
+                            if (row.saddress == null) {
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    var newRow = deepClone(row);
+                                                    newRow.saddress = resp.address;
+                                                    vueInstanse.$set(vueInstanse.oilArr, params.index, newRow)
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
+
+                            } else {
+                                return h('span', {}, row.saddress);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
+                { title: isZh ? '距离(米)' : 'Distance(m)', key: 'distance', width: 100 },
+                { title: isZh ? '平均速度(Km/h)' : 'Average speed (km / h)', key: 'avgspeed', width: 140 },
+                { title: isZh ? '时长' : 'Duration', key: 'durationStr', width: 110 },
+                { title: isZh ? '阀值(L)' : 'Threshold', key: 'threshold', width: 100 },
+
             ],
             oilTable: [],
             cloneDataList: [],
@@ -7159,17 +7204,35 @@ function timeOilConsumption(groupslist) {
                                 item.records.forEach(function(record) {
                                     var oilstate = record.oilstate;
                                     if (oilstate == -1 || oilstate == 1) {
+
+
+                                        var slat = record.slat.toFixed(5);
+                                        var slon = record.slon.toFixed(5);
+                                        var saddress = LocalCacheMgr.getAddress(slon, slat);
+                                        if (saddress != null) {
+                                            record.saddress = saddress;
+                                        } else {
+                                            record.saddress = null;
+                                        };
+
                                         record.eoil = record.eoil / 100;
                                         record.soil = record.soil / 100;
                                         record.oilstate = String(oilstate);
                                         record.oilindex = String(record.oilindex);
                                         record.editting = false;
                                         record.saving = false;
+                                        record.durationStr = utils.timeStamp(record.duration);
+
                                         oilArr.push(record);
                                         index++;
                                     }
                                 });
                             });
+
+
+
+
+
 
                             me.oilTable = oilArr;
                             me.cloneDataList = deepClone(oilArr);
@@ -7811,18 +7874,20 @@ function timeOilConsumption(groupslist) {
 
                                     // return h('span', DateFormat.longToDateTimeStr(Number(currentRow[item.key]), 8))
                                     var contentChildren = self.getTrackInfoContent(currentRow, h, item.key);
-                                    return h('Tooltip', {
+                                    return h('Poptip', {
                                         props: {
                                             // width: 240,
                                             // height: 60,
                                             // content: content
+                                            // popperClass: 'poptip-popper-class',
+                                            placement: "bottom"
                                         },
                                     }, [
                                         h('Button', {
                                             props: {
                                                 type: 'info',
                                                 size: 'small'
-                                            }
+                                            },
                                         }, DateFormat.longToDateTimeStr(Number(currentRow[item.key]), 8)),
                                         h(
                                             'div', {
