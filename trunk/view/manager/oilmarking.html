@@ -238,11 +238,11 @@
                     this.loading = true;
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
-                            me.loading = false;
                             me.$Message.success(vRoot.$t('message.saveSucc'));
                         } else {
                             me.$Message.error(resp.cause);
                         }
+                        me.loading = false;
                     });
                 },
                 preViewOilDetectors: function() {
