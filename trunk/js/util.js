@@ -1594,6 +1594,7 @@ var utils = {
         var markPoints = [];
         if (oilDeviceRecords && oilDeviceRecords.length > 0) {
             var oilRecords = oilDeviceRecords[0].addorleakrecords || oilDeviceRecords[0].records;
+
             if (oilRecords && oilRecords.length > 0) {
                 for (var i = 0; i < oilRecords.length; ++i) {
                     var oilRecord = oilRecords[i];
@@ -1608,6 +1609,7 @@ var utils = {
                         } else {
                             color = 'red';
                         }
+               
                         var markPoint = {
                             coord: [nearestTrack.index, oil], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
                             value: Math.abs(difference).toFixed(0),

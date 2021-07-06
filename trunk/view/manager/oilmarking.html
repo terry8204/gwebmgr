@@ -279,11 +279,9 @@
                     this.loading = true;
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status === 0) {
-                            var tracks = resp.records[0].records;
+
                             var oilRecords = resp.records[0].addorleakrecords;
-                            tracks.forEach(function(item, index) {
-                                item.index = index;
-                            })
+
 
                             oilRecords.forEach(function(record) {
                                 var oilstate = record.oilstate;
@@ -292,10 +290,8 @@
                                     record.soil = record.soil / 100;
                                 }
                             });
-                            var markPoints = utils.calMarkPoint(tracks, resp.records);
-                            self.markPointData1 = markPoints;
 
-                            self.setChartsOption('next', tracks);
+                            self.setChartsOption('next', resp.records[0].records, resp.records);
                         } else {
                             self.$Message.error(resp.cause);
                         }
@@ -424,13 +420,9 @@
                         utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
                             if (resp.status === 0) {
                                 var tracks = resp.records[0].records;
-                                tracks.forEach(function(track, index) {
-                                    track.index = index;
-                                });
-                                var markPoints = utils.calMarkPoint(resp.records, oilRecords);
-                                console.log('markPoints', markPoints);
-                                self.markPointData = markPoints;
-                                self.setChartsOption('prve', tracks);
+
+
+                                self.setChartsOption('prve', tracks, oilRecords);
                             } else {
                                 self.$Message.error(resp.cause);
                             }
@@ -440,7 +432,7 @@
                     // recvtime markPointData totalad oil 1 - 4 srcad 0 - 3 devStates devReissue
 
                 },
-                setChartsOption: function(type, dataList) {
+                setChartsOption: function(type, trackList, oilRecords) {
 
                     var self = this,
                         records = [],
@@ -460,7 +452,8 @@
                         voltages = [],
                         devStates = [];
 
-                    dataList.forEach(function(record, index) {
+                    trackList.forEach(function(record, index) {
+                        record.index = index;
                         var totalad = record.totalad;
                         var ad0 = record.ad0;
                         var ad1 = record.ad1;
@@ -496,21 +489,17 @@
                         srcad1.push(record.srcad1);
                         srcad2.push(record.srcad2);
                         srcad3.push(record.srcad3);
-                        if (!isZh) {
-                            record.strstatus = record.strstatusen;
-                        }
-                        devStates.push(record.strstatus);
-                        devReissue.push(record.reissue == 0 ? self.$t('header.no') : self.$t('header.yes'));
+
 
 
                     });
 
 
+                    var markPoints = utils.calMarkPoint(trackList, oilRecords);
 
 
                     if (type == 'prve') {
                         this.recvtime = recvtime;
-                        this.markPointData = this.markPointData;
                         this.totalad = totalads;
                         this.oil1 = oil1;
                         this.oil2 = oil2;
@@ -521,8 +510,9 @@
                         this.srcad2 = srcad2;
                         this.srcad3 = srcad3;
 
+                        self.markPointData = markPoints;
+
                     } else {
-                        this.markPointData1 = this.markPointData1;
                         this.totalad1 = totalads;
                         this.oil11 = oil1;
                         this.oil21 = oil2;
@@ -532,6 +522,8 @@
                         this.srcad11 = srcad1;
                         this.srcad21 = srcad2;
                         this.srcad31 = srcad3;
+
+                        this.markPointData1 = markPoints;
                     }
 
                     this.oldChartsIns.setOption(self.getChartsOption());
@@ -600,17 +592,17 @@
                             // width: 600,
                         },
                         toolbox: {
-                            show: false,
+                            show: true,
                             feature: {
                                 magicType: {
                                     show: true,
                                     type: ['line', 'bar']
                                 },
                                 restore: {
-                                    show: true
+                                    show: false
                                 },
                                 saveAsImage: {
-                                    show: true
+                                    show: false
                                 }
                             },
                             itemSize: 14
@@ -952,7 +944,9 @@
                 _this.oldChartsIns.setOption(_this.getChartsOption());
                 _this.oildetectors = [];
                 _this.calcTableHeight();
-
+                window.onresize = function() {
+                    _this.oldChartsIns.resize();
+                }
             }
         })
     </script>
