@@ -32,10 +32,7 @@
         </div>
     </Row>
     <div>
-        <div id="old-chart" style="width: 100%;height: 180px;"></div>
-    </div>
-    <div>
-        <div id="new-chart" style="width: 100%;height: 180px;"></div>
+        <div id="old-chart" style="width: 100%;height: 360px;"></div>
     </div>
     <div style="padding:10px">
         <Row style="padding: 0px 0px 10px 0px;">
@@ -59,6 +56,9 @@
                     <input-number v-if="oilType == '2'" :max="65535" :min="0" v-model.trim.number="threshold2" style="width:120px"></input-number>
                     <input-number v-if="oilType == '3'" :max="65535" :min="0" v-model.trim.number="threshold3" style="width:120px"></input-number>
                     <input-number v-if="oilType == '4'" :max="65535" :min="0" v-model.trim.number="threshold4" style="width:120px"></input-number>
+                </div>
+                <div class="fl" style="padding-left: 10px;">
+                    <Checkbox v-model="isIndependent">{{$t("device.mergeStatistical")}}</Checkbox>
                 </div>
             </i-col>
             <i-col span="12">
@@ -85,7 +85,7 @@
                         <i-button type="primary" @click="preViewOilDetectors">预览</i-button>
                     </div>
                     <div class="fl" style="margin-left:10px;">
-                        <i-button type="primary" @click="addTaggingRow">保存</i-button>
+                        <i-button type="primary" @click="saveOilDetectors">保存</i-button>
                     </div>
                 </div>
             </i-col>
@@ -114,6 +114,7 @@
                 date: new Date(),
                 tableHeight: 0,
                 oilType: '1',
+                isIndependent: false,
                 threshold1: null,
                 threshold2: null,
                 threshold3: null,
@@ -202,6 +203,38 @@
             i18n: utils.getI18n(),
             mixins: [reportMixin],
             methods: {
+                saveOilDetectors: function() {
+                    var url = myUrls.saveOilDetectors(),
+                        me = this;
+                    var data = {
+                        deviceid: editObject.deviceid,
+                        oildetectors: [{
+                            threshold: this.threshold1,
+                            markers: this.newTaggingData1,
+                            appearance: 4
+                        }, {
+                            threshold: this.threshold2,
+                            markers: this.newTaggingData2,
+                            appearance: 4
+                        }, {
+                            threshold: this.threshold3,
+                            markers: this.newTaggingData3,
+                            appearance: 4
+                        }, {
+                            threshold: this.threshold4,
+                            markers: this.newTaggingData4,
+                            appearance: 4
+                        }, ],
+                        independent: me.isIndependent ? 0 : 1,
+                    };
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            me.$Message.success(vRoot.$t('message.saveSucc'));
+                        } else {
+                            me.$Message.error(resp.cause);
+                        }
+                    });
+                },
                 preViewOilDetectors: function() {
                     var self = this;
                     var url = myUrls.preViewOilDetectors();
@@ -213,21 +246,25 @@
                         endday: startday,
                         oildetectors: [{
                             threshold: this.threshold1,
-                            markers: this.newTaggingData1
+                            markers: this.newTaggingData1,
+                            appearance: 4,
                         }, {
                             threshold: this.threshold2,
-                            markers: this.newTaggingData2
+                            markers: this.newTaggingData2,
+                            appearance: 4,
                         }, {
                             threshold: this.threshold3,
-                            markers: this.newTaggingData3
+                            markers: this.newTaggingData3,
+                            appearance: 4,
                         }, {
                             threshold: this.threshold4,
-                            markers: this.newTaggingData4
+                            markers: this.newTaggingData4,
+                            appearance: 4,
                         }, ]
                     };
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status === 0) {
-                            self.setChartsOption(self.newChartsIns, resp.records);
+                            self.setChartsOption('next', resp.records);
                         }
                     });
                 },
@@ -278,11 +315,11 @@
                     // recvtime markPointData totalad oil 1 - 4 srcad 0 - 3 devStates devReissue
                     utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
                         if (resp.status === 0) {
-                            self.setChartsOption(self.oldChartsIns, resp.records);
+                            self.setChartsOption('prve', resp.records);
                         }
                     });
                 },
-                setChartsOption: function(chartsIns, dataList) {
+                setChartsOption: function(type, dataList) {
 
                     var self = this,
                         records = [],
@@ -301,6 +338,7 @@
                         altitudes = [],
                         voltages = [],
                         devStates = [];
+
 
                     dataList.forEach(function(item, index) {
                         records = item.records;
@@ -351,85 +389,94 @@
                         });
                     });
 
-                    // totalads.forEach(function(item, index) {
-                    //     if (index != 0) {
-                    //         var prevItem = totalads[index - 1];
-                    //         var oilDifference = item - prevItem;
+                    totalads.forEach(function(item, index) {
+                        if (index != 0) {
+                            var prevItem = totalads[index - 1];
+                            var oilDifference = item - prevItem;
 
-                    //         if (Math.abs(oilDifference) > 5) {
-                    //             var color = '';
-                    //             if (oilDifference > 0) {
-                    //                 color = 'green';
-                    //             } else {
-                    //                 color = 'red';
-                    //             }
-                    //             markPointData.push({
-                    //                 coord: [index, item],
-                    //                 value: Math.abs(oilDifference).toFixed(0),
-                    //                 itemStyle: {
-                    //                     color: color
-                    //                 },
-                    //                 label: {
-                    //                     fontSize: 8,
-                    //                 }
-                    //             })
-                    //         }
-                    //     }
-                    // })
+                            if (Math.abs(oilDifference) > 5) {
+                                var color = '';
+                                if (oilDifference > 0) {
+                                    color = 'green';
+                                } else {
+                                    color = 'red';
+                                }
+                                markPointData.push({
+                                    coord: [index, item],
+                                    value: Math.abs(oilDifference).toFixed(0),
+                                    itemStyle: {
+                                        color: color
+                                    },
+                                    label: {
+                                        fontSize: 8,
+                                    }
+                                })
+                            }
+                        }
+                    })
 
 
-                    var data = {
-                        recvtime: recvtime,
-                        markPointData: markPointData,
-                        totalad: totalads,
-                        oil1: oil1,
-                        oil2: oil2,
-                        oil3: oil3,
-                        oil4: oil4,
-                        srcad0: srcad0,
-                        srcad1: srcad1,
-                        srcad2: srcad2,
-                        srcad3: srcad3,
-                        devStates: devStates,
-                        devReissue: devReissue,
-                    };
 
-                    chartsIns.setOption(self.getChartsOption(data));
+                    if (type == 'prve') {
+                        this.recvtime = recvtime;
+                        this.markPointData = markPointData;
+                        this.totalad = totalads;
+                        this.oil1 = oil1;
+                        this.oil2 = oil2;
+                        this.oil3 = oil3;
+                        this.oil4 = oil4;
+                        this.srcad0 = srcad0;
+                        this.srcad1 = srcad1;
+                        this.srcad2 = srcad2;
+                        this.srcad3 = srcad3;
+
+                    } else {
+                        this.markPointData1 = markPointData;
+                        this.totalad1 = totalads;
+                        this.oil11 = oil1;
+                        this.oil21 = oil2;
+                        this.oil31 = oil3;
+                        this.oil41 = oil4;
+                        this.srcad01 = srcad0;
+                        this.srcad11 = srcad1;
+                        this.srcad21 = srcad2;
+                        this.srcad31 = srcad3;
+                    }
+
+                    this.oldChartsIns.setOption(self.getChartsOption());
                 },
                 getChartsOption: function(dataInfo) {
-                    var totoil = vRoot.$t('reportForm.totalOil');
-                    var speed = vRoot.$t('reportForm.speed');
-                    var dis = vRoot.$t('reportForm.mileage');
+                    var firstStr = isZh ? '前' : 'Prve';
+                    var lastStr = isZh ? '后' : 'Next';
                     var time = vRoot.$t('reportForm.time');
-                    var usoil1 = vRoot.$t('reportForm.oil1');
-                    var usoil2 = vRoot.$t('reportForm.oil2');
-                    var usoil3 = vRoot.$t('reportForm.oil3');
-                    var usoil4 = vRoot.$t('reportForm.oil4');
+                    var totoil = firstStr + vRoot.$t('reportForm.totalOil');
+                    var usoil1 = firstStr + vRoot.$t('reportForm.oil1');
+                    var usoil2 = firstStr + vRoot.$t('reportForm.oil2');
+                    var usoil3 = firstStr + vRoot.$t('reportForm.oil3');
+                    var usoil4 = firstStr + vRoot.$t('reportForm.oil4');
 
-                    var srcad0 = vRoot.$t('reportForm.srcad0');
-                    var srcad1 = vRoot.$t('reportForm.srcad1');
-                    var srcad2 = vRoot.$t('reportForm.srcad2');
-                    var srcad3 = vRoot.$t('reportForm.srcad3');
+                    var srcad0 = firstStr + vRoot.$t('reportForm.srcad0');
+                    var srcad1 = firstStr + vRoot.$t('reportForm.srcad1');
+                    var srcad2 = firstStr + vRoot.$t('reportForm.srcad2');
+                    var srcad3 = firstStr + vRoot.$t('reportForm.srcad3');
 
-                    var cotgasus = vRoot.$t('reportForm.oil');
-                    var status = vRoot.$t('reportForm.status');
-                    var reissue = vRoot.$t('reportForm.reissue');
+                    var totoil1 = lastStr + vRoot.$t('reportForm.totalOil');
 
-                    var altitude = vRoot.$t('reportForm.altitude');
-                    var voltage = vRoot.$t('reportForm.voltage');
+                    var usoil11 = lastStr + vRoot.$t('reportForm.oil1');
+                    var usoil21 = lastStr + vRoot.$t('reportForm.oil2');
+                    var usoil31 = lastStr + vRoot.$t('reportForm.oil3');
+                    var usoil41 = lastStr + vRoot.$t('reportForm.oil4');
+
+                    var srcad01 = lastStr + vRoot.$t('reportForm.srcad0');
+                    var srcad11 = lastStr + vRoot.$t('reportForm.srcad1');
+                    var srcad21 = lastStr + vRoot.$t('reportForm.srcad2');
+                    var srcad31 = lastStr + vRoot.$t('reportForm.srcad3');
+
+
 
                     return {
-                        title: {
-                            // text: time + '/' + cotgasus,
-                            // x: 'center',
-                            // textStyle: {
-                            //     fontSize: 12,
-                            //     fontWeight: 'bolder',
-                            //     color: '#333'
-                            // }
-                        },
                         grid: {
-                            top: 30,
+                            top: 80,
                             left: 60,
                             right: 60,
                             bottom: 40,
@@ -440,19 +487,9 @@
                                 var data = time + ' : ' + v[0].name + '<br/>';
                                 for (i in v) {
                                     if (v[i].seriesName && v[i].seriesName != time) {
-                                        if (v[i].seriesName == dis) {
-                                            var currentDistance = v[i].value;
-                                            var totalDistance = ((Number(currentDistance) + firstDistance / 1000)).toFixed(2);
-                                            data += v[i].seriesName + ' : ' + currentDistance + "Km(T:" + totalDistance + 'Km)<br/>';
-
-                                        } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
+                                        if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4 ||
+                                            v[i].seriesName == totoil1 || v[i].seriesName == usoil11 || v[i].seriesName == usoil21 || v[i].seriesName == usoil31 || v[i].seriesName == usoil41) {
                                             data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
-                                        } else if (v[i].seriesName == speed) {
-                                            data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
-                                        } else if (v[i].seriesName == altitude) {
-                                            data += v[i].seriesName + ' : ' + v[i].value + 'm<br/>';
-                                        } else if (v[i].seriesName == voltage) {
-                                            data += v[i].seriesName + ' : ' + v[i].value + 'V<br/>';
                                         } else {
                                             data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                         }
@@ -462,7 +499,11 @@
                             }
                         },
                         legend: {
-                            data: [totoil, usoil1, usoil2, usoil3, usoil4, srcad0, srcad1, srcad2, srcad3],
+                            data: [
+                                totoil, usoil1, usoil2, usoil3, usoil4, srcad0, srcad1, srcad2, srcad3,
+                                totoil1, usoil11, usoil21, usoil31, usoil41, srcad01, srcad11, srcad21, srcad31
+                            ],
+                            width: 880,
                             selected: this.selectedLegend,
                             // x: 'left',
                             // width: 600,
@@ -507,7 +548,7 @@
                             axisLine: {
                                 onZero: false
                             },
-                            data: dataInfo.recvtime
+                            data: this.recvtime
                         }],
                         yAxis: [{
                             name: totoil, //totoil + '/' + speed
@@ -522,9 +563,9 @@
                                 type: 'line',
                                 symbol: 'none',
                                 color: '#C1232B',
-                                data: dataInfo.totalad,
+                                data: this.totalad,
                                 markPoint: {
-                                    data: dataInfo.markPointData,
+                                    data: this.markPointData,
                                     symbolSize: 36,
                                     symbolKeepAspect: true,
                                 }
@@ -534,7 +575,7 @@
                                 type: 'line',
                                 symbol: 'none',
                                 color: '#8E388E',
-                                data: dataInfo.oil1
+                                data: this.oil1
                             },
 
                             {
@@ -543,21 +584,21 @@
                                 type: 'line',
                                 symbol: 'none',
                                 color: '#FF4500',
-                                data: dataInfo.oil2
+                                data: this.oil2
                             }, {
                                 smooth: true,
                                 name: usoil3,
                                 type: 'line',
                                 symbol: 'none',
                                 color: '#2177C7',
-                                data: dataInfo.oil3
+                                data: this.oil3
                             }, {
                                 smooth: true,
                                 name: usoil4,
                                 type: 'line',
                                 symbol: 'none',
                                 color: '#B05432',
-                                data: dataInfo.oil4
+                                data: this.oil4
                             },
 
                             {
@@ -566,44 +607,101 @@
                                 type: 'line',
                                 symbol: 'none',
                                 color: '#000000',
-                                data: dataInfo.srcad0
+                                data: this.srcad0
                             }, {
                                 smooth: true,
                                 name: srcad1,
                                 type: 'line',
                                 symbol: 'none',
                                 color: '#000000',
-                                data: dataInfo.srcad1
+                                data: this.srcad1
                             }, {
                                 smooth: true,
                                 name: srcad2,
                                 type: 'line',
                                 symbol: 'none',
                                 color: '#000000',
-                                data: dataInfo.srcad2
+                                data: this.srcad2
                             }, {
                                 smooth: true,
                                 name: srcad3,
                                 type: 'line',
                                 symbol: 'none',
                                 color: '#000000',
-                                data: dataInfo.srcad3
+                                data: this.srcad3
+                            }, {
+                                smooth: true,
+                                name: totoil1,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#5316B4',
+                                data: this.totalad1,
+                                markPoint: {
+                                    data: this.markPointData1,
+                                    symbolSize: 36,
+                                    symbolKeepAspect: true,
+                                }
+                            }, {
+                                smooth: true,
+                                name: usoil11,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#EE12BE',
+                                data: this.oil11
                             },
-                            // {
-                            //     smooth: true,
-                            //     name: status,
-                            //     type: 'line',
-                            //     symbol: 'none',
-                            //     color: '#000',
-                            //     data: dataInfo.devStates
-                            // }, {
-                            //     smooth: true,
-                            //     name: reissue,
-                            //     type: 'line',
-                            //     symbol: 'none',
-                            //     color: '#000',
-                            //     data: dataInfo.devReissue
-                            // },
+
+                            {
+                                smooth: true,
+                                name: usoil21,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#12EE5B',
+                                data: this.oil21
+                            }, {
+                                smooth: true,
+                                name: usoil31,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#FCC40D',
+                                data: this.oil31
+                            }, {
+                                smooth: true,
+                                name: usoil41,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#B05432',
+                                data: this.oil41
+                            },
+
+                            {
+                                smooth: true,
+                                name: srcad01,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#000000',
+                                data: this.srcad01
+                            }, {
+                                smooth: true,
+                                name: srcad11,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#000000',
+                                data: this.srcad11
+                            }, {
+                                smooth: true,
+                                name: srcad21,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#000000',
+                                data: this.srcad21
+                            }, {
+                                smooth: true,
+                                name: srcad31,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#000000',
+                                data: this.srcad31
+                            },
                         ]
                     };
                 },
@@ -621,15 +719,15 @@
                             oildetectors.forEach(function(item, index) {
                                 if (index == 0 && me.oilType == '1') {
                                     me.taggingData = item.markers;
-                                    me.threshold = item.threshold;
+                                    me.threshold1 = item.threshold;
                                 } else if (index == 1 && me.oilType == '2') {
-                                    me.threshold = item.threshold;
+                                    me.threshold2 = item.threshold;
                                     me.taggingData = item.markers;
                                 } else if (index == 2 && me.oilType == '3') {
-                                    me.threshold = item.threshold;
+                                    me.threshold3 = item.threshold;
                                     me.taggingData = item.markers;
                                 } else if (index == 3 && me.oilType == '4') {
-                                    me.threshold = item.threshold;
+                                    me.threshold4 = item.threshold;
                                     me.taggingData = item.markers;
                                 }
                             })
@@ -641,89 +739,126 @@
             },
             watch: {
                 oilType: function(newVal) {
-                    var index = 0;
+
                     var oildetectors = this.oildetectors;
-                    var item = null;
+
                     if (this.oilType == '1') {
-                        index = 0;
+                        var item = oildetectors[0];
+                        if (item) {
+                            this.threshold1 = item.threshold;
+                            this.taggingData = item.markers;
+                        } else {
+                            this.threshold1 = null;
+                            this.taggingData = [];
+                        }
                     } else if (this.oilType == '2') {
-                        index = 1;
+                        var item = oildetectors[1];
+                        if (item) {
+                            this.threshold2 = item.threshold;
+                            this.taggingData = item.markers;
+                        } else {
+                            this.threshold2 = null;
+                            this.taggingData = [];
+                        }
                     } else if (this.oilType == '3') {
-                        index = 2;
+                        var item = oildetectors[2];
+                        if (item) {
+                            this.threshold3 = item.threshold;
+                            this.taggingData = item.markers;
+                        } else {
+                            this.threshold3 = null;
+                            this.taggingData = [];
+                        }
                     } else if (this.oilType == '4') {
-                        index = 3;
+                        var item = oildetectors[3];
+                        if (item) {
+                            this.threshold4 = item.threshold;
+                            this.taggingData = item.markers;
+                        } else {
+                            this.threshold4 = null;
+                            this.taggingData = [];
+                        }
                     }
-                    item = oildetectors[index];
-                    if (item) {
-                        this.threshold = item.threshold;
-                        this.taggingData = item.markers;
-                    } else {
-                        this.threshold = null;
-                        this.taggingData = [];
-                    }
+
                 }
             },
             mounted: function() {
                 this.groupslist = deepClone(vRoot.$children[1].groups);
                 this.oldChartsIns = echarts.init(document.getElementById('old-chart'));
-                this.newChartsIns = echarts.init(document.getElementById('new-chart'));
 
-                var data1 = {
-                        recvtime: [],
-                        markPointData: [],
-                        totalad: [],
-                        distance: [],
-                        veo: [],
-                        oil1: [],
-                        oil2: [],
-                        oil3: [],
-                        oil4: [],
-                        srcad0: [],
-                        srcad1: [],
-                        srcad2: [],
-                        srcad3: [],
-                        devStates: [],
-                        devReissue: [],
-                        altitudes: [],
-                        voltages: []
-                    }
-                    // recvtime markPointData totalad oil 1 - 4 srcad 0 - 3 devStates devReissue
-                var data2 = deepClone(data1);
+
+                this.recvtime = [];
+                this.markPointData = [];
+                this.totalad = [];
+                this.oil1 = [];
+                this.oil2 = [];
+                this.oil3 = [];
+                this.oil4 = [];
+                this.srcad0 = [];
+                this.srcad1 = [];
+                this.srcad2 = [];
+                this.srcad3 = [];
+
+                this.markPointData1 = [];
+                this.totalad1 = [];
+                this.oil11 = [];
+                this.oil21 = [];
+                this.oil31 = [];
+                this.oil41 = [];
+                this.srcad01 = [];
+                this.srcad11 = [];
+                this.srcad21 = [];
+                this.srcad31 = [];
+
+
+                // recvtime markPointData totalad oil 1 - 4 srcad 0 - 3 devStates devReissue
 
 
                 if (isZh) {
                     this.selectedLegend = {
-                        "油液1(L)": false,
-                        "油液2(L)": false,
-                        "油液3(L)": false,
-                        "油液4(L)": false,
-                        "模拟量1": false,
-                        "模拟量2": false,
-                        "模拟量3": false,
-                        "模拟量4": false,
-                        "海拔": false,
-                        "电压": false,
+                        "前油液1(L)": false,
+                        "前油液2(L)": false,
+                        "前油液3(L)": false,
+                        "前油液4(L)": false,
+                        "前模拟量1": false,
+                        "前模拟量2": false,
+                        "前模拟量3": false,
+                        "前模拟量4": false,
+
+                        "后油液1(L)": false,
+                        "后油液2(L)": false,
+                        "后油液3(L)": false,
+                        "后油液4(L)": false,
+                        "后模拟量1": false,
+                        "后模拟量2": false,
+                        "后模拟量3": false,
+                        "后模拟量4": false,
+
                     }
                 } else {
                     this.selectedLegend = {
-                        "Sensor 1(L)": false,
-                        "Sensor 2(L)": false,
-                        "Sensor 3(L)": false,
-                        "Sensor 4(L)": false,
-                        "srcad0": false,
-                        "srcad1": false,
-                        "srcad2": false,
-                        "srcad3": false,
-                        "Altitude": false,
-                        "Voltage": false,
+                        "Prve Sensor 1(L)": false,
+                        "Prve Sensor 2(L)": false,
+                        "Prve Sensor 3(L)": false,
+                        "Prve Sensor 4(L)": false,
+                        "Prve srcad0": false,
+                        "Prve srcad1": false,
+                        "Prve srcad2": false,
+                        "Prve srcad3": false,
+
+                        "Next Sensor 1(L)": false,
+                        "Next Sensor 2(L)": false,
+                        "Next Sensor 3(L)": false,
+                        "Next Sensor 4(L)": false,
+                        "Next srcad0": false,
+                        "Next srcad1": false,
+                        "Next srcad2": false,
+                        "Next srcad3": false,
                     }
                 }
 
                 var _this = this;
-                // setTimeout(function() {
-                _this.oldChartsIns.setOption(_this.getChartsOption(data1));
-                _this.newChartsIns.setOption(_this.getChartsOption(data2));
-                // }, 1000)
+                _this.oldChartsIns.setOption(_this.getChartsOption());
                 _this.oildetectors = [];
                 _this.calcTableHeight();
 
