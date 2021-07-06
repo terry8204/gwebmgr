@@ -96,15 +96,15 @@
         <Row>
             <i-Col span="12">
                 <div style="padding: 0px 5px 0px 0px;">
-                    <i-table border :columns="taggingColumns" size="small" :data="taggingData" :height="tableHeight"></i-table>
+                    <i-table border highlight-row @on-row-click="onRowClick" :columns="taggingColumns" size="small" :data="taggingData" :height="tableHeight"></i-table>
                 </div>
             </i-Col>
             <i-Col span="12">
                 <div style="padding: 0px 0px 0px 5px;">
-                    <i-table border v-if="oilType == '1'" :columns="newTaggingColumns" size="small" :data="newTaggingData1" :height="tableHeight"></i-table>
-                    <i-table border v-if="oilType == '2'" :columns="newTaggingColumns" size="small" :data="newTaggingData2" :height="tableHeight"></i-table>
-                    <i-table border v-if="oilType == '3'" :columns="newTaggingColumns" size="small" :data="newTaggingData3" :height="tableHeight"></i-table>
-                    <i-table border v-if="oilType == '4'" :columns="newTaggingColumns" size="small" :data="newTaggingData4" :height="tableHeight"></i-table>
+                    <i-table border v-if="oilType == '1'" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData1" :height="tableHeight"></i-table>
+                    <i-table border v-if="oilType == '2'" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData2" :height="tableHeight"></i-table>
+                    <i-table border v-if="oilType == '3'" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData3" :height="tableHeight"></i-table>
+                    <i-table border v-if="oilType == '4'" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData4" :height="tableHeight"></i-table>
                 </div>
             </i-Col>
         </Row>
@@ -200,6 +200,10 @@
             i18n: utils.getI18n(),
             mixins: [reportMixin],
             methods: {
+                onRowClick: function(row) {
+                    this.tagging = row.height;
+                    this.taggingOil = row.volume;
+                },
                 saveOilDetectors: function() {
                     if (this.queryDeviceId == "") {
                         this.$Message.error(this.$t("reportForm.selectDevTip"));
