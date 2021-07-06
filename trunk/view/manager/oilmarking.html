@@ -1,4 +1,7 @@
 <div id="oil-marking" class="full">
+    <div class="demo-spin-container" v-if="loading">
+        <Spin size="large" fix></Spin>
+    </div>
     <Row style="padding:10px;height: 55px;">
         <div style="float: left;">
             <div style="height: 35px; line-height: 35px;">{{$t("reportForm.selectDev")}}:&nbsp;</div>
@@ -199,15 +202,20 @@
                 newTaggingData2: [],
                 newTaggingData3: [],
                 newTaggingData4: [],
+                loading: false,
             },
             i18n: utils.getI18n(),
             mixins: [reportMixin],
             methods: {
                 saveOilDetectors: function() {
+                    if (this.queryDeviceId == "") {
+                        this.$Message.error(this.$t("reportForm.selectDevTip"));
+                        return
+                    };
                     var url = myUrls.saveOilDetectors(),
                         me = this;
                     var data = {
-                        deviceid: editObject.deviceid,
+                        deviceid: this.queryDeviceId,
                         oildetectors: [{
                             threshold: this.threshold1,
                             markers: this.newTaggingData1,
@@ -227,8 +235,10 @@
                         }, ],
                         independent: me.isIndependent ? 0 : 1,
                     };
+                    this.loading = true;
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status == 0) {
+                            me.loading = false;
                             me.$Message.success(vRoot.$t('message.saveSucc'));
                         } else {
                             me.$Message.error(resp.cause);
@@ -236,6 +246,10 @@
                     });
                 },
                 preViewOilDetectors: function() {
+                    if (this.queryDeviceId == "") {
+                        this.$Message.error(this.$t("reportForm.selectDevTip"));
+                        return
+                    };
                     var self = this;
                     var url = myUrls.preViewOilDetectors();
                     var startday = DateFormat.longToDateStr(this.date.getTime(), 0);
@@ -262,10 +276,14 @@
                             appearance: 4,
                         }, ]
                     };
+                    this.loading = true;
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status === 0) {
                             self.setChartsOption('next', resp.records);
+                        } else {
+
                         }
+                        self.loading = false;
                     });
                 },
                 addTaggingRow: function() {
@@ -317,6 +335,7 @@
                         if (resp.status === 0) {
                             self.setChartsOption('prve', resp.records);
                         }
+                        self.loading = false;
                     });
                 },
                 setChartsOption: function(type, dataList) {
