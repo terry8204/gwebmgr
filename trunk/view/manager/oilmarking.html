@@ -279,40 +279,127 @@
                     this.loading = true;
                     utils.sendAjax(url, data, function(resp) {
                         if (resp.status === 0) {
-                            self.setChartsOption('next', resp.records);
-                        } else {
+                            var tracks = resp.records[0].records;
+                            var oilRecords = resp.records[0].addorleakrecords;
+                            tracks.forEach(function(item, index) {
+                                item.index = index;
+                            })
 
+                            oilRecords.forEach(function(record) {
+                                var oilstate = record.oilstate;
+                                if (oilstate == -1 || oilstate == 1) {
+                                    record.eoil = record.eoil / 100;
+                                    record.soil = record.soil / 100;
+                                }
+                            });
+                            var markPoints = utils.calMarkPoint(tracks, resp.records);
+                            self.markPointData1 = markPoints;
+
+                            self.setChartsOption('next', tracks);
+                        } else {
+                            self.$Message.error(resp.cause);
                         }
                         self.loading = false;
                     });
                 },
                 addTaggingRow: function() {
+                    var isHas = false;
+
                     if (this.oilType == '1') {
-                        this.newTaggingData1.push({
-                            height: this.tagging,
-                            volume: this.taggingOil,
-                        })
+                        for (var i = 0; i < this.newTaggingData1.length; i++) {
+                            var item = this.newTaggingData1[i];
+                            if (item.height === this.tagging) {
+                                isHas = true;
+                                break;
+                            }
+                        }
                     } else if (this.oilType == '2') {
-                        this.newTaggingData2.push({
-                            height: this.tagging,
-                            volume: this.taggingOil,
-                        })
+                        for (var i = 0; i < this.newTaggingData2.length; i++) {
+                            var item = this.newTaggingData2[i];
+                            if (item.height === this.tagging) {
+                                isHas = true;
+                                break;
+                            }
+                        }
                     } else if (this.oilType == '3') {
-                        this.newTaggingData3.push({
-                            height: this.tagging,
-                            volume: this.taggingOil,
-                        })
+                        for (var i = 0; i < this.newTaggingData3.length; i++) {
+                            var item = this.newTaggingData3[i];
+                            if (item.height === this.tagging) {
+                                isHas = true;
+                                break;
+                            }
+                        }
                     } else if (this.oilType == '4') {
-                        this.newTaggingData4.push({
-                            height: this.tagging,
-                            volume: this.taggingOil,
-                        })
+                        for (var i = 0; i < this.newTaggingData4.length; i++) {
+                            var item = this.newTaggingData4[i];
+                            if (item.height === this.tagging) {
+                                isHas = true;
+                                break;
+                            }
+                        }
                     }
 
+                    if (isHas) {
+                        this.$Message.error(vRoot.$t('device.scaleAlreadyExists'));
+                    } else {
+                        if (this.oilType == '1') {
+                            this.newTaggingData1.push({
+                                height: this.tagging,
+                                volume: this.taggingOil,
+                            })
+                        } else if (this.oilType == '2') {
+                            this.newTaggingData2.push({
+                                height: this.tagging,
+                                volume: this.taggingOil,
+                            })
+                        } else if (this.oilType == '3') {
+                            this.newTaggingData3.push({
+                                height: this.tagging,
+                                volume: this.taggingOil,
+                            })
+                        } else if (this.oilType == '4') {
+                            this.newTaggingData4.push({
+                                height: this.tagging,
+                                volume: this.taggingOil,
+                            })
+                        }
+                    }
                 },
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;
                     this.tableHeight = (wHeight - 475 - 62);
+                },
+                queryAddOilStatus: function(callback) {
+                    var me = this;
+                    var data = {
+                        startday: this.dateVal[0],
+                        endday: this.dateVal[1],
+                        offset: timeDifference,
+                        devices: [this.queryDeviceId],
+                        oilstate: 99,
+                        oilindex: 0
+                    };
+                    utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
+                        if (resp.status == 0) {
+                            if (resp.records) {
+
+                                resp.records.forEach(function(item) {
+                                    item.records.forEach(function(record) {
+                                        var oilstate = record.oilstate;
+                                        if (oilstate == -1 || oilstate == 1) {
+                                            record.eoil = record.eoil / 100;
+                                            record.soil = record.soil / 100;
+                                        }
+                                    });
+                                });
+                                callback && callback(resp.records);
+                            } else {
+                                me.$Message.error(self.$t("reportForm.noRecord"));
+                            }
+                        } else {
+                            me.$Message.error(resp.cause);
+                        }
+                    })
                 },
                 onClickQuery: function() {
 
@@ -320,6 +407,8 @@
                         this.$Message.error(this.$t("reportForm.selectDevTip"));
                         return
                     };
+                    this.loading = true;
+
                     var self = this;
                     var startday = DateFormat.longToDateStr(this.date.getTime(), 0);
                     var data = {
@@ -328,15 +417,28 @@
                         offset: timeDifference,
                         devices: [this.queryDeviceId],
                     };
+
                     this.queryOilInfo(this.queryDeviceId);
-                    this.loading = true;
-                    // recvtime markPointData totalad oil 1 - 4 srcad 0 - 3 devStates devReissue
-                    utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
-                        if (resp.status === 0) {
-                            self.setChartsOption('prve', resp.records);
-                        }
-                        self.loading = false;
+                    this.queryAddOilStatus(function(oilRecords) {
+
+                        utils.sendAjax(myUrls.reportOilTime(), data, function(resp) {
+                            if (resp.status === 0) {
+                                var tracks = resp.records[0].records;
+                                tracks.forEach(function(track, index) {
+                                    track.index = index;
+                                });
+                                var markPoints = utils.calMarkPoint(resp.records, oilRecords);
+                                console.log('markPoints', markPoints);
+                                self.markPointData = markPoints;
+                                self.setChartsOption('prve', tracks);
+                            } else {
+                                self.$Message.error(resp.cause);
+                            }
+                            self.loading = false;
+                        });
                     });
+                    // recvtime markPointData totalad oil 1 - 4 srcad 0 - 3 devStates devReissue
+
                 },
                 setChartsOption: function(type, dataList) {
 
@@ -358,87 +460,57 @@
                         voltages = [],
                         devStates = [];
 
+                    dataList.forEach(function(record, index) {
+                        var totalad = record.totalad;
+                        var ad0 = record.ad0;
+                        var ad1 = record.ad1;
+                        var ad2 = record.ad2;
+                        var ad3 = record.ad3;
+                        if (ad0 < 0) {
+                            ad0 = 0;
+                        };
+                        if (ad1 < 0) {
+                            ad1 = 0;
+                        };
+                        if (ad2 < 0) {
+                            ad2 = 0;
+                        };
+                        if (ad3 < 0) {
+                            ad3 = 0;
+                        };
+                        record.totalad = totalad / 100;
+                        record.ad0 = ad0 / 100;
+                        record.ad1 = ad1 / 100;
+                        record.ad2 = ad2 / 100;
+                        record.ad3 = ad3 / 100;
+                        record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
 
-                    dataList.forEach(function(item, index) {
-                        records = item.records;
-                        // var independent = item.independent === 0;
-                        records.forEach(function(record, index) {
-                            var totalad = record.totalad;
-                            var ad0 = record.ad0;
-                            var ad1 = record.ad1;
-                            var ad2 = record.ad2;
-                            var ad3 = record.ad3;
-                            if (ad0 < 0) {
-                                ad0 = 0;
-                            };
-                            if (ad1 < 0) {
-                                ad1 = 0;
-                            };
-                            if (ad2 < 0) {
-                                ad2 = 0;
-                            };
-                            if (ad3 < 0) {
-                                ad3 = 0;
-                            };
-                            record.totalad = totalad / 100;
-                            record.ad0 = ad0 / 100;
-                            record.ad1 = ad1 / 100;
-                            record.ad2 = ad2 / 100;
-                            record.ad3 = ad3 / 100;
-                            record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                        totalads.push(record.totalad);
+                        recvtime.push(record.updatetimeStr);
 
-                            totalads.push(record.totalad);
-                            recvtime.push(record.updatetimeStr);
-
-                            oil1.push(record.ad0);
-                            oil2.push(record.ad1);
-                            oil3.push(record.ad2);
-                            oil4.push(record.ad3);
-                            srcad0.push(record.srcad0);
-                            srcad1.push(record.srcad1);
-                            srcad2.push(record.srcad2);
-                            srcad3.push(record.srcad3);
-                            if (!isZh) {
-                                record.strstatus = record.strstatusen;
-                            }
-                            devStates.push(record.strstatus);
-                            devReissue.push(record.reissue == 0 ? self.$t('header.no') : self.$t('header.yes'));
+                        oil1.push(record.ad0);
+                        oil2.push(record.ad1);
+                        oil3.push(record.ad2);
+                        oil4.push(record.ad3);
+                        srcad0.push(record.srcad0);
+                        srcad1.push(record.srcad1);
+                        srcad2.push(record.srcad2);
+                        srcad3.push(record.srcad3);
+                        if (!isZh) {
+                            record.strstatus = record.strstatusen;
+                        }
+                        devStates.push(record.strstatus);
+                        devReissue.push(record.reissue == 0 ? self.$t('header.no') : self.$t('header.yes'));
 
 
-                        });
                     });
 
-                    totalads.forEach(function(item, index) {
-                        if (index != 0) {
-                            var prevItem = totalads[index - 1];
-                            var oilDifference = item - prevItem;
-
-                            if (Math.abs(oilDifference) > 5) {
-                                var color = '';
-                                if (oilDifference > 0) {
-                                    color = 'green';
-                                } else {
-                                    color = 'red';
-                                }
-                                markPointData.push({
-                                    coord: [index, item],
-                                    value: Math.abs(oilDifference).toFixed(0),
-                                    itemStyle: {
-                                        color: color
-                                    },
-                                    label: {
-                                        fontSize: 8,
-                                    }
-                                })
-                            }
-                        }
-                    })
 
 
 
                     if (type == 'prve') {
                         this.recvtime = recvtime;
-                        this.markPointData = markPointData;
+                        this.markPointData = this.markPointData;
                         this.totalad = totalads;
                         this.oil1 = oil1;
                         this.oil2 = oil2;
@@ -450,7 +522,7 @@
                         this.srcad3 = srcad3;
 
                     } else {
-                        this.markPointData1 = markPointData;
+                        this.markPointData1 = this.markPointData1;
                         this.totalad1 = totalads;
                         this.oil11 = oil1;
                         this.oil21 = oil2;

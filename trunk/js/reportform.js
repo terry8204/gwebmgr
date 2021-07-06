@@ -7115,70 +7115,7 @@ function timeOilConsumption(groupslist) {
 
                 });
             },
-            calMarkPoint: function(tracks, oilDeviceRecords) {
-                var markPoints = [];
-                if (oilDeviceRecords && oilDeviceRecords.length > 0) {
-                    var oilRecords = oilDeviceRecords[0].records;
-                    if (oilRecords && oilRecords.length > 0) {
-                        for (var i = 0; i < oilRecords.length; ++i) {
-                            var oilRecord = oilRecords[i];
-                            var oilEndTime = oilRecord.endtime;
-                            var nearestTrack = this.findNearestTracksByTime(tracks, oilEndTime);
-                            if (nearestTrack) {
-                                var oil = nearestTrack.totalad;
-                                var difference = (oilRecord.eoil - oilRecord.soil);
-                                var color = '';
-                                if (difference > 0) {
-                                    color = 'green';
-                                } else {
-                                    color = 'red';
-                                }
-                                var markPoint = {
-                                    coord: [nearestTrack.index, oil], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
-                                    value: Math.abs(difference).toFixed(0),
-                                    itemStyle: {
-                                        color: color
-                                    },
-                                    label: {
-                                        fontSize: 8,
-                                    }
-                                };
-                                markPoints.push(markPoint);
-                            }
-                        }
-                    }
-                }
-                return markPoints;
-            },
-            findNearestTracksByTime(tracks, needFoundTime) {
-                var nearestTrack = null;
-                if (tracks) {
-                    var detalTime = 24 * 3600 * 1000;
-                    for (var i = 0; i < tracks.length; ++i) {
-                        var tempTrack = tracks[i];
-                        var trackUpdateTime = tempTrack.updatetime;
-                        var tempDetal = trackUpdateTime - needFoundTime;
-                        var absTempDetal = Math.abs(tempDetal);
-                        if (absTempDetal < detalTime) {
-                            if (tempDetal < 0) {
-                                detalTime = absTempDetal;
-                                nearestTrack = tempTrack;
-                                nearestTrack.index = i;
-                            } else if (tempDetal == 0) {
-                                nearestTrack = tempTrack;
-                                nearestTrack.index = i;
-                                break;
-                            } else if (tempDetal > 0) {
-                                nearestTrack = tempTrack;
-                                nearestTrack.index = i;
-                                break;
-                            }
-                        }
-                    }
-                }
 
-                return nearestTrack;
-            },
             queryAddOilStatus: function(tracks) {
                 tracks.forEach(function(tracks, index) {
                     tracks.index = index;
@@ -7237,8 +7174,7 @@ function timeOilConsumption(groupslist) {
                             me.oilTable = oilArr;
                             me.cloneDataList = deepClone(oilArr);
 
-                            var markPoints = me.calMarkPoint(tracks, resp.records);
-                            console.log(markPoints);
+                            var markPoints = utils.calMarkPoint(tracks, resp.records);
                             me.markPointData = markPoints;
 
                             me.charts();
