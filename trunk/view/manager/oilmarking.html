@@ -383,10 +383,13 @@
                     this.tableHeight = (wHeight - 475 - 62);
                 },
                 queryAddOilStatus: function(callback) {
+
+
+                    var startday = DateFormat.longToDateStr(this.date.getTime(), timeDifference);
                     var me = this;
                     var data = {
-                        startday: this.dateVal[0],
-                        endday: this.dateVal[1],
+                        startday: startday,
+                        endday: startday,
                         offset: timeDifference,
                         devices: [this.queryDeviceId],
                         oilstate: 99,
@@ -423,7 +426,8 @@
                     this.loading = true;
 
                     var self = this;
-                    var startday = DateFormat.longToDateStr(this.date.getTime(), 0);
+                    var startday = DateFormat.longToDateStr(this.date.getTime(), timeDifference);
+
                     var data = {
                         startday: startday,
                         endday: startday,
@@ -888,8 +892,44 @@
                 }
             },
             mounted: function() {
+                var _this = this;
                 this.groupslist = deepClone(vRoot.$children[1].groups);
                 this.oldChartsIns = echarts.init(document.getElementById('old-chart'));
+
+                this.oldChartsIns.getZr().on('click', function(params) {
+                    var pointInPixel = [params.offsetX, params.offsetY];
+                    if (_this.oldChartsIns.containPixel('grid', pointInPixel)) {
+                        var xIndex = _this.oldChartsIns.convertFromPixel({
+                            seriesIndex: 0
+                        }, [params.offsetX, params.offsetY])[0];
+                        var oil = null;
+                        var srcad = null;
+
+                        switch (_this.oilType) {
+                            case '1':
+                                oil = _this.oil1[xIndex];
+                                srcad = _this.srcad0[xIndex];
+                                break;
+                            case '2':
+                                oil = _this.oil2[xIndex];
+                                srcad = _this.srcad1[xIndex];
+                                break;
+                            case '3':
+                                oil = _this.oil3[xIndex];
+                                srcad = _this.srcad2[xIndex];
+                                break;
+                            case '4':
+                                oil = _this.oil4[xIndex];
+                                srcad = _this.srcad3[xIndex];
+                                break;
+                        }
+
+                        _this.tagging = srcad;
+                        _this.taggingOil = oil;
+
+                    }
+                });
+
 
 
                 this.recvtime = [];
@@ -962,13 +1002,23 @@
                     }
                 }
 
-                var _this = this;
+
+
+
                 _this.oldChartsIns.setOption(_this.getChartsOption());
                 _this.oildetectors = [];
                 _this.calcTableHeight();
                 window.onresize = function() {
                     _this.oldChartsIns.resize();
                 }
+
+
+
+                _this.oldChartsIns.on('legendselectchanged', function(param) {
+                    _this.selectedLegend = param.selected;
+                })
+
+
             }
         })
     </script>
