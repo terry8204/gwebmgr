@@ -13420,11 +13420,12 @@ var reportForm = {
                         { title: me.$t("reportForm.oilWorkingHours"), name: 'oilWorkingHours', icon: 'ios-appstore-outline' },
                         { title: me.$t("reportForm.idleReport"), name: 'idleReport', icon: 'md-speedometer' },
                         { title: me.$t("reportForm.dateOilConsumption"), name: 'timeOilConsumption', icon: 'ios-timer-outline' },
+                        { title: me.$t("reportForm.mileageOilConsumption"), name: 'mileageOilConsumption', icon: 'ios-timer-outline' },
                         { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
                         // { title: me.$t("reportForm.fuelRate"), name: 'powerWaste', icon: 'ios-pulse-outline' },
 
-                        { title: me.$t("reportForm.mileageOilConsumption"), name: 'mileageOilConsumption', icon: 'ios-timer-outline' },
+
                     ]
                 },
                 {
