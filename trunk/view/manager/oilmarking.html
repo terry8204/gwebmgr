@@ -249,12 +249,13 @@
                     };
                     var self = this;
                     var url = myUrls.preViewOilDetectors();
-                    var startday = DateFormat.longToDateStr(this.date.getTime(), 0);
+                    var startday = DateFormat.longToDateStr(this.date.getTime(), timeDifference);
                     var data = {
                         deviceid: this.queryDeviceId,
                         independent: this.isIndependent ? 0 : 1,
                         startday: startday,
                         endday: startday,
+                        offset: timeDifference,
                         oildetectors: [{
                             threshold: this.threshold1,
                             markers: this.newTaggingData1,
