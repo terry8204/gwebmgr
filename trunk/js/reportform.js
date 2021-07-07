@@ -8176,6 +8176,1296 @@ function timeOilConsumption(groupslist) {
     });
 }
 
+function mileageOilConsumption(groupslist) {
+    vueInstanse = new Vue({
+        el: "#mileage-oil-consumption",
+        i18n: utils.getI18n(),
+        data: {
+            loading: false,
+            groupslist: [],
+            isShowCard: false,
+            contentString: "",
+            metre: '1000',
+            columns: [
+                { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
+                { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 160 },
+                { title: vRoot.$t('reportForm.updateTime'), key: 'updatetimeStr', sortable: true, width: 160 },
+                { title: vRoot.$t('reportForm.arrivedtimeStr'), key: 'arrivedtimeStr', sortable: true, width: 160 },
+                { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 110 },
+                { title: vRoot.$t('reportForm.totalOil'), key: 'totalad', width: 110 },
+                { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 110 },
+                { title: vRoot.$t('reportForm.reissue'), key: 'reissue', width: 120 },
+                { title: vRoot.$t('reportForm.status'), key: 'strstatus', width: 300 },
+                {
+                    title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
+                    width: 210,
+                    render: function(h, params) {
+                        var row = params.row;
+                        var callat = row.callat.toFixed(5);
+                        var callon = row.callon.toFixed(5);
+
+                        if (callat && callon) {
+                            if (row.address == null) {
+
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    vueInstanse.records[params.index].address = resp.address;
+                                                    LocalCacheMgr.setAddress(callon, callat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, callon + "," + callat)
+
+                            } else {
+                                return h('Tooltip', {
+                                    props: {
+                                        content: row.address,
+                                        placement: "top-start",
+                                        maxWidth: 200
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        }
+                                    }, callon + "," + callat)
+                                ]);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
+            ],
+            tableData: [],
+            recvtime: [],
+            totalad: [],
+            veo: [],
+            distance: [],
+            oil1: [],
+            oil2: [],
+            oil3: [],
+            oil4: [],
+            srcad0: [],
+            srcad1: [],
+            srcad2: [],
+            srcad3: [],
+            altitudes: [],
+            voltages: [],
+            devReissue: [],
+            currentIndex: 1,
+
+            oilColumns: [{
+                    // title: isZh ? '编号' : 'index',
+                    type: 'index',
+                    width: 70
+                },
+                {
+                    title: isZh ? '油路' : 'oilindex',
+                    key: 'oilindex',
+                    option: [{ label: '全部', value: '0' }, { label: '油路1', value: '1' }, { label: '油路2', value: '2' }, { label: '油路3', value: '3' }, { label: '油路4', value: '4' }],
+                    width: 120,
+                    editable: true
+                }, {
+                    width: 100,
+                    key: 'oilstate',
+                    title: (isZh ? '状态' : 'Status'),
+                    option: [{ label: '加油', value: '1' }, { label: '漏油', value: '-1' }],
+                    editable: true
+                }, {
+                    title: (isZh ? '油量' : 'Oil Volume') + '(L)',
+                    key: 'oilVolume',
+                    width: 100,
+                    render: function(h, params) {
+                        var row = params.row;
+                        return h('span', Math.abs(row.eoil - row.soil).toFixed(2));
+                    }
+                }, {
+                    title: (isZh ? '开始油量' : 'Start Oil Volume') + '(L)',
+                    width: 110,
+                    key: 'soil',
+                    input: 'number',
+                    editable: true,
+                }, {
+                    title: (isZh ? '结束油量' : 'End Oil Volume') + '(L)',
+                    key: 'eoil',
+                    input: 'number',
+                    width: 110,
+                    editable: true,
+                }, {
+                    title: isZh ? '开始时间' : 'Begin Time',
+                    key: 'begintime',
+                    date: 'datetime_yyyy-MM-dd hh:mm:ss',
+                    width: 165,
+                    editable: true,
+                }, {
+                    title: isZh ? '结束时间' : 'End Time',
+                    key: 'endtime',
+                    date: 'datetime_yyyy-MM-dd hh:mm:ss',
+                    width: 165,
+                    editable: true,
+                }, {
+                    title: isZh ? '备注' : 'Marker',
+                    width: 185,
+                    key: 'marker',
+                    input: 'text',
+                    editable: true,
+                }, {
+                    title: isZh ? '操作' : 'action',
+                    width: 185,
+                    key: 'handle',
+                    handle: ['edit', 'delete', 'map'],
+                    render: function(h) {}
+                },
+                {
+                    title: vRoot.$t('reportForm.saddress'),
+                    width: 300,
+                    render: function(h, params) {
+                        var row = params.row;
+                        var lat = row.slat ? row.slat.toFixed(5) : null;
+                        var lon = row.slon ? row.slon.toFixed(5) : null;
+                        if (lat && lon) {
+                            if (row.saddress == null) {
+                                return h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: function() {
+                                            utils.getJiuHuAddressSyn(lon, lat, function(resp) {
+                                                if (resp && resp.address) {
+                                                    var newRow = deepClone(row);
+                                                    newRow.saddress = resp.address;
+                                                    vueInstanse.$set(vueInstanse.oilArr, params.index, newRow)
+                                                    LocalCacheMgr.setAddress(lon, lat, resp.address);
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, lon + "," + lat)
+
+                            } else {
+                                return h('span', {}, row.saddress);
+                            }
+                        } else {
+                            return h('span', {}, '');
+                        }
+                    },
+                },
+                { title: isZh ? '距离(米)' : 'Distance(m)', key: 'distance', width: 100 },
+                { title: isZh ? '平均速度(Km/h)' : 'Average speed (km / h)', key: 'avgspeed', width: 140 },
+                { title: isZh ? '时长' : 'Duration', key: 'durationStr', width: 110 },
+                { title: isZh ? '阀值(L)' : 'Threshold', key: 'threshold', width: 100 },
+
+            ],
+            oilTable: [],
+            cloneDataList: [],
+            trackDetailModal: false,
+        },
+        mixins: [reportMixin],
+        methods: {
+            initMap: function() {
+                this.markerLayer = null;
+                this.mapInstance = utils.initWindowMap('oil-details-map');
+            },
+            queryTracks: function(row) {
+                var url = myUrls.queryTracks(),
+                    me = this,
+                    data = {
+                        deviceid: row.deviceid,
+                        begintime: DateFormat.longToDateTimeStr(row.begintime, timeDifference),
+                        endtime: DateFormat.longToDateTimeStr(row.endtime, timeDifference),
+                        interval: 5,
+                        timezone: timeDifference,
+                    };
+                utils.sendAjax(url, data, function(respData) {
+                    if (respData.status === 0) {
+                        var records = respData.records;
+                        if (records && records.length) {
+                            me.trackDetailModal = true;
+                            utils.markersAndLineLayerToMap(me, records);
+                        } else {
+                            me.$Message.error(vRoot.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        me.$Message.error(vRoot.$t("reportForm.queryFail"));
+                    }
+
+                });
+            },
+
+            queryAddOilStatus: function(tracks) {
+                tracks.forEach(function(tracks, index) {
+                    tracks.index = index;
+                });
+                var me = this;
+                var data = {
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                    oilstate: 99,
+                    oilindex: 0
+                };
+                utils.sendAjax(myUrls.reportOilRecord(), data, function(resp) {
+                    self.loading = false;
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var oilArr = [];
+                            var increaseOil = 0;
+                            var reduceOil = 0;
+                            resp.records.forEach(function(item) {
+                                var index = 1;
+                                item.records.forEach(function(record) {
+                                    var oilstate = record.oilstate;
+                                    if (oilstate == -1 || oilstate == 1) {
+
+
+                                        var slat = record.slat.toFixed(5);
+                                        var slon = record.slon.toFixed(5);
+                                        var saddress = LocalCacheMgr.getAddress(slon, slat);
+                                        if (saddress != null) {
+                                            record.saddress = saddress;
+                                        } else {
+                                            record.saddress = null;
+                                        };
+
+                                        record.eoil = record.eoil / 100;
+                                        record.soil = record.soil / 100;
+                                        record.oilstate = String(oilstate);
+                                        record.oilindex = String(record.oilindex);
+                                        record.editting = false;
+                                        record.saving = false;
+                                        record.durationStr = utils.timeStamp(record.duration);
+
+                                        oilArr.push(record);
+                                        index++;
+                                    }
+                                });
+                            });
+
+
+
+
+
+
+                            me.oilTable = oilArr;
+                            me.cloneDataList = deepClone(oilArr);
+
+                            var markPoints = utils.calMarkPoint(tracks, resp.records);
+                            me.markPointData = markPoints;
+
+                            me.charts();
+
+                        } else {
+                            me.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        me.$Message.error(resp.cause);
+                    }
+                })
+            },
+            onRowClick: function(row) {
+                var me = this;
+                this.isShowCard = true;
+                this.queryTrackDetail(row, function(resp) {
+                    if (resp.track) {
+                        me.contentString = JSON.stringify(resp.track);
+                    } else {
+                        vm.$Message.error(me.$t("reportForm.noRecord"));
+                    }
+                });
+            },
+            queryTrackDetail: function(row, callback) {
+                var data = {
+                    deviceid: this.queryDeviceId,
+                    updatetime: row.updatetime,
+                    trackid: row.trackid
+                }
+                var url = myUrls.queryTrackDetail();
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        callback(resp);
+                    }
+                })
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentPageIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            charts: function() {
+                var totoil = vRoot.$t('reportForm.totalOil');
+                var speed = vRoot.$t('reportForm.speed');
+                var dis = vRoot.$t('reportForm.mileage');
+                var time = vRoot.$t('reportForm.time');
+                var usoil1 = vRoot.$t('reportForm.oil1');
+                var usoil2 = vRoot.$t('reportForm.oil2');
+                var usoil3 = vRoot.$t('reportForm.oil3');
+                var usoil4 = vRoot.$t('reportForm.oil4');
+
+                var srcad0 = vRoot.$t('reportForm.srcad0');
+                var srcad1 = vRoot.$t('reportForm.srcad1');
+                var srcad2 = vRoot.$t('reportForm.srcad2');
+                var srcad3 = vRoot.$t('reportForm.srcad3');
+
+                var cotgasus = vRoot.$t('reportForm.oil');
+                var status = vRoot.$t('reportForm.status');
+                var reissue = vRoot.$t('reportForm.reissue');
+
+                var altitude = vRoot.$t('reportForm.altitude');
+                var voltage = vRoot.$t('reportForm.voltage');
+
+                var option = {
+                    title: {
+                        // text: time + '/' + cotgasus,
+                        // x: 'center',
+                        // textStyle: {
+                        //     fontSize: 12,
+                        //     fontWeight: 'bolder',
+                        //     color: '#333'
+                        // }
+                    },
+                    grid: {
+                        top: 30,
+                        left: 60,
+                        right: 60,
+                        bottom: 40,
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: function(v) {
+                            // console.log(v);
+                            var data = time + ' : ' + v[0].value + '<br/>';
+                            for (i in v) {
+                                if (v[i].seriesName && v[i].seriesName != time) {
+                                    if (v[i].seriesName == dis) {
+                                        var currentDistance = v[i].value;
+                                        var totalDistance = ((Number(currentDistance) + firstDistance / 1000)).toFixed(2);
+                                        data += v[i].seriesName + ' : ' + currentDistance + "Km(T:" + totalDistance + 'Km)<br/>';
+
+                                    } else if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
+                                    } else if (v[i].seriesName == speed) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                    } else if (v[i].seriesName == altitude) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'm<br/>';
+                                    } else if (v[i].seriesName == voltage) {
+                                        data += v[i].seriesName + ' : ' + v[i].value + 'V<br/>';
+                                    } else {
+                                        data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                    }
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                    legend: {
+                        data: [speed, dis, totoil, usoil1, usoil2, usoil3, usoil4, srcad0, srcad1, srcad2, srcad3, altitude, voltage],
+                        selected: this.selectedLegend,
+                        x: 'left',
+                        // width: 600,
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: {
+                                show: true
+                            }
+                        },
+                        itemSize: 14
+                    },
+                    dataZoom: [{
+                        show: true,
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        backgroundColor: '#EDEDED',
+                        fillerColor: 'rgb(54, 72, 96,0.5)',
+                        //fillerColor:'rgb(244,129,38,0.8)',
+                        bottom: 0
+                    }, {
+                        type: "inside",
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: 20,
+                        bottom: 0
+                    }],
+                    xAxis: [{
+                        type: 'category',
+                        boundaryGap: false,
+                        axisLine: {
+                            onZero: false
+                        },
+                        data: this.distance
+                    }],
+                    yAxis: [{
+                        name: '', //totoil + '/' + speed
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 5,
+
+                    }, {
+                        name: '', //dis
+                        type: 'value',
+                        nameTextStyle: 10,
+                        nameGap: 2,
+                        min: this.disMin,
+                        axisLabel: {
+                            formatter: '{value} km',
+                        },
+                        axisTick: {
+                            show: false
+                        }
+                    }],
+                    series: [{
+                            name: time,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#F0805A',
+                            smooth: true,
+                            data: this.recvtime
+                        }, {
+                            name: speed,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 0,
+                            smooth: true,
+                            color: '#4876FF',
+                            data: this.veo
+                        }, {
+                            name: dis,
+                            type: 'line',
+                            symbol: 'none',
+                            yAxisIndex: 1,
+                            color: '#3CB371',
+                            smooth: true,
+                            data: this.distance
+                        }, {
+                            smooth: true,
+                            name: totoil,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#C1232B',
+                            data: this.totalad,
+                            markPoint: {
+                                data: this.markPointData,
+                                symbolSize: 36,
+                                symbolKeepAspect: true,
+                            }
+                        }, {
+                            smooth: true,
+                            name: usoil1,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#8E388E',
+                            data: this.oil1
+                        },
+
+                        {
+                            smooth: true,
+                            name: usoil2,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#FF4500',
+                            data: this.oil2
+                        },
+                        {
+                            smooth: true,
+                            name: usoil3,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#2177C7',
+                            data: this.oil3
+                        },
+                        {
+                            smooth: true,
+                            name: usoil4,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#B05432',
+                            data: this.oil4
+                        },
+
+                        {
+                            smooth: true,
+                            name: srcad0,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000000',
+                            data: this.srcad0
+                        },
+                        {
+                            smooth: true,
+                            name: srcad1,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000000',
+                            data: this.srcad1
+                        },
+                        {
+                            smooth: true,
+                            name: srcad2,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000000',
+                            data: this.srcad2
+                        },
+                        {
+                            smooth: true,
+                            name: srcad3,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000000',
+                            data: this.srcad3
+                        },
+                        {
+                            smooth: true,
+                            name: status,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000',
+                            data: this.devStates
+                        },
+                        {
+                            smooth: true,
+                            name: reissue,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#000',
+                            data: this.devReissue
+                        },
+                        {
+                            smooth: true,
+                            name: altitude,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#245779',
+                            data: this.altitudes
+                        },
+                        {
+                            smooth: true,
+                            name: voltage,
+                            type: 'line',
+                            symbol: 'none',
+                            color: '#8CDCDA',
+                            data: this.voltages
+                        },
+                    ]
+                };
+
+
+
+                this.chartsIns.setOption(option, true);
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 400;
+            },
+            onClickQuery: function() {
+                if (this.queryDeviceId == "") { return };
+                var self = this;
+                if (this.isSelectAll === null) {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                    return;
+                };
+                var data = {
+                    // username: vstore.state.userName,
+                    startday: this.dateVal[0],
+                    endday: this.dateVal[1],
+                    offset: timeDifference,
+                    devices: [this.queryDeviceId],
+                    intervalm: Number(this.metre)
+                };
+                this.loading = true;
+                utils.sendAjax(myUrls.reportOilMileage(), data, function(resp) {
+                    self.loading = false;
+                    self.markPointData = [];
+                    if (resp.status == 0) {
+                        if (resp.records) {
+                            var records = [],
+                                totalads = [],
+                                veo = [],
+                                distance = [],
+                                recvtime = [],
+                                oil1 = [],
+                                oil2 = [],
+                                oil3 = [],
+                                oil4 = [],
+                                srcad0 = [],
+                                srcad1 = [],
+                                srcad2 = [],
+                                srcad3 = [],
+                                devReissue = [],
+                                markPointData = [],
+                                altitudes = [],
+                                voltages = [],
+                                devStates = [];
+                            firstDistance = 0;
+
+
+                            resp.records.forEach(function(item, index) {
+                                records = item.records;
+                                // var independent = item.independent === 0;
+                                records.forEach(function(record, index) {
+                                    if (index == 0) {
+                                        firstDistance = record.totaldistance;
+                                    };
+                                    var callon = record.callon.toFixed(5);
+                                    var callat = record.callat.toFixed(5);
+                                    var address = LocalCacheMgr.getAddress(callon, callat);
+                                    if (address != null) {
+                                        record.address = address;
+                                    } else {
+                                        record.address = null;
+                                    }
+                                    var totalad = record.totalad;
+                                    var ad0 = record.ad0;
+                                    var ad1 = record.ad1;
+                                    var ad2 = record.ad2;
+                                    var ad3 = record.ad3;
+                                    if (ad0 < 0) {
+                                        ad0 = 0;
+                                    };
+                                    if (ad1 < 0) {
+                                        ad1 = 0;
+                                    };
+                                    if (ad2 < 0) {
+                                        ad2 = 0;
+                                    };
+                                    if (ad3 < 0) {
+                                        ad3 = 0;
+                                    };
+                                    record.totalad = totalad / 100;
+                                    record.ad0 = ad0 / 100;
+                                    record.ad1 = ad1 / 100;
+                                    record.ad2 = ad2 / 100;
+                                    record.ad3 = ad3 / 100;
+                                    record.speed = (record.speed / 1000).toFixed(2);
+                                    record.voltage = record.voltage / 100.0;
+                                    record.updatetimeStr = DateFormat.longToDateTimeStr(record.updatetime, timeDifference);
+                                    record.arrivedtimeStr = DateFormat.longToDateTimeStr(record.arrivedtime, timeDifference);
+                                    record.devicename = vstore.state.deviceInfos[self.queryDeviceId].devicename;
+                                    totalads.push(record.totalad);
+                                    veo.push(record.speed);
+                                    record.totaldistance = ((record.totaldistance - firstDistance) / 1000).toFixed(2);
+                                    distance.push(record.totaldistance);
+                                    recvtime.push(record.updatetimeStr);
+                                    oil1.push(record.ad0);
+                                    oil2.push(record.ad1);
+                                    oil3.push(record.ad2);
+                                    oil4.push(record.ad3);
+                                    srcad0.push(record.srcad0);
+                                    srcad1.push(record.srcad1);
+                                    srcad2.push(record.srcad2);
+                                    srcad3.push(record.srcad3);
+                                    if (!isZh) {
+                                        record.strstatus = record.strstatusen;
+                                    }
+                                    devStates.push(record.strstatus);
+                                    devReissue.push(record.reissue == 0 ? self.$t('header.no') : self.$t('header.yes'));
+
+                                    altitudes.push(record.altitude);
+                                    voltages.push(record.voltage);
+                                });
+                            });
+
+                            // totalads.forEach(function(item, index) {
+                            //     if (index != 0) {
+                            //         var prevItem = totalads[index - 1];
+                            //         var oilDifference = item - prevItem;
+
+                            //         if (Math.abs(oilDifference) > 5) {
+                            //             var color = '';
+                            //             if (oilDifference > 0) {
+                            //                 color = 'green';
+                            //             } else {
+                            //                 color = 'red';
+                            //             }
+                            //             markPointData.push({
+                            //                 coord: [index, item],
+                            //                 value: Math.abs(oilDifference).toFixed(0),
+                            //                 itemStyle: {
+                            //                     color: color
+                            //                 },
+                            //                 label: {
+                            //                     fontSize: 8,
+                            //                 }
+                            //             })
+                            //         }
+                            //     }
+                            // })
+
+                            // self.markPointData = markPointData;
+                            self.totalad = totalads;
+                            self.veo = veo;
+                            self.distance = distance;
+                            self.recvtime = recvtime;
+                            self.oil1 = oil1;
+                            self.oil2 = oil2;
+                            self.oil3 = oil3;
+                            self.oil4 = oil4;
+                            self.srcad0 = srcad0;
+                            self.srcad1 = srcad1;
+                            self.srcad2 = srcad2;
+                            self.srcad3 = srcad3;
+                            self.records = records;
+                            self.devStates = devStates;
+                            self.devReissue = devReissue;
+                            self.altitudes = altitudes;
+                            self.voltages = voltages;
+
+                            self.queryAddOilStatus(deepClone(records));
+
+                            self.total = records.length;
+                            records.sort(function(a, b) {
+                                return b.updatetime - a.updatetime;
+                            })
+                            records.forEach(function(item, index) {
+                                item.index = index + 1;
+                            })
+                            self.currentPageIndex = 1;
+                            self.tableData = records.slice(0, 20);
+
+
+
+                        } else {
+                            self.$Message.error(self.$t("reportForm.noRecord"));
+                        }
+                    } else {
+                        self.$Message.error(resp.cause);
+                    }
+                }, function() {
+                    self.loading = false;
+                })
+
+
+            },
+            addOilRecord: function() {
+                var me = this;
+                var url = myUrls.addOilRecord();
+                var data = {
+                    deviceid: this.queryDeviceId,
+                    begintime: DateFormat.dateTimeStrToLong(this.dateVal[0] + ' 00:00:00', 0),
+                    endtime: DateFormat.dateTimeStrToLong(this.dateVal[1] + ' 23:59:59', 0) //结束时间' ,
+                };
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        var oilRecord = resp.oilRecord;
+                        oilRecord.oilindex = String(oilRecord.oilindex);
+                        oilRecord.oilstate = String(oilRecord.oilstate);
+                        oilRecord.saving = false;
+                        oilRecord.editting = false;
+                        me.cloneDataList.push(oilRecord);
+                        me.oilTable.push(deepClone(oilRecord));
+                        me.$Message.success(vRoot.$t('message.addSucc'));
+                    } else {
+                        me.$Message.error(vRoot.$t('message.addFail'));
+                    }
+                });
+            },
+            handleDeleteOilRecord(row, index) {
+                row = deepClone(row);
+                row.oilindex = Number(row.oilindex);
+                var me = this;
+                var url = myUrls.delOilRecord();
+                utils.sendAjax(url, row, function(resp) {
+                    if (resp.status == 0) {
+                        me.oilTable.splice(index, 1);
+                        me.cloneDataList.splice(index, 1);
+                        me.$Message.success(vRoot.$t('message.deleteSucc'));
+                    } else if (resp.status == 1) {
+                        me.$Message.success(vRoot.$t('message.deleteOilRecordTip'));
+                    } else {
+                        me.$Message.error(vRoot.$t('message.deleteFail'));
+                    }
+                });
+            },
+            getTrackInfoContent: function(row, h, key) {
+
+                var totoil = vRoot.$t('reportForm.totalOil');
+                var speed = vRoot.$t('reportForm.speed');
+
+                var usoil1 = vRoot.$t('reportForm.oil1');
+                var usoil2 = vRoot.$t('reportForm.oil2');
+                var usoil3 = vRoot.$t('reportForm.oil3');
+                var usoil4 = vRoot.$t('reportForm.oil4');
+
+                var srcad0 = vRoot.$t('reportForm.srcad0');
+                var srcad1 = vRoot.$t('reportForm.srcad1');
+                var srcad2 = vRoot.$t('reportForm.srcad2');
+                var srcad3 = vRoot.$t('reportForm.srcad3');
+
+
+                var status = vRoot.$t('reportForm.status');
+                var reissue = vRoot.$t('reportForm.reissue');
+
+                var voltage = isZh ? "电压" : "Voltage";
+
+                var content = [];
+                var track = null;
+                for (var i = 0; i < this.records.length; i++) {
+                    var item = this.records[i];
+                    if (row[key] == item.updatetime) {
+                        track = item;
+                        break;
+                    }
+                }
+
+                if (track) {
+
+                    content.push(h('p', {}, DateFormat.longToDateTimeStr(track.updatetime, 8)));
+                    content.push(h('p', {}, speed + " : " + track.speed + "Km/h"));
+                    content.push(h('p', {}, totoil + " : " + track.totalad + "L"));
+                    this.selectedLegend[usoil1] && content.push(h('p', {}, usoil1 + " : " + track.ad0 + "L"));
+                    this.selectedLegend[usoil2] && content.push(h('p', {}, usoil2 + " : " + track.ad1 + "L"));
+                    this.selectedLegend[usoil3] && content.push(h('p', {}, usoil3 + " : " + track.ad2 + "L"));
+                    this.selectedLegend[usoil4] && content.push(h('p', {}, usoil4 + " : " + track.ad3 + "L"));
+                    this.selectedLegend[srcad0] && content.push(h('p', {}, srcad0 + " : " + track.srcad0 + "L"));
+                    this.selectedLegend[srcad1] && content.push(h('p', {}, srcad1 + " : " + track.srcad1 + "L"));
+                    this.selectedLegend[srcad2] && content.push(h('p', {}, srcad2 + " : " + track.srcad2 + "L"));
+                    this.selectedLegend[srcad3] && content.push(h('p', {}, srcad3 + " : " + track.srcad3 + "L"));
+                    content.push(h('p', {}, status + " : " + (isZh ? track.strstatus : track.strstatusen)));
+                    content.push(h('p', {}, reissue + " : " + (isZh ? (track.reissue == 0 ? '否' : '是') : (track.reissue == 0 ? 'No' : 'Yes'))));
+                    this.selectedLegend[voltage] && content.push(h('p', {}, voltage + " : " + track.voltage + "V"));
+
+                }
+
+
+
+                return content;
+            },
+            initOilColumns: function() {
+                var self = this;
+                self.oilColumns.forEach(function(item) {
+                    if (item.handle) {
+
+                        item.render = function(h, param) {
+                            var currentRow = self.cloneDataList[param.index];
+                            var children = [];
+                            item.handle.forEach(function(item) {
+
+                                if (item === 'edit') {
+                                    children.push(editButton(self, h, currentRow, param.index));
+                                } else if (item === 'delete') {
+                                    children.push(deleteButton(self, h, currentRow, param.index));
+                                } else if (item === 'map') {
+                                    children.push(mapButton(self, h, currentRow, param.index));
+                                }
+
+                            });
+
+                            return h('div', children);
+                        };
+                    }
+
+                    if (item.editable) {
+                        item.render = function(h, params) {
+                            var currentRow = self.cloneDataList[params.index];
+                            // 非编辑状态
+                            if (!currentRow.editting) {
+                                // 日期类型单独 渲染(利用工具暴力的formatDate格式化日期)
+                                if (item.date) {
+                                    // return h('Button', {
+                                    //     props: {
+                                    //         size: 'small',
+                                    //         type: 'info',
+                                    //     },
+                                    //     style: {},
+                                    //     on: {
+                                    //         click: function(e) {
+                                    //             e.stopPropagation();
+                                    //             e.preventDefault();
+                                    //             console.log(currentRow);
+                                    //             console.log(self.records);
+                                    //         }
+                                    //     }
+                                    // }, DateFormat.longToDateTimeStr(Number(currentRow[item.key]), 8));
+
+                                    // return h('span', DateFormat.longToDateTimeStr(Number(currentRow[item.key]), 8))
+                                    var contentChildren = self.getTrackInfoContent(currentRow, h, item.key);
+                                    return h('Poptip', {
+                                        props: {
+                                            // width: 240,
+                                            // height: 60,
+                                            // content: content
+                                            // popperClass: 'poptip-popper-class',
+                                            placement: "bottom"
+                                        },
+                                    }, [
+                                        h('Button', {
+                                            props: {
+                                                type: 'info',
+                                                size: 'small'
+                                            },
+                                        }, DateFormat.longToDateTimeStr(Number(currentRow[item.key]), 8)),
+                                        h(
+                                            'div', {
+                                                slot: 'content',
+                                                attrs: {
+                                                    slot: "content"
+                                                }
+                                            }, contentChildren
+                                        )
+                                    ]);
+                                }
+                                // 下拉类型中value与label不一致时单独渲染
+                                if (item.option && Array.isArray(item.option)) {
+                                    // 我这里为了简单的判断了第一个元素为object的情况,其实最好用every来判断所有元素
+                                    if (typeof item.option[0] === 'object') {
+
+                                        return h('span', item.option.find(findObjectInOption(currentRow[item.key])).label);
+                                    }
+                                }
+
+
+                                return h('span', currentRow[item.key]);
+
+
+                            } else {
+                                if (item.option && Array.isArray(item.option)) {
+
+
+                                    return h('div', {
+                                        style: {
+
+                                            // width: '100%',
+                                            // height: '100%',
+                                            // position: 'absolute',
+                                            // let: '50%',
+                                            // top: '50%',
+                                            // 'marginTop': '-16px',
+                                            // 'marginLeft': '-50px',
+                                        }
+                                    }, [
+                                        h('Select', {
+                                            props: {
+                                                // ***重点***: 这里要写currentRow[params.column.key],绑定的是cloneDataList里的数据
+                                                value: currentRow[params.column.key]
+                                            },
+                                            on: {
+                                                'on-change': function(value) {
+                                                    self.$set(currentRow, params.column.key, value)
+                                                }
+                                            }
+                                        }, item.option.map(function(item) {
+                                            return h('Option', {
+                                                props: {
+                                                    value: item.value || item,
+                                                    label: item.label || item
+                                                }
+                                            }, item.label || item);
+                                        }))
+                                    ]);
+                                } else if (item.date) {
+
+                                    //如果含有date属性
+                                    return h('DatePicker', {
+                                        props: {
+                                            type: item.date.split('_')[0] || 'date',
+                                            clearable: false,
+                                            value: new Date(currentRow[params.column.key])
+                                        },
+                                        on: {
+                                            'on-change': function(value) {
+                                                self.$set(currentRow, params.column.key, value)
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    // 默认input
+                                    return h('Input', {
+                                        props: {
+                                            // type类型也是自定的属性
+                                            type: item.input || 'text',
+                                            // rows只有在input 为textarea时才会起作用
+                                            rows: 3,
+                                            value: currentRow[params.column.key]
+                                        },
+                                        on: {
+                                            'on-change' (event) {
+                                                self.$set(currentRow, params.column.key, event.target.value)
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            saveData: function(currentRow, index) {
+
+                var self = this;
+                // 修改当前的原始数据, 就不需要再从服务端获取了
+                this.$set(this.oilTable, index, this.handleBackdata(currentRow))
+                    // 需要保存的数据
+                    // 模拟ajax
+                    // setTimeout(function() {
+                    //     // 重置编辑与保存状态
+                    //     currentRow.saving = false;
+                    //     currentRow.editting = false;
+                    //     self.$Message.success('保存完成');
+
+                // }, 1000)
+
+                var url = myUrls.editOilRecordAll();
+                var data = deepClone(currentRow);
+                data.oilindex = Number(data.oilindex);
+                data.oilstate = Number(data.oilstate);
+                data.soil = data.soil * 100;
+                data.eoil = data.eoil * 100;
+                utils.sendAjax(url, data, function(resp) {
+                    if (resp.status == 0) {
+                        currentRow.saving = false;
+                        currentRow.editting = false;
+                        self.$Message.success(vRoot.$t('message.changeSucc'));
+                    } else if (resp.status == 1) {
+                        self.$Message.success(vRoot.$t('message.deleteOilRecordTip'));
+                    } else {
+                        self.$Message.error(vRoot.$t('message.clearFail'));
+                    }
+                });
+
+            },
+            // 还原数据,用来与原始数据作对比的
+            handleBackdata: function(object) {
+                var clonedData = JSON.parse(JSON.stringify(object));
+                delete clonedData.editting;
+                delete clonedData.saving;
+                return clonedData;
+            }
+        },
+        mounted: function() {
+            var me = this;
+            this.groupslist = groupslist;
+            this.myChart = null;
+            this.records = [];
+            this.disMin = 0;
+            this.initMap();
+            this.initOilColumns();
+
+            var usoil1 = vRoot.$t('reportForm.oil1');
+            var usoil2 = vRoot.$t('reportForm.oil2');
+            var usoil3 = vRoot.$t('reportForm.oil3');
+            var usoil4 = vRoot.$t('reportForm.oil4');
+
+            var srcad0 = vRoot.$t('reportForm.srcad0');
+            var srcad1 = vRoot.$t('reportForm.srcad1');
+            var srcad2 = vRoot.$t('reportForm.srcad2');
+            var srcad3 = vRoot.$t('reportForm.srcad3');
+
+            var altitude = vRoot.$t('reportForm.altitude');
+            var voltage = vRoot.$t('reportForm.voltage');
+
+
+
+            if (isZh) {
+                this.selectedLegend = {
+                    "油液1(L)": false,
+                    "油液2(L)": false,
+                    "油液3(L)": false,
+                    "油液4(L)": false,
+                    "模拟量1": false,
+                    "模拟量2": false,
+                    "模拟量3": false,
+                    "模拟量4": false,
+                    "海拔": false,
+                    "电压": false,
+                }
+            } else {
+                this.selectedLegend = {
+                    "Sensor 1(L)": false,
+                    "Sensor 2(L)": false,
+                    "Sensor 3(L)": false,
+                    "Sensor 4(L)": false,
+                    "srcad0": false,
+                    "srcad1": false,
+                    "srcad2": false,
+                    "srcad3": false,
+                    "Altitude": false,
+                    "Voltage": false,
+                }
+            }
+            // this.selectedLegend = {
+            //     [usoil1]: false,
+            //     [usoil2]: false,
+            //     [usoil3]: false,
+            //     [usoil4]: false,
+            //     [srcad0]: false,
+            //     [srcad1]: false,
+            //     [srcad2]: false,
+            //     [srcad3]: false,
+            // }
+
+
+            this.chartsIns = echarts.init(document.getElementById('charts'));
+            this.charts();
+
+            this.chartsIns.getZr().on('click', function(params) {
+                var pointInPixel = [params.offsetX, params.offsetY];
+                if (me.chartsIns.containPixel('grid', pointInPixel)) {
+                    var tracks = me.records;
+                    if (tracks.length) {
+                        var xIndex = me.chartsIns.convertFromPixel({
+                            seriesIndex: 0
+                        }, [params.offsetX, params.offsetY])[0];
+                        var currentIndex = Math.ceil((tracks.length - xIndex) / 20);
+                        var rowIndex = (tracks.length - xIndex) % 20;
+                        if (rowIndex == 0) {
+                            rowIndex = 19;
+                        } else {
+                            rowIndex = rowIndex - 1;
+                        }
+                        me.changePage(currentIndex);
+                        me.currentIndex = currentIndex;
+
+                        setTimeout(function() {
+                            me.$refs.table.$refs.tbody.clickCurrentRow(rowIndex);
+                            var rowHeight = $('#oil-track tr.ivu-table-row')[0].getBoundingClientRect().height
+                            $('div.ivu-table-body').animate({
+                                scrollTop: (rowIndex * rowHeight) + 'px'
+                            }, 300);
+                        }, 500)
+                    }
+                }
+            });
+
+
+
+
+
+            this.chartsIns.on('legendselectchanged', function(param) {
+
+                var columns = [
+                    { title: vRoot.$t('reportForm.index'), key: 'index', width: 70 },
+                    { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 100 },
+                    { title: vRoot.$t('reportForm.date'), key: 'updatetimeStr', sortable: true, width: 160 },
+                    { title: vRoot.$t('reportForm.totalMileage') + '(km)', key: 'totaldistance', width: 100 },
+                    { title: vRoot.$t('reportForm.totalOil'), key: 'totalad', width: 100 },
+                ];
+
+                var selected = param.selected;
+
+                me.selectedLegend[usoil1] = !!selected[usoil1];
+                me.selectedLegend[usoil2] = !!selected[usoil2];
+                me.selectedLegend[usoil3] = !!selected[usoil3];
+                me.selectedLegend[usoil4] = !!selected[usoil4];
+                me.selectedLegend[srcad0] = !!selected[srcad0];
+                me.selectedLegend[srcad1] = !!selected[srcad1];
+                me.selectedLegend[srcad2] = !!selected[srcad2];
+                me.selectedLegend[srcad3] = !!selected[srcad3];
+                me.selectedLegend[voltage] = selected[voltage];
+
+                if (selected[usoil1]) {
+                    columns.push({ title: vRoot.$t('reportForm.oil1'), key: 'ad0', width: 90 })
+                }
+                if (selected[usoil2]) {
+                    columns.push({ title: vRoot.$t('reportForm.oil2'), key: 'ad1', width: 90 })
+                }
+                if (selected[usoil3]) {
+                    columns.push({ title: vRoot.$t('reportForm.oil3'), key: 'ad2', width: 90 })
+                }
+                if (selected[usoil4]) {
+                    columns.push({ title: vRoot.$t('reportForm.oil4'), key: 'ad3', width: 90 })
+                }
+                if (selected[srcad0]) {
+                    columns.push({ title: vRoot.$t('reportForm.srcad0'), key: 'srcad0', width: 90 })
+                }
+                if (selected[srcad1]) {
+                    columns.push({ title: vRoot.$t('reportForm.srcad1'), key: 'srcad1', width: 90 })
+                }
+                if (selected[srcad2]) {
+                    columns.push({ title: vRoot.$t('reportForm.srcad2'), key: 'srcad2', width: 90 })
+                }
+                if (selected[srcad3]) {
+                    columns.push({ title: vRoot.$t('reportForm.srcad3'), key: 'srcad3', width: 90 })
+                }
+                if (selected[altitude]) {
+                    columns.push({ title: vRoot.$t('reportForm.altitude') + (isZh ? "(米)" : "(M)"), key: 'altitude', width: 90 })
+                }
+                if (selected[voltage]) {
+                    columns.push({ title: vRoot.$t('reportForm.voltage') + '(V)', key: 'voltage', width: 90 })
+                }
+
+
+                me.initOilColumns();
+
+                me.columns = columns.concat([
+                    { title: vRoot.$t('reportForm.speed'), key: 'speed', width: 80 },
+                    { title: vRoot.$t('reportForm.reissue'), key: 'reissue', width: 80 },
+                    { title: vRoot.$t('reportForm.status'), key: 'strstatus', width: 160, },
+                    {
+                        title: vRoot.$t('reportForm.lon') + ',' + vRoot.$t('reportForm.lat'),
+                        width: 210,
+                        render: function(h, params) {
+                            var row = params.row;
+                            var callat = row.callat.toFixed(5);
+                            var callon = row.callon.toFixed(5);
+
+                            if (callat && callon) {
+                                if (row.address == null) {
+
+                                    return h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small'
+                                        },
+                                        on: {
+                                            click: function() {
+                                                utils.getJiuHuAddressSyn(callon, callat, function(resp) {
+                                                    if (resp && resp.address) {
+                                                        vueInstanse.records[params.index].address = resp.address;
+                                                        LocalCacheMgr.setAddress(callon, callat, resp.address);
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    }, callon + "," + callat)
+
+                                } else {
+                                    return h('Tooltip', {
+                                        props: {
+                                            content: row.address,
+                                            placement: "top-start",
+                                            maxWidth: 200
+                                        },
+                                    }, [
+                                        h('Button', {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            }
+                                        }, callon + "," + callat)
+                                    ]);
+                                }
+                            } else {
+                                return h('span', {}, '');
+                            }
+                        },
+                    },
+                ]);
+            });
+        }
+    });
+}
+
 
 
 
@@ -12133,6 +13423,8 @@ var reportForm = {
                         { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
                         // { title: me.$t("reportForm.fuelRate"), name: 'powerWaste', icon: 'ios-pulse-outline' },
+
+                        { title: me.$t("reportForm.mileageOilConsumption"), name: 'mileageOilConsumption', icon: 'ios-timer-outline' },
                     ]
                 },
                 {
@@ -12277,6 +13569,9 @@ var reportForm = {
                         break;
                     case 'timeoilconsumption.html':
                         timeOilConsumption(groupslist);
+                        break;
+                    case 'mileageoilconsumption.html':
+                        mileageOilConsumption(groupslist);
                         break;
                     case 'timeweightconsumption.html':
                         timeWeightConsumption(groupslist);

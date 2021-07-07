@@ -925,6 +925,9 @@ var myUrls = {
     preViewOilDetectors: function() {
         return this.apihosts + 'webapi?action=previewoildetectors&token=' + token;
     },
+    reportOilMileage: function() {
+        return this.apihosts + 'webapi?action=reportoilmileage&token=' + token;
+    },
 }
 
 
