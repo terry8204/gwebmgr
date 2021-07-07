@@ -8,7 +8,7 @@
         </div>
         <div style="float: left;position: relative;width: 300px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" :readonly="readonly" @on-focus="focus" @on-click="focus" :placeholder="placeholder"></i-input>
+                <i-input v-model.trim="sosoValue" icon="ios-close-circle-outline" @on-change="sosoValueChange" @on-focus="focus" :placeholder="placeholder" @on-click="onClickIcon"></i-input>
                 <transition name="fade">
                     <div class="search-item-wrapper" v-show="isShowMatchDev">
                         <ul id="ztree" class="ztree"></ul>

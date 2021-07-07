@@ -8,7 +8,7 @@
         </div>
         <div style="float: left;position: relative;width: 300px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-focus="focus" :placeholder="placeholder"></i-input>
+                <i-input v-model.trim="sosoValue" icon="ios-close-circle-outline" @on-change="sosoValueChange" @on-focus="focus" :placeholder="placeholder" @on-click="onClickIcon"></i-input>
                 <transition name="fade">
                     <div class="search-item-wrapper" v-show="isShowMatchDev">
                         <ul id="ztree" class="ztree"></ul>
@@ -16,7 +16,7 @@
                 </transition>
             </div>
         </div>
-        <div style="margin-left:20px;float: left;line-height: 35px;">
+        <div style="margin-left:20px;float: left;line-height: 32px;">
             {{$t("reportForm.selected")}}: <span v-text="selectedCount"></span>
         </div>
         <div style="float: left;">
@@ -24,9 +24,6 @@
         </div>
         <div style="float: left;position: relative;">
             <Date-Picker v-model="yearMonth" type="month" style="width: 150px"></Date-Picker>
-        </div>
-        <div style="margin-left:20px;float: left;">
-            <i-button @click="clean" icon="ios-nuclear-outline">{{$t("reportForm.clean")}}</i-button>
         </div>
         <div style="margin-left:20px;float: left;">
             <i-button @click="onClickQuery" icon="ios-search">{{$t("reportForm.query")}}</i-button>

@@ -857,36 +857,44 @@
                         if (item) {
                             this.threshold1 = item.threshold;
                             this.taggingData = item.markers;
+                            this.newTaggingData1 = deepClone(item.markers);
                         } else {
                             this.threshold1 = null;
                             this.taggingData = [];
+                            this.newTaggingData1 = [];
                         }
                     } else if (this.oilType == '2') {
                         var item = oildetectors[1];
                         if (item) {
                             this.threshold2 = item.threshold;
                             this.taggingData = item.markers;
+                            this.newTaggingData2 = deepClone(item.markers);
                         } else {
                             this.threshold2 = null;
                             this.taggingData = [];
+                            this.newTaggingData2 = [];
                         }
                     } else if (this.oilType == '3') {
                         var item = oildetectors[2];
                         if (item) {
                             this.threshold3 = item.threshold;
                             this.taggingData = item.markers;
+                            this.newTaggingData3 = deepClone(item.markers);
                         } else {
                             this.threshold3 = null;
                             this.taggingData = [];
+                            this.newTaggingData3 = [];
                         }
                     } else if (this.oilType == '4') {
                         var item = oildetectors[3];
                         if (item) {
                             this.threshold4 = item.threshold;
                             this.taggingData = item.markers;
+                            this.newTaggingData4 = deepClone(item.markers);
                         } else {
                             this.threshold4 = null;
                             this.taggingData = [];
+                            this.newTaggingData4 = [];
                         }
                     }
 

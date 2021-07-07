@@ -14,6 +14,12 @@ var treeMixin = {
         selectedCount: 0,
     },
     methods: {
+        onClickIcon() {
+            this.cleanSelectedDev();
+            this.selectedCount = 0;
+            this.sosoValue = '';
+            this.checkedDevice = [];
+        },
         clean: function() {
             this.selectedCount = 0;
             this.sosoValue = '';
@@ -386,6 +392,7 @@ var reportMixin = {
         cleanSelectedDev: function() {
             this.sosoValue = '';
             this.queryDeviceId = '';
+            this.filterMethod('');
         }
     },
     mounted: function() {
