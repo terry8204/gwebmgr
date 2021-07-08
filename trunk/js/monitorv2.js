@@ -2257,6 +2257,10 @@ var monitor = {
                 me.sosoValueChange();
             }
         },
+        cleanDev: function() {
+            this.sosoValue = '';
+            this.filterMethod('');
+        },
         blur: function() {
             this.readonly = true;
             var me = this
