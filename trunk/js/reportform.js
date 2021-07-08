@@ -10878,28 +10878,18 @@ function oilWorkingHours(groupslist) {
                     title: vRoot.$t('reportForm.mileage') + '(Km)',
                     key: 'totaldistance',
                     width: 90,
-                    render: function(h, pramas) {
-                        var row = pramas.row;
-                        return h('sapn', {}, (row.totaldistance / 1000).toFixed(2));
-                    },
                 },
                 {
                     title: vRoot.$t("reportForm.oilConsumption") + '(L)',
                     key: 'totaloil',
                     width: 120,
-                    render: function(h, pramas) {
-                        var row = pramas.row;
-                        return h('sapn', {}, (row.totaloil / 100).toFixed(2));
-                    },
+
                 },
                 {
                     title: vRoot.$t("reportForm.workingHours"),
                     key: 'totalacc',
                     width: 120,
-                    render: function(h, pramas) {
-                        var row = pramas.row;
-                        return h('sapn', {}, utils.timeStamp(row.totalacc));
-                    },
+
                 },
                 { title: vRoot.$t('reportForm.idleoil') + '(L)', key: 'idleoil', width: 120, },
                 { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 140 },
@@ -10941,7 +10931,7 @@ function oilWorkingHours(groupslist) {
                     item.endtimeStr = '\t' + item.endtimeStr;
                 });
                 this.$refs.table.exportCsv({
-                    filename: vRoot.$t('reportForm.oilLeakageDetailed'),
+                    filename: vRoot.$t('reportForm.oilWorkingHours'),
                     original: false,
                     columns: columns,
                     data: tableData
@@ -11113,6 +11103,21 @@ function oilWorkingHours(groupslist) {
                     if (resp.status == 0) {
                         if (resp.records) {
                             var chartDataList = [];
+
+                            // render: function(h, pramas) {
+                            //     var row = pramas.row; totaldistance
+                            //     return h('sapn', {}, (row.totaldistance / 1000).toFixed(2));
+                            // },
+                            // render: function(h, pramas) {
+                            //     var row = pramas.row; totaloil
+                            //     return h('sapn', {}, (row.totaloil / 100).toFixed(2));
+                            // },
+
+                            // render: function(h, pramas) {
+                            //     var row = pramas.row;  totalacc
+                            //     return h('sapn', {}, utils.timeStamp(row.totalacc));
+                            // },
+
                             resp.records.forEach(function(item, index) {
 
                                 item.index = index + 1;
@@ -11126,16 +11131,24 @@ function oilWorkingHours(groupslist) {
                                     })
                                 }
                                 var len = chartDataList.length - 1;
-
+                                var totalacc = (item.totalacc / 1000 / 3600).toFixed(2);
                                 item.idleoil = item.idleoil / 100;
                                 item.runoilper100km = item.runoilper100km;
-
+                                item.totaldistance = (item.totaldistance / 1000).toFixed(2)
+                                item.totalacc = utils.timeStamp(item.totalacc);
+                                item.totaloil = item.totaloil / 100;
                                 chartDataList[len].data.push(item.devicename);
-                                chartDataList[len].oil.push(item.totaloil / 100);
-                                chartDataList[len].dis.push(Number((item.totaldistance / 1000).toFixed(2)));
-                                chartDataList[len].hours.push(Number((item.totalacc / 1000 / 3600).toFixed(2)));
+                                chartDataList[len].oil.push(item.totaloil);
+                                chartDataList[len].dis.push(Number(item.totaldistance));
+                                chartDataList[len].hours.push(Number(totalacc));
 
-                                item.averagespeed = ((item.totaldistance / 1000) / (item.totalacc / 1000 / 3600)).toFixed(2);
+
+                                if (item.totaldistance == 0 || totalacc == 0) {
+                                    item.averagespeed = 0
+                                } else {
+                                    item.averagespeed = (Number(item.totaldistance) / Number(totalacc)).toFixed(2);
+                                }
+
 
                             });
 
