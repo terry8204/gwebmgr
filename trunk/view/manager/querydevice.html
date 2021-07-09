@@ -2501,6 +2501,49 @@
                 queryOilInfo: function(deviceid) {
                     var url = myUrls.queryOilDetectors(),
                         me = this;
+
+
+                    me.tankShape1 = String(0);
+                    me.diameter1 = 0;
+                    me.height1 = 0;
+                    me.length1 = 0;
+                    me.width1 = 0;
+                    me.maxAdValue1 = 0;
+                    me.taggingData1 = [];
+                    me.threshold1 = 10;
+                    me.capacity1 = 0;
+
+                    me.tankShape2 = String(0);
+                    me.diameter2 = 0;
+                    me.height2 = 0;
+                    me.length2 = 0;
+                    me.width2 = 0;
+                    me.maxAdValue2 = 0;
+                    me.taggingData2 = [];
+                    me.threshold2 = 10;
+                    me.capacity2 = 0;
+
+                    me.tankShape3 = String(0);
+                    me.diameter3 = 0;
+                    me.height3 = 0;
+                    me.length3 = 0;
+                    me.width3 = 0;
+                    me.maxAdValue3 = 0;
+                    me.taggingData3 = [];
+                    me.threshold3 = 10;
+                    me.capacity3 = 0;
+
+                    me.tankShape4 = String(0);
+                    me.diameter4 = 0;
+                    me.height4 = 0;
+                    me.length4 = 0;
+                    me.width4 = 0;
+                    me.maxAdValue4 = 0;
+                    me.taggingData4 = [];
+                    me.threshold4 = 10;
+                    me.capacity4 = 0;
+
+
                     utils.sendAjax(url, {
                         deviceid: deviceid
                     }, function(resp) {
