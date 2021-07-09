@@ -2258,15 +2258,17 @@ var monitor = {
             }
         },
         cleanDev: function() {
+            this.isShowMatchDev = false;
             this.sosoValue = '';
-            this.filterMethod('');
+
+
         },
         blur: function() {
             this.readonly = true;
             var me = this
             setTimeout(function() {
                 me.isShowMatchDev = false;
-            }, 300)
+            }, 200)
         },
         filterMethod: function(value) {
             var filterData = []
@@ -2464,7 +2466,10 @@ var monitor = {
 
             this.timeoutIns = setTimeout(function() {
                 me.filterMethod(value);
-            }, 300);
+                if (me.filterData.length) {
+                    me.isShowMatchDev = true;
+                }
+            }, 200);
         },
         selectedStateNav: function(state) {
             this.selectedState = state;
@@ -3920,13 +3925,6 @@ var monitor = {
             }
 
             localStorage.setItem('app-map-type', newType)
-        },
-        filterData: function() {
-            if (this.filterData.length) {
-                this.isShowMatchDev = true;
-            } else {
-                this.isShowMatchDev = false;
-            }
         },
         currentDeviceType: function() {
             this.currentDevDirectiveList = utils.getDirectiveList(this.currentDeviceType);
