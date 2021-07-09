@@ -2302,6 +2302,7 @@ var monitor = {
                             }
                         })
                         if (cloneGroup.devices.length > 0) {
+
                             filterData.push(cloneGroup);
                         }
                     } else if (me.selectedState == "offline") {
@@ -2318,6 +2319,10 @@ var monitor = {
                             filterData.push(cloneGroup);
                         }
                     };
+
+                    if (filterData.length > 10) {
+                        break;
+                    }
                 } else {
                     var devices = group.devices
                     var obj = {
