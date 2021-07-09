@@ -253,9 +253,9 @@
                             <p class="dev-count">{{$t("monitor.stared")}}({{staredDevCount}})</p>
                         </li>
                     </ul>
-                    <div class="device-soso">
+                    <div class="device-soso" v-click-outside.capture="blur">
                         <div class="search-wrapper">
-                            <i-input v-model.trim="sosoValue" icon="ios-close-circle-outline" @on-click="cleanDev" @on-change="sosoValueChange" @on-blur="blur" @on-click="focus" @on-focus="focus" :placeholder="placeholder"></i-input>
+                            <i-input v-model.trim="sosoValue" icon="ios-close-circle-outline" @on-click="cleanDev" @on-change="sosoValueChange" @on-click="focus" @on-focus="focus" :placeholder="placeholder"></i-input>
                             <transition name="fade">
                                 <ul class="search-item-wrapper" v-show="isShowMatchDev">
                                     <li class="demo-auto-complete-item" v-for="item in filterData">
