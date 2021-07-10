@@ -820,6 +820,7 @@
             queryDevicesTree: function() {
                 var me = this;
                 this.loading = true;
+
                 GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
                     me.loading = false;
                     me.setTreeDataList(rootuser);
@@ -1118,6 +1119,8 @@
             },
             refreshzTree: function() {
                 this.selectType = null;
+                GlobalOrgan.getInstance().globalOrganData = null;
+                GlobalOrgan.getInstance().isRequesting = false;
                 this.queryDevicesTree();
             },
             queryForwardParams: function() {
