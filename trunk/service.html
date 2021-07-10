@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="免费车载定位平台,gps51,无忧定位平台,EX平台,微信查车,报表,终端定位,油耗,obd,车务通,部标,公务车,云oa,商砼车,渣土车,公交车,北斗,GPS,车辆,定位,监控,加油,客户端,手机查车,电子围栏,Gserver,业务通,网上查车,第三方平台接口,个人定位,人员定位,车载终端,模拟调度,回传间隔,连续拍照,二次开发接口,基站定位,基站,iPhone手机查车,苹果手机查车,安卓手机查车, Android手机查车,iPhone,iPad,lbs,查车,手机查车"
+    />
+    <meta name="keywords" content="免费车载定位平台,gps51,无忧定位平台,EX平台,微信查车,报表,终端定位,油耗,obd,车务通,部标,公务车,云oa,商砼车,渣土车,公交车,北斗,GPS,车辆,定位,监控,加油,客户端,手机查车,电子围栏,Gserver,业务通,网上查车,第三方平台接口,个人定位,人员定位,车载终端,模拟调度,回传间隔,连续拍照,二次开发接口,基站定位,基站,iPhone手机查车,苹果手机查车,安卓手机查车, Android手机查车,iPhone,iPad,lbs,查车,手机查车"
+    />
+    <title>售后登录</title>
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="dist/styles/iview.css">
+    <style>
+        html,
+        body {
+            overflow: hidden;
+        }
+        
+        #querydev {
+            padding: 10px;
+        }
+        
+        #querydev .table-wraper {
+            padding-top: 10px;
+        }
+    </style>
+    <script src="js/config.js"></script>
+</head>
+
+<body>
+    <div id="querydev">
+
+        <Row>
+            <i-col span="4">
+                <i-input v-model.trim="queryString"></i-input>
+            </i-col>
+            <i-col span="4" style="padding-left: 10px;">
+                <i-button type="primary" icon="ios-search" @click="handlerClickQuery">查询</i-button>
+            </i-col>
+        </Row>
+
+        <div class="table-wraper">
+            <i-table border ref="table" :columns="columns" :data="tableData" :height="taleHeight" :loading="loading"></i-table>
+        </div>
+        <div class="my-page" style="margin: 5px 0;">
+            <Page :total="total" :page-size="10" :current="currentIndex" @on-change="changeDevicePage"></Page>
+        </div>
+
+    </div>
+
+    <script src="js/dateformat.js"></script>
+    <script src="dist/vue.min.js"></script>
+    <script src="js/gps51-jquery.js"></script>
+    <script src="js/js.cookie.min.js"></script>
+    <script src="dist/iview.min.js"></script>
+    <script src="js/vue-i18n.min.js"></script>
+    <script src="js/util.js"></script>
+
+    <script>
+        var isZh = true;
+        var token = localStorage.getItem("token");
+        var vueInstanse = new Vue({
+            el: "#querydev",
+            data: {
+                queryString: '',
+                total: 0,
+                currentIndex: 1,
+                columns: [{
+                        title: '设备名称',
+                        key: 'devicenamekey',
+                    }, {
+                        title: '设备序号',
+                        key: 'deviceidkey'
+                    }, {
+                        title: '设备类型',
+                        key: 'devtype'
+                    }, {
+                        title: '手机号码',
+                        key: 'simnumkey'
+                    }, {
+                        width: 100,
+                        title: '绑定密码',
+                        key: 'bindpwd',
+                    },
+
+                    {
+                        title: '添加时间',
+                        key: 'createtimestr'
+                    }, {
+                        title: '到期时间',
+                        key: 'expirenotifytimestr'
+                    }, {
+                        title: '创建者',
+                        key: 'creater',
+                    }, {
+                        title: '分组',
+                        key: 'groupname'
+                    }, {
+                        title: '里程系数',
+                        width: 90,
+                        render: function(h, params) {
+                            return h('span', {}, params.row.distanceratio + '%')
+                        }
+                    }, {
+                        title: '操作',
+                        key: 'action',
+                        width: 100,
+                        render: function(h, params) {
+                            return h('div', [
+                                h('Poptip', {
+                                    props: {
+                                        confirm: true,
+                                        title: '确定要登录吗?'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        'on-ok': function() {
+                                            vueInstanse.loginService(params.row);
+                                        }
+                                    }
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'error',
+                                            size: 'small',
+                                        }
+                                    }, '登录')
+                                ]),
+                            ])
+                        }
+                    }
+                ],
+
+                deviceTypeList: [],
+                tableData: [],
+                taleHeight: 100,
+                loading: false,
+            },
+            methods: {
+
+                loginService: function(row) {
+                    var me = this;
+                    var url = myUrls.loginService(token);
+                    var data = {
+                        type: "USER",
+                        from: "web",
+                        username: row.creater,
+                    };
+                    var encode = JSON.stringify(data);
+                    $.ajax({
+                        url: url,
+                        type: "post",
+                        data: encode,
+                        //contentType: "application/json;charset=utf-8",
+                        dataType: "json",
+                        timeout: 30000,
+                        success: function(resp) {
+                            if (resp.status == 0) {
+                                // console.log('resp', resp, resp.nickname);
+                                // return;
+                                sessionStorage.setItem("creatername", resp.creatername ? resp.creatername : "");
+                                sessionStorage.setItem("createremail", resp.createremail ? resp.createremail : "");
+                                sessionStorage.setItem("createrphone", resp.createrphone ? resp.createrphone : "");
+                                sessionStorage.setItem("createrqq", resp.createrqq ? resp.createrqq : "");
+                                sessionStorage.setItem("createrwechat", resp.createrwechat ? resp.createrwechat : "");
+
+                                sessionStorage.setItem("email", resp.email ? resp.email : "");
+                                sessionStorage.setItem("nickname", resp.nickname ? resp.nickname : "");
+                                sessionStorage.setItem("phone", resp.phone ? resp.phone : "");
+                                sessionStorage.setItem("qq", resp.qq ? resp.qq : "");
+                                sessionStorage.setItem("wechat", resp.wechat ? resp.wechat : "");
+
+                                localStorage.setItem("token", resp.token);
+                                localStorage.setItem("userType", resp.usertype);
+                                localStorage.setItem("name", resp.username);
+                                localStorage.setItem("forcealarm", resp.forcealarm);
+                                localStorage.setItem("alarmaction", resp.alarmaction);
+                                localStorage.setItem("intervaltime", resp.intervaltime);
+                                localStorage.setItem(resp.username + "-multilogin", resp.multilogin);
+                                // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
+
+                                window.open("mainv2.html");
+
+
+                            } else if (resp.status == -1) {
+                                me.$Message.error('登录失败');
+                            } else if (resp.status == 1) {
+                                me.$Message.error('账号或密码错误');
+                            } else if (resp.status == 2) {
+                                me.$Message.error('禁止登陆');
+                            } else if (resp.status == 3) {
+                                me.$Message.error('设备已禁用');
+                            } else if (resp.status == 4) {
+                                me.$Message.error('设备到期');
+                            } else if (resp.status == 5) {
+                                me.$Message.error('设备过期');
+                            }
+
+                        },
+                        error: function(e) {
+
+                            me.$Message.error('login error:' + JSON.stringify(e));
+                        },
+                        complete: function() {
+
+                        }
+                    })
+                },
+                changeDevicePage: function(index) {
+                    this.currentIndex = index;
+                    this.getDeviceList(false, this.getQueryTypeNumber());
+                },
+
+
+                handlerClickQuery() {
+                    var self = this;
+                    this.currentIndex = 1;
+                    self.getDeviceList(false, this.getQueryTypeNumber());
+                },
+
+                getQueryTypeNumber: function() {
+                    var result = 0;
+                    switch (this.queryType) {
+                        case 'all':
+                            result = 0;
+                            break;
+                        case '7ot':
+                            result = 7;
+                            break;
+                        case '60ot':
+                            result = 60;
+                            break;
+                        case 'ot':
+                            result = -1;
+                            break;
+                    }
+                    return result;
+                },
+                expireNotifyTime: function(dayNumber) {
+
+                    switch (dayNumber) {
+                        case 0:
+                            this.queryType = 'all';
+                            break;
+                        case 7:
+                            this.queryType = '7ot';
+                            break;
+                        case 60:
+                            this.queryType = '60ot';
+                            break;
+                        case -1:
+                            this.queryType = 'ot';
+                            break;
+                    }
+                    this.currentIndex = 1;
+                    this.getDeviceList(false, dayNumber);
+                },
+                getDevType: function(row) {
+
+                    var devType = "";
+                    var item = this.deviceTypes[row.devicetype];
+                    var label = item.typename;
+                    if (item.remark) {
+                        label += "(" + (isZh ? item.remark : item.remarken) + ")";
+                    }
+
+                    devType = label;
+
+                    return devType;
+
+                },
+                getDeviceTypes: function(callback) {
+                    var me = this;
+                    var url = myUrls.queryDeviceTypeByUser();
+                    utils.sendAjax(url, {}, function(resp) {
+                        if (resp.status == 0) {
+                            var obj = {};
+                            resp.devicetypes.forEach(function(item) {
+                                obj[item.devicetypeid] = item;
+                            });
+                            me.deviceTypes = obj;
+                            callback && callback()
+                        }
+                    });
+                },
+
+                filterDataInfo: function(devList) {
+                    var me = this;
+                    var data = [];
+                    devList.forEach(function(dev) {
+                        dev.devtype = me.getDevType(dev);
+                        dev.deviceidkey = "\t" + dev.deviceid;
+                        dev.devicenamekey = "\t" + dev.devicename;
+                        dev.simnum ? (dev.simnumkey = "\t" + dev.simnum) : (dev.simnumkey = "");
+                        dev.bindpwd = dev.bindpwd != null ? dev.bindpwd : '';
+                        dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime, timeDifference);
+                        dev.expirenotifytimestr = DateFormat.longToDateTimeStr(dev.expirenotifytime, timeDifference);
+                        dev.groupname = me.getGroupName(dev.groupid);
+
+                        data.push(dev);
+                    });
+                    return data;
+                },
+                resetDevicePwd: function(index) {
+                    var me = this;
+                    var deviceid = this.tableData[index].deviceid;
+                    var url = myUrls.resetDeviceLoginPwd();
+                    utils.sendAjax(url, {
+                        deviceid: deviceid
+                    }, function(resp) {
+                        if (resp.status === 0) {
+                            me.$Message.success((isZh ? "密码重置为:" : "Password reset to :") + resp.newpass);
+                        } else {
+                            me.$Message.error(isZh ? "密码重置失败" : "Password Reset Failed");
+                        }
+                    });
+                },
+                getGroupName: function(groupId) {
+                    var groupName = "";
+                    if (this.allGroups[groupId] !== undefined) {
+                        groupName = this.allGroups[groupId].groupname;
+                    }
+                    return groupName;
+                },
+                getDeviceList: function(isAll, expiredays) {
+                    var me = this;
+                    var url = myUrls.queryDevices();
+                    // var url = myUrls.queryDeviceListWithGroupInfo();
+                    me.loading = true;
+                    utils.sendAjax(url, {
+                        count: 10,
+                        keyword: this.queryString,
+                        offset: this.currentIndex - 1,
+                        all: isAll,
+                        expiredays: expiredays
+                    }, function(resp) {
+                        me.loading = false;
+                        if (resp.status == 0 && resp.devices != null) {
+                            if (isAll) {
+
+                            } else {
+                                me.tableData = me.filterDataInfo(resp.devices);
+                                me.total = resp.totalcount;
+                            }
+                        } else {
+                            me.$Message.error(resp.cause);
+                        }
+                    }, function() {
+                        me.loading = false;
+                    });
+                },
+
+
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.taleHeight = wHeight - 105;
+                },
+                queryGroupInfos: function(callback) {
+                    var me = this;
+                    utils.sendAjax(myUrls.queryGroupInfos(), {}, function(resp) {
+                        if (resp.status === 0) {
+                            resp.groups.forEach(function(item) {
+                                me.allGroups[item.groupid] = item;
+                            });
+                        }
+                        callback();
+                    })
+                },
+                readWorkbookFromLocalFile: function(file, callback) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var data = e.target.result;
+                        var workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+                        if (callback) callback(workbook);
+                    };
+                    reader.readAsBinaryString(file);
+                },
+                getDeviceType: function() {}
+            },
+
+            mounted: function() {
+
+                var me = this;
+                me.allGroups = {}
+                this.queryGroupInfos(function() {
+                    me.getDeviceTypes(function() {
+                        me.getDeviceList(false, 0);
+                    })
+                });
+                this.getDeviceType();
+                this.calcTableHeight();
+                window.onresize = function() {
+                    me.calcTableHeight();
+                }
+            }
+        })
+    </script>
+
+</body>
+
+</html>

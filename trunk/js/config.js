@@ -49,6 +49,9 @@ var myUrls = {
     login: function() {
         return this.apihost + 'webapi?action=login'
     },
+    loginService: function(token) {
+        return this.apihost + 'webapi?action=loginservice&token=' + token
+    },
     logout: function() {
         return this.apihost + 'webapi?action=logout&token=' + token
     },

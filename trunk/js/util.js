@@ -261,6 +261,64 @@ var utils = {
             }
         }
     },
+    loginResult: function(me, resp, isService) {
+
+        if (resp.status == 0) {
+            // console.log('resp', resp, resp.nickname);
+            // return;
+            sessionStorage.setItem("creatername", resp.creatername ? resp.creatername : "");
+            sessionStorage.setItem("createremail", resp.createremail ? resp.createremail : "");
+            sessionStorage.setItem("createrphone", resp.createrphone ? resp.createrphone : "");
+            sessionStorage.setItem("createrqq", resp.createrqq ? resp.createrqq : "");
+            sessionStorage.setItem("createrwechat", resp.createrwechat ? resp.createrwechat : "");
+
+            sessionStorage.setItem("email", resp.email ? resp.email : "");
+            sessionStorage.setItem("nickname", resp.nickname ? resp.nickname : "");
+            sessionStorage.setItem("phone", resp.phone ? resp.phone : "");
+            sessionStorage.setItem("qq", resp.qq ? resp.qq : "");
+            sessionStorage.setItem("wechat", resp.wechat ? resp.wechat : "");
+            if (me.keepPass) {
+                if (me.account == 0) {
+                    localStorage.setItem("accountuser", me.username);
+                    localStorage.setItem("accountpass", me.password);
+                } else {
+                    localStorage.setItem("deviceuser", me.username);
+                    localStorage.setItem("devicepass", me.password);
+                }
+                localStorage.setItem("keepPass", true);
+            } else {
+                localStorage.setItem("accountuser", "");
+                localStorage.setItem("accountpass", "");
+                localStorage.setItem("keepPass", false);
+            }
+            localStorage.setItem("token", resp.token);
+            localStorage.setItem("userType", resp.usertype);
+            localStorage.setItem("name", resp.username);
+            localStorage.setItem("forcealarm", resp.forcealarm);
+            localStorage.setItem("alarmaction", resp.alarmaction);
+            localStorage.setItem("intervaltime", resp.intervaltime);
+            localStorage.setItem(resp.username + "-multilogin", resp.multilogin);
+            // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
+            if (isService) {
+                window.location.href = "service.html";
+            } else {
+                window.location.href = "mainv2.html";
+            }
+
+        } else if (resp.status == -1) {
+            me.$Message.error(me.$t("login.error_3"));
+        } else if (resp.status == 1) {
+            me.$Message.error(me.$t("login.error_4"));
+        } else if (resp.status == 2) {
+            me.$Message.error(me.$t("login.error_5"));
+        } else if (resp.status == 3) {
+            me.$Message.error(me.$t("login.error_6"));
+        } else if (resp.status == 4) {
+            me.$Message.error(me.$t("login.error_7"));
+        } else if (resp.status == 5) {
+            me.$Message.error(me.$t("login.error_8"));
+        }
+    },
     sendAjax: function(url, data, callback, failCallback) {
         var encode = JSON.stringify(data);
         $.ajax({
@@ -273,9 +331,13 @@ var utils = {
             success: function(resp) {
                 if (resp) {
                     if (resp.status > 9000) {
-                        if (vRoot.$t) {
-                            vRoot.$Message.error(vRoot.$t("monitor.reLogin"));
-                        } else {
+                        try {
+                            if (vRoot && vRoot.$t) {
+                                vRoot.$Message.error(vRoot.$t("monitor.reLogin"));
+                            } else {
+                                Vue.prototype.$Message.error('token失效请从新登陆');
+                            }
+                        } catch (error) {
                             Vue.prototype.$Message.error('token失效请从新登陆');
                         }
                         localStorage.setItem('token', "")
@@ -1609,7 +1671,7 @@ var utils = {
                         } else {
                             color = 'red';
                         }
-               
+
                         var markPoint = {
                             coord: [nearestTrack.index, oil], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
                             value: Math.abs(difference).toFixed(0),
