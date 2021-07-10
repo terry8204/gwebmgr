@@ -2685,6 +2685,7 @@ var monitor = {
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4) {
                     if (xhr.status == 200) {
+                        var stime = Date.now();
                         var responseArray = new Uint8Array(this.response)
                         var protobufRoot = protobuf.Root.fromJSON(deviceLastPositionProto);
                         var respDeviceLastPositionProto = protobufRoot.lookupType("proto.RespDeviceLastPositionProto");
@@ -2712,7 +2713,8 @@ var monitor = {
                                 })
 
                             }
-                            isNeedRefreshMapUI = true;
+                            // console.log('time  - ', (Date.now() - stime) / 1000)
+                            // isNeedRefreshMapUI = true;
                             callback ? callback() : '';
                         } else if (resp.status > 9000) {
                             me.$Message.error(me.$t("monitor.reLogin"))
@@ -2917,6 +2919,25 @@ var monitor = {
                 this.getStockHideCompanyTreeData();
             };
         },
+        updateGroupWithPinYin: function(groups) {
+            //var gIsInitPinYin = false; //是否给设备列表给了设备列表的拼音
+            if (gIsInitPinYin == false) {
+                gIsInitPinYin = true;
+                var sTime = Date.now();
+                groups.forEach(function(group) {
+                    var firstLetter = __pinyin.getFirstLetter(group.groupname);
+                    var pinyin = __pinyin.getPinyin(group.groupname);
+                    group.firstLetter = firstLetter
+                    group.pinyin = pinyin;
+                    group.devices.forEach(function(device) {
+                        var devicename = device.devicename;
+                        device.firstLetter = __pinyin.getFirstLetter(devicename);
+                        device.pinyin = __pinyin.getPinyin(devicename);
+                    });
+                });
+                console.log('updateGroupWithPinYin', (Date.now() - sTime) / 1000);
+            }
+        },
         filterGroups: function(groups) {
             var me = this,
                 all = 0;
@@ -2928,11 +2949,10 @@ var monitor = {
                 } else if (group.groupname == 'Device') {
                     isZh ? group.groupname = me.$t("monitor.devGroup") : '';
                 };
-                var firstLetter = __pinyin.getFirstLetter(group.groupname);
-                var pinyin = __pinyin.getPinyin(group.groupname);
 
-                group.firstLetter = firstLetter
-                group.pinyin = pinyin;
+
+                group.firstLetter = '';
+                group.pinyin = '';
                 group.expand = false;
 
                 group.children = group.devices;
@@ -2942,15 +2962,13 @@ var monitor = {
                     var devicename = device.devicename;
                     var devicetype = device.devicetype;
                     var deviceid = device.deviceid;
-                    // if (deviceid == '53810745890') {
-                    //     carIconTypes[deviceid] = 2;
-                    // } else {
-                    //     carIconTypes[deviceid] = device.icon;
-                    // }
+
                     carIconTypes[deviceid] = device.icon;
                     device.isSelected = false;
-                    device.firstLetter = __pinyin.getFirstLetter(devicename);
-                    device.pinyin = __pinyin.getPinyin(devicename);
+                    // device.firstLetter = __pinyin.getFirstLetter(devicename);
+                    // device.pinyin = __pinyin.getPinyin(devicename);
+                    device.firstLetter = '';
+                    device.pinyin = '';
 
                     device.devicetitle = devicename;
                     device.allDeviceIdTitle = device.devicetitle + "-" + deviceid;
@@ -3309,14 +3327,16 @@ var monitor = {
         },
 
         dorefreshMapUI: function() {
-            // console.log("dorefreshMapUI enter isNeedRefreshMapUI=",isNeedRefreshMapUI);
+
             if (vstore.state.headerActiveName == 'monitor') {
                 if (isNeedRefreshMapUI == true) {
+                    // console.log("dorefreshMapUI enter isNeedRefreshMapUI= 刷新了", isNeedRefreshMapUI);
                     isNeedRefreshMapUI = false;
                     this.updateLastTracks(globalDeviceId);
                     this.updateTreeOnlineState();
                     this.caclOnlineCount();
                     communicate.$emit("realtimeList");
+                    this.updateGroupWithPinYin(this.groups);
                 }
             }
         },
@@ -3399,19 +3419,6 @@ var monitor = {
             }
 
         },
-        timeoutRefreshMapUI: function() {
-            var me = this;
-            clearTimeout(this.timerTimeout);
-            this.timerTimeout = setTimeout(function() {
-                me.intervalTime % 2 == 0 && me.dorefreshMapUI();
-                if (me.intervalTime == me.stateIntervalTime) {
-                    me.getLastPosition([], function() {
-                        me.dorefreshMapUI();
-                    }, function(error) {});
-                }
-                me.intervalTime % 5 == 0 && me.stopVideoPlayer();
-            }, 10);
-        },
         setIntervalReqRecords: function() {
             var me = this
             this.intervalInstanse = setInterval(function() {
@@ -3423,6 +3430,7 @@ var monitor = {
                 me.intervalTime % 2 == 0 && me.dorefreshMapUI();
                 if (me.intervalTime == me.stateIntervalTime) {
                     me.getLastPosition([], function() {
+                        isNeedRefreshMapUI = true;
                         me.dorefreshMapUI();
                     }, function(error) {});
                 }
@@ -3534,21 +3542,33 @@ var monitor = {
         getMonitorList: function() {
             var me = this;
             this.getMonitorListByUser({ username: userName, }, function(resp) {
+                var startTime = Date.now();
                 var groups = resp.groups;
                 communicate.$emit("monitorlist", groups);
                 me.groups = me.filterGroups(groups);
+
+                var endTime1 = Date.now();
                 // me.videoGroup = me.getVideoGroup(groups);
                 me.groups.sort(function(a, b) {
                     return a.groupname.localeCompare(b.groupname);
                 });
+                var endTime2 = Date.now();
                 me.$store.dispatch('setdeviceInfos', me.groups);
+                var endTime3 = Date.now();
                 me.getLastPosition([], function() {
                     me.addClusterLayer();
+                    var endTime4 = Date.now();
                     communicate.$on("positionlast", me.handleWebSocket);
                     communicate.$on("on-click-expiration", function(deviceid) {
                         me.editDevice(deviceid);
                         me.openTreeDeviceNav(deviceid);
                     });
+                    // var endTime5 = Date.now();
+                    // console.log('getLastPosition --- endTime1', (endTime1 - startTime) / 1000);
+                    // console.log('getLastPosition --- endTime2', (endTime2 - startTime) / 1000);
+                    // console.log('getLastPosition --- endTime3', (endTime3 - startTime) / 1000);
+                    // console.log('getLastPosition --- endTime4', (endTime4 - startTime) / 1000);
+                    // console.log('getLastPosition --- endTime5', (endTime5 - startTime) / 1000);
                     // GlobalOrgan.getInstance().getGlobalOrganData();
                 }, function(error) {});
                 me.isLoadGroup = false;
@@ -3647,6 +3667,8 @@ var monitor = {
             return cacheIcon;
         },
         addClusterLayer: function() {
+            var startTime = Date.now();
+
             var markers = [];
             for (var key in this.positionLastrecords) {
                 var track = this.positionLastrecords[key];
@@ -3701,6 +3723,14 @@ var monitor = {
             });
             this.clusterLayer.setZIndex(999);
             this.map.addLayer(this.clusterLayer);
+            isNeedRefreshMapUI = true;
+
+
+            var endTime = Date.now();
+            var intervalTime = endTime - startTime;
+
+            intervalTime = intervalTime / 1000.0;
+            console.log('duration time: ', intervalTime);
         },
         onClickMarker: function(e) {
             var marker = e.target;
