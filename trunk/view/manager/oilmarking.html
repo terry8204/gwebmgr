@@ -467,11 +467,13 @@
                         markPointData = [],
                         altitudes = [],
                         voltages = [],
-                        devStates = [];
+                        speeds = [];
+                    devStates = [];
 
                     trackList.forEach(function(record, index) {
                         record.index = index;
                         var totalad = record.totalad;
+                        var speed = (record.speed / 1000).toFixed(2);
                         var ad0 = record.ad0;
                         var ad1 = record.ad1;
                         var ad2 = record.ad2;
@@ -497,7 +499,7 @@
 
                         totalads.push(record.totalad);
                         recvtime.push(record.updatetimeStr);
-
+                        speeds.push(Number(speed));
                         oil1.push(record.ad0);
                         oil2.push(record.ad1);
                         oil3.push(record.ad2);
@@ -518,6 +520,7 @@
                     if (type == 'prve') {
                         this.recvtime = recvtime;
                         this.totalad = totalads;
+                        this.speed = speeds;
                         this.oil1 = oil1;
                         this.oil2 = oil2;
                         this.oil3 = oil3;
@@ -531,6 +534,7 @@
 
                     } else {
                         this.totalad1 = totalads;
+                        this.speed1 = speeds;
                         this.oil11 = oil1;
                         this.oil21 = oil2;
                         this.oil31 = oil3;
@@ -550,6 +554,7 @@
                     var lastStr = isZh ? '后' : 'Next';
                     var time = vRoot.$t('reportForm.time');
                     var totoil = firstStr + vRoot.$t('reportForm.totalOil');
+                    var speed = firstStr + vRoot.$t('reportForm.speed');
                     var usoil1 = firstStr + vRoot.$t('reportForm.oil1');
                     var usoil2 = firstStr + vRoot.$t('reportForm.oil2');
                     var usoil3 = firstStr + vRoot.$t('reportForm.oil3');
@@ -561,6 +566,7 @@
                     var srcad3 = firstStr + vRoot.$t('reportForm.srcad3');
 
                     var totoil1 = lastStr + vRoot.$t('reportForm.totalOil');
+                    var speed1 = lastStr + vRoot.$t('reportForm.speed');
 
                     var usoil11 = lastStr + vRoot.$t('reportForm.oil1');
                     var usoil21 = lastStr + vRoot.$t('reportForm.oil2');
@@ -591,7 +597,7 @@
                                             v[i].seriesName == totoil1 || v[i].seriesName == usoil11 || v[i].seriesName == usoil21 || v[i].seriesName == usoil31 || v[i].seriesName == usoil41) {
                                             data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
                                         } else {
-                                            data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
+                                            data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
                                         }
                                     }
                                 }
@@ -600,10 +606,10 @@
                         },
                         legend: {
                             data: [
-                                totoil, usoil1, usoil2, usoil3, usoil4, srcad0, srcad1, srcad2, srcad3,
-                                totoil1, usoil11, usoil21, usoil31, usoil41, srcad01, srcad11, srcad21, srcad31
+                                totoil, speed, usoil1, usoil2, usoil3, usoil4, srcad0, srcad1, srcad2, srcad3,
+                                totoil1, speed1, usoil11, usoil21, usoil31, usoil41, srcad01, srcad11, srcad21, srcad31
                             ],
-                            width: 880,
+                            width: 950,
                             selected: this.selectedLegend,
                             // x: 'left',
                             // width: 600,
@@ -676,6 +682,13 @@
                                 symbol: 'none',
                                 color: '#8E388E',
                                 data: this.oil1
+                            }, {
+                                smooth: true,
+                                name: speed,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#1310e6',
+                                data: this.speed
                             },
 
                             {
@@ -741,6 +754,13 @@
                                     symbolSize: 36,
                                     symbolKeepAspect: true,
                                 }
+                            }, {
+                                smooth: true,
+                                name: speed1,
+                                type: 'line',
+                                symbol: 'none',
+                                color: '#d1948a',
+                                data: this.speed1
                             }, {
                                 smooth: true,
                                 name: usoil11,
@@ -941,6 +961,7 @@
                 this.recvtime = [];
                 this.markPointData = [];
                 this.totalad = [];
+                this.speed = [];
                 this.oil1 = [];
                 this.oil2 = [];
                 this.oil3 = [];
@@ -952,6 +973,7 @@
 
                 this.markPointData1 = [];
                 this.totalad1 = [];
+                this.speed1 = [];
                 this.oil11 = [];
                 this.oil21 = [];
                 this.oil31 = [];
