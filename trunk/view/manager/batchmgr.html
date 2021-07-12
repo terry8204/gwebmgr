@@ -16,7 +16,7 @@
             </i-col>
             <i-col span="13" style="padding: 10px;">
                 {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}}
-                <i-button type="error" size="small" @click="tableData=[]" style="float: right;">{{$t("insure.removeAll")}}</i-button>
+                <i-button type="error" size="small" @click="tableData=[]" style="float: right;">{{$t("insure.deselectAll")}}</i-button>
             </i-col>
             <i-col span="5" style="padding: 10px;">
                 {{$t("bgMgr.transferGroupList")}}
@@ -463,7 +463,7 @@
                 key: 'groupname'
             }, {
                 title: vRoot.$t('alarm.action'),
-                width: 85,
+                width: 107,
                 render: function(h, params) {
                     return h('Button', {
                         props: {
@@ -478,7 +478,7 @@
                                 vueInstanse.tableData.splice(params.index, 1);
                             }
                         }
-                    }, vRoot.$t('insure.remove'))
+                    }, vRoot.$t('insure.deselect'))
                 }
             }, {
                 title: vRoot.$t('bgMgr.result'),
