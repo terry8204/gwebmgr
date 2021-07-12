@@ -1394,7 +1394,7 @@
                     if (item != null) {
 
                         var isFound = false;
-                        if (item.name.indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.toLowerCase().indexOf(searchWord) != -1)) {
+                        if (item.name.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.toLowerCase().indexOf(searchWord) != -1)) {
                             copyItem = item;
                             copyItem.open = false;
                             isFound = true;
@@ -1603,7 +1603,7 @@
                 }
             },
             searchDeviceVal: function(newVal) {
-
+                newVal = newVal.toLowerCase();
                 if (newVal === '') {
                     this.treeDeviceList[0].open = true;
                     this.zTreeObj = $.fn.zTree.init($("#ztree"), this.setting, this.treeDeviceList);
