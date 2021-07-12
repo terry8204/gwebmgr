@@ -34,7 +34,7 @@
 
         <Row>
             <i-col span="4">
-                <i-input v-model.trim="queryString"></i-input>
+                <i-input v-model.trim="queryString" icon="ios-close-circle-outline" @on-click="cleanDev"></i-input>
             </i-col>
             <i-col span="4" style="padding-left: 10px;">
                 <i-button type="primary" icon="ios-search" @click="handlerClickQuery">查询</i-button>
@@ -149,7 +149,9 @@
                 loading: false,
             },
             methods: {
-
+                cleanDev: function() {
+                    this.queryString = "";
+                },
                 loginService: function(row, aslevel1) {
                     var me = this;
                     var url = myUrls.loginService(token);
