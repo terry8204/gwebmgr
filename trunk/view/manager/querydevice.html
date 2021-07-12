@@ -2491,6 +2491,8 @@
 
                             // me.total = me.recordsList.length;
                             // me.tableData = me.recordsList.slice(me.currentIndex - 1, 10);
+                        } else if (resp.status == 1) {
+                            me.$Message.error(me.$t("message.deleteFailTips"));
                         } else {
                             me.$Message.error(me.$t("message.deleteFail"));
                         }
