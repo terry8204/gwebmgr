@@ -300,7 +300,7 @@ var utils = {
             localStorage.setItem(resp.username + "-multilogin", resp.multilogin);
             // window.location.href = "main.html?token=" + resp.token + "&usertype=" + resp.usertype;
             if (isService) {
-                window.location.href = "service.html";
+                window.location.href = "service.html?token=" + resp.token;
             } else {
                 window.location.href = "mainv2.html";
             }
