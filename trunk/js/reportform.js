@@ -7063,9 +7063,7 @@ function timeOilConsumption(groupslist) {
                                         click: function() {
                                             utils.getJiuHuAddressSyn(lon, lat, function(resp) {
                                                 if (resp && resp.address) {
-                                                    var newRow = deepClone(row);
-                                                    newRow.saddress = resp.address;
-                                                    vueInstanse.$set(vueInstanse.oilArr, params.index, newRow)
+                                                    row.saddress = resp.address;
                                                     LocalCacheMgr.setAddress(lon, lat, resp.address);
                                                 }
                                             })
@@ -8351,9 +8349,7 @@ function mileageOilConsumption(groupslist) {
                                         click: function() {
                                             utils.getJiuHuAddressSyn(lon, lat, function(resp) {
                                                 if (resp && resp.address) {
-                                                    var newRow = deepClone(row);
-                                                    newRow.saddress = resp.address;
-                                                    vueInstanse.$set(vueInstanse.oilArr, params.index, newRow)
+                                                    row.saddress = resp.address;
                                                     LocalCacheMgr.setAddress(lon, lat, resp.address);
                                                 }
                                             })
@@ -9784,8 +9780,7 @@ function refuelingReport(groupslist) {
                                             utils.getJiuHuAddressSyn(lon, lat, function(resp) {
                                                 if (resp && resp.address) {
                                                     var newRow = deepClone(row);
-                                                    newRow.saddress = resp.address;
-                                                    vueInstanse.$set(vueInstanse.tableData, params.index, newRow)
+                                                    row.saddress = resp.address;
                                                     LocalCacheMgr.setAddress(lon, lat, resp.address);
                                                 }
                                             })
@@ -10243,9 +10238,7 @@ function oilLeakageReport(groupslist) {
                                         click: function() {
                                             utils.getJiuHuAddressSyn(lon, lat, function(resp) {
                                                 if (resp && resp.address) {
-                                                    var newRow = deepClone(row);
-                                                    newRow.saddress = resp.address;
-                                                    vueInstanse.$set(vueInstanse.tableData, params.index, newRow)
+                                                    row.saddress = resp.address;
                                                     LocalCacheMgr.setAddress(lon, lat, resp.address);
                                                 }
                                             })
@@ -11296,9 +11289,7 @@ function idleReport(groupslist) {
                                         click: function() {
                                             utils.getJiuHuAddressSyn(lon, lat, function(resp) {
                                                 if (resp && resp.address) {
-                                                    var newRow = deepClone(row);
-                                                    newRow.saddress = resp.address;
-                                                    vueInstanse.$set(vueInstanse.tableData, params.index, newRow)
+                                                    row.saddress = resp.address;
                                                     LocalCacheMgr.setAddress(lon, lat, resp.address);
                                                 }
                                             })
