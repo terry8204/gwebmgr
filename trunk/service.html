@@ -106,7 +106,7 @@
                     }, {
                         title: '操作',
                         key: 'action',
-                        width: 100,
+                        width: 180,
                         render: function(h, params) {
                             return h('div', [
                                 h('Poptip', {
@@ -119,16 +119,37 @@
                                     },
                                     on: {
                                         'on-ok': function() {
-                                            vueInstanse.loginService(params.row);
+                                            vueInstanse.loginService(params.row, null);
                                         }
                                     }
                                 }, [
                                     h('Button', {
                                         props: {
-                                            type: 'error',
+                                            type: 'primary',
                                             size: 'small',
                                         }
-                                    }, '登录')
+                                    }, '登录账号')
+                                ]),
+                                h('Poptip', {
+                                    props: {
+                                        confirm: true,
+                                        title: '确定要登录吗?'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        'on-ok': function() {
+                                            vueInstanse.loginService(params.row, 0);
+                                        }
+                                    }
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'info',
+                                            size: 'small',
+                                        }
+                                    }, '一级账号')
                                 ]),
                             ])
                         }
@@ -142,14 +163,17 @@
             },
             methods: {
 
-                loginService: function(row) {
+                loginService: function(row, aslevel1) {
                     var me = this;
                     var url = myUrls.loginService(token);
                     var data = {
                         type: "USER",
                         from: "web",
                         username: row.creater,
-                    };
+                        aslevel1: aslevel1
+                    }
+
+
                     var encode = JSON.stringify(data);
                     $.ajax({
                         url: url,
