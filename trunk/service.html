@@ -106,51 +106,38 @@
                     }, {
                         title: '操作',
                         key: 'action',
-                        width: 180,
+                        width: 176,
                         render: function(h, params) {
                             return h('div', [
-                                h('Poptip', {
+
+                                h('Button', {
                                     props: {
-                                        confirm: true,
-                                        title: '确定要登录吗?'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
+                                        type: 'primary',
+                                        size: 'small',
                                     },
                                     on: {
-                                        'on-ok': function() {
+                                        'click': function() {
                                             vueInstanse.loginService(params.row, 0);
                                         }
                                     }
-                                }, [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small',
-                                        }
-                                    }, '登录账号')
-                                ]),
-                                h('Poptip', {
+                                }, '登录账号'),
+
+
+                                h('Button', {
                                     props: {
-                                        confirm: true,
-                                        title: '确定要登录吗?'
+                                        type: 'info',
+                                        size: 'small',
                                     },
                                     style: {
-                                        marginRight: '5px'
+                                        marginLeft: '10px'
                                     },
                                     on: {
-                                        'on-ok': function() {
+                                        'click': function() {
                                             vueInstanse.loginService(params.row, 1);
                                         }
                                     }
-                                }, [
-                                    h('Button', {
-                                        props: {
-                                            type: 'info',
-                                            size: 'small',
-                                        }
-                                    }, '一级账号')
-                                ]),
+                                }, '一级账号')
+
                             ])
                         }
                     }
