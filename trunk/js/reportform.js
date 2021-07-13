@@ -9695,7 +9695,7 @@ function dayOil(groupslist) {
             columns: [
                 { title: vRoot.$t('reportForm.index'), key: 'index', width: 65 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 120 },
-                { title: vRoot.$t('reportForm.date'), key: 'day', sortable: true, width: 110 },
+                { title: vRoot.$t('reportForm.date'), key: 'statisticsday', sortable: true, width: 110 },
                 { title: vRoot.$t('reportForm.mileage') + '(km)', key: 'distance', width: 90 },
                 { title: vRoot.$t('reportForm.oilConsumption') + '(L)', key: 'oil', width: 80 },
                 { title: vRoot.$t('reportForm.fuelVolume') + '(L)', key: 'addoil', width: 165 },
@@ -9847,7 +9847,7 @@ function dayOil(groupslist) {
                                 records.forEach(function(record) {
                                     record.index = index + 1;
                                     record.devicename = '\t' + vstore.state.deviceInfos[self.queryDeviceId].devicename;
-                                    record.distance = record.maxtotaldistance - record.mintotaldistance;
+                                    record.distance = record.enddis - record.begindis;
                                     record.oil = record.totaloil / 100;
                                     record.addoil = record.addoil / 100;
                                     record.leakoil = record.leakoil / 100;
@@ -9863,7 +9863,7 @@ function dayOil(groupslist) {
                                     // }
                                     oil.push(record.oil);
                                     distance.push(record.distance);
-                                    recvtime.push(record.day);
+                                    recvtime.push(record.statisticsday);
                                 });
                             });
                             self.oil = oil;
