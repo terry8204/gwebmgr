@@ -2,8 +2,8 @@
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.queryUser")}}</h3>
         <ul>
-            <li>
-                <i-input v-model.trim="queryParameter"></i-input>
+            <li style="width: 200px;">
+                <i-input v-model.trim="queryParameter" icon="ios-close-circle-outline" @on-click="cleanSearchVal"></i-input>
             </li>
             <li>
                 <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
@@ -260,6 +260,9 @@
                 usertypeDisabled: false,
             },
             methods: {
+                cleanSearchVal: function() {
+                    this.queryParameter = '';
+                },
                 handlerClickQuery() {
                     var self = this;
                     var queryTableData = [];

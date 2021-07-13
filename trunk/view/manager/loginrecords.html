@@ -5,7 +5,7 @@
         <div style="margin:10px 0;height: 32px;">
             <div style="float: left;position: relative;width:250px;line-height:32px;">
                 <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
+                    <i-input v-model.trim="sosoValue" icon="ios-close-circle-outline" @on-click="cleanSearchVal" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
                     <transition name="fade">
                         <div class="search-item-wrapper" v-show="isShowMatchDev">
                             <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
@@ -41,7 +41,6 @@
                 columns: [{
                     title: vRoot.$t("reportForm.index"),
                     key: 'index',
-
                     width: 80
                 }, {
                     title: vRoot.$t("header.loginTime"),
@@ -87,6 +86,9 @@
 
             },
             methods: {
+                cleanSearchVal: function() {
+                    this.sosoValue = '';
+                },
                 handlerClickQuery() {
 
                     var queryTableData = [];
@@ -142,6 +144,7 @@
                         username: userName
                     }, function(respData) {
                         if (respData.status == 0 && respData.rootuser.user) {
+                            me.disabled = false;
                             callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
                         } else {
                             me.$Message.error(me.$t('monitor.queryFail'))
@@ -231,16 +234,70 @@
                                     ])
                                 },
                             };
-                            currentsubDevicesTreeRecord.title = username;
                             if (username != null && subusers != null && subusers.length > 0) {
                                 var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
                                 currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
                             }
+                            currentsubDevicesTreeRecord.title = username;
                             devicesTreeRecord.push(currentsubDevicesTreeRecord);
                         }
                     }
                     return devicesTreeRecord;
                 },
+                sosoValueChange: function() {
+                    if (this.groupslist !== null) {
+                        this.searchfilterMethod(this.sosoValue.toLowerCase());
+                    } else {
+                        console.log('tree数据还未返回');
+                    }
+                },
+                searchfilterMethod: function(value) {
+                    this.treeData = [];
+                    value = value.toLowerCase();
+                    this.treeData = this.variableDeepSearchIview(this.groupslist, value, 0);
+                    this.checkedDevice = [];
+                    if (this.isShowMatchDev == false) {
+                        this.isShowMatchDev = true;
+                    }
+                },
+                variableDeepSearchIview: function(treeDataFilter, searchWord, limitcount) {
+                    var childTemp = [];
+                    var that = this;
+                    for (var i = 0; i < treeDataFilter.length; i++) {
+                        var copyItem = null;
+                        var item = treeDataFilter[i];
+                        if (item != null) {
+                            var isFound = false;
+                            if (item.title.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.toLowerCase().indexOf(searchWord) != -1)) {
+                                copyItem = deepClone(item);
+                                copyItem.expand = false;
+                                isFound = true;
+                            }
+                            if (isFound == false && item.children && item.children.length > 0) {
+                                var rs = that.variableDeepSearchIview(item.children, searchWord, limitcount);
+                                if (rs && rs.length > 0) {
+                                    copyItem = deepClone(item);
+                                    copyItem.children = rs;
+                                    copyItem.expand = true;
+                                    isFound = true;
+                                }
+                            }
+                            if (isFound == true) {
+                                limitcount++;
+                                childTemp.push(copyItem);
+                                if (limitcount > 10) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    return childTemp;
+                },
+            },
+            watch: {
+                sosoValue: function(newVal) {
+                    this.createrToUser = newVal;
+                }
             },
             mixins: [treeMixin],
             mounted: function() {

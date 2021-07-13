@@ -3,8 +3,8 @@
     <div class="full">
         <h3 class="h3-title">{{$t("bgMgr.onlineUsers")}}</h3>
         <ul>
-            <li>
-                <i-input v-model.trim="queryParameter"></i-input>
+            <li style="width: 200px;">
+                <i-input v-model.trim="queryParameter" icon="ios-close-circle-outline" @on-click="cleanSearchVal"></i-input>
             </li>
             <li>
                 <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
@@ -56,6 +56,9 @@
 
             },
             methods: {
+                cleanSearchVal: function() {
+                    this.queryParameter = '';
+                },
                 changePage: function(index) {
                     var offset = index * 10;
                     var start = (index - 1) * 10;

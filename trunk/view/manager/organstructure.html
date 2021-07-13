@@ -15,7 +15,7 @@
                     <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span>
                 </div>
                 <div style="padding: 0 5px 5px 5px;">
-                    <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
+                    <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="ios-close-circle-outline" @on-click="cleanSearchVal"></i-input>
                 </div>
                 <div style="position: absolute;top:65px;left:0;bottom: 0px;right: 0px;overflow-y: auto;">
                     <ul id="ztree" class="ztree"></ul>
@@ -1142,6 +1142,11 @@
                     console.log('me.forwards', me.forwards);
                 });
             },
+            cleanSearchVal: function() {
+                if (this.searchDeviceVal != '') {
+                    this.searchDeviceVal = '';
+                }
+            }
         },
         computed: {
             disabledInput: function() {

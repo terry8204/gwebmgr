@@ -2,7 +2,7 @@
     <div class="tree-wrap">
         <div class="tree-title">{{$t('user.organization')}}</div>
         <div class="tree-search">
-            <i-input v-model.trim="sosoValue"></i-input>
+            <i-input v-model.trim="sosoValue" icon="ios-close-circle-outline" @on-click="cleanSosoVal"></i-input>
         </div>
         <div class="employees-tree-box">
             <Tree :data="treeData"></Tree>
@@ -11,8 +11,8 @@
     <div class="table-wrap">
         <div class="table-title">{{$t('user.listEmployees')}}</div>
         <div class="table-action">
-            <div style="width: 180px;">
-                <i-input v-model.trim="sosoTableValue"></i-input>
+            <div style="width: 200px;">
+                <i-input v-model.trim="sosoTableValue" icon="ios-close-circle-outline" @on-click="cleanSearchVal"></i-input>
             </div>
             <div>
                 <i-button @click="queryEmployees">{{$t('videoback.search')}}</i-button>
@@ -300,6 +300,14 @@
                 drivercardendday: new Date(),
             },
             methods: {
+                cleanSosoVal: function() {
+                    if (this.sosoValue != '') {
+                        this.sosoValue = '';
+                    }
+                },
+                cleanSearchVal: function() {
+                    this.sosoTableValue = '';
+                },
                 selectedCmd: function(item) {
                     var me = this;
                     setTimeout(function() {

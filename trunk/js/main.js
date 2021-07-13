@@ -454,6 +454,18 @@ Vue.component('my-video', {
                 this.destroyVideoPlayer();
 
                 this.playUrl = url;
+                // var videoPlayer = mpegts.createPlayer({
+                //     type: 'flv',
+                //     url: url,
+                //     isLive: true,
+                //     hasAudio: false,
+                //     hasVideo: true,
+                // }, {
+                //     enableWorker: true,
+                //     lazyLoadMaxDuration: 3 * 60,
+                //     seekType: 'range',
+                //     liveBufferLatencyChasing: false,
+                // });
                 var videoPlayer = mpegts.createPlayer({
                     type: 'flv',
                     url: url,
@@ -461,10 +473,9 @@ Vue.component('my-video', {
                     hasAudio: false,
                     hasVideo: true,
                 }, {
-                    enableWorker: true,
-                    lazyLoadMaxDuration: 3 * 60,
-                    seekType: 'range',
-                    liveBufferLatencyChasing: true,
+                    enableStashBuffer: !1,
+                    fixAudioTimestampGap: !1,
+                    liveBufferLatencyChasing: false,
                 });
 
                 var me = this;

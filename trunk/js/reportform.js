@@ -5244,6 +5244,9 @@ function reportOnlineSummary(groupslist) {
                 }
                 return devicesTreeRecord;
             },
+            cleanSearchVal: function() {
+                this.sosoValue = '';
+            },
             searchValueChange: function() {
                 if (this.groupslist !== null) {
                     this.searchfilterMethod(this.sosoValue.toLowerCase());
