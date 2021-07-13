@@ -1350,10 +1350,9 @@
                         hasAudio: false,
                         hasVideo: true,
                     }, {
-                        enableWorker: true,
-                        lazyLoadMaxDuration: 3 * 60,
-                        seekType: 'range',
-                        liveBufferLatencyChasing: true,
+                        enableStashBuffer: !1,
+                        fixAudioTimestampGap: !1,
+                        liveBufferLatencyChasing: false,
                     });
 
 
