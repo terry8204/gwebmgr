@@ -1155,6 +1155,183 @@ function mileageMonthReport(groupslist) {
     })
 }
 
+
+function oilMonthReport() {
+    vueInstanse = new Vue({
+        el: '#month-oil',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            loading: false,
+            isSpin: false,
+            dateVal: [DateFormat.longToDateStr(Date.now(), timeDifference), DateFormat.longToDateStr(Date.now(), timeDifference)],
+            lastTableHeight: 100,
+            groupslist: [],
+            timeoutIns: null,
+            month: '',
+            columns: [],
+            tableData: [],
+            currentIndex: 1,
+            dateOptions: {
+                disabledDate: function(date) {
+                    return (date && date.valueOf()) > Date.now();
+                }
+            },
+        },
+        methods: {
+            exportData: function() {
+                this.$refs.table.exportCsv({
+                    filename: vRoot.$t('reportForm.oilMonthReport') + '_' + DateFormat.format(this.month, 'yyyy-MM'),
+                    original: false,
+                    columns: this.columns,
+                    data: this.records
+                });
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 175;
+            },
+            onClickQuery: function() {
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+                if (deviceids.length > 0) {
+                    var me = this;
+                    var url = myUrls.reportMileageMonth();
+                    var yearmonth = DateFormat.format(this.month, 'yyyy-MM');
+                    var yearmonthArr = yearmonth.split("-");
+                    var data = {
+                        year: Number(yearmonthArr[0]),
+                        month: Number(yearmonthArr[1]),
+                        offset: timeDifference,
+                        deviceids: deviceids
+                    }
+                    me.loading = true;
+                    utils.sendAjax(url, data, function(resp) {
+                        // console.log(resp);
+                        me.loading = false;
+                        if (resp.status === 0) {
+                            var dayLen = me.getTheMonthDays(me.month);
+                            if (resp.devices.length) {
+                                resp.devices.forEach(function(item, idx) {
+                                    item.index = idx + 1;
+
+                                    var deviceid = item.deviceid;
+                                    var records = item.records;
+                                    var totaldistance = 0;
+                                    for (var j = 0; j < dayLen; j++) {
+                                        var day = records[j];
+                                        if (day) {
+                                            var key = day.day.split('-')[2];
+                                            var distance = day.maxtotaldistance - day.mintotaldistance;
+                                            totaldistance += distance;
+                                            item['day' + String(parseInt(key))] = utils.getMileage(distance);
+                                        }
+                                    }
+                                    for (var k = 0; k < dayLen; k++) {
+                                        var key = 'day' + (k + 1);
+                                        if (!item[key]) {
+                                            item[key] = '-';
+                                        }
+                                    }
+                                    item.devicename = "\t" + (vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicename : deviceid);
+                                    item.deviceid = "\t" + deviceid;
+                                    item.totaldistance = utils.getMileage(totaldistance);
+                                });
+                                me.records = resp.devices;
+                                me.tableData = me.records.slice(0, 20);
+                                me.total = me.records.length;
+
+                            } else {
+                                me.tableData = [];
+                            };
+                            me.currentIndex = 1;
+                        } else {
+                            me.tableData = [];
+                        }
+                    })
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
+            getTheMonthDays: function(date) {
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                year = month == 12 ? year + 1 : year;
+                month = month == 12 ? 1 : month;
+                return new Date(new Date(year, month, 1) - 1).getDate();
+            },
+        },
+        watch: {
+            month: function(newMonth) {
+
+                var columns = [
+                    { key: 'index', width: 70, title: vRoot.$t("reportForm.index"), fixed: 'left' },
+                    { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 100, fixed: 'left' },
+                    { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 100, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 100, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.totalOil"), key: 'totaloil', sortable: true, width: 110, fixed: 'left' },
+                ];
+
+                var day = this.getTheMonthDays(newMonth);
+
+                for (var i = 1; i <= day; i++) {
+                    columns.push({
+                        key: 'day' + i,
+                        title: i,
+                        width: 80,
+                        sortable: true,
+                    })
+                }
+
+                this.columns = columns;
+            },
+        },
+        mounted: function() {
+            var me = this;
+            me.month = new Date();
+            me.records = [];
+            me.queryDevicesTree();
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        }
+    })
+}
+
+
 function groupMileage(groupslist) {
     vueInstanse = new Vue({
         el: '#group-mileage',
@@ -4966,10 +5143,11 @@ function reportOnlineSummary(groupslist) {
                 var url = myUrls.queryUsersTree(),
                     me = this;
                 utils.sendAjax(url, { username: userName }, function(respData) {
-                    if (respData.status == 0) {
+                    if (respData.status == 0 && respData.rootuser.user) {
+                        me.disabled = false;
                         callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
                     } else {
-                        me.$Message.error('查询失败')
+                        me.$Message.error(me.$t('monitor.queryFail'))
                     }
                 });
             },
@@ -5015,13 +5193,6 @@ function reportOnlineSummary(groupslist) {
                         iViewTree.children = subDevicesTreeRecord;
 
                     }
-                    var totalCount = 0;
-                    if (iViewTree.children) {
-                        for (var i = 0; i < iViewTree.children.length; ++i) {
-                            totalCount += iViewTree.children[i].totalCount;
-                        }
-                    }
-                    iViewTree.title = username + "(" + totalCount + ")";
                 }
                 return iViewTree;
             },
@@ -5067,18 +5238,60 @@ function reportOnlineSummary(groupslist) {
                             var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
                             currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
                         }
-                        var totalCount = 0;
-                        if (currentsubDevicesTreeRecord.children) {
-                            for (var j = 0; j < currentsubDevicesTreeRecord.children.length; ++j) {
-                                totalCount += currentsubDevicesTreeRecord.children[j].totalCount;
-                            }
-                        }
-                        currentsubDevicesTreeRecord.totalCount = totalCount;
-                        currentsubDevicesTreeRecord.title = username + "(" + totalCount + ")";
+                        currentsubDevicesTreeRecord.title = username;
                         devicesTreeRecord.push(currentsubDevicesTreeRecord);
                     }
                 }
                 return devicesTreeRecord;
+            },
+            searchValueChange: function() {
+                if (this.groupslist !== null) {
+                    this.searchfilterMethod(this.sosoValue.toLowerCase());
+                } else {
+                    console.log('tree数据还未返回');
+                }
+            },
+            searchfilterMethod: function(value) {
+                this.treeData = [];
+                value = value.toLowerCase();
+                this.treeData = this.variableDeepSearchIview(this.groupslist, value, 0);
+                this.checkedDevice = [];
+                if (this.isShowMatchDev == false) {
+                    this.isShowMatchDev = true;
+                }
+            },
+            variableDeepSearchIview: function(treeDataFilter, searchWord, limitcount) {
+                var childTemp = [];
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var copyItem = null;
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        var isFound = false;
+                        if (item.title.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.toLowerCase().indexOf(searchWord) != -1)) {
+                            copyItem = deepClone(item);
+                            copyItem.expand = false;
+                            isFound = true;
+                        }
+                        if (isFound == false && item.children && item.children.length > 0) {
+                            var rs = that.variableDeepSearchIview(item.children, searchWord, limitcount);
+                            if (rs && rs.length > 0) {
+                                copyItem = deepClone(item);
+                                copyItem.children = rs;
+                                copyItem.expand = true;
+                                isFound = true;
+                            }
+                        }
+                        if (isFound == true) {
+                            limitcount++;
+                            childTemp.push(copyItem);
+                            if (limitcount > 10) {
+                                break;
+                            }
+                        }
+                    }
+                }
+                return childTemp;
             },
         },
         watch: {
@@ -9482,7 +9695,7 @@ function dayOil(groupslist) {
             columns: [
                 { title: vRoot.$t('reportForm.index'), key: 'index', width: 65 },
                 { title: vRoot.$t('alarm.devName'), key: 'devicename', width: 120 },
-                { title: vRoot.$t('reportForm.date'), key: 'statisticsday', sortable: true, width: 110 },
+                { title: vRoot.$t('reportForm.date'), key: 'day', sortable: true, width: 110 },
                 { title: vRoot.$t('reportForm.mileage') + '(km)', key: 'distance', width: 90 },
                 { title: vRoot.$t('reportForm.oilConsumption') + '(L)', key: 'oil', width: 80 },
                 { title: vRoot.$t('reportForm.fuelVolume') + '(L)', key: 'addoil', width: 165 },
@@ -9634,7 +9847,7 @@ function dayOil(groupslist) {
                                 records.forEach(function(record) {
                                     record.index = index + 1;
                                     record.devicename = '\t' + vstore.state.deviceInfos[self.queryDeviceId].devicename;
-                                    record.distance = record.enddis - record.begindis;
+                                    record.distance = record.maxtotaldistance - record.mintotaldistance;
                                     record.oil = record.totaloil / 100;
                                     record.addoil = record.addoil / 100;
                                     record.leakoil = record.leakoil / 100;
@@ -9650,7 +9863,7 @@ function dayOil(groupslist) {
                                     // }
                                     oil.push(record.oil);
                                     distance.push(record.distance);
-                                    recvtime.push(record.statisticsday);
+                                    recvtime.push(record.day);
                                 });
                             });
                             self.oil = oil;
@@ -13427,6 +13640,7 @@ var reportForm = {
                     name: 'oilConsumption',
                     icon: 'ios-speedometer-outline',
                     children: [
+                        { title: me.$t("reportForm.oilMonthReport"), name: 'oilMonthReport', icon: 'ios-grid' },
                         { title: me.$t("reportForm.dayOilConsumption"), name: 'dayOil', icon: 'ios-stopwatch-outline' },
                         { title: me.$t("reportForm.oilWorkingHours"), name: 'oilWorkingHours', icon: 'ios-appstore-outline' },
                         { title: me.$t("reportForm.idleReport"), name: 'idleReport', icon: 'md-speedometer' },
@@ -13593,6 +13807,9 @@ var reportForm = {
                         break;
                     case 'dayoil.html':
                         dayOil(groupslist);
+                        break;
+                    case 'oilmonthreport.html':
+                        oilMonthReport(groupslist);
                         break;
                     case 'refuelingreport.html':
                         refuelingReport(groupslist);

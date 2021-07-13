@@ -3,7 +3,7 @@
         <div style="height: 100%;text-align:right;line-height:32px;float: left;">{{$t("reportForm.selectAccount")}} : &nbsp;</div>
         <div style="float: left;position: relative;width: 300px;line-height:32px;">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
+                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="searchValueChange" @on-blur="blur" @on-focus="focus" :readonly="readonly" @on-click="focus" :placeholder="placeholder"></i-input>
                 <transition name="fade">
                     <div class="search-item-wrapper" v-show="isShowMatchDev">
                         <Tree :data="treeData" @on-check-change="onCheckedDevice"></Tree>
