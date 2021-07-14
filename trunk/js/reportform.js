@@ -1186,7 +1186,7 @@ function oilMonthDetail(groupslist) {
                 {
                     title: vRoot.$t('reportForm.mileage') + '(Km)',
                     key: 'totaldistance',
-                    width: 100,
+                    width: 110,
                     sortable: true,
                 },
                 {
@@ -1194,8 +1194,22 @@ function oilMonthDetail(groupslist) {
                     key: 'totaloil',
                     width: 130,
                     sortable: true,
-
                 },
+                {
+                    title: vRoot.$t("reportForm.fuelVolume") + '(L)',
+                    key: 'addoil',
+                    width: 130,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t("reportForm.oilLeakage") + '(L)',
+                    key: 'leakoil',
+                    width: 130,
+                    sortable: true,
+                },
+
+
+                { title: vRoot.$t('reportForm.idleoil') + '(L)', key: 'idleoil', width: 120, sortable: true, },
                 {
                     title: vRoot.$t("reportForm.workingHours"),
                     key: 'totalacc',
@@ -1203,12 +1217,11 @@ function oilMonthDetail(groupslist) {
                     sortable: true,
 
                 },
-                { title: vRoot.$t('reportForm.idleoil') + '(L)', key: 'idleoil', width: 120, sortable: true, },
-                { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 140, sortable: true, },
+                { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 160, sortable: true, },
                 {
                     title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
                     key: 'oilper100km',
-                    width: 130,
+                    width: 140,
                     sortable: true,
                 },
                 {
@@ -1251,7 +1264,7 @@ function oilMonthDetail(groupslist) {
             },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
-                this.tableHeight = wHeight - 145;
+                this.tableHeight = wHeight - 130;
             },
             onClickQuery: function() {
                 var me = this;
@@ -1281,6 +1294,8 @@ function oilMonthDetail(groupslist) {
                             item.totaldistance = (item.totaldistance / 1000).toFixed(2)
                             item.totalacc = utils.timeStamp(item.totalacc);
                             item.totaloil = item.totaloil / 100;
+                            item.addoil = item.addoil / 100;
+                            item.leakoil = item.leakoil / 100;
                             if (item.totaldistance == 0 || totalacc == 0) {
                                 item.averagespeed = 0
                             } else {
