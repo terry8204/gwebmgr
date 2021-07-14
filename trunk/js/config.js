@@ -898,6 +898,9 @@ var myUrls = {
     reportOilMonth: function() {
         return this.apihosts + 'webapi?action=reportoilmonth&token=' + token;
     },
+    reportOilMonthDetail: function() {
+        return this.apihosts + 'webapi?action=reportoilmonthdetail&token=' + token;
+    },
     reportOilManHour: function() {
         return this.apihosts + 'webapi?action=reportoilmanhour&token=' + token;
     },

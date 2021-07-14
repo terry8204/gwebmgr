@@ -1156,6 +1156,155 @@ function mileageMonthReport(groupslist) {
 }
 
 
+function oilMonthDetail(groupslist) {
+    vueInstanse = new Vue({
+        el: '#oil-month-detail',
+        i18n: utils.getI18n(),
+        mixins: [reportMixin],
+        data: {
+            loading: false,
+            isSpin: false,
+            tableHeight: 100,
+            groupslist: [],
+            month: '',
+            groupslist: [],
+            columns: [{
+                    title: vRoot.$t("reportForm.time"),
+                    key: 'statisticsday',
+                    width: 105,
+                },
+                {
+                    title: vRoot.$t("alarm.devName"),
+                    key: 'devicename',
+                    width: 125,
+                },
+                {
+                    title: vRoot.$t("alarm.devNum"),
+                    key: 'deviceid',
+                    width: 125,
+                },
+                {
+                    title: vRoot.$t('reportForm.mileage') + '(Km)',
+                    key: 'totaldistance',
+                    width: 90,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t("reportForm.oilConsumption") + '(L)',
+                    key: 'totaloil',
+                    width: 120,
+                    sortable: true,
+
+                },
+                {
+                    title: vRoot.$t("reportForm.workingHours"),
+                    key: 'totalacc',
+                    width: 130,
+                    sortable: true,
+
+                },
+                { title: vRoot.$t('reportForm.idleoil') + '(L)', key: 'idleoil', width: 120, sortable: true, },
+                { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 140, sortable: true, },
+                {
+                    title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
+                    key: 'oilper100km',
+                    width: 120,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
+                    key: 'oilperhour',
+                    width: 120,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t('reportForm.averageSpeed') + '(Km/h)',
+                    key: 'averagespeed',
+                    width: 130,
+                    sortable: true,
+                },
+
+            ],
+            tableData: [],
+            dateOptions: {
+                disabledDate: function(date) {
+                    return (date && date.valueOf()) > Date.now();
+                }
+            },
+        },
+        methods: {
+            exportData: function() {
+                var columns = deepClone(this.columns);
+                var tableData = deepClone(this.tableData);
+                tableData.forEach(function(item) {
+                    item.deviceid = '\t' + item.deviceid;
+                    item.devicename = '\t' + item.devicename;
+                    item.begintimeStr = '\t' + item.begintimeStr;
+                    item.endtimeStr = '\t' + item.endtimeStr;
+                });
+                this.$refs.table.exportCsv({
+                    filename: vRoot.$t('reportForm.oilMonthDetail') + this.queryDeviceId,
+                    original: false,
+                    columns: columns,
+                    data: tableData
+                });
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.tableHeight = wHeight - 145;
+            },
+            onClickQuery: function() {
+                var me = this;
+                if (!this.queryDeviceId) {
+                    this.$Message.error(me.$t("reportForm.selectDevTip"));
+                    return;
+                };
+
+                var url = myUrls.reportOilMonthDetail();
+                var yearmonth = DateFormat.format(this.month, 'yyyy-MM');
+                var yearmonthArr = yearmonth.split("-");
+                var data = {
+                    year: Number(yearmonthArr[0]),
+                    month: Number(yearmonthArr[1]),
+                    offset: timeDifference,
+                    deviceids: [this.queryDeviceId]
+                }
+                utils.sendAjax(url, data, function(resp) {
+                    console.log(resp);
+                    if (resp.devices) {
+                        var records = resp.devices[0].records;
+                        records.forEach(function(item) {
+                            item.devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
+                            var totalacc = (item.totalacc / 1000 / 3600).toFixed(2);
+                            item.idleoil = item.idleoil / 100;
+                            item.runoilper100km = item.runoilper100km;
+                            item.totaldistance = (item.totaldistance / 1000).toFixed(2)
+                            item.totalacc = utils.timeStamp(item.totalacc);
+                            item.totaloil = item.totaloil / 100;
+                            if (item.totaldistance == 0 || totalacc == 0) {
+                                item.averagespeed = 0
+                            } else {
+                                item.averagespeed = (Number(item.totaldistance) / Number(totalacc)).toFixed(2);
+                            }
+                        })
+                        me.tableData = records ? records : [];
+                    }
+                });
+            },
+        },
+
+        mounted: function() {
+            var me = this;
+            me.month = new Date();
+            me.groupslist = groupslist;
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        }
+    })
+}
+
 function oilMonthReport() {
     vueInstanse = new Vue({
         el: '#month-oil',
@@ -11372,7 +11521,6 @@ function oilWorkingHours(groupslist) {
                                 chartDataList[len].dis.push(Number(item.totaldistance));
                                 chartDataList[len].hours.push(Number(totalacc));
 
-
                                 if (item.totaldistance == 0 || totalacc == 0) {
                                     item.averagespeed = 0
                                 } else {
@@ -12929,7 +13077,7 @@ function ioReport(groupslist) {
                 { title: vRoot.$t("reportForm.maxMileage") + "(km)", key: 'edistance' },
                 { title: vRoot.$t("reportForm.duration"), key: 'duration' },
                 {
-                    title: '地图',
+                    title: isZh ? '地图' : 'Map',
                     width: 125,
                     render: function(h, params) {
                         var row = params.row;
@@ -13665,6 +13813,7 @@ var reportForm = {
                     icon: 'ios-speedometer-outline',
                     children: [
                         { title: me.$t("reportForm.oilMonthReport"), name: 'oilMonthReport', icon: 'ios-grid' },
+                        { title: me.$t("reportForm.oilMonthDetail"), name: 'oilMonthDetail', icon: 'ios-grid' },
                         { title: me.$t("reportForm.dayOilConsumption"), name: 'dayOil', icon: 'ios-stopwatch-outline' },
                         { title: me.$t("reportForm.oilWorkingHours"), name: 'oilWorkingHours', icon: 'ios-appstore-outline' },
                         { title: me.$t("reportForm.idleReport"), name: 'idleReport', icon: 'md-speedometer' },
@@ -13834,6 +13983,9 @@ var reportForm = {
                         break;
                     case 'oilmonthreport.html':
                         oilMonthReport(groupslist);
+                        break;
+                    case 'oilmonthdetail.html':
+                        oilMonthDetail(groupslist);
                         break;
                     case 'refuelingreport.html':
                         refuelingReport(groupslist);
