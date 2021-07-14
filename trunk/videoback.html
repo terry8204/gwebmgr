@@ -189,7 +189,7 @@
         </div>
     </div>
     <div id="container">
-        <video ref='audio' style="display: none;"></video>
+        <video ref='audio' style="display: none;" :muted="isMute"></video>
         <div class="spin-wraper" v-if="isSpin" style="z-index:10">
             <Spin fix size="large"></Spin>
         </div>
@@ -401,7 +401,8 @@
                                 <tab-pane :label="$t('videoback.downloadTask')" name="downloadfile">
                                     <i-table border :columns="downloadColumns" :data="downloadTableData" height="250" :loading="loading"></i-table>
                                 </tab-pane>
-                                <i-button @click="stopVideo" size="small" slot="extra">{{$t('videoback.stopPlay')}}</i-button>
+                                <i-button @click="switchAudio" size="small" slot="extra" type="info" style="margin-right: 10px;">静音:{{isMute?'开':'关'}}</i-button>
+                                <i-button @click="stopVideo" size="small" slot="extra" type="error">{{$t('videoback.stopPlay')}}</i-button>
                             </Tabs>
                         </div>
                     </div>
@@ -475,6 +476,7 @@
             el: "#container",
             i18n: utils.getI18n(),
             data: {
+                isMute: false,
                 deviceid: deviceid,
                 devicename: devicename,
                 networkSpeed: '0KB/S',
@@ -820,6 +822,9 @@
                     vRoot.timeStamp = utils.timeStamp(endInterval - startInterval);
                     this.startValue = DateFormat.longToDateTimeStr(startTimes + startInterval, DateFormat.getOffset()).split(' ')[1];
                     this.endValue = DateFormat.longToDateTimeStr(startTimes + endInterval, DateFormat.getOffset()).split(' ')[1];
+                },
+                switchAudio: function() {
+                    this.isMute = !this.isMute;
                 },
                 stopVideo: function() {
 

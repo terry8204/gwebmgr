@@ -2047,12 +2047,12 @@
                                 records.forEach(function(item) {
                                     if (item) {
                                         if (item.totaldistance == 0) {
-                                            me.mileageMonthRecord[item.day] = '0.0';
+                                            me.mileageMonthRecord[item.statisticsday] = '0.0';
                                         } else {
                                             if (0 < item.totaldistance && item.totaldistance < 10) {
                                                 item.totaldistance = 10;
                                             }
-                                            me.mileageMonthRecord[item.day] = (item.totaldistance / 1000).toFixed(2);
+                                            me.mileageMonthRecord[item.statisticsday] = (item.totaldistance / 1000).toFixed(2);
                                         }
                                     }
                                 })
