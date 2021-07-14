@@ -1186,20 +1186,20 @@ function oilMonthDetail(groupslist) {
                 {
                     title: vRoot.$t('reportForm.mileage') + '(Km)',
                     key: 'totaldistance',
-                    width: 90,
+                    width: 100,
                     sortable: true,
                 },
                 {
                     title: vRoot.$t("reportForm.oilConsumption") + '(L)',
                     key: 'totaloil',
-                    width: 120,
+                    width: 130,
                     sortable: true,
 
                 },
                 {
                     title: vRoot.$t("reportForm.workingHours"),
                     key: 'totalacc',
-                    width: 130,
+                    width: 140,
                     sortable: true,
 
                 },
@@ -1208,19 +1208,19 @@ function oilMonthDetail(groupslist) {
                 {
                     title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
                     key: 'oilper100km',
-                    width: 120,
+                    width: 130,
                     sortable: true,
                 },
                 {
                     title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
                     key: 'oilperhour',
-                    width: 120,
+                    width: 130,
                     sortable: true,
                 },
                 {
                     title: vRoot.$t('reportForm.averageSpeed') + '(Km/h)',
                     key: 'averagespeed',
-                    width: 130,
+                    width: 140,
                     sortable: true,
                 },
 
@@ -1329,10 +1329,28 @@ function oilMonthReport() {
         },
         methods: {
             exportData: function() {
+                var columns = [
+                    { key: 'index', width: 70, title: vRoot.$t("reportForm.index"), fixed: 'left' },
+                    { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 100, fixed: 'left' },
+                    { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 100, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 100, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.totalOil"), key: 'totaloil', sortable: true, width: 110, fixed: 'left' },
+                ]
+
+                var day = this.getTheMonthDays(this.month);
+
+                for (var i = 0; i < day; i++) {
+                    columns.push({
+                        title: i + 1,
+                        key: 'disAndOil' + (i + 1)
+                    })
+                }
+
+
                 this.$refs.table.exportCsv({
                     filename: vRoot.$t('reportForm.oilMonthReport') + '_' + DateFormat.format(this.month, 'yyyy-MM'),
                     original: false,
-                    columns: this.columns,
+                    columns: columns,
                     data: this.records
                 });
             },
@@ -1397,11 +1415,10 @@ function oilMonthReport() {
                                             var key = day.statisticsday.split('-')[2];
                                             var distance = day.maxtotaldistance - day.mintotaldistance;
                                             totaldistance += distance;
-
                                             item['day' + String(parseInt(key))] = utils.getMileage(distance);
                                             item['day' + String(parseInt(key)) + 'oil'] = day.totaloil;
                                             totaloil += day.totaloil;
-                                            item.disAndOil = item['day' + String(parseInt(key))] + '/' + item['day' + String(parseInt(key)) + 'oil'];
+                                            item['disAndOil' + Number(key)] = item['day' + String(parseInt(key))] + '/' + item['day' + String(parseInt(key)) + 'oil'] + 'L';
                                         }
                                     }
                                     for (var k = 0; k < dayLen; k++) {
