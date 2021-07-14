@@ -1904,7 +1904,7 @@
                 oilReport: '油液报表',
                 weightReport: '载重报表',
                 dayOilConsumption: '日行油液报表',
-                oilMonthReport: '油耗月报',
+                oilMonthReport: '油耗月总揽',
                 dateOilConsumption: '时间油液报表',
                 mileageOilConsumption: '里程油液报表',
                 timeWeightConsumption: '时间载重报表',

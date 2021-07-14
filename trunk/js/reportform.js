@@ -1070,7 +1070,7 @@ function mileageMonthReport(groupslist) {
                                     for (var j = 0; j < dayLen; j++) {
                                         var day = records[j];
                                         if (day) {
-                                            var key = day.day.split('-')[2];
+                                            var key = day.statisticsday.split('-')[2];
                                             var distance = day.maxtotaldistance - day.mintotaldistance;
                                             totaldistance += distance;
                                             item['day' + String(parseInt(key))] = utils.getMileage(distance);
@@ -1220,7 +1220,7 @@ function oilMonthReport() {
                 });
                 if (deviceids.length > 0) {
                     var me = this;
-                    var url = myUrls.reportMileageMonth();
+                    var url = myUrls.reportOilMonth();
                     var yearmonth = DateFormat.format(this.month, 'yyyy-MM');
                     var yearmonthArr = yearmonth.split("-");
                     var data = {
@@ -1231,24 +1231,28 @@ function oilMonthReport() {
                     }
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
-                        // console.log(resp);
+                        console.log(resp);
                         me.loading = false;
                         if (resp.status === 0) {
                             var dayLen = me.getTheMonthDays(me.month);
                             if (resp.devices.length) {
                                 resp.devices.forEach(function(item, idx) {
                                     item.index = idx + 1;
-
                                     var deviceid = item.deviceid;
                                     var records = item.records;
                                     var totaldistance = 0;
+                                    var totaloil = 0;
                                     for (var j = 0; j < dayLen; j++) {
                                         var day = records[j];
                                         if (day) {
-                                            var key = day.day.split('-')[2];
+                                            var key = day.statisticsday.split('-')[2];
                                             var distance = day.maxtotaldistance - day.mintotaldistance;
                                             totaldistance += distance;
+
                                             item['day' + String(parseInt(key))] = utils.getMileage(distance);
+                                            item['day' + String(parseInt(key)) + 'oil'] = day.totaloil;
+                                            totaloil += day.totaloil;
+                                            item.disAndOil = item['day' + String(parseInt(key))] + '/' + item['day' + String(parseInt(key)) + 'oil'];
                                         }
                                     }
                                     for (var k = 0; k < dayLen; k++) {
@@ -1257,6 +1261,8 @@ function oilMonthReport() {
                                             item[key] = '-';
                                         }
                                     }
+
+                                    item.totaloil = (totaloil / 100) + 'L';
                                     item.devicename = "\t" + (vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicename : deviceid);
                                     item.deviceid = "\t" + deviceid;
                                     item.totaldistance = utils.getMileage(totaldistance);
@@ -1306,13 +1312,28 @@ function oilMonthReport() {
 
                 var day = this.getTheMonthDays(newMonth);
 
+
+
                 for (var i = 1; i <= day; i++) {
-                    columns.push({
-                        key: 'day' + i,
-                        title: i,
-                        width: 80,
-                        sortable: true,
-                    })
+                    var key = 'day' + i;
+                    (function(key) {
+                        columns.push({
+                            key: key,
+                            title: i,
+                            width: 100,
+                            sortable: true,
+                            render: function(h, params) {
+                                var row = params.row;
+                                var oil = row[key + 'oil'];
+                                return h(
+                                    'div', {}, [
+                                        h('p', {}, row[key]),
+                                        h('p', {}, oil ? (row[key + 'oil'] / 100) + 'L' : '-'),
+                                    ]
+                                )
+                            }
+                        })
+                    })(key)
                 }
 
                 this.columns = columns;
