@@ -1349,7 +1349,10 @@ function oilMonthReport() {
                     { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 100, fixed: 'left' },
                     { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 100, fixed: 'left' },
                     { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 100, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.totalOil"), key: 'totaloil', sortable: true, width: 110, fixed: 'left' },
+                    { title: isZh ? '总消耗(L)' : 'Consumption(L)', key: 'totaloil', sortable: true, width: 110, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.fuelVolume") + '(L)', key: 'addoil', width: 130, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.oilLeakage") + '(L)', key: 'leakoil', width: 130, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.idleoil") + '(L)', key: 'idleoil', width: 130, fixed: 'left' },
                 ]
 
                 var day = this.getTheMonthDays(this.month);
@@ -1424,6 +1427,10 @@ function oilMonthReport() {
                                     var records = item.records;
                                     var totaldistance = 0;
                                     var totaloil = 0;
+                                    var addoil = 0;
+                                    var leakoil = 0;
+                                    var idleoil = 0;
+
                                     for (var j = 0; j < dayLen; j++) {
                                         var day = records[j];
                                         if (day) {
@@ -1433,6 +1440,10 @@ function oilMonthReport() {
                                             item['day' + String(parseInt(key))] = utils.getMileage(distance);
                                             item['day' + String(parseInt(key)) + 'oil'] = day.totaloil;
                                             totaloil += day.totaloil;
+                                            addoil += day.addoil;
+                                            leakoil += day.leakoil;
+                                            idleoil += day.idleoil;
+
                                             item['disAndOil' + Number(key)] = item['day' + String(parseInt(key))] + '/' + item['day' + String(parseInt(key)) + 'oil'] + 'L';
                                         }
                                     }
@@ -1443,7 +1454,11 @@ function oilMonthReport() {
                                         }
                                     }
 
-                                    item.totaloil = (totaloil / 100) + 'L';
+                                    item.totaloil = (totaloil / 100);
+                                    item.addoil = (addoil / 100);
+                                    item.leakoil = (leakoil / 100);
+                                    item.idleoil = (idleoil / 100);
+
                                     item.devicename = "\t" + (vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicename : deviceid);
                                     item.deviceid = "\t" + deviceid;
                                     item.totaldistance = utils.getMileage(totaldistance);
@@ -1482,14 +1497,19 @@ function oilMonthReport() {
         },
         watch: {
             month: function(newMonth) {
-
+                // sortable: true,
                 var columns = [
                     { key: 'index', width: 70, title: vRoot.$t("reportForm.index"), fixed: 'left' },
                     { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 100, fixed: 'left' },
                     { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 100, fixed: 'left' },
                     { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 100, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.totalOil"), key: 'totaloil', sortable: true, width: 110, fixed: 'left' },
+                    { title: isZh ? '总消耗(L)' : 'Consumption(L)', key: 'totaloil', sortable: true, width: 110, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.fuelVolume") + '(L)', key: 'addoil', width: 130, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.oilLeakage") + '(L)', key: 'leakoil', width: 130, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.idleoil") + '(L)', key: 'idleoil', width: 130, fixed: 'left' },
+
                 ];
+
 
                 var day = this.getTheMonthDays(newMonth);
 
