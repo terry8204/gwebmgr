@@ -581,6 +581,7 @@
                             GlobalOrgan.getInstance().addUser(data);
                             me.currentPageUserLists.push(data.username);
                             me.reloadTreeData(true);
+                            me.getUserInfoList();
                         } else {
                             GlobalOrgan.getInstance().editUser(me.oldCreater, data);
                             me.treeDeviceList = [me.castUsersTreeToDevicesTree(GlobalOrgan.getInstance().globalOrganData, true, false)];
@@ -895,6 +896,14 @@
                                     me.oldCreater = me.createrToUser;
                                     me.isEditUser = true;
                                     me.password = '';
+                                    me.list.forEach(function(item, idx) {
+                                        if (item.username === username) {
+                                            me.setUserTypeByUser(item.usertype);
+                                        }
+                                    });
+                                    me.usertype = "";
+
+
                                 } else if (node.groupid !== undefined) {
                                     var parentNode = node.getParentNode();
                                     username = parentNode.username;
@@ -1139,7 +1148,6 @@
                         })
                     }
 
-                    console.log('me.forwards', me.forwards);
                 });
             },
             cleanSearchVal: function() {
