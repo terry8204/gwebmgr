@@ -417,7 +417,7 @@
                 });
                 this.usertype = "";
                 if (index != -1) {
-                    this.setUserTypeByUser(this.list[index].usertype);
+                    this.setUserTypeByUser(this.list[index].usertype, false);
                 }
                 this.setUserInfo({
                     multilogin: 1
@@ -898,10 +898,11 @@
                                     me.password = '';
                                     me.list.forEach(function(item, idx) {
                                         if (item.username === username) {
-                                            me.setUserTypeByUser(item.usertype);
+                                            me.usertype = item.usertype;
+                                            me.setUserTypeByUser(item.usertype, true);
                                         }
                                     });
-                                    me.usertype = "";
+
 
 
                                 } else if (node.groupid !== undefined) {
@@ -1103,14 +1104,21 @@
                 }
                 return childTemp;
             },
-            setUserTypeByUser: function(userType) {
+            setUserTypeByUser: function(userType, isShowMe) {
                 var allUserTypes = deepClone(vstore.state.userTypeDescrList);
                 var filteredUserTypes = [];
                 allUserTypes.forEach(function(userItem) {
                     //filter the little admin and only the admin 
-                    if (userItem.type > userType && userItem.type < 5) {
-                        filteredUserTypes.push(userItem);
+                    if (isShowMe) {
+                        if (userItem.type >= userType && userItem.type < 5) {
+                            filteredUserTypes.push(userItem);
+                        }
+                    } else {
+                        if (userItem.type > userType && userItem.type < 5) {
+                            filteredUserTypes.push(userItem);
+                        }
                     }
+
                 });
                 this.userTypeList = filteredUserTypes;
             },
@@ -1206,7 +1214,7 @@
                         });
                         this.usertype = "";
                         if (index != -1) {
-                            this.setUserTypeByUser(this.list[index].usertype);
+                            this.setUserTypeByUser(this.list[index].usertype, false);
                         } else {
                             this.userTypeList = [];
                         }
@@ -1229,7 +1237,7 @@
             me.queryForwardParams();
             me.getDeviceType();
             me.getUserInfoList();
-            me.setUserTypeByUser(me.userType);
+            me.setUserTypeByUser(me.userType, true);
             this.queryDevicesTree();
         },
     })
