@@ -11875,6 +11875,14 @@ function idleReport(groupslist) {
                 })
                 records.forEach(function(record, index) {
                     record.index = index + 1;
+
+                    if (record.slat == 0) {
+                        record.slat = record.elat;
+                    }
+                    if (record.slon == 0) {
+                        record.slon = record.elon;
+                    }
+
                     var slat = record.slat.toFixed(5);
                     var slon = record.slon.toFixed(5);
                     var saddress = LocalCacheMgr.getAddress(slon, slat);
