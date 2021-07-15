@@ -594,8 +594,10 @@
                                         if (v[i].seriesName == totoil || v[i].seriesName == usoil1 || v[i].seriesName == usoil2 || v[i].seriesName == usoil3 || v[i].seriesName == usoil4 ||
                                             v[i].seriesName == totoil1 || v[i].seriesName == usoil11 || v[i].seriesName == usoil21 || v[i].seriesName == usoil31 || v[i].seriesName == usoil41) {
                                             data += v[i].seriesName + ' : ' + v[i].value + 'L<br/>';
-                                        } else {
+                                        } else if (v[i].seriesName == speed) {
                                             data += v[i].seriesName + ' : ' + v[i].value + 'Km/h<br/>';
+                                        } else {
+                                            data += v[i].seriesName + ' : ' + v[i].value + '<br/>';
                                         }
                                     }
                                 }

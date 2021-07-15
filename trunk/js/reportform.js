@@ -1344,6 +1344,7 @@ function oilMonthReport() {
         },
         methods: {
             exportData: function() {
+                var month = DateFormat.format(this.month, 'yyyy_MM');
                 var columns = [
                     { key: 'index', width: 70, title: vRoot.$t("reportForm.index"), fixed: 'left' },
                     { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 100, fixed: 'left' },
@@ -1353,6 +1354,7 @@ function oilMonthReport() {
                     { title: vRoot.$t("reportForm.fuelVolume") + '(L)', key: 'addoil', width: 130, fixed: 'left' },
                     { title: vRoot.$t("reportForm.oilLeakage") + '(L)', key: 'leakoil', width: 130, fixed: 'left' },
                     { title: vRoot.$t("reportForm.idleoil") + '(L)', key: 'idleoil', width: 130, fixed: 'left' },
+                    { title: isZh ? '月份' : 'Month', key: 'month', width: 100, fixed: 'left' },
                 ]
 
                 var day = this.getTheMonthDays(this.month);
@@ -1366,7 +1368,7 @@ function oilMonthReport() {
 
 
                 this.$refs.table.exportCsv({
-                    filename: vRoot.$t('reportForm.oilMonthReport') + '_' + DateFormat.format(this.month, 'yyyy-MM'),
+                    filename: vRoot.$t('reportForm.oilMonthReport') + '_' + month,
                     original: false,
                     columns: columns,
                     data: this.records
@@ -1416,8 +1418,9 @@ function oilMonthReport() {
                     }
                     me.loading = true;
                     utils.sendAjax(url, data, function(resp) {
-                        console.log(resp);
+
                         me.loading = false;
+                        var month = DateFormat.format(me.month, 'yyyy_MM');
                         if (resp.status === 0) {
                             var dayLen = me.getTheMonthDays(me.month);
                             if (resp.devices.length) {
@@ -1444,7 +1447,7 @@ function oilMonthReport() {
                                             leakoil += day.leakoil;
                                             idleoil += day.idleoil;
 
-                                            item['disAndOil' + Number(key)] = item['day' + String(parseInt(key))] + '/' + item['day' + String(parseInt(key)) + 'oil'] + 'L';
+                                            item['disAndOil' + Number(key)] = item['day' + String(parseInt(key))] + '/' + (item['day' + String(parseInt(key)) + 'oil'] / 100) + 'L';
                                         }
                                     }
                                     for (var k = 0; k < dayLen; k++) {
@@ -1458,7 +1461,7 @@ function oilMonthReport() {
                                     item.addoil = (addoil / 100);
                                     item.leakoil = (leakoil / 100);
                                     item.idleoil = (idleoil / 100);
-
+                                    item.month = month;
                                     item.devicename = "\t" + (vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicename : deviceid);
                                     item.deviceid = "\t" + deviceid;
                                     item.totaldistance = utils.getMileage(totaldistance);
