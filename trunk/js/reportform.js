@@ -1351,6 +1351,8 @@ function oilMonthReport() {
                     { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 100, fixed: 'left' },
                     { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 100, fixed: 'left' },
                     { title: isZh ? '总消耗(L)' : 'Consumption(L)', key: 'totaloil', sortable: true, width: 110, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.avgrunoilper100km") + '(L)', key: 'avgrunoilper100km', width: 130, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.avgoilper100km") + '(L)', key: 'avgoilper100km', width: 130, fixed: 'left' },
                     { title: vRoot.$t("reportForm.fuelVolume") + '(L)', key: 'addoil', width: 130, fixed: 'left' },
                     { title: vRoot.$t("reportForm.oilLeakage") + '(L)', key: 'leakoil', width: 130, fixed: 'left' },
                     { title: vRoot.$t("reportForm.idleoil") + '(L)', key: 'idleoil', width: 130, fixed: 'left' },
@@ -1433,7 +1435,10 @@ function oilMonthReport() {
                                     var addoil = 0;
                                     var leakoil = 0;
                                     var idleoil = 0;
-
+                                    var avgrunoilper100km = 0;
+                                    var avgoilper100km = 0;
+                                    var avgRunCount = 0;
+                                    var avgPerCount = 0;
                                     for (var j = 0; j < dayLen; j++) {
                                         var day = records[j];
                                         if (day) {
@@ -1448,6 +1453,17 @@ function oilMonthReport() {
                                             idleoil += day.idleoil;
 
                                             item['disAndOil' + Number(key)] = item['day' + String(parseInt(key))] + '/' + (item['day' + String(parseInt(key)) + 'oil'] / 100) + 'L';
+                                            console.log('runoilper100km', day.runoilper100km)
+                                            console.log('oilper100km', day.oilper100km)
+
+                                            if (day.runoilper100km > 0) {
+                                                avgRunCount++;
+                                                avgrunoilper100km += day.runoilper100km;
+                                            }
+                                            if (day.oilper100km > 0) {
+                                                avgPerCount++;
+                                                avgoilper100km += day.oilper100km;
+                                            }
                                         }
                                     }
                                     for (var k = 0; k < dayLen; k++) {
@@ -1456,6 +1472,19 @@ function oilMonthReport() {
                                             item[key] = '-';
                                         }
                                     }
+
+                                    if (avgRunCount > 0) {
+                                        item.avgrunoilper100km = (avgrunoilper100km / avgRunCount).toFixed(2);
+                                    } else {
+                                        item.avgrunoilper100km = 0;
+                                    }
+                                    if (avgPerCount > 0) {
+                                        item.avgoilper100km = (avgoilper100km / avgPerCount).toFixed(2);
+                                    } else {
+                                        item.avgoilper100km = 0;
+                                    }
+
+
 
                                     item.totaloil = (totaloil / 100);
                                     item.addoil = (addoil / 100);
@@ -1497,16 +1526,45 @@ function oilMonthReport() {
                 month = month == 12 ? 1 : month;
                 return new Date(new Date(year, month, 1) - 1).getDate();
             },
+            getInfoContent: function(h, info) {
+                var children = [];
+                if (info) {
+                    var totalacc = (info.totalacc / 1000 / 3600).toFixed(2);
+                    var idleoil = info.idleoil / 100;
+                    var runoilper100km = info.runoilper100km;
+                    var totaldistance = (info.totaldistance / 1000).toFixed(2)
+                    var totalaccStr = utils.timeStamp(info.totalacc);
+                    var totaloil = info.totaloil / 100;
+                    var addoil = info.addoil / 100;
+                    var leakoil = info.leakoil / 100;
+
+                    children.push(h('div', vRoot.$t("reportForm.fuelVolume") + ':' + addoil + 'L'));
+                    children.push(h('div', vRoot.$t("reportForm.oilLeakage") + ':' + leakoil + 'L'));
+                    children.push(h('div', vRoot.$t("reportForm.idleoil") + ':' + idleoil + 'L'));
+                    children.push(h('div', vRoot.$t("reportForm.workingHours") + ':' + totalaccStr));
+                    children.push(h('div', vRoot.$t("reportForm.runoilper100km") + ':' + runoilper100km + 'L'));
+                    children.push(h('div', vRoot.$t("reportForm.fuelConsumption100km") + ':' + info.oilper100km + 'L'));
+                    children.push(h('div', vRoot.$t("reportForm.averageSpeed") + ':' + info.avgspeed.toFixed(2) + 'Km/h'));
+
+
+                } else {
+                    children.push(h('div', {}, isZh ? '空' : "Empty"));
+                }
+
+                return children;
+            }
         },
         watch: {
             month: function(newMonth) {
                 // sortable: true,
+                var self = this;
                 var columns = [
                     { key: 'index', width: 70, title: vRoot.$t("reportForm.index"), fixed: 'left' },
                     { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 100, fixed: 'left' },
-                    { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 100, fixed: 'left' },
                     { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 100, fixed: 'left' },
                     { title: isZh ? '总消耗(L)' : 'Consumption(L)', key: 'totaloil', sortable: true, width: 110, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.avgrunoilper100km") + '(L)', key: 'avgrunoilper100km', width: 130, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.avgoilper100km") + '(L)', key: 'avgoilper100km', width: 130, fixed: 'left' },
                     { title: vRoot.$t("reportForm.fuelVolume") + '(L)', key: 'addoil', width: 130, fixed: 'left' },
                     { title: vRoot.$t("reportForm.oilLeakage") + '(L)', key: 'leakoil', width: 130, fixed: 'left' },
                     { title: vRoot.$t("reportForm.idleoil") + '(L)', key: 'idleoil', width: 130, fixed: 'left' },
@@ -1520,7 +1578,7 @@ function oilMonthReport() {
 
                 for (var i = 1; i <= day; i++) {
                     var key = 'day' + i;
-                    (function(key) {
+                    (function(key, i) {
                         columns.push({
                             key: key,
                             title: i,
@@ -1529,15 +1587,38 @@ function oilMonthReport() {
                             render: function(h, params) {
                                 var row = params.row;
                                 var oil = row[key + 'oil'];
-                                return h(
-                                    'div', {}, [
+                                var dayRecord = row.records[i - 1];
+                                var contentChildren = self.getInfoContent(h, dayRecord);
+                                return h('Poptip', {
+                                    props: {
+                                        // width: 240,
+                                        // height: 60,
+                                        // content: content
+                                        // popperClass: 'poptip-popper-class',
+                                        placement: "bottom"
+                                    },
+                                }, [
+                                    h('Button', {
+                                        props: {
+                                            type: 'info',
+                                            size: 'small'
+                                        },
+                                    }, [
                                         h('p', {}, row[key]),
                                         h('p', {}, oil ? (row[key + 'oil'] / 100) + 'L' : '-'),
-                                    ]
-                                )
+                                    ]),
+                                    h(
+                                        'div', {
+                                            slot: 'content',
+                                            attrs: {
+                                                slot: "content"
+                                            }
+                                        }, contentChildren
+                                    )
+                                ]);
                             }
                         })
-                    })(key)
+                    })(key, i)
                 }
 
                 this.columns = columns;
