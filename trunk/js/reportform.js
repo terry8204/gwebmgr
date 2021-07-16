@@ -1454,7 +1454,7 @@ function oilMonthReport() {
                                             leakoil += day.leakoil;
                                             idleoil += day.idleoil;
                                             item['disAndOil' + Number(key)] = item['day' + String(parseInt(key))] + '/' + (item['day' + String(parseInt(key)) + 'oil'] / 100) + 'L';
-
+                                            day.yearmonth = yearmonthArr[0] + "-" + yearmonthArr[1];
                                             if (day.runoilper100km > 0) {
                                                 avgRunCount++;
                                                 avgrunoilper100km += day.runoilper100km;
@@ -1577,13 +1577,20 @@ function oilMonthReport() {
                         columns.push({
                             key: key,
                             title: i,
-                            width: 86,
+                            width: 88,
                             align: 'center',
                             sortable: true,
                             render: function(h, params) {
                                 var row = params.row;
                                 var oil = row[key + 'oil'];
-                                var dayRecord = row.records[i - 1];
+                                var dayRecord = null;
+                                row.records.forEach(function(item) {
+                                    var yearmonth = item.yearmonth + (i > 9 ? '-' + i : '-0' + i);
+                                    if (item.statisticsday == yearmonth) {
+                                        dayRecord = item
+                                    }
+                                })
+
                                 var contentChildren = self.getInfoContent(h, dayRecord);
                                 return h('Poptip', {
                                     props: {

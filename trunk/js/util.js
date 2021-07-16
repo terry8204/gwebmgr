@@ -1189,7 +1189,7 @@ var utils = {
         if (totaldistance == 0) {
             return totaldistance + 'Km';
         };
-        return Number((totaldistance * 1.0 / 1000).toFixed(3)) + 'Km';
+        return Number((totaldistance * 1.0 / 1000).toFixed(2)) + 'Km';
     },
     getI18n: function() {
         return new VueI18n({
