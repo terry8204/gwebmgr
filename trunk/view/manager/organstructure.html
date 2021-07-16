@@ -568,6 +568,8 @@
 
                 utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
+                        rootuser = null;
+                        isNeedRefresh = true;
                         if (!isEditUser) {
                             me.zTreeObj.addNodes(me.parentNode, {
                                 name: data.username,
@@ -657,6 +659,8 @@
 
                 utils.sendAjax(url, data, function(resp) {
                     if (resp.status == 0) {
+                        rootuser = null;
+                        isNeedRefresh = true;
                         me.parentNode.name = data.devicename; // 修改name属性
                         me.parentNode.devicename = data.devicename; // 修改name属性
                         me.zTreeObj.updateNode(me.parentNode); // 调用updateNode修改属性，一定要加这一句，不然reAsyncChildNodes没有任何反应
