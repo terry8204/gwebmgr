@@ -1579,7 +1579,8 @@ function oilMonthReport() {
                         columns.push({
                             key: key,
                             title: i,
-                            width: 85,
+                            width: 90,
+                            align: 'center',
                             sortable: true,
                             render: function(h, params) {
                                 var row = params.row;
@@ -1600,6 +1601,9 @@ function oilMonthReport() {
                                             type: 'info',
                                             size: 'small'
                                         },
+                                        style: {
+                                            width: '70px'
+                                        }
                                     }, [
                                         h('p', {}, row[key]),
                                         h('p', {}, oil ? (row[key + 'oil'] / 100) + 'L' : '-'),
