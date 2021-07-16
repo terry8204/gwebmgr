@@ -1579,7 +1579,7 @@ function oilMonthReport() {
                         columns.push({
                             key: key,
                             title: i,
-                            width: 100,
+                            width: 85,
                             sortable: true,
                             render: function(h, params) {
                                 var row = params.row;
