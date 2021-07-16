@@ -928,6 +928,8 @@
                 }
                 utils.sendAjax(url, data, function(respData) {
                     if (respData.status === 0) {
+                        rootuser = null;
+                        isNeedRefresh = true;
                         if (respData.total == respData.success) {
                             me.$Message.success(vRoot.$t('device.actionSucc'));
                             me.tableData = [];
