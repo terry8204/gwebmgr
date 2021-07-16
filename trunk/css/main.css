@@ -1843,11 +1843,13 @@ div.ivu-modal-body>div.ivu-tabs {
 #time-oil-consumption .ivu-poptip-inner {
     background-color: #585E6B;
     color: #ffffff;
+    text-align: left;
 }
 
 #month-oil .ivu-poptip-popper[x-placement^=bottom] .ivu-poptip-arrow:after,
 #time-oil-consumption .ivu-poptip-popper[x-placement^=bottom] .ivu-poptip-arrow:after {
     border-bottom-color: #585E6B;
+    text-align: left;
 }
 
 #month-oil .ivu-table-cell {
