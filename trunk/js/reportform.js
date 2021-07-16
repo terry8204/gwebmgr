@@ -1451,10 +1451,7 @@ function oilMonthReport() {
                                             addoil += day.addoil;
                                             leakoil += day.leakoil;
                                             idleoil += day.idleoil;
-
                                             item['disAndOil' + Number(key)] = item['day' + String(parseInt(key))] + '/' + (item['day' + String(parseInt(key)) + 'oil'] / 100) + 'L';
-                                            console.log('runoilper100km', day.runoilper100km)
-                                            console.log('oilper100km', day.oilper100km)
 
                                             if (day.runoilper100km > 0) {
                                                 avgRunCount++;
@@ -1563,11 +1560,11 @@ function oilMonthReport() {
                     { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 100, fixed: 'left' },
                     { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 100, fixed: 'left' },
                     { title: isZh ? '总消耗(L)' : 'Consumption(L)', key: 'totaloil', sortable: true, width: 110, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.avgrunoilper100km") + '(L)', key: 'avgrunoilper100km', width: 130, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.avgoilper100km") + '(L)', key: 'avgoilper100km', width: 130, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.fuelVolume") + '(L)', key: 'addoil', width: 130, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.oilLeakage") + '(L)', key: 'leakoil', width: 130, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.idleoil") + '(L)', key: 'idleoil', width: 130, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.avgrunoilper100km"), key: 'avgrunoilper100km', width: 130, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.avgoilper100km"), key: 'avgoilper100km', width: 100, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.fuelVolume"), key: 'addoil', width: 90, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.oilLeakage"), key: 'leakoil', width: 90, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.idleoil"), key: 'idleoil', width: 90, fixed: 'left' },
 
                 ];
 
