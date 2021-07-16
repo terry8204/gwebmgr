@@ -1179,11 +1179,6 @@ function oilMonthDetail(groupslist) {
                     width: 125,
                 },
                 {
-                    title: vRoot.$t("alarm.devNum"),
-                    key: 'deviceid',
-                    width: 125,
-                },
-                {
                     title: vRoot.$t('reportForm.mileage') + '(Km)',
                     key: 'totaldistance',
                     width: 110,
@@ -1249,6 +1244,13 @@ function oilMonthDetail(groupslist) {
             exportData: function() {
                 var columns = deepClone(this.columns);
                 var tableData = deepClone(this.tableData);
+                columns.splice(2, 0, {
+                    title: vRoot.$t("alarm.devNum"),
+                    key: 'deviceid',
+                    width: 125,
+                })
+
+
                 tableData.forEach(function(item) {
                     item.deviceid = '\t' + item.deviceid;
                     item.devicename = '\t' + item.devicename;
