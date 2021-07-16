@@ -1849,3 +1849,8 @@ div.ivu-modal-body>div.ivu-tabs {
 #time-oil-consumption .ivu-poptip-popper[x-placement^=bottom] .ivu-poptip-arrow:after {
     border-bottom-color: #585E6B;
 }
+
+#month-oil .ivu-table-cell {
+    padding-left: 8px;
+    padding-right: 8px;
+}

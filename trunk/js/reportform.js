@@ -1557,14 +1557,14 @@ function oilMonthReport() {
                 var self = this;
                 var columns = [
                     { key: 'index', width: 70, title: vRoot.$t("reportForm.index"), fixed: 'left' },
-                    { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 100, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 100, fixed: 'left' },
-                    { title: isZh ? '总消耗(L)' : 'Consumption(L)', key: 'totaloil', sortable: true, width: 110, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.avgrunoilper100km"), key: 'avgrunoilper100km', width: 130, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.avgoilper100km"), key: 'avgoilper100km', width: 100, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.fuelVolume"), key: 'addoil', width: 90, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.oilLeakage"), key: 'leakoil', width: 90, fixed: 'left' },
-                    { title: vRoot.$t("reportForm.idleoil"), key: 'idleoil', width: 90, fixed: 'left' },
+                    { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 80, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 80, fixed: 'left' },
+                    { title: isZh ? '总消耗(L)' : 'Consumption(L)', key: 'totaloil', sortable: true, width: 90, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.avgrunoilper100km"), key: 'avgrunoilper100km', width: 110, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.avgoilper100km"), key: 'avgoilper100km', width: 80, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.fuelVolume"), key: 'addoil', width: 70, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.oilLeakage"), key: 'leakoil', width: 70, fixed: 'left' },
+                    { title: vRoot.$t("reportForm.idleoil"), key: 'idleoil', width: 70, fixed: 'left' },
 
                 ];
 
@@ -1579,7 +1579,7 @@ function oilMonthReport() {
                         columns.push({
                             key: key,
                             title: i,
-                            width: 90,
+                            width: 86,
                             align: 'center',
                             sortable: true,
                             render: function(h, params) {
