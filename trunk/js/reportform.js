@@ -1556,7 +1556,7 @@ function oilMonthReport() {
                 // sortable: true,
                 var self = this;
                 var columns = [
-                    { key: 'index', width: 70, title: vRoot.$t("reportForm.index"), fixed: 'left' },
+                    { key: 'index', width: 50, title: vRoot.$t("reportForm.index"), fixed: 'left' },
                     { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 80, fixed: 'left' },
                     { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true, width: 80, fixed: 'left' },
                     { title: isZh ? '总消耗(L)' : 'Consumption(L)', key: 'totaloil', sortable: true, width: 90, fixed: 'left' },
@@ -1565,13 +1565,9 @@ function oilMonthReport() {
                     { title: vRoot.$t("reportForm.fuelVolume"), key: 'addoil', width: 70, fixed: 'left' },
                     { title: vRoot.$t("reportForm.oilLeakage"), key: 'leakoil', width: 70, fixed: 'left' },
                     { title: vRoot.$t("reportForm.idleoil"), key: 'idleoil', width: 70, fixed: 'left' },
-
                 ];
 
-
                 var day = this.getTheMonthDays(newMonth);
-
-
 
                 for (var i = 1; i <= day; i++) {
                     var key = 'day' + i;
