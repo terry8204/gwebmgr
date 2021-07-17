@@ -1622,7 +1622,8 @@ function oilMonthReport() {
                                         },
                                         style: {
                                             width: '70px',
-                                            backgroundColor: color
+                                            backgroundColor: color,
+                                            color: '#ffffff'
                                         }
                                     }, [
                                         h('p', {}, row[key]),
