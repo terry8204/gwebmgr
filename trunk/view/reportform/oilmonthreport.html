@@ -34,9 +34,22 @@
         </div>
     </Row>
     <div style="margin:10px;">
-        <i-table ref="table" :columns="columns" size="small" :height="lastTableHeight" border :data="tableData" :loading="loading"></i-table>
+        <i-table ref="table" :columns="columns" size="small" :height="lastTableHeight" border :data="tableData" @on-row-dblclick="onDbClickRow" :loading="loading"></i-table>
     </div>
     <div style="padding-left:10px;">
         <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
     </div>
+
+    <Modal v-model="model" width="1000">
+        <p slot="header" style="color:#f60;text-align:center">
+            <Icon type="information-circled"></Icon>
+            <span>{{$t("reportForm.oilMonthDetail")}}</span>
+        </p>
+        <div>
+            <i-table ref="table" :columns="columnsDetail" size="small" :data="tableDataDetail" height="600"></i-table>
+        </div>
+        <div slot="footer">
+
+        </div>
+    </Modal>
 </div>

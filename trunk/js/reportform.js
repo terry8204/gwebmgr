@@ -1343,8 +1343,112 @@ function oilMonthReport() {
                     return (date && date.valueOf()) > Date.now();
                 }
             },
+
+            columnsDetail: [{
+                    title: vRoot.$t("reportForm.time"),
+                    key: 'statisticsday',
+                    width: 105,
+                },
+                {
+                    title: vRoot.$t("alarm.devName"),
+                    key: 'devicename',
+                    width: 125,
+                },
+                {
+                    title: vRoot.$t('reportForm.mileage') + '(Km)',
+                    key: 'totaldistance',
+                    width: 110,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t("reportForm.oilConsumption") + '(L)',
+                    key: 'totaloil',
+                    width: 130,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t("reportForm.fuelVolume") + '(L)',
+                    key: 'addoil',
+                    width: 130,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t("reportForm.oilLeakage") + '(L)',
+                    key: 'leakoil',
+                    width: 130,
+                    sortable: true,
+                },
+
+
+                { title: vRoot.$t('reportForm.idleoil') + '(L)', key: 'idleoil', width: 120, sortable: true, },
+                {
+                    title: vRoot.$t("reportForm.workingHours"),
+                    key: 'totalaccStr',
+                    width: 140,
+                    sortable: true,
+
+                },
+                { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 160, sortable: true, },
+                {
+                    title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
+                    key: 'oilper100km',
+                    width: 140,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
+                    key: 'oilperhour',
+                    width: 130,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t('reportForm.averageSpeed') + '(Km/h)',
+                    key: 'averagespeed',
+                    width: 140,
+                    sortable: true,
+                },
+
+            ],
+            tableDataDetail: [],
+            model: false
         },
         methods: {
+            onDbClickRow: function(row) {
+                var tableDataDetail = [];
+                row.records.forEach(function(item) {
+                    var devicename = vstore.state.deviceInfos[item.deviceid] ? vstore.state.deviceInfos[item.deviceid].devicename : item.deviceid;
+                    var totalacc = (item.totalacc / 1000 / 3600).toFixed(2);
+                    var idleoil = item.idleoil / 100;
+                    var runoilper100km = item.runoilper100km;
+                    var totaldistance = (item.totaldistance / 1000).toFixed(2)
+                    var totalaccStr = utils.timeStamp(item.totalacc);
+                    var totaloil = item.totaloil / 100;
+                    var addoil = item.addoil / 100;
+                    var leakoil = item.leakoil / 100;
+                    if (item.totaldistance == 0 || totalacc == 0) {
+                        var averagespeed = 0
+                    } else {
+                        var averagespeed = (Number(item.totaldistance) / Number(totalacc)).toFixed(2);
+                    }
+
+                    tableDataDetail.push({
+                        statisticsday: item.statisticsday,
+                        devicename: devicename,
+                        averagespeed: averagespeed,
+                        idleoil: idleoil,
+                        runoilper100km: runoilper100km,
+                        totaldistance: totaldistance,
+                        totalaccStr: totalaccStr,
+                        totaloil: totaloil,
+                        addoil: addoil,
+                        leakoil: leakoil,
+                        oilper100km: item.oilper100km,
+                        oilperhour: item.oilperhour,
+                    })
+                })
+                this.tableDataDetail = tableDataDetail;
+                this.model = true;
+            },
             exportData: function() {
                 var month = DateFormat.format(this.month, 'yyyy_MM');
                 var columns = [
