@@ -7744,7 +7744,7 @@ function timeOilConsumption(groupslist) {
                 { title: isZh ? '平均速度(Km/h)' : 'Average speed (km / h)', key: 'avgspeed', width: 140 },
                 { title: isZh ? '时长' : 'Duration', key: 'durationStr', width: 110 },
                 { title: isZh ? '阀值(L)' : 'Threshold', key: 'threshold', width: 100 },
-
+                { title: isZh ? '人工编辑' : 'Manual editing', key: 'mauneditStr', width: 100 },
             ],
             oilTable: [],
             cloneDataList: [],
@@ -7825,8 +7825,14 @@ function timeOilConsumption(groupslist) {
                                         record.editting = false;
                                         record.saving = false;
                                         record.durationStr = utils.timeStamp(record.duration);
+                                        if (isZh) {
+                                            record.mauneditStr = record.maunedit == 1 ? '是' : '否'
+                                        } else {
+                                            record.mauneditStr = record.maunedit == 1 ? 'Yes' : 'NO'
+                                        }
 
                                         oilArr.push(record);
+
                                         index++;
                                     }
                                 });
@@ -7853,6 +7859,12 @@ function timeOilConsumption(groupslist) {
                     }
                 })
             },
+            rowClassName(row, index) {
+                if (row.maunedit === 1) {
+                    return 'demo-table-info-row';
+                }
+                return '';
+            },
             onRowClick: function(row) {
                 var me = this;
                 this.isShowCard = true;
@@ -7864,6 +7876,7 @@ function timeOilConsumption(groupslist) {
                     }
                 });
             },
+
             queryTrackDetail: function(row, callback) {
                 var data = {
                     deviceid: this.queryDeviceId,

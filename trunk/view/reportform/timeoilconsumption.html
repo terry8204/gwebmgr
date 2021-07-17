@@ -47,7 +47,7 @@
         <div style="margin:10px;">
             <Tabs>
                 <Tab-pane :label="$t('reportForm.addOrLeakOilList')">
-                    <i-table :columns="oilColumns" :data="oilTable" :height="lastTableHeight" border></i-table>
+                    <i-table :columns="oilColumns" :data="oilTable" :row-class-name="rowClassName" :height="lastTableHeight" border></i-table>
                     <div style="padding:5px">
                         <i-button type="primary" @click="addOilRecord">{{$t("user.add")}}</i-button>
                     </div>

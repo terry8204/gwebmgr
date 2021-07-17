@@ -1666,11 +1666,16 @@ var utils = {
                         var oil = nearestTrack.totalad;
                         var difference = (oilRecord.eoil - oilRecord.soil);
                         var color = '';
-                        if (difference > 0) {
-                            color = 'green';
+                        if (oilRecord.maunedit === 1) {
+                            color = '#f26c4f';
                         } else {
-                            color = 'red';
+                            if (difference > 0) {
+                                color = 'green';
+                            } else {
+                                color = 'red';
+                            }
                         }
+
 
                         var markPoint = {
                             coord: [nearestTrack.index, oil], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
