@@ -40,7 +40,7 @@
         <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
     </div>
 
-    <Modal v-model="model" width="1000">
+    <Modal v-model="model" width="1000" :mask-closable="false">
         <p slot="header" style="color:#f60;text-align:center">
             <Icon type="information-circled"></Icon>
             <span>{{$t("reportForm.oilMonthDetail")}}</span>
