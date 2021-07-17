@@ -24,6 +24,8 @@ var isPlayAlarmVoice = false;
 var firstDistance = 0;
 var gIsInitPinYin = false; //是否给设备列表给了设备列表的拼音
 
+
+
 Vue.use(VTree.VTree);
 // vuex store
 vstore = new Vuex.Store({

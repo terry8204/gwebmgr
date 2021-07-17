@@ -1857,8 +1857,8 @@ div.ivu-modal-body>div.ivu-tabs {
     padding-right: 8px;
 }
 
-#time-oil-consumption .demo-table-info-row,
-#time-oil-consumption .demo-table-info-row>td {
+.demo-table-info-row,
+.demo-table-info-row>td {
     background-color: #fff799 !important;
     color: #fff;
 }

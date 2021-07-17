@@ -10471,6 +10471,7 @@ function refuelingReport(groupslist) {
                     },
                 },
                 { title: vRoot.$t('monitor.remarks'), key: 'marker', width: 100 },
+                { title: isZh ? '人工编辑' : 'Manual editing', key: 'mauneditStr', width: 100 },
                 {
                     title: vRoot.$t('alarm.action'),
                     width: 180,
@@ -10515,6 +10516,12 @@ function refuelingReport(groupslist) {
         },
         mixins: [treeMixin],
         methods: {
+            rowClassName(row, index) {
+                if (row.maunedit === 1) {
+                    return 'demo-table-info-row';
+                }
+                return '';
+            },
             initMap: function() {
                 this.markerLayer = null;
                 this.mapInstance = utils.initWindowMap('refueling-details-map');
@@ -10702,6 +10709,11 @@ function refuelingReport(groupslist) {
                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
                     record.durationStr = utils.timeStamp(record.duration);
                     record.addoil = oil;
+                    if (isZh) {
+                        record.mauneditStr = record.maunedit == 1 ? '是' : '否'
+                    } else {
+                        record.mauneditStr = record.maunedit == 1 ? 'Yes' : 'NO'
+                    }
                 });
                 this.tableData = records;
             },
@@ -10894,6 +10906,7 @@ function oilLeakageReport(groupslist) {
                 { title: isZh ? '平均速度(Km/h)' : 'Average speed (km / h)', key: 'avgspeed', width: 130 },
                 { title: isZh ? '时长' : 'Duration', key: 'durationStr', width: 110 },
                 { title: isZh ? '阀值(L)' : 'Threshold', key: 'threshold', width: 100 },
+                { title: isZh ? '人工编辑' : 'Manual editing', key: 'mauneditStr', width: 100 },
                 {
                     title: vRoot.$t('reportForm.saddress'),
                     width: 300,
@@ -10975,6 +10988,12 @@ function oilLeakageReport(groupslist) {
         },
         mixins: [treeMixin],
         methods: {
+            rowClassName(row, index) {
+                if (row.maunedit === 1) {
+                    return 'demo-table-info-row';
+                }
+                return '';
+            },
             initMap: function() {
                 this.markerLayer = null;
                 this.mapInstance = utils.initWindowMap('oil-leakage-details-map');
@@ -11161,6 +11180,11 @@ function oilLeakageReport(groupslist) {
                     record.endtimeStr = DateFormat.longToDateTimeStr(record.endtime, timeDifference);
                     record.addoil = oil;
                     record.durationStr = utils.timeStamp(record.duration);
+                    if (isZh) {
+                        record.mauneditStr = record.maunedit == 1 ? '是' : '否'
+                    } else {
+                        record.mauneditStr = record.maunedit == 1 ? 'Yes' : 'NO'
+                    }
                 });
                 this.tableData = records;
             },

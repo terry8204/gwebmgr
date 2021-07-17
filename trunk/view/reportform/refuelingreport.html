@@ -69,7 +69,7 @@
                     <i-table ref="totalTable" size="small" :columns="allColumns" :data="allTableData" :height="lastTableHeight" :loading="loading"></i-table>
                 </Tab-pane>
                 <Tab-pane :label="$t('reportForm.addOilDetailed')" name="tabDetail">
-                    <i-table ref="detailTable" size="small" :columns="columns" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
+                    <i-table ref="detailTable" size="small" :columns="columns" :row-class-name="rowClassName" :height="lastTableHeight" :data="tableData" :loading="loading" @on-sort-change="onSortChange"></i-table>
                 </Tab-pane>
                 <i-button type="primary" size="small" slot="extra" style="margin:7px 5px 0 0;" @click="exportData">{{$t("reportForm.exportData")}}</i-button>
             </Tabs>
