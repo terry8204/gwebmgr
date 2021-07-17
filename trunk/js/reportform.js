@@ -1551,6 +1551,19 @@ function oilMonthReport() {
                 }
 
                 return children;
+            },
+            getDayColor: function(info) {
+                var color = 'grey';
+                if (info) {
+                    if (info.leakoil > 0) {
+                        color = 'red';
+                    } else {
+                        if (info.addoil > 0) {
+                            color = '#2DB7F5';
+                        }
+                    }
+                }
+                return color;
             }
         },
         watch: {
@@ -1592,6 +1605,7 @@ function oilMonthReport() {
                                 })
 
                                 var contentChildren = self.getInfoContent(h, dayRecord);
+                                var color = self.getDayColor(dayRecord);
                                 return h('Poptip', {
                                     props: {
                                         // width: 240,
@@ -1603,11 +1617,12 @@ function oilMonthReport() {
                                 }, [
                                     h('Button', {
                                         props: {
-                                            type: 'info',
+                                            // type: 'info',
                                             size: 'small'
                                         },
                                         style: {
-                                            width: '70px'
+                                            width: '70px',
+                                            backgroundColor: color
                                         }
                                     }, [
                                         h('p', {}, row[key]),
