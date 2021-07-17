@@ -8627,6 +8627,8 @@ function timeOilConsumption(groupslist) {
                         self.$Message.success(vRoot.$t('message.changeSucc'));
                     } else if (resp.status == 1) {
                         self.$Message.success(vRoot.$t('message.deleteOilRecordTip'));
+                    } else if (resp.status == 2) {
+                        self.$Message.success(vRoot.$t('message.deleteOilRecordTip2'));
                     } else {
                         self.$Message.error(vRoot.$t('message.clearFail'));
                     }
