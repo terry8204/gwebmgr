@@ -1348,6 +1348,7 @@ function oilMonthReport() {
                     title: vRoot.$t("reportForm.time"),
                     key: 'statisticsday',
                     width: 105,
+                    fixed: 'left'
                 },
                 {
                     title: vRoot.$t("alarm.devName"),
@@ -1432,6 +1433,7 @@ function oilMonthReport() {
                     }
 
                     tableDataDetail.push({
+                        deviceid: '\t' + item.deviceid,
                         statisticsday: item.statisticsday,
                         devicename: devicename,
                         averagespeed: averagespeed,
@@ -1448,6 +1450,17 @@ function oilMonthReport() {
                 })
                 this.tableDataDetail = tableDataDetail;
                 this.model = true;
+            },
+            exportDataDetail: function() {
+
+                var columnsDetail = deepClone(this.columnsDetail);
+                columnsDetail.splice(2, 0, { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 100, })
+                this.$refs.tableDetail.exportCsv({
+                    filename: vRoot.$t('reportForm.oilMonthDetail'),
+                    original: false,
+                    columns: columnsDetail,
+                    data: this.tableDataDetail
+                });
             },
             exportData: function() {
                 var month = DateFormat.format(this.month, 'yyyy_MM');

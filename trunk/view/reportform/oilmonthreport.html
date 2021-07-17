@@ -41,12 +41,15 @@
     </div>
 
     <Modal v-model="model" width="1000" :mask-closable="false">
-        <p slot="header" style="color:#f60;text-align:center">
+        <div slot="header" style="color:#f60;text-align:center">
             <Icon type="information-circled"></Icon>
             <span>{{$t("reportForm.oilMonthDetail")}}</span>
-        </p>
+            <div style="float: right;padding-right: 20px;">
+                <i-button @click="exportDataDetail" type="primary" size="small">{{$t("reportForm.exportData")}}</i-button>
+            </div>
+        </div>
         <div>
-            <i-table ref="table" :columns="columnsDetail" size="small" :data="tableDataDetail" height="600"></i-table>
+            <i-table ref="tableDetail" :columns="columnsDetail" size="small" :data="tableDataDetail" height="600"></i-table>
         </div>
         <div slot="footer">
 
