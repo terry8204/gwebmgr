@@ -1667,7 +1667,7 @@ var utils = {
                         var difference = (oilRecord.eoil - oilRecord.soil);
                         var color = '';
                         if (oilRecord.maunedit === 1) {
-                            color = '#f26c4f';
+                            color = '#fff799';
                         } else {
                             if (difference > 0) {
                                 color = 'green';
