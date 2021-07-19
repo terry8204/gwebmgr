@@ -34,7 +34,7 @@
                     <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span>
                 </div>
                 <div style="line-height: 35px;">
-                    <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
+                    <i-input v-model.trim="searchDeviceVal" icon="ios-close-circle-outline" @on-click="cleanValue" style="width: 100%;" icon="search"></i-input>
                 </div>
                 <div :style="streeStyle">
                     <ul id="ztree" class="ztree"></ul>
@@ -959,6 +959,9 @@
                     }
                 }
                 return devicesTreeRecord;
+            },
+            cleanValue: function() {
+                this.searchDeviceVal = '';
             },
             castUsersTreeToDevicesTree: function(devicesTreeRecord, isNeedDevice, isNeedRadio) {
                 var iViewTree = {

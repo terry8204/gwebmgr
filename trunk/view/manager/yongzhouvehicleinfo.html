@@ -3,7 +3,7 @@
         <h3 class="h3-title">永州车辆基本信息</h3>
         <ul>
             <li>
-                <i-input v-model.trim="queryParameter"></i-input>
+                <i-input v-model.trim="queryParameter" icon="ios-close-circle-outline" @on-click="cleanValue"></i-input>
             </li>
             <li>
                 <i-button type="info" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
@@ -695,6 +695,9 @@
                             me.$Message.error(resp.cause);
                         }
                     });
+                },
+                cleanValue: function() {
+                    this.queryParameter = '';
                 },
                 queryYongZhouVehicles: function() {
                     var me = this;

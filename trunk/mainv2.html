@@ -2349,9 +2349,36 @@
     <!-- 统计报表 -->
     <script type="text/x-template" id="report-template">
         <div class="report-wraper full">
-            <div class="report-left-wrap">
+            <div class="report-left-wrap" :style="{width:isCollapse?'49px':'240px'}">
                 <div class="mar-nav">
-                    <i-menu :theme="theme" @on-select="selectditem" :active-name="activeName" :open-names="openedNames" ref="navMenu" accordion>
+                    <div class="collapse-wrap" @click="isCollapse=!isCollapse">
+                        <Icon v-if="isCollapse" type="md-arrow-forward" size="24" />
+                        <Icon v-else type="md-arrow-back" size="24" />
+                    </div>
+                    <div v-if="isCollapse" style="padding-top:49px">
+                        <div v-for="(group,index) in reportNavList">
+                            <Dropdown v-if="group.children" transfer placement="right-start" @on-click="handleClickDropdown">
+                                <div style="width:49px;height:49px;text-align:center;line-height:49px;">
+                                    <Icon :type="group.icon" size="20"></Icon>
+                                </div>
+                                <dropdown-menu slot="list">
+                                    <template v-for="(item,idx) in group.children">
+                                        <DropdownItem :name="item.name" :key="idx">
+                                                {{item.title}}
+                                        </DropdownItem>
+                                    </template>
+                                </dropdown-menu>
+                            </Dropdown>
+                            <div v-else="group.children">
+                                <div style="width:49px;height:49px;text-align:center;line-height:49px;" @click="handleClickDropdown(group.name)">
+                                    <Tooltip :content="group.title" placement="right" transfer>
+                                        <Icon :type="group.icon" size="20"></Icon>
+                                    </Tooltip>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <i-menu v-else :theme="theme" @on-select="selectditem" :active-name="activeName" :open-names="openedNames" ref="navMenu" accordion>
                         <template v-for="(group,index) in reportNavList">
                             <MenuItem :name="group.name" :key="index" v-if="!group.children">
                                 <Icon :type="group.icon"></Icon>
@@ -2373,7 +2400,7 @@
                     </i-menu>
                 </div>
             </div>
-            <div class="report-right-wrap" id="report-right-wrap"></div>
+            <div class="report-right-wrap" id="report-right-wrap" :style="{left:isCollapse?'49px':'240px'}"></div>
         </div>
     </script>
 

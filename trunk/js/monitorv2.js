@@ -3730,7 +3730,7 @@ var monitor = {
             var intervalTime = endTime - startTime;
 
             intervalTime = intervalTime / 1000.0;
-            console.log('duration time: ', intervalTime);
+
         },
         onClickMarker: function(e) {
             var marker = e.target;

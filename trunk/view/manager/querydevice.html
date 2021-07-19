@@ -9,7 +9,7 @@
         <h3 class="h3-title">{{$t("bgMgr.queryDev")}}</h3>
         <ul>
             <li>
-                <i-input v-model.trim="queryString"></i-input>
+                <i-input v-model.trim="queryString" icon="ios-close-circle-outline" @on-click="cleanValue"></i-input>
             </li>
             <li>
                 <i-button type="primary" icon="ios-search" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
@@ -2737,6 +2737,9 @@
                         me.loading = false;
                         me.$Message.error(vRoot.$t('message.networkError'));
                     });
+                },
+                cleanValue: function() {
+                    this.queryString = '';
                 },
                 handleSubmit: function() {
                     var me = this;

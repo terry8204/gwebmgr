@@ -4,7 +4,7 @@
         <div style="padding-left: 10px;height: 32px;">
             <div style="float: left;position: relative;">
                 <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                    <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" style="width: 300px;" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                    <i-input v-model.trim="sosoValue" icon="ios-close-circle-outline" @on-click="cleanValue" @on-change="sosoValueChange" style="width: 300px;" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                     <transition name="fade">
                         <div class="search-item-wrapper" v-show="isShowMatchDev">
                             <Tree :data="treeData"></Tree>
@@ -114,6 +114,10 @@
                 treeData: []
             },
             methods: {
+                cleanValue: function() {
+                    this.sosoValue = '';
+                    this.filterMethod(this.sosoValue);
+                },
                 onClickOutside: function(e) {
                     this.isShowMatchDev = false;
                 },

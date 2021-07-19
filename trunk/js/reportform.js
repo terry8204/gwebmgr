@@ -4740,6 +4740,9 @@ function insureRecords(groupslist) {
             disabled: true
         },
         methods: {
+            cleanSelectedUser: function() {
+                this.sosoValue = '';
+            },
             searchValueChange: function() {
                 if (this.groupslist !== null) {
                     this.searchfilterMethod(this.sosoValue.toLowerCase());
@@ -5166,6 +5169,9 @@ function salesRecord(groupslist) {
             disabled: true
         },
         methods: {
+            cleanSelectedUser: function() {
+                this.sosoValue = '';
+            },
             searchValueChange: function() {
                 if (this.groupslist !== null) {
                     this.searchfilterMethod(this.sosoValue.toLowerCase());
@@ -14075,6 +14081,7 @@ var reportForm = {
         var me = this;
         return {
             theme: "light",
+            isCollapse: false,
             groupslist: [],
             activeName: "reportNav",
             openedNames: [],
@@ -14189,6 +14196,10 @@ var reportForm = {
         selectditem: function(name) {
             var pageName = name.toLowerCase() + ".html";
             this.loadPage(pageName);
+        },
+        handleClickDropdown: function(name) {
+            this.activeName = name;
+            this.selectditem(name);
         },
         loadPage: function(page) {
             vueInstanse && vueInstanse.$destroy && vueInstanse.$destroy();

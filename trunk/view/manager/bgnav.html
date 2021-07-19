@@ -2,7 +2,7 @@
     <div class="full">
         <div style="height: 32px;margin-bottom: 10px;">
             <div style="float: left;padding:0 0 10px 10px;">
-                <i-input v-model="sosoValue"></i-input>
+                <i-input v-model="sosoValue" icon="ios-close-circle-outline" @on-click="cleanValue"></i-input>
             </div>
             <div style="float: left;padding-left: 20px;">
                 <i-button icon="ios-search-outline" @click="handleSearch">{{search}}</i-button>
@@ -25,7 +25,7 @@
         </div>
     </div>
     <script>
-      vueInstanse =  new Vue({
+        vueInstanse = new Vue({
             el: "#bg-nav",
             data: {
                 search: isZh ? '搜索' : 'search',
@@ -34,6 +34,9 @@
                 selectedName: '',
             },
             methods: {
+                cleanValue: function() {
+                    this.sosoValue = '';
+                },
                 handleSearch: function() {
                     for (var i = 0; i < this.bgNavList.length; i++) {
                         var children = this.bgNavList[i].children

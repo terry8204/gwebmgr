@@ -3,7 +3,7 @@
         <h3 class="h3-title">永州驾驶员基本信息</h3>
         <ul>
             <li>
-                <i-input v-model.trim="queryParameter"></i-input>
+                <i-input v-model.trim="queryParameter" icon="ios-close-circle-outline" @on-click="cleanValue"></i-input>
             </li>
             <li>
                 <i-button type="info" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
@@ -33,7 +33,7 @@
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">生日 : &nbsp;</i-col>
                     <i-col span="8">
-                        <date-picker type="date" v-model="brith" style="width: 100%;"></date-picker>  
+                        <date-picker type="date" v-model="brith" style="width: 100%;"></date-picker>
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;国籍 : &nbsp;</i-col>
                     <i-col span="8">
@@ -66,7 +66,7 @@
                 </Row>
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">从业资格证号码 : &nbsp;</i-col>
-                    <i-col span="8">  
+                    <i-col span="8">
                         <i-input v-model.trim="certificateNum"></i-input>
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;准驾车型 : &nbsp;</i-col>
@@ -77,11 +77,11 @@
                 <Row style="margin: 10px 0">
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">资格证初始领证日期:</i-col>
                     <i-col span="8">
-                        <date-picker type="date" v-model="initialDate" style="width: 100%;"></date-picker>  
+                        <date-picker type="date" v-model="initialDate" style="width: 100%;"></date-picker>
                     </i-col>
                     <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">资格证有效起始日期:</i-col>
                     <i-col span="8">
-                        <date-picker type="date" v-model="effectiveDate" style="width: 100%;"></date-picker>  
+                        <date-picker type="date" v-model="effectiveDate" style="width: 100%;"></date-picker>
                     </i-col>
                 </Row>
                 <Row style="margin: 10px 0">
@@ -106,166 +106,176 @@
             i18n: utils.getI18n(),
             data: {
 
-                name:'',//名字' ,
-                sex:'1',//男 女' ,
-                brith:new Date(),//生日 yyyyMMdd ,
-                nationality:'中国',//国籍,默认中国,
-                address:'',//地址' ,
-                phone:'',//电话' ,
-                idNumber:'',//身份证' ,
-                certificateType:'1',//1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
-                certificateNum:'',//从业资格证号码' ,
-                driverType:'',//准驾车型' ,
-                initialDate:new Date(),//资格证初始领证日期' ,
-                effectiveDate:new Date(),//资格证有效起始日期' ,
-                issuOrganization:'',//核发机关' ,
-                relateVehicleNum:'',//驾驶车辆车牌号码
-    
-                isEdit:false,
+                name: '', //名字' ,
+                sex: '1', //男 女' ,
+                brith: new Date(), //生日 yyyyMMdd ,
+                nationality: '中国', //国籍,默认中国,
+                address: '', //地址' ,
+                phone: '', //电话' ,
+                idNumber: '', //身份证' ,
+                certificateType: '1', //1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
+                certificateNum: '', //从业资格证号码' ,
+                driverType: '', //准驾车型' ,
+                initialDate: new Date(), //资格证初始领证日期' ,
+                effectiveDate: new Date(), //资格证有效起始日期' ,
+                issuOrganization: '', //核发机关' ,
+                relateVehicleNum: '', //驾驶车辆车牌号码
+
+                isEdit: false,
                 modal: false,
                 queryParameter: "",
                 loading: true,
-                columns: [
-                        {
-                            title: vRoot.$t("bgMgr.action"),
-                            key: 'action',
-                            width: 130,
-                            render: function(h, params) {
-                                return h('div', [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                editObject = params.row;
-                                                vueInstanse.isEdit = true;
-                                                vueInstanse.modal = true;
-                                                vueInstanse.setRowInfo(editObject);
-            
-                                            }
-                                        }
-                                    }, vRoot.$t("bgMgr.edit")),
+                columns: [{
+                    title: vRoot.$t("bgMgr.action"),
+                    key: 'action',
+                    width: 130,
+                    render: function(h, params) {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        editObject = params.row;
+                                        vueInstanse.isEdit = true;
+                                        vueInstanse.modal = true;
+                                        vueInstanse.setRowInfo(editObject);
 
-                                    h('Poptip', {
-                                        props: {
-                                            confirm: true,
-                                            title: vRoot.$t("message.confirmDel")
-                                        },
-                                        style: {
-                                            marginRight: '5px',
-                                        },
-                                        on: {
-                                            'on-ok': function() {
-                                                vueInstanse.handleDelete(params);
-                                            }
-                                        }
-                                    }, [
-                                        h('Button', {
-                                            props: {
-                                                type: 'error',
-                                                size: 'small'
-                                            }
-                                        }, vRoot.$t("bgMgr.delete"))
-                                    ]),
-                                ]);
-                            }
-                    },
-                    {
-                        title: '姓名',key: 'name', width:100,
-                    }, 
-                    {
-                        title: '性别', width:80,
-                        render:function(h,params) {
-                            var sex = params.row.sex;
-                            var str = '';
-                            switch (sex) {
-                                case 1:
-                                    str = '男';
-                                    break;
-                                case 2:
-                                    str = '女';  
-                                    break;
-                            }
-                            return h('span',{},str);
-                        },
-                    }, 
-                    {
-                        title: '国籍',key: 'nationality', width:100,
-                    }, 
-                    {
-                        title: '地址',key: 'address', width: 90,
-                    }, 
-                    {
-                        title: '电话',key: 'phone', width:160,
-                    }, 
-                    { 
-                        title: '身份证',key: 'idNumber', width:120,
-                    }, 
-                    {
-                        title: '从业资格证类别',key: 'certificateType', width:160,
-                    },
-                    {
-                        title: '从业资格证号码',key: 'certificateNum', width:160, 
-                    },
-                    {
-                        title: '准驾车型',key: 'driverType', width:160,
-                    },
-                    {
-                        title: '资格证初始领证日期',key: 'initialDate', width:160,
-                    },
-                    {
-                        title: '资格证有效起始日期',key: 'effectiveDate', width:160,
-                    },
-                    {
-                        title: '核发机关',key: 'issuOrganization', width:160,
-                    },
-                    {
-                        title: '驾驶车辆车牌号码',key: 'relateVehicleNum', width:160,
+                                    }
+                                }
+                            }, vRoot.$t("bgMgr.edit")),
+
+                            h('Poptip', {
+                                props: {
+                                    confirm: true,
+                                    title: vRoot.$t("message.confirmDel")
+                                },
+                                style: {
+                                    marginRight: '5px',
+                                },
+                                on: {
+                                    'on-ok': function() {
+                                        vueInstanse.handleDelete(params);
+                                    }
+                                }
+                            }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    }
+                                }, vRoot.$t("bgMgr.delete"))
+                            ]),
+                        ]);
                     }
-                ],
+                }, {
+                    title: '姓名',
+                    key: 'name',
+                    width: 100,
+                }, {
+                    title: '性别',
+                    width: 80,
+                    render: function(h, params) {
+                        var sex = params.row.sex;
+                        var str = '';
+                        switch (sex) {
+                            case 1:
+                                str = '男';
+                                break;
+                            case 2:
+                                str = '女';
+                                break;
+                        }
+                        return h('span', {}, str);
+                    },
+                }, {
+                    title: '国籍',
+                    key: 'nationality',
+                    width: 100,
+                }, {
+                    title: '地址',
+                    key: 'address',
+                    width: 90,
+                }, {
+                    title: '电话',
+                    key: 'phone',
+                    width: 160,
+                }, {
+                    title: '身份证',
+                    key: 'idNumber',
+                    width: 120,
+                }, {
+                    title: '从业资格证类别',
+                    key: 'certificateType',
+                    width: 160,
+                }, {
+                    title: '从业资格证号码',
+                    key: 'certificateNum',
+                    width: 160,
+                }, {
+                    title: '准驾车型',
+                    key: 'driverType',
+                    width: 160,
+                }, {
+                    title: '资格证初始领证日期',
+                    key: 'initialDate',
+                    width: 160,
+                }, {
+                    title: '资格证有效起始日期',
+                    key: 'effectiveDate',
+                    width: 160,
+                }, {
+                    title: '核发机关',
+                    key: 'issuOrganization',
+                    width: 160,
+                }, {
+                    title: '驾驶车辆车牌号码',
+                    key: 'relateVehicleNum',
+                    width: 160,
+                }],
                 tableData: [],
                 taleHeight: 300,
             },
             methods: {
-                setRowInfo:function(row){
-                    this.name=row.name;
-                    this.sex=String(row.sex);
-                    this.brith= new Date(row.brith);
-                    this.nationality=row.nationality;
-                    this.address=row.address;
-                    this.phone=row.phone;
-                    this.idNumber=row.idNumber;
-                    this.nacertificateTypeme=String(row.certificateType);
-                    this.certificateNum=row.certificateNum;
-                    this.driverType=row.driverType;
-                    this.initialDate=new Date(row.initialDate);
-                    this.effectiveDate=new Date(row.effectiveDate);
-                    this.issuOrganization=row.issuOrganization;
-                    this.relateVehicleNum=row.relateVehicleNum;
+                setRowInfo: function(row) {
+                    this.name = row.name;
+                    this.sex = String(row.sex);
+                    this.brith = new Date(row.brith);
+                    this.nationality = row.nationality;
+                    this.address = row.address;
+                    this.phone = row.phone;
+                    this.idNumber = row.idNumber;
+                    this.nacertificateTypeme = String(row.certificateType);
+                    this.certificateNum = row.certificateNum;
+                    this.driverType = row.driverType;
+                    this.initialDate = new Date(row.initialDate);
+                    this.effectiveDate = new Date(row.effectiveDate);
+                    this.issuOrganization = row.issuOrganization;
+                    this.relateVehicleNum = row.relateVehicleNum;
                 },
-                handlerNewAdd:function(){
+                handlerNewAdd: function() {
                     this.isEdit = false;
                     this.modal = true;
                 },
                 handlerClickQuery() {
-                   this.queryYongZhouDriver();
+                    this.queryYongZhouDriver();
                 },
                 handleDelete: function(params) {
                     var me = this;
                     var url = myUrls.deleteYongZhouDriver();
                     var data = {
-                        drivers:[params.row.driverId],
+                        drivers: [params.row.driverId],
                     }
-                    utils.sendAjax(url,data,function(resp){
-                        if(resp.status === 0){
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status === 0) {
                             me.$Message.success("删除成功");
-                            me.$delete(me.tableData,params.index);
-                        }else{
+                            me.$delete(me.tableData, params.index);
+                        } else {
                             me.$Message.error(resp.cause);
                         }
                     });
@@ -278,65 +288,69 @@
                     var me = this;
                     var url = '';
                     var data = {
-                        name:this.name,//名字' ,
-                        sex:Number(this.sex),//男 女' ,
-                        brith:DateFormat.format(this.brith,'yyyy-MM-dd') + " 00:00:00",//生日 yyyyMMdd ,
-                        nationality:this.nationality,//国籍,默认中国,
-                        address:this.address,//地址' ,
-                        phone:this.phone,//电话' ,
-                        idNumber:this.idNumber,//身份证' ,
-                        certificateType:Number(this.certificateType),//1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
-                        certificateNum:this.certificateNum,//从业资格证号码' ,
-                        driverType:this.driverType,//准驾车型' ,
-                        initialDate:DateFormat.format(this.initialDate,'yyyy-MM-dd') + " 00:00:00",//资格证初始领证日期' ,
-                        effectiveDate:DateFormat.format(this.effectiveDate,'yyyy-MM-dd') + " 00:00:00",//资格证有效起始日期' ,
-                        issuOrganization:this.issuOrganization,//核发机关' ,
-                        relateVehicleNum:this.relateVehicleNum,//驾驶车辆车牌号码
-                        creater:userName//创建者' , 
+                        name: this.name, //名字' ,
+                        sex: Number(this.sex), //男 女' ,
+                        brith: DateFormat.format(this.brith, 'yyyy-MM-dd') + " 00:00:00", //生日 yyyyMMdd ,
+                        nationality: this.nationality, //国籍,默认中国,
+                        address: this.address, //地址' ,
+                        phone: this.phone, //电话' ,
+                        idNumber: this.idNumber, //身份证' ,
+                        certificateType: Number(this.certificateType), //1:巡游出租汽车驾驶员\r\n2：网约出租汽车驾驶员\r\n0：其他' ,
+                        certificateNum: this.certificateNum, //从业资格证号码' ,
+                        driverType: this.driverType, //准驾车型' ,
+                        initialDate: DateFormat.format(this.initialDate, 'yyyy-MM-dd') + " 00:00:00", //资格证初始领证日期' ,
+                        effectiveDate: DateFormat.format(this.effectiveDate, 'yyyy-MM-dd') + " 00:00:00", //资格证有效起始日期' ,
+                        issuOrganization: this.issuOrganization, //核发机关' ,
+                        relateVehicleNum: this.relateVehicleNum, //驾驶车辆车牌号码
+                        creater: userName //创建者' , 
                     };
-                    if(this.isEdit){
+                    if (this.isEdit) {
                         data.operateFlag = 2;
                         data.driverId = editObject.driverId;
                         url = myUrls.editYongZhouDriver();
-                    }else{
+                    } else {
                         data.operateFlag = 1;
                         url = myUrls.createYongZhouDriver();
                     };
-           
-                    utils.sendAjax(url,data,function(resp){
-                        if(resp.status == 0){
-                            if(me.isEdit){
-                                Object.assign(editObject,data);
+
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            if (me.isEdit) {
+                                Object.assign(editObject, data);
                                 me.$Message.success('编辑成功');
-                            }else{
+                            } else {
                                 me.queryYongZhouDriver();
                                 me.$Message.success('新增成功');
-                             
+
                             }
                             me.modal = false;
-                        }else{
+                        } else {
                             me.$Message.error(resp.cause);
                         }
                     });
                 },
-                queryYongZhouDriver:function(){
+                cleanValue: function() {
+                    this.queryParameter = '';
+                },
+                queryYongZhouDriver: function() {
                     var me = this;
                     var url = myUrls.queryYongZhouDriver();
                     var data = {
-                        creater:userName,
-                        keyword:this.queryParameter,
+                        creater: userName,
+                        keyword: this.queryParameter,
                     };
                     me.loading = true;
-                    utils.sendAjax(url,data,function(resp){
+                    utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
-                        if(resp.status == 0){
+                        if (resp.status == 0) {
                             me.tableData = resp.drivers;
                         }
                     });
                 },
-            },   
+            },
+
             computed: {
-                modalTile:function(){
+                modalTile: function() {
                     return this.isEdit ? '编辑驾驶员信息' : '新增驾驶员信息';
                 },
             },

@@ -9,7 +9,7 @@
         </div>
         <div style="float: left;position: relative;width: 210px;line-height:32px;" v-if="selectType == 'user'">
             <div class="search-wrapper" v-click-outside.capture="onClickOutside">
-                <i-input v-model.trim="sosoValue" icon="ios-search-outline" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                <i-input v-model.trim="sosoValue" icon="ios-close-circle-outline" @on-click="cleanValue" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
                 <transition name="fade">
                     <div class="search-item-wrapper" v-show="isShowMatchDev">
                         <Tree :data="treeData"></Tree>
@@ -683,6 +683,9 @@
                             me.$Message.error(me.$t('monitor.queryFail'))
                         }
                     });
+                },
+                cleanValue: function() {
+                    this.sosoValue = '';
                 },
                 castUsersTreeToDevicesTree: function(devicesTreeRecord) {
                     var me = this;

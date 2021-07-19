@@ -5,7 +5,7 @@
         <h3 class="h3-title">{{$t("bgMgr.stockDev")}}</h3>
         <ul>
             <li>
-                <i-input v-model.trim="queryParameter"></i-input>
+                <i-input v-model.trim="queryParameter" icon="ios-close-circle-outline" @on-click="cleanValue"></i-input>
             </li>
             <li>
                 <i-button type="primary" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
@@ -14,7 +14,7 @@
                 <i-button @click="exportAllDevice">{{$t("device.exportAllDevice")}}</i-button>
             </li>
             <li style="float:right;width:auto;">
-                <i-button @click="exportDevice">{{$t("device.exportCurrentDevice")}}</i-button>  
+                <i-button @click="exportDevice">{{$t("device.exportCurrentDevice")}}</i-button>
             </li>
             <li style="float:right;width:auto;">
                 <i-button @click="expireNotifyTime(365)" :type="queryType=='365day' ? 'info':'default'">{{$t("bgMgr.stock12yue")}}<span v-if="queryType=='365day'">({{total}})</span></i-button>
@@ -44,9 +44,9 @@
             el: "#stock-device",
             i18n: utils.getI18n(),
             data: {
-                total:0,
-                pageSize:10,
-                queryType:'all',
+                total: 0,
+                pageSize: 10,
+                queryType: 'all',
                 queryTableData: [],
                 loading: true,
                 delGroupObj: {},
@@ -58,36 +58,34 @@
                 recordsList: [],
                 tableData: [],
                 columnsList: [{
-                        title: vRoot.$t("alarm.devName"),
-                        key: 'devicenamekey',
-                    }, {
-                        title: vRoot.$t("alarm.devNum"),
-                        key: 'deviceidkey'
-                    }, {
-                        title: vRoot.$t("user.devType"),
-                        key: 'devtype'
-                    }, 
-                    {
-                        title: vRoot.$t("monitor.phoneNumber"),
-                        key: 'simnumkey'
-                    }, {
-                        width: 100,
-                        title: vRoot.$t("bgMgr.bindpwd"),
-                        key: 'bindpwd',
-                    },
-                    {
-                        title: vRoot.$t("bgMgr.addTime"),
-                        key: 'createtimestr'
-                    }, {
-                        title: vRoot.$t("bgMgr.addDays"), 
-                        key: 'adddays'
-                    }, {
-                        title: vRoot.$t("bgMgr.creater"),
-                        key: 'creater',
-                    },{
-                        title: vRoot.$t("user.grouping"),
-                        key: 'groupname'
-                    },{
+                    title: vRoot.$t("alarm.devName"),
+                    key: 'devicenamekey',
+                }, {
+                    title: vRoot.$t("alarm.devNum"),
+                    key: 'deviceidkey'
+                }, {
+                    title: vRoot.$t("user.devType"),
+                    key: 'devtype'
+                }, {
+                    title: vRoot.$t("monitor.phoneNumber"),
+                    key: 'simnumkey'
+                }, {
+                    width: 100,
+                    title: vRoot.$t("bgMgr.bindpwd"),
+                    key: 'bindpwd',
+                }, {
+                    title: vRoot.$t("bgMgr.addTime"),
+                    key: 'createtimestr'
+                }, {
+                    title: vRoot.$t("bgMgr.addDays"),
+                    key: 'adddays'
+                }, {
+                    title: vRoot.$t("bgMgr.creater"),
+                    key: 'creater',
+                }, {
+                    title: vRoot.$t("user.grouping"),
+                    key: 'groupname'
+                }, {
                     title: vRoot.$t("bgMgr.action"),
                     key: 'action',
                     width: 130,
@@ -151,30 +149,30 @@
                         }
                     });
                 },
-                exportAllDevice:function(){
+                exportAllDevice: function() {
                     var me = this;
                     var day = 0;
                     var url = myUrls.queryStoreDevices();
-                    if(this.queryType == 'all'){
+                    if (this.queryType == 'all') {
 
-                    }else if(this.queryType == '365day'){
+                    } else if (this.queryType == '365day') {
                         day = 365;
-                    }else if(this.queryType == '180day'){
+                    } else if (this.queryType == '180day') {
                         day = 180;
-                    }else if(this.queryType == '60day'){
+                    } else if (this.queryType == '60day') {
                         day = 60;
-                    }else if(this.queryType == '30day'){
+                    } else if (this.queryType == '30day') {
                         day = 30;
                     };
                     var data = {
                         offset: this.currentIndex - 1,
                         count: this.pageSize,
-                        all:true,
-                        expiredays:day,
-                        keyword:this.queryParameter,
+                        all: true,
+                        expiredays: day,
+                        keyword: this.queryParameter,
                     }
-                    utils.sendAjax(url,data,function(resp){
-                        if(resp.status == 0){
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
                             me.$refs.table.exportCsv({
                                 filename: 'deviceids',
                                 columns: me.columnsList.filter(function(col, index) {
@@ -196,56 +194,56 @@
                         quoted: true,
                     });
                 },
-                changeDevicePage:function(index){
+                changeDevicePage: function(index) {
                     var day = 0;
-                    if(this.queryType == 'all'){
+                    if (this.queryType == 'all') {
 
-                    }else if(this.queryType == '365day'){
+                    } else if (this.queryType == '365day') {
                         day = 365;
-                    }else if(this.queryType == '180day'){
+                    } else if (this.queryType == '180day') {
                         day = 180;
-                    }else if(this.queryType == '60day'){
+                    } else if (this.queryType == '60day') {
                         day = 60;
-                    }else if(this.queryType == '30day'){
+                    } else if (this.queryType == '30day') {
                         day = 30;
                     };
                     this.loading = true;
                     this.currentIndex = index;
                     this.queryStockDevice(day);
                 },
-                expireNotifyTime:function(day){
-                    switch(day){
-                        case  0 :
+                expireNotifyTime: function(day) {
+                    switch (day) {
+                        case 0:
                             this.queryType = 'all';
-                            break; 
-                        case  30 :
+                            break;
+                        case 30:
                             this.queryType = '30day';
-                            break; 
-                        case  60 :
+                            break;
+                        case 60:
                             this.queryType = '60day';
-                            break; 
-                        case  180 :
+                            break;
+                        case 180:
                             this.queryType = '180day';
-                            break; 
-                        case  365 :
+                            break;
+                        case 365:
                             this.queryType = '365day';
-                            break; 
+                            break;
                     }
                     this.currentIndex = 1;
                     this.queryStockDevice(day);
                 },
-                queryStockDevice:function(day){
+                queryStockDevice: function(day) {
                     var me = this;
                     var url = myUrls.queryStoreDevices();
                     var data = {
                         offset: this.currentIndex - 1,
                         count: this.pageSize,
-                        all:false,
-                        expiredays:day,
-                        keyword:this.queryParameter,
+                        all: false,
+                        expiredays: day,
+                        keyword: this.queryParameter,
                     }
-                    utils.sendAjax(url,data,function(resp){
-                        if(resp.status == 0){
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
                             me.tableData = me.filterDataInfo(resp.devices);
                             me.total = resp.totalcount;
                         }
@@ -291,7 +289,7 @@
                         dev.simnum ? (dev.simnumkey = "\t" + dev.simnum) : (dev.simnumkey = "");
                         dev.bindpwd = dev.bindpwd != null ? dev.bindpwd : '';
                         dev.createtimestr = DateFormat.longToDateTimeStr(dev.createtime, timeDifference);
-                        dev.adddays =  utils.timeStampNoSecond(DateFormat.getCurrentUTC() - dev.createtime);
+                        dev.adddays = utils.timeStampNoSecond(DateFormat.getCurrentUTC() - dev.createtime);
                         dev.groupname = me.getGroupName(dev.groupid);
                         dev.pinYin = __pinyin.getPinyin(dev.devicename);
                         dev.firstLetter = __pinyin.getFirstLetter(dev.devicename);
@@ -301,15 +299,15 @@
                 },
                 handlerClickQuery() {
                     var day = 0;
-                    if(this.queryType == 'all'){
+                    if (this.queryType == 'all') {
 
-                    }else if(this.queryType == '365day'){
+                    } else if (this.queryType == '365day') {
                         day = 365;
-                    }else if(this.queryType == '180day'){
+                    } else if (this.queryType == '180day') {
                         day = 180;
-                    }else if(this.queryType == '60day'){
+                    } else if (this.queryType == '60day') {
                         day = 60;
-                    }else if(this.queryType == '30day'){
+                    } else if (this.queryType == '30day') {
                         day = 30;
                     };
                     this.currentIndex = 1;
@@ -349,6 +347,9 @@
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;
                     this.taleHeight = wHeight - 188;
+                },
+                cleanValue: function() {
+                    this.queryParameter = '';
                 },
                 handleSubmit: function() {
 

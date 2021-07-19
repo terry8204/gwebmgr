@@ -27,7 +27,7 @@
                     <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span>
                 </div>
                 <div style="height: 35px;">
-                    <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
+                    <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="ios-close-circle-outline" @on-click="cleanValue"></i-input>
                 </div>
                 <div :style="streeStyle">
                     <ul id="ztree" class="ztree"></ul>
@@ -471,6 +471,9 @@
                         me.forwardTypeInfo = forward;
                     }
                 });
+            },
+            cleanValue: function() {
+                this.searchDeviceVal = '';
             },
             showBatchModal: function(type) {
                 this.showBatchModalType = type;

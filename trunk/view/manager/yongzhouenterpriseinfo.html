@@ -3,7 +3,7 @@
         <h3 class="h3-title">永州企业基本信息</h3>
         <ul>
             <li>
-                <i-input v-model.trim="queryParameter"></i-input>
+                <i-input v-model.trim="queryParameter" icon="ios-close-circle-outline" @on-click="cleanValue"></i-input>
             </li>
             <li>
                 <i-button type="info" @click="handlerClickQuery">{{$t("reportForm.query")}}</i-button>
@@ -114,327 +114,406 @@
             el: "#yongzhouenterpriseinfo",
             i18n: utils.getI18n(),
             data: {
-                enterName:'',
-                enterShortName:'',
-                identifier:'',
-                operateLicense:'',//经营许可证号' ,
-                enterCategory:'1',//1:巡游出租企业 2:网约出租企业 0:其他' ,
-                scope:'',//经营范围' ,
-                registrationAddress:'',//注册地址' ,
-                contactAddress:'',//联系地址' ,
-                contactPerson:'',//联系人' ,
-                contactPhone:'',//联系电话' ,
-                complaintPhone:'',//投诉电话' ,
-                economicNature:100,//经济性质' ,
-                businessArea:'',//经营区域' ,
-                paperValidityDate:new Date(),//证件有效期YYYYMMDD' ,
-                issuOrganization:'',//核发机关' ,
-                issuDate:new Date(),//核发日期' ,
-                economicNatureList:[
-                    {label:'内资企业',value:100},
-                    {label:'国有全资',value:110},
-                    {label:'集体',value:120},
-                    {label:'股份合作',value:130},
-                    {label:'国有联营',value:141},
-                    {label:'集体联营',value:142},
-                    {label:'国有与集体联营',value:143},
-                    {label:'其他联系',value:149},
-                    {label:'国有独资公司',value:151},
-                    {label:'其他有限责任公司',value:159},
-                    {label:'股份有限公司',value:160},
-                    {label:'私营',value:170},
-                    {label:'私营独资',value:171},
-                    {label:'私营合伙',value:172},
-                    {label:'私营有限责任公司',value:173},
-                    {label:'私营股份有限公司',value:174},
-                    {label:'个体经营',value:175},
-                    {label:'其他私有',value:179},
-                    {label:'其他内资',value:190},
-                    {label:'内地和港澳台合资',value:210},
-                    {label:'内地和港澳台合作',value:220},
-                    {label:'港澳台独资',value:230 },
-                    {label:'港澳台投资股份有限（公司）',value:240 },
-                    {label:'其他港澳台投资',value:290 },
-                    {label:'国外投资',value:300},
-                    {label:'中外合资',value:310},
-                    {label:'中外合作',value:320},
-                    {label:'外资',value:330},
-                    {label:'国外投资股份有限（公司）',value:340},
-                    {label:'其他国外投资',value:390},
-                    {label:'境外机构',value:400},
-                    {label:'其他',value:900},
-                ],
-    
-                isEdit:false,
+                enterName: '',
+                enterShortName: '',
+                identifier: '',
+                operateLicense: '', //经营许可证号' ,
+                enterCategory: '1', //1:巡游出租企业 2:网约出租企业 0:其他' ,
+                scope: '', //经营范围' ,
+                registrationAddress: '', //注册地址' ,
+                contactAddress: '', //联系地址' ,
+                contactPerson: '', //联系人' ,
+                contactPhone: '', //联系电话' ,
+                complaintPhone: '', //投诉电话' ,
+                economicNature: 100, //经济性质' ,
+                businessArea: '', //经营区域' ,
+                paperValidityDate: new Date(), //证件有效期YYYYMMDD' ,
+                issuOrganization: '', //核发机关' ,
+                issuDate: new Date(), //核发日期' ,
+                economicNatureList: [{
+                    label: '内资企业',
+                    value: 100
+                }, {
+                    label: '国有全资',
+                    value: 110
+                }, {
+                    label: '集体',
+                    value: 120
+                }, {
+                    label: '股份合作',
+                    value: 130
+                }, {
+                    label: '国有联营',
+                    value: 141
+                }, {
+                    label: '集体联营',
+                    value: 142
+                }, {
+                    label: '国有与集体联营',
+                    value: 143
+                }, {
+                    label: '其他联系',
+                    value: 149
+                }, {
+                    label: '国有独资公司',
+                    value: 151
+                }, {
+                    label: '其他有限责任公司',
+                    value: 159
+                }, {
+                    label: '股份有限公司',
+                    value: 160
+                }, {
+                    label: '私营',
+                    value: 170
+                }, {
+                    label: '私营独资',
+                    value: 171
+                }, {
+                    label: '私营合伙',
+                    value: 172
+                }, {
+                    label: '私营有限责任公司',
+                    value: 173
+                }, {
+                    label: '私营股份有限公司',
+                    value: 174
+                }, {
+                    label: '个体经营',
+                    value: 175
+                }, {
+                    label: '其他私有',
+                    value: 179
+                }, {
+                    label: '其他内资',
+                    value: 190
+                }, {
+                    label: '内地和港澳台合资',
+                    value: 210
+                }, {
+                    label: '内地和港澳台合作',
+                    value: 220
+                }, {
+                    label: '港澳台独资',
+                    value: 230
+                }, {
+                    label: '港澳台投资股份有限（公司）',
+                    value: 240
+                }, {
+                    label: '其他港澳台投资',
+                    value: 290
+                }, {
+                    label: '国外投资',
+                    value: 300
+                }, {
+                    label: '中外合资',
+                    value: 310
+                }, {
+                    label: '中外合作',
+                    value: 320
+                }, {
+                    label: '外资',
+                    value: 330
+                }, {
+                    label: '国外投资股份有限（公司）',
+                    value: 340
+                }, {
+                    label: '其他国外投资',
+                    value: 390
+                }, {
+                    label: '境外机构',
+                    value: 400
+                }, {
+                    label: '其他',
+                    value: 900
+                }, ],
+
+                isEdit: false,
                 modal: false,
                 queryParameter: "",
                 loading: true,
-                columns: [
-                        {
-                            title: vRoot.$t("bgMgr.action"),
-                            key: 'action',
-                            width: 130,
-                            render: function(h, params) {
-                                return h('div', [
-                                    h('Button', {
-                                        props: {
-                                            type: 'primary',
-                                            size: 'small'
-                                        },
-                                        style: {
-                                            marginRight: '5px'
-                                        },
-                                        on: {
-                                            click: function() {
-                                                editObject = params.row;
-                                                vueInstanse.isEdit = true;
-                                                vueInstanse.modal = true;
-                                                vueInstanse.setRowInfo(editObject);
-            
-                                            }
-                                        }
-                                    }, vRoot.$t("bgMgr.edit")),
+                columns: [{
+                    title: vRoot.$t("bgMgr.action"),
+                    key: 'action',
+                    width: 130,
+                    render: function(h, params) {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function() {
+                                        editObject = params.row;
+                                        vueInstanse.isEdit = true;
+                                        vueInstanse.modal = true;
+                                        vueInstanse.setRowInfo(editObject);
 
-                                    h('Poptip', {
-                                        props: {
-                                            confirm: true,
-                                            title: vRoot.$t("message.confirmDel")
-                                        },
-                                        style: {
-                                            marginRight: '5px',
-                                        },
-                                        on: {
-                                            'on-ok': function() {
-                                                vueInstanse.handleDelete(params);
-                                            }
-                                        }
-                                    }, [
-                                        h('Button', {
-                                            props: {
-                                                type: 'error',
-                                                size: 'small'
-                                            }
-                                        }, vRoot.$t("bgMgr.delete"))
-                                    ]),
-                                ]);
-                            }
+                                    }
+                                }
+                            }, vRoot.$t("bgMgr.edit")),
+
+                            h('Poptip', {
+                                props: {
+                                    confirm: true,
+                                    title: vRoot.$t("message.confirmDel")
+                                },
+                                style: {
+                                    marginRight: '5px',
+                                },
+                                on: {
+                                    'on-ok': function() {
+                                        vueInstanse.handleDelete(params);
+                                    }
+                                }
+                            }, [
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    }
+                                }, vRoot.$t("bgMgr.delete"))
+                            ]),
+                        ]);
+                    }
+                }, {
+                    title: '企业名称',
+                    key: 'enterName',
+                    width: 160,
+                }, {
+                    title: '企业简称',
+                    key: 'enterShortName',
+                    width: 120,
+                }, {
+                    title: '统一社会信用代码',
+                    key: 'identifier',
+                    width: 160,
+                }, {
+                    title: '经营许可证号',
+                    key: 'operateLicense',
+                    width: 160,
+                }, {
+                    title: '企业类别',
+                    width: 120,
+                    render: function(h, params) {
+                        var enterCategory = params.row.enterCategory;
+                        var str = '';
+                        switch (enterCategory) {
+                            case 1:
+                                str = '巡游出租企业';
+                                break;
+                            case 2:
+                                str = '网约出租企业';
+                                break;
+                            case 3:
+                                str = '其他';
+                                break;
+                            default:
+                                break;
+                        }
+                        return h('span', {}, str);
                     },
-                    {
-                        title: '企业名称',key: 'enterName', width:160,
-                    }, 
-                    {
-                        title: '企业简称',key: 'enterShortName', width:120,
-                    }, 
-                    {
-                        title: '统一社会信用代码',key: 'identifier', width:160,
-                    }, 
-                    {
-                        title: '经营许可证号',key: 'operateLicense', width:160,
-                    }, 
-                    {
-                        title: '企业类别',width:120,
-                        render:function(h,params) {
-                            var enterCategory = params.row.enterCategory;
-                            var str = '';
-                            switch (enterCategory) {
-                                case 1:
-                                    str = '巡游出租企业';
-                                    break;
-                                case 2:
-                                    str = '网约出租企业';  
-                                    break;
-                                case 3:
-                                    str = '其他';
-                                    break;
-                                default:
-                                    break;
-                            }
-                            return h('span',{},str);
-                        },
-                    }, 
-                    {
-                        title: '经营范围',key: 'scope', width:100,
-                    }, 
-                    {
-                        title: '注册地址',key: 'registrationAddress', width:180,
-                    }, 
-                    {
-                        title: '联系地址',key: 'contactAddress',  width:180,
-                    }, 
-                    {
-                        title: '联系人',key: 'contactPerson',  width:100,
-                    }, 
-                    {
-                        title: '联系电话',key: 'contactPhone', width:120,
-                    }, 
-                    {
-                        title: '投诉电话',key: 'complaintPhone', width:120,
-                    }, 
-                    { 
-                        title: '经济性质', width:120,
-                        render:function(h,params) {
-                            var economicNature = params.row.economicNature;
-                            var str = '';
+                }, {
+                    title: '经营范围',
+                    key: 'scope',
+                    width: 100,
+                }, {
+                    title: '注册地址',
+                    key: 'registrationAddress',
+                    width: 180,
+                }, {
+                    title: '联系地址',
+                    key: 'contactAddress',
+                    width: 180,
+                }, {
+                    title: '联系人',
+                    key: 'contactPerson',
+                    width: 100,
+                }, {
+                    title: '联系电话',
+                    key: 'contactPhone',
+                    width: 120,
+                }, {
+                    title: '投诉电话',
+                    key: 'complaintPhone',
+                    width: 120,
+                }, {
+                    title: '经济性质',
+                    width: 120,
+                    render: function(h, params) {
+                        var economicNature = params.row.economicNature;
+                        var str = '';
 
 
-                            switch (economicNature) {
-                                case 100:
-                                    str = '内资企业';
-                                    break;
-                                case 110:
-                                    str = '国有全资';  
-                                    break;
-                                case 120:
-                                    str = '集体';
-                                    break;
-                                case 130:
-                                    str = '股份合作';
-                                    break;
-                                case 141:
-                                    str = '国有联营';
-                                    break;
-                                case 142:
-                                    str = '集体联营';
-                                    break;
-                                case 143:
-                                    str = '国有与集体联营';
-                                    break;
-                                case 149:
-                                    str = '其他联系';
-                                    break;
-                                case 151:
-                                    str = '国有独资公司';
-                                    break;
-                                case 159:
-                                    str = '其他有限责任公司';
-                                    break;
-                                case 160:
-                                    str = '股份有限公司';
-                                    break;
-                                case 170:
-                                    str = '私营';
-                                    break;
-                                case 171:
-                                    str = '私营独资';
-                                    break;
-                                case 172:
-                                    str = '私营合伙';
-                                    break;
-                                case 173:
-                                    str = '私营有限责任公司';
-                                    break;
-                                case 174:
-                                    str = '私营股份有限公司';
-                                    break;
-                                case 175:
-                                    str = '个体经营';
-                                    break;
-                                case 179:
-                                    str = '其他私有';
-                                    break;
-                                case 190:
-                                    str = '其他内资';
-                                    break;
-                                case 210:
-                                    str = '内地和港澳台合资';
-                                    break;
-                                case 220:
-                                    str = '内地和港澳台合作';
-                                    break;
-                                case 230:
-                                    str = '港澳台独资';
-                                    break;
-                                case 240:
-                                    str = '港澳台投资股份有限（公司） ';
-                                    break;
-                                case 290:
-                                    str = '其他港澳台投资';
-                                    break;
-                                case 300:
-                                    str = '国外投资';
-                                    break;
-                                case 310:
-                                    str = '中外合资';
-                                    break;
-                                case 320:
-                                    str = '中外合作';
-                                    break;
-                                case 330:
-                                    str = '外资';
-                                    break;
-                                case 340:
-                                    str = '国外投资股份有限（公司）';
-                                    break;
-                                case 390:
-                                    str = '其他国外投资';
-                                    break;
-                                case 400:
-                                    str = '境外机构';
-                                    break;
-                                case 900:
-                                    str = '其他';
-                                    break;
-                                default:
-                                    break;
-                            }
-                            return h('span',{},str);
-                        },
-                    }, 
-                    {
-                        title: '经营区域',key: 'businessArea', width: 90,
-                    }, 
-                    {
-                        title: '证件有效期',key: 'paperValidityDate', width:160,
-                    }, 
-                    { 
-                        title: '核发机关',key: 'issuOrganization', width:120,
-                    }, 
-                    {
-                        title: '核发日期',key: 'issuDate', width:160,
-                    }],
+                        switch (economicNature) {
+                            case 100:
+                                str = '内资企业';
+                                break;
+                            case 110:
+                                str = '国有全资';
+                                break;
+                            case 120:
+                                str = '集体';
+                                break;
+                            case 130:
+                                str = '股份合作';
+                                break;
+                            case 141:
+                                str = '国有联营';
+                                break;
+                            case 142:
+                                str = '集体联营';
+                                break;
+                            case 143:
+                                str = '国有与集体联营';
+                                break;
+                            case 149:
+                                str = '其他联系';
+                                break;
+                            case 151:
+                                str = '国有独资公司';
+                                break;
+                            case 159:
+                                str = '其他有限责任公司';
+                                break;
+                            case 160:
+                                str = '股份有限公司';
+                                break;
+                            case 170:
+                                str = '私营';
+                                break;
+                            case 171:
+                                str = '私营独资';
+                                break;
+                            case 172:
+                                str = '私营合伙';
+                                break;
+                            case 173:
+                                str = '私营有限责任公司';
+                                break;
+                            case 174:
+                                str = '私营股份有限公司';
+                                break;
+                            case 175:
+                                str = '个体经营';
+                                break;
+                            case 179:
+                                str = '其他私有';
+                                break;
+                            case 190:
+                                str = '其他内资';
+                                break;
+                            case 210:
+                                str = '内地和港澳台合资';
+                                break;
+                            case 220:
+                                str = '内地和港澳台合作';
+                                break;
+                            case 230:
+                                str = '港澳台独资';
+                                break;
+                            case 240:
+                                str = '港澳台投资股份有限（公司） ';
+                                break;
+                            case 290:
+                                str = '其他港澳台投资';
+                                break;
+                            case 300:
+                                str = '国外投资';
+                                break;
+                            case 310:
+                                str = '中外合资';
+                                break;
+                            case 320:
+                                str = '中外合作';
+                                break;
+                            case 330:
+                                str = '外资';
+                                break;
+                            case 340:
+                                str = '国外投资股份有限（公司）';
+                                break;
+                            case 390:
+                                str = '其他国外投资';
+                                break;
+                            case 400:
+                                str = '境外机构';
+                                break;
+                            case 900:
+                                str = '其他';
+                                break;
+                            default:
+                                break;
+                        }
+                        return h('span', {}, str);
+                    },
+                }, {
+                    title: '经营区域',
+                    key: 'businessArea',
+                    width: 90,
+                }, {
+                    title: '证件有效期',
+                    key: 'paperValidityDate',
+                    width: 160,
+                }, {
+                    title: '核发机关',
+                    key: 'issuOrganization',
+                    width: 120,
+                }, {
+                    title: '核发日期',
+                    key: 'issuDate',
+                    width: 160,
+                }],
                 tableData: [],
                 taleHeight: 300,
             },
             methods: {
-                setRowInfo:function(row){
-                    this.enterName=row.enterName;
-                    this.enterShortName=row.enterShortName;
-                    this.identifier=row.identifier;
-                    this.operateLicense=row.operateLicense;//经营许可证号' ,
-                    this.enterCategory=String(row.enterCategory);//1:巡游出租企业 2:网约出租企业 0:其他' ,
-                    this.scope=row.scope;//经营范围' ,
-                    this.registrationAddress=row.registrationAddress;//注册地址' ,
-                    this.contactAddress=row.contactAddress;//联系地址' ,
-                    this.contactPerson=row.contactPerson;//联系人' ,
-                    this.contactPhone=row.contactPhone;//联系电话' ,
-                    this.complaintPhone=row.complaintPhone;//投诉电话' ,
-                    this.economicNature=row.economicNature;//经济性质' ,
-                    this.businessArea=row.businessArea;//经营区域' ,
-                    this.paperValidityDate=new Date(row.paperValidityDate);//证件有效期YYYYMMDD' ,
-                    this.issuOrganization=row.issuOrganization;//核发机关' ,
-                    this.issuDate=new Date(row.issuDate);//核发日期' ,
+                setRowInfo: function(row) {
+                    this.enterName = row.enterName;
+                    this.enterShortName = row.enterShortName;
+                    this.identifier = row.identifier;
+                    this.operateLicense = row.operateLicense; //经营许可证号' ,
+                    this.enterCategory = String(row.enterCategory); //1:巡游出租企业 2:网约出租企业 0:其他' ,
+                    this.scope = row.scope; //经营范围' ,
+                    this.registrationAddress = row.registrationAddress; //注册地址' ,
+                    this.contactAddress = row.contactAddress; //联系地址' ,
+                    this.contactPerson = row.contactPerson; //联系人' ,
+                    this.contactPhone = row.contactPhone; //联系电话' ,
+                    this.complaintPhone = row.complaintPhone; //投诉电话' ,
+                    this.economicNature = row.economicNature; //经济性质' ,
+                    this.businessArea = row.businessArea; //经营区域' ,
+                    this.paperValidityDate = new Date(row.paperValidityDate); //证件有效期YYYYMMDD' ,
+                    this.issuOrganization = row.issuOrganization; //核发机关' ,
+                    this.issuDate = new Date(row.issuDate); //核发日期' ,
                 },
-                handlerNewAdd:function(){
+                handlerNewAdd: function() {
                     this.isEdit = false;
                     this.modal = true;
                 },
                 handlerClickQuery() {
-                   this.queryYongZhouEnters();
+                    this.queryYongZhouEnters();
                 },
                 handleDelete: function(params) {
                     var me = this;
                     var url = myUrls.deleteYongZhouEnters();
                     var data = {
-                        enters:[params.row.enterId],
+                        enters: [params.row.enterId],
                     }
-                    utils.sendAjax(url,data,function(resp){
-                        if(resp.status === 0){
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status === 0) {
                             me.$Message.success("删除成功");
-                            me.$delete(me.tableData,params.index);
-                        }else{
+                            me.$delete(me.tableData, params.index);
+                        } else {
                             me.$Message.error(resp.cause);
                         }
                     });
+                },
+                cleanValue: function() {
+                    this.queryParameter = '';
                 },
                 calcTableHeight: function() {
                     var wHeight = window.innerHeight;
@@ -444,66 +523,66 @@
                     var me = this;
                     var url = '';
                     var data = {
-                            enterName:this.enterName,//企业名称,按照工商营业执照' ,
-                            enterShortName:this.enterShortName,//企业简称' ,
-                            identifier:this.identifier,//统一社会信用代码' ,
-                            operateLicense:this.operateLicense,//经营许可证号' ,
-                            enterCategory:Number(this.enterCategory),//1:巡游出租企业 2:网约出租企业 0:其他' ,
-                            scope:this.scope,//经营范围' ,
-                            registrationAddress:this.registrationAddress,//注册地址' ,
-                            contactAddress:this.contactAddress,//联系地址' ,
-                            contactPerson:this.contactPerson,//联系人' ,
-                            contactPhone:this.contactPhone,//联系电话' ,
-                            complaintPhone:this.complaintPhone,//投诉电话' ,
-                            economicNature:this.economicNature,//经济性质' ,
-                            businessArea:this.businessArea,//经营区域' ,
-                            paperValidityDate:DateFormat.format(this.paperValidityDate,'yyyy-MM-dd') + " 00:00:00",//证件有效期YYYYMMDD' ,
-                            issuOrganization:this.issuOrganization,//核发机关' ,
-                            issuDate:DateFormat.format(this.issuDate,'yyyy-MM-dd') + " 00:00:00",//核发日期' ,
-                            creater:userName//创建者' , 
+                        enterName: this.enterName, //企业名称,按照工商营业执照' ,
+                        enterShortName: this.enterShortName, //企业简称' ,
+                        identifier: this.identifier, //统一社会信用代码' ,
+                        operateLicense: this.operateLicense, //经营许可证号' ,
+                        enterCategory: Number(this.enterCategory), //1:巡游出租企业 2:网约出租企业 0:其他' ,
+                        scope: this.scope, //经营范围' ,
+                        registrationAddress: this.registrationAddress, //注册地址' ,
+                        contactAddress: this.contactAddress, //联系地址' ,
+                        contactPerson: this.contactPerson, //联系人' ,
+                        contactPhone: this.contactPhone, //联系电话' ,
+                        complaintPhone: this.complaintPhone, //投诉电话' ,
+                        economicNature: this.economicNature, //经济性质' ,
+                        businessArea: this.businessArea, //经营区域' ,
+                        paperValidityDate: DateFormat.format(this.paperValidityDate, 'yyyy-MM-dd') + " 00:00:00", //证件有效期YYYYMMDD' ,
+                        issuOrganization: this.issuOrganization, //核发机关' ,
+                        issuDate: DateFormat.format(this.issuDate, 'yyyy-MM-dd') + " 00:00:00", //核发日期' ,
+                        creater: userName //创建者' , 
                     };
-                    if(this.isEdit){
+                    if (this.isEdit) {
                         data.enterId = editObject.enterId;
                         url = myUrls.editYongZhouEnter();
-                        data.operateFlag = 2;//操作标识 1:新增 2:更新 3:删除' ,
-                    }else{
+                        data.operateFlag = 2; //操作标识 1:新增 2:更新 3:删除' ,
+                    } else {
                         url = myUrls.createYongZhouEnter();
                         data.operateFlag = 1;
                     };
-           
-                    utils.sendAjax(url,data,function(resp){
-                        if(resp.status == 0){
-                            if(me.isEdit){
-                                Object.assign(editObject,data);
+
+                    utils.sendAjax(url, data, function(resp) {
+                        if (resp.status == 0) {
+                            if (me.isEdit) {
+                                Object.assign(editObject, data);
                                 me.$Message.success('编辑成功');
-                            }else{
+                            } else {
                                 me.queryYongZhouEnters();
                                 me.$Message.success('新增成功');
                             }
                             me.modal = false;
-                        }else{
+                        } else {
                             me.$Message.error(resp.cause);
                         }
                     });
                 },
-                queryYongZhouEnters:function(){
+                queryYongZhouEnters: function() {
                     var me = this;
                     var url = myUrls.queryYongZhouEnters();
                     var data = {
-                        creater:userName,
-                        keyword:this.queryParameter,
+                        creater: userName,
+                        keyword: this.queryParameter,
                     };
                     me.loading = true;
-                    utils.sendAjax(url,data,function(resp){
+                    utils.sendAjax(url, data, function(resp) {
                         me.loading = false;
-                        if(resp.status == 0){
+                        if (resp.status == 0) {
                             me.tableData = resp.enters;
                         }
                     });
                 }
-            },   
+            },
             computed: {
-                modalTile:function(){
+                modalTile: function() {
                     return this.isEdit ? '编辑企业' : '新增企业';
                 },
             },

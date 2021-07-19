@@ -31,7 +31,7 @@
                     <span class="video_icon"></span><span>{{$t("bgMgr.videoDev")}}</span>
                 </div>
                 <div style="height: 35px;">
-                    <i-input v-model.trim="searchDeviceVal" style="width: 100%;" icon="search"></i-input>
+                    <i-input v-model.trim="searchDeviceVal" icon="ios-close-circle-outline" @on-click="cleanValue" style="width: 100%;" icon="search"></i-input>
                 </div>
                 <div :style="treeStyle">
                     <ul id="ztree" class="ztree"></ul>
@@ -1321,6 +1321,9 @@
                 }
 
             }, 500),
+            cleanValue: function() {
+                this.searchDeviceVal = '';
+            },
             calcTableHeight: function() {
                 var wHeight = window.innerHeight;
                 this.taleHeight = wHeight - 204;

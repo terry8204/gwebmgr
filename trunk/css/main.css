@@ -920,8 +920,20 @@ div.report-wraper>div {
 
 div.report-left-wrap {
     left: 0px;
-    width: 240px;
     background: #FFFFFF;
+    overflow: hidden;
+}
+
+div.collapse-wrap {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 49px;
+    width: 49px;
+    text-align: center;
+    line-height: 49px;
+    z-index: 999;
+    cursor: pointer;
 }
 
 div.report-right-wrap {

@@ -3,7 +3,7 @@
     <div class="full" style="padding: 10px;">
         <h3 class="h3-title">{{$t("bgMgr.unclaimed")}}</h3>
         <div style="padding: 10px 0;">
-            <i-input v-model.trim="queryParameter" style="width: 160px;"></i-input>
+            <i-input v-model.trim="queryParameter" style="width: 200px;" icon="ios-close-circle-outline" @on-click="cleanValue"></i-input>
             <i-button type="primary" @click="queryNoFoundDeviceids">{{$t('reportForm.query')}}</i-button>
             <i-button type="error" @click="clearNoFoundDeviceids">{{$t('reportForm.clean')}}</i-button>
         </div>
@@ -213,6 +213,9 @@
                 },
             },
             methods: {
+                cleanValue: function() {
+                    this.queryParameter = '';
+                },
                 addMarkerToMap: function(params) {
                     utils.showWindowMap(vueInstanse, params);
                 },
