@@ -2252,8 +2252,10 @@ var editButton = function(vm, h, currentRow, index) {
                 var tempData = vm.handleBackdata(currentRow)
 
                 if (!currentRow.editting) {
+                    editObject = currentRow;
                     currentRow.editting = true;
                 } else {
+                    editObject = null;
                     // 这里也是简单的点击编辑后的数据与原始数据做对比,一致则不做操作,其实更好的应该遍历所有属性并判断
                     if (JSON.stringify(tempData) == JSON.stringify(vm.oilTable[index])) {
                         console.log('未更改');

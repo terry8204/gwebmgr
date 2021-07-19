@@ -7649,7 +7649,8 @@ function timeOilConsumption(groupslist) {
             voltages: [],
             devReissue: [],
             currentIndex: 1,
-
+            dateCharts: DateFormat.format(new Date(), 'yyyy-MM-dd hh:mm:ss'),
+            oilCount: 0,
             oilColumns: [{
                     // title: isZh ? '编号' : 'index',
                     type: 'index',
@@ -7671,10 +7672,6 @@ function timeOilConsumption(groupslist) {
                     title: (isZh ? '油量' : 'Oil Volume') + '(L)',
                     key: 'oilVolume',
                     width: 100,
-                    render: function(h, params) {
-                        var row = params.row;
-                        return h('span', Math.abs(row.eoil - row.soil).toFixed(2));
-                    }
                 }, {
                     title: (isZh ? '开始油量' : 'Start Oil Volume') + '(L)',
                     width: 110,
@@ -7830,12 +7827,16 @@ function timeOilConsumption(groupslist) {
                                         record.oilindex = String(record.oilindex);
                                         record.editting = false;
                                         record.saving = false;
+
+                                        record.oilVolume = Math.abs(record.eoil - record.soil).toFixed(2);
                                         record.durationStr = utils.timeStamp(record.duration);
                                         if (isZh) {
                                             record.mauneditStr = record.maunedit == 1 ? '是' : '否'
                                         } else {
                                             record.mauneditStr = record.maunedit == 1 ? 'Yes' : 'NO'
                                         }
+
+
 
                                         oilArr.push(record);
 
@@ -8536,7 +8537,6 @@ function timeOilConsumption(groupslist) {
                             } else {
                                 if (item.option && Array.isArray(item.option)) {
 
-
                                     return h('div', {
                                         style: {
 
@@ -8571,6 +8571,7 @@ function timeOilConsumption(groupslist) {
                                 } else if (item.date) {
 
                                     //如果含有date属性
+                                    // return h('div', {}, DateFormat.format(new Date(currentRow[params.column.key]), 'yyyy-MM-dd hh:mm:ss'));
                                     return h('DatePicker', {
                                         props: {
                                             type: item.date.split('_')[0] || 'date',
@@ -8583,8 +8584,11 @@ function timeOilConsumption(groupslist) {
                                             }
                                         }
                                     });
+
+
                                 } else {
-                                    // 默认input
+
+
                                     return h('Input', {
                                         props: {
                                             // type类型也是自定的属性
@@ -8599,10 +8603,22 @@ function timeOilConsumption(groupslist) {
                                             }
                                         }
                                     });
+
+                                    // 默认input
+
                                 }
                             }
                         }
+
                     }
+
+                    if (item.key == 'oilVolume') {
+                        item.render = function(h, params) {
+                            var currentRow = self.cloneDataList[params.index];
+                            return h('div', {}, currentRow[params.column.key])
+                        }
+                    }
+
                 });
             },
             saveData: function(currentRow, index) {
@@ -8647,7 +8663,27 @@ function timeOilConsumption(groupslist) {
                 delete clonedData.editting;
                 delete clonedData.saving;
                 return clonedData;
-            }
+            },
+            addStartOilTime: function() {
+                if (editObject) {
+                    editObject.soil = Number(this.oilCount);
+                    editObject.begintime = this.dateCharts;
+                    // this.$set(editObject, 'oilVolume', Math.abs(editObject.eoil - editObject.soil).toFixed(2))
+                    editObject.oilVolume = Math.abs(editObject.eoil - editObject.soil).toFixed(2);
+                } else {
+                    this.$Message.error("请点击选择要编辑的记录");
+                }
+            },
+            addEndOilTime: function() {
+                if (editObject) {
+                    editObject.eoil = Number(this.oilCount);
+                    editObject.endtime = this.dateCharts;
+                    editObject.oilVolume = Math.abs(editObject.eoil - editObject.soil).toFixed(2);
+                    // this.$set(editObject, 'oilVolume', Math.abs(editObject.eoil - editObject.soil).toFixed(2))
+                } else {
+                    this.$Message.error("请点击选择要编辑的记录");
+                }
+            },
         },
         mounted: function() {
             var me = this;
@@ -8720,9 +8756,15 @@ function timeOilConsumption(groupslist) {
                 if (me.chartsIns.containPixel('grid', pointInPixel)) {
                     var tracks = me.records;
                     if (tracks.length) {
+
+
                         var xIndex = me.chartsIns.convertFromPixel({
                             seriesIndex: 0
                         }, [params.offsetX, params.offsetY])[0];
+
+                        me.oilCount = me.totalad[xIndex];
+                        me.dateCharts = me.recvtime[xIndex];
+
                         var currentIndex = Math.ceil((tracks.length - xIndex) / 20);
                         var rowIndex = (tracks.length - xIndex) % 20;
                         if (rowIndex == 0) {
@@ -9056,6 +9098,7 @@ function mileageOilConsumption(groupslist) {
             oilTable: [],
             cloneDataList: [],
             trackDetailModal: false,
+
         },
         mixins: [reportMixin],
         methods: {

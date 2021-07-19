@@ -58,6 +58,11 @@
                     </div>
                     <Page :total="total" show-total @on-change="changePage" :page-size="20" :current="currentIndex" />
                 </Tab-pane>
+
+                <span slot="extra">{{dateCharts}}</span>
+                <span slot="extra" style="margin-left:5px;">{{$t('reportForm.oil')}}:{{oilCount}}L</span>
+                <i-button type="primary" size="small" slot="extra" style="margin-left:5px;" @click="addStartOilTime">添加开始</i-button>
+                <i-button type="primary" size="small" slot="extra" style="margin-left:5px;" @click="addEndOilTime">添加结束</i-button>
             </Tabs>
         </div>
     </div>
