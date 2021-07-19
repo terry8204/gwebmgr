@@ -98,10 +98,10 @@
             </i-Col>
             <i-Col span="12">
                 <div style="padding: 0px 0px 0px 5px;">
-                    <i-table border v-if="oilType == '1'" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData1" :height="tableHeight"></i-table>
-                    <i-table border v-if="oilType == '2'" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData2" :height="tableHeight"></i-table>
-                    <i-table border v-if="oilType == '3'" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData3" :height="tableHeight"></i-table>
-                    <i-table border v-if="oilType == '4'" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData4" :height="tableHeight"></i-table>
+                    <i-table border v-if="oilType == '1'" :row-class-name="rowClassName" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData1" :height="tableHeight"></i-table>
+                    <i-table border v-if="oilType == '2'" :row-class-name="rowClassName" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData2" :height="tableHeight"></i-table>
+                    <i-table border v-if="oilType == '3'" :row-class-name="rowClassName" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData3" :height="tableHeight"></i-table>
+                    <i-table border v-if="oilType == '4'" :row-class-name="rowClassName" highlight-row @on-row-click="onRowClick" :columns="newTaggingColumns" size="small" :data="newTaggingData4" :height="tableHeight"></i-table>
                 </div>
             </i-Col>
         </Row>
@@ -144,7 +144,7 @@
                             on: {
                                 click: function() {
                                     var item = vueInstanse.taggingData[index];
-                                    vueInstanse.pushRowToTable(item.height, item.volume);
+                                    vueInstanse.pushRowToTable(item.height, item.volume, true);
                                 }
                             }
                         }, isZh ? '复制' : 'Copy')
@@ -197,6 +197,12 @@
             i18n: utils.getI18n(),
             mixins: [reportMixin],
             methods: {
+                rowClassName(row, index) {
+                    if (row.maunedit === 1) {
+                        return 'demo-table-info-row';
+                    }
+                    return '';
+                },
                 onRowClick: function(row) {
                     this.tagging = row.height;
                     this.taggingOil = row.volume;
@@ -294,9 +300,9 @@
                     });
                 },
                 addTaggingRow: function(tagging, taggingOil) {
-                    this.pushRowToTable(this.tagging, this.taggingOil);
+                    this.pushRowToTable(this.tagging, this.taggingOil, false);
                 },
-                pushRowToTable(tagging, taggingOil) {
+                pushRowToTable(tagging, taggingOil, isCopy) {
                     var isHas = false;
                     var row = null;
                     if (this.oilType == '1') {
@@ -338,6 +344,11 @@
                     }
 
                     if (isHas) {
+                        if (!isCopy && row.volume != taggingOil) {
+                            row.maunedit = 1;
+                        } else {
+                            row.maunedit = 0;
+                        }
                         row.volume = taggingOil;
                         // this.$Message.error(vRoot.$t('device.scaleAlreadyExists'));
                     } else {
@@ -345,6 +356,7 @@
                             this.newTaggingData1.push({
                                 height: tagging,
                                 volume: taggingOil,
+                                maunedit: 1,
                             })
                             this.newTaggingData1.sort(function(a, b) {
                                 return b.height - a.height;
@@ -353,6 +365,7 @@
                             this.newTaggingData2.push({
                                 height: tagging,
                                 volume: taggingOil,
+                                maunedit: 1,
                             })
                             this.newTaggingData2.sort(function(a, b) {
                                 return b.height - a.height;
@@ -361,6 +374,7 @@
                             this.newTaggingData3.push({
                                 height: tagging,
                                 volume: taggingOil,
+                                maunedit: 1,
                             })
                             this.newTaggingData3.sort(function(a, b) {
                                 return b.height - a.height;
@@ -369,6 +383,7 @@
                             this.newTaggingData4.push({
                                 height: tagging,
                                 volume: taggingOil,
+                                maunedit: 1,
                             })
                             this.newTaggingData4.sort(function(a, b) {
                                 return b.height - a.height;
@@ -421,8 +436,36 @@
                         this.$Message.error(this.$t("reportForm.selectDevTip"));
                         return
                     };
-                    this.loading = true;
 
+
+                    this.recvtime = [];
+                    this.totalad = [];
+                    this.speed = [];
+                    this.oil1 = [];
+                    this.oil2 = [];
+                    this.oil3 = [];
+                    this.oil4 = [];
+                    this.srcad0 = [];
+                    this.srcad1 = [];
+                    this.srcad2 = [];
+                    this.srcad3 = [];
+
+                    this.markPointData = [];
+
+                    this.totalad1 = [];
+                    this.speed1 = [];
+                    this.oil11 = [];
+                    this.oil21 = [];
+                    this.oil31 = [];
+                    this.oil41 = [];
+                    this.srcad01 = [];
+                    this.srcad11 = [];
+                    this.srcad21 = [];
+                    this.srcad31 = [];
+
+                    this.markPointData1 = [];
+
+                    this.loading = true;
                     var self = this;
                     var startday = DateFormat.longToDateStr(this.date.getTime(), timeDifference);
 
@@ -836,26 +879,36 @@
                             me.$Message.success(vRoot.$t('monitor.querySucc'));
                             var oildetectors = resp.oildetectors;
                             me.oildetectors = oildetectors;
+
                             oildetectors.forEach(function(item, index) {
+
                                 item.markers.sort(function(a, b) {
                                     return b.height - a.height;
                                 });
-                                if (index == 0 && me.oilType == '1') {
-                                    me.taggingData = item.markers;
+                                if (index == 0) {
                                     me.newTaggingData1 = deepClone(item.markers);
                                     me.threshold1 = item.threshold;
-                                } else if (index == 1 && me.oilType == '2') {
+                                    if (me.oilType == '1') {
+                                        me.taggingData = item.markers;
+                                    }
+                                } else if (index == 1) {
                                     me.threshold2 = item.threshold;
-                                    me.taggingData = item.markers;
                                     me.newTaggingData2 = deepClone(item.markers);
-                                } else if (index == 2 && me.oilType == '3') {
+                                    if (me.oilType == '2') {
+                                        me.taggingData = item.markers;
+                                    }
+                                } else if (index == 2) {
                                     me.threshold3 = item.threshold;
-                                    me.taggingData = item.markers;
                                     me.newTaggingData3 = deepClone(item.markers);
-                                } else if (index == 3 && me.oilType == '4') {
+                                    if (me.oilType == '3') {
+                                        me.taggingData = item.markers;
+                                    }
+                                } else if (index == 3) {
                                     me.threshold4 = item.threshold;
-                                    me.taggingData = item.markers;
                                     me.newTaggingData4 = deepClone(item.markers);
+                                    if (me.oilType == '4') {
+                                        me.taggingData = item.markers;
+                                    }
                                 }
                             })
                         } else {
@@ -874,44 +927,44 @@
                         if (item) {
                             this.threshold1 = item.threshold;
                             this.taggingData = item.markers;
-                            this.newTaggingData1 = deepClone(item.markers);
+                            // this.newTaggingData1 = deepClone(item.markers);
                         } else {
                             this.threshold1 = null;
                             this.taggingData = [];
-                            this.newTaggingData1 = [];
+                            // this.newTaggingData1 = [];
                         }
                     } else if (this.oilType == '2') {
                         var item = oildetectors[1];
                         if (item) {
                             this.threshold2 = item.threshold;
                             this.taggingData = item.markers;
-                            this.newTaggingData2 = deepClone(item.markers);
+                            // this.newTaggingData2 = deepClone(item.markers);
                         } else {
                             this.threshold2 = null;
                             this.taggingData = [];
-                            this.newTaggingData2 = [];
+                            // this.newTaggingData2 = [];
                         }
                     } else if (this.oilType == '3') {
                         var item = oildetectors[2];
                         if (item) {
                             this.threshold3 = item.threshold;
                             this.taggingData = item.markers;
-                            this.newTaggingData3 = deepClone(item.markers);
+                            // this.newTaggingData3 = deepClone(item.markers);
                         } else {
                             this.threshold3 = null;
                             this.taggingData = [];
-                            this.newTaggingData3 = [];
+                            // this.newTaggingData3 = [];
                         }
                     } else if (this.oilType == '4') {
                         var item = oildetectors[3];
                         if (item) {
                             this.threshold4 = item.threshold;
                             this.taggingData = item.markers;
-                            this.newTaggingData4 = deepClone(item.markers);
+                            // this.newTaggingData4 = deepClone(item.markers);
                         } else {
                             this.threshold4 = null;
                             this.taggingData = [];
-                            this.newTaggingData4 = [];
+                            // this.newTaggingData4 = [];
                         }
                     }
 
