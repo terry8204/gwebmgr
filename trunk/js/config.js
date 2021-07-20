@@ -937,6 +937,9 @@ var myUrls = {
     reportOilMileage: function() {
         return this.apihosts + 'webapi?action=reportoilmileage&token=' + token;
     },
+    reportDeviceMsg: function() {
+        return this.apihosts + 'webapi?action=reportdevicemsg&token=' + token;
+    },
 }
 
 

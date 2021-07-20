@@ -913,7 +913,7 @@ function reportMileageDetail(groupslist) {
             isShowMatchDev: true,
             columns: [
                 { title: vRoot.$t("alarm.devName"), key: 'deviceName' },
-                { title: vRoot.$t("reportForm.date"), key: 'day', sortable: true },
+                { title: vRoot.$t("reportForm.date"), key: 'statisticsday', sortable: true },
                 { title: vRoot.$t("reportForm.minMileage"), key: 'mintotaldistance', sortable: true },
                 { title: vRoot.$t("reportForm.maxMileage"), key: 'maxtotaldistance', sortable: true },
                 { title: vRoot.$t("reportForm.totalMileage"), key: 'totaldistance', sortable: true },
@@ -1154,6 +1154,121 @@ function mileageMonthReport(groupslist) {
         }
     })
 }
+
+
+
+function deviceMsg(groupslist) {
+    vueInstanse = new Vue({
+        el: '#device-msg',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            loading: false,
+            isSpin: false,
+            lastTableHeight: 100,
+            groupslist: [],
+            columns: [
+                { key: 'index', width: 70, title: vRoot.$t("reportForm.index") },
+                { title: vRoot.$t("alarm.devName"), key: 'devicename', width: 160 },
+                { title: vRoot.$t("alarm.devNum"), key: 'deviceid', width: 160 },
+                { title: vRoot.$t("reportForm.date"), key: 'createtimeStr', width: 160 },
+                { title: isZh ? '消息类型' : 'Msg Type', key: 'msgtype', width: 100 },
+                { title: isZh ? '消息内容' : 'Content', key: 'content' },
+            ],
+            tableData: [],
+        },
+        methods: {
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 130;
+            },
+            onClickQuery: function() {
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+                if (deviceids.length > 0) {
+                    var me = this;
+                    var url = myUrls.reportDeviceMsg();
+
+                    var data = {
+                        devices: deviceids
+                    }
+                    me.loading = true;
+                    utils.sendAjax(url, data, function(resp) {
+                        console.log(resp);
+                        me.loading = false;
+
+                        if (resp.msgs) {
+                            resp.msgs.forEach(function(item, index) {
+                                item.index = index + 1;
+                                var deviceid = item.deviceid;
+                                item.devicename = "\t" + (vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicename : deviceid);
+                                item.createtimeStr = DateFormat.longToDateTimeStr(item.createtime, timeDifference);
+                            });
+                            me.tableData = resp.msgs;
+                        } else {
+                            me.tableData = [];
+                        }
+
+
+
+                    })
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
+            getTheMonthDays: function(date) {
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                year = month == 12 ? year + 1 : year;
+                month = month == 12 ? 1 : month;
+                return new Date(new Date(year, month, 1) - 1).getDate();
+            },
+        },
+
+        mounted: function() {
+            var me = this;
+            me.records = [];
+            me.queryDevicesTree();
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        }
+    })
+}
+
 
 
 function oilMonthDetail(groupslist) {
@@ -14162,6 +14277,7 @@ var reportForm = {
                         { title: me.$t("reportForm.rechargeRecords"), name: 'rechargeRecords', icon: 'ios-list-box-outline' },
                         { title: me.$t("reportForm.speedingReport"), name: 'speedingReport', icon: 'md-remove-circle' },
                         { title: me.$t('reportForm.multiMedia'), name: 'multiMedia', icon: 'ios-ionitron-outline' },
+                        { title: me.$t('reportForm.deviceMsg'), name: 'deviceMsg', icon: 'ios-notifications-outline' },
                     ]
                 },
                 {
@@ -14386,6 +14502,9 @@ var reportForm = {
                         break;
                     case 'ioreport.html':
                         ioReport(groupslist);
+                        break;
+                    case 'devicemsg.html':
+                        deviceMsg(groupslist);
                         break;
                 }
             });
