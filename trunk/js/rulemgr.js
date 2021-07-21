@@ -76,35 +76,3 @@ var ruleManager = {
         this.selectditem('chaosuRule');
     },
 }
-
-
-
-var a = {
-
-    "deviceid": "64861157145",
-    "oildetectors": [{
-            "appearance": 1,
-            "maxAdValue": 1000,
-            "length": 100,
-            "width": 100,
-            "height": 100,
-            "diameter": 0,
-            "markers": [],
-            "threshold": 10
-        },
-        {
-            "appearance": 4,
-            "maxAdValue": 65535,
-            "length": 0,
-            "width": 0,
-            "height": 0,
-            "diameter": 0,
-            "markers": [
-                { "height": 10, "volume": 11 }
-            ],
-            "threshold": 10
-        },
-        { "appearance": 0, "maxAdValue": 65535, "length": 0, "width": 0, "height": 0, "diameter": 0, "markers": [], "threshold": 10 }, { "appearance": 0, "maxAdValue": 65535, "length": 0, "width": 0, "height": 0, "diameter": 0, "markers": [], "threshold": 10 }
-    ],
-    "independent": 0
-}

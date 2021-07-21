@@ -940,6 +940,9 @@ var myUrls = {
     reportDeviceMsg: function() {
         return this.apihosts + 'webapi?action=reportdevicemsg&token=' + token;
     },
+    queryExpireDeviceList: function() {
+        return this.apihosts + 'webapi?action=queryexpiredevicelist&token=' + token;
+    },
 }
 
 

@@ -129,7 +129,8 @@ var bgManager = {
                         { title: me.$t("bgMgr.priceList"), name: 'priceList', icon: 'logo-apple', maxShowUserType: 1 },
                         { title: me.$t("bgMgr.memberSwitch"), name: 'bonusList', icon: 'ios-barcode', maxShowUserType: 1 },
                         { title: me.$t("bgMgr.transferRecords"), name: 'transferRecord', icon: 'ios-paper-outline', maxShowUserType: 1 },
-                        { title: vRoot.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline', maxShowUserType: 1 }
+                        { title: vRoot.$t("bgMgr.renewMgr"), name: 'chargeMgr', icon: 'ios-apps-outline', maxShowUserType: 1 },
+                        { title: vRoot.$t("bgMgr.expireMgr"), name: 'expireMgr', icon: 'ios-apps-outline', maxShowUserType: 1 },
                     ]
                 },
 
