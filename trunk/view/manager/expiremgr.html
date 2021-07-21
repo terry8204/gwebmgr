@@ -1,0 +1,769 @@
+<div id="expire-mgr">
+    <div style="margin:10px;height: 32px;">
+        <input type="file" id="file" style="display: none;" />
+        <div style="margin-right:10px;float: left;line-height: 32px;position: relative;width: 90px;">
+            <i-select v-model="selectType">
+                <i-option value="user">{{$t("charge.userQuery")}}</i-option>
+                <i-option value="device">{{$t("charge.deviceQuery")}}</i-option>
+            </i-select>
+        </div>
+        <div style="float: left;position: relative;width: 210px;line-height:32px;" v-if="selectType == 'user'">
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="sosoValue" icon="ios-close-circle-outline" @on-click="cleanValue" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                <transition name="fade">
+                    <div class="search-item-wrapper" v-show="isShowMatchDev">
+                        <Tree :data="treeData"></Tree>
+                    </div>
+                </transition>
+            </div>
+        </div>
+        <div style="margin-left:10px;float: left;line-height: 32px;position: relative;width: 150px;" v-if="selectType == 'user'">
+            <i-select v-model="maturityType">
+                <i-option value="2">{{$t("charge.all")}}</i-option>
+                <i-option value="0">{{$t("charge.expired1")}}</i-option>
+                <i-option value="1">{{$t("charge.unexpired1")}}</i-option>
+            </i-select>
+        </div>
+        <div style="margin-left:10px;float: left;height: 32px;position: relative;" v-if="selectType == 'user'&& maturityType!= '2'">
+            <div style="float: left;height: 32px;line-height: 32px;">
+                {{$t("charge.days")}}:
+            </div>
+            <div style="float: left;line-height: 32px;position: relative;width: 80px;">
+                <input-number v-model.number="dayNumbers" :min="1" style="width: 100%;"></input-number>
+            </div>
+        </div>
+        <div style="margin-left:10px;float: left;line-height: 32px;" v-if="selectType == 'user'">
+            <Checkbox v-model="isIncludeSub">{{$t("charge.includeSub")}}</Checkbox>
+        </div>
+        <div style="float: left;position: relative;width: 280px;line-height:32px;" v-if="selectType == 'device'">
+            <!-- <i-input v-model.trim="deviceid" icon="ios-search-outline"></i-input> -->
+            <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                <i-input v-model.trim="deviceid" icon="ios-search-outline" @on-change="sosoValueChange2" @on-blur="blur" @on-focus="focus" @on-click="focus"></i-input>
+                <transition name="fade">
+                    <ul class="search-item-wrapper" v-show="isShowMatchDev">
+                        <li class="demo-auto-complete-item" v-for="item in filterData">
+                            <div class="demo-auto-complete-group" v-show="item.devices.length" @click="sosoSelectGroup(item.groupname)">
+                                <span>{{ item.groupname }}</span>
+                            </div>
+                            <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
+                                <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.allDeviceIdTitle }}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </transition>
+            </div>
+        </div>
+        <div style="margin-left:10px;float: left;">
+            <i-button :loading="loading" type="info" @click="queryChargeDeviceList">{{$t("reportForm.query")}}</i-button>
+        </div>
+        <div style="margin-left:10px;float: left;">
+            <i-button type="primary" @click="handleChargeModal">{{isZh?'设备到期日期':'Equipment expiration date'}}</i-button>
+        </div>
+
+        <div style="float: right;">
+            <i-button @click="exportData" type="primary">{{$t("reportForm.exportData")}}</i-button>
+        </div>
+        <div style="float: right;margin-right:10px;">
+            <i-button @click="importTownerInfo" type="info">{{$t("bgMgr.exportDevice")}}</i-button>
+        </div>
+    </div>
+    <div style="margin:10px;">
+        <i-table :row-class-name="rowClassName" :columns="columns" border ref="table" :height="tableHeight" :data="tableData" :loading="loading" @on-selection-change="onSelection"></i-table>
+    </div>
+    <Modal v-model="importModal" :mask-closable="false" width="700" :title="$t('device.import')">
+        <Row>
+            <i-col span="12" style="padding: 10px;">
+                <i-input v-model.trim="deviceids" type="textarea" :placeholder="$t('device.copyBatchNumber')" :autosize="{minRows: 15,maxRows: 15}"></i-input>
+            </i-col>
+            <i-col span="12" style="padding: 10px;" class="my-error-tips">
+                <i-input v-model.trim="errorTips" type="textarea" disabled :autosize="{minRows: 15,maxRows: 15}"></i-input>
+            </i-col>
+        </Row>
+        <div slot="footer" style="height:40px;">
+            <Row>
+                <i-col span="16" offset="4">
+                    <i-button style="width: 100%" type="primary" @click="handleBatchImport">{{$t('device.import')}}</i-button>
+                </i-col>
+            </Row>
+        </div>
+    </Modal>
+    <Modal v-model="modal" width="400" v-cloak>
+        <p slot="header" style="color:#2D8CF0;text-align:center">
+            {{$t("charge.rechargeAction")}}
+        </p>
+        <div>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">{{$t("charge.numbers")}}:</i-col>
+                <i-col span="12" style="height: 100%;line-height:32px;">
+                    {{selectionArray.length}}
+                </i-col>
+            </Row>
+            <Row style="margin: 10px 0">
+                <i-col span="6" style="height: 100%;line-height:32px;text-align:center">{{isZh?'到期日期':'Due date'}}:</i-col>
+                <i-col span="17" style="height: 100%;line-height:32px;">
+                    <date-picker type="date" v-model="expireTime" style="width: 100%;"></date-picker>
+                </i-col>
+            </Row>
+        </div>
+        <div slot="footer" style="padding:6.5px 15px;">
+            <i-button style="width:100%;" type="primary" @click="handlerChargeDevices">{{$t("header.submit")}}</i-button>
+        </div>
+    </Modal>
+
+    <script>
+        new Vue({
+            el: '#expire-mgr',
+            i18n: utils.getI18n(),
+            data: {
+                isZh: isZh,
+                isOk: false,
+                importModal: false,
+                jindou: 0,
+                deviceids: '',
+                showfreelife: '0',
+                deviceid: '',
+                errorTips: '',
+                selectType: 'user',
+                isIncludeSub: true,
+                modal: false,
+                adminModal: false,
+                dayNumbers: 30,
+                years: vRoot.$t('charge.year1'),
+                type: 'years',
+                overdueDate: DateFormat.addYear(new Date(), 1),
+                selectionArray: [],
+                filterData: [],
+                createrToUser: userName,
+                modal: false,
+                columns: [{
+                    type: 'selection',
+                    width: 60,
+                    align: 'center'
+                }, {
+                    type: 'index',
+                    width: 60,
+                    align: 'center'
+                }, {
+                    title: vRoot.$t('bgMgr.creater'),
+                    key: 'username'
+                }, {
+                    title: vRoot.$t('alarm.devNum'),
+                    key: 'deviceid'
+                }, {
+                    title: vRoot.$t('alarm.devName'),
+                    key: 'devicename'
+                }, {
+                    title: vRoot.$t('user.devType'),
+                    key: 'devicetype',
+                }, {
+                    title: vRoot.$t('charge.useState'),
+                    key: 'isfree',
+                    sortable: true,
+                    render: function(h, params) {
+                        var isfree = params.row.isfree;
+                        var str = '';
+                        switch (isfree) {
+                            case 1:
+                                str = vRoot.$t("charge.normalUse")
+                                break;
+                            case 2:
+                                str = vRoot.$t("charge.experiencing")
+                                break;
+                            case 3:
+                                str = vRoot.$t("charge.deviceDisabled")
+                                break;
+                            case 4:
+                                str = vRoot.$t("charge.deviceExpiration")
+                                break;
+                            case 5:
+                                str = vRoot.$t("charge.deviceExpired")
+                                break;
+                            case 6:
+                                str = vRoot.$t("charge.freelife")
+                                break;
+                        }
+                        return h('span', {}, str)
+                    },
+                }, {
+                    title: vRoot.$t('alarm.createTime'),
+                    sortable: true,
+                    key: 'createtimeStr'
+                }, {
+                    title: vRoot.$t('charge.lastactivetime'),
+                    sortable: true,
+                    key: 'lastactivetimeStr'
+                }, {
+                    title: vRoot.$t('alarm.expireTime'),
+                    sortable: true,
+                    key: 'overduedate'
+                }],
+                tableHeight: 300,
+                tableData: [],
+                loading: false,
+                maturityType: '2',
+                sosoValue: '',
+                expireTime: new Date(),
+                isShowMatchDev: false,
+                treeData: [],
+            },
+            methods: {
+                rowClassName: function(row, index) {
+                    if (row.isfree == 4 || row.isfree == 5) {
+                        return 'equipment-expired'
+                    } else if (row.isfree == 2) {
+                        return 'device-experience'
+                    }
+                    return 'device-normal';
+                },
+                onClickOutside: function(e) {
+                    this.isShowMatchDev = false;
+                },
+                focus: function() {
+                    if (this.selectType == 'device') {
+                        if (this.deviceid && this.deviceid.trim()) {
+                            this.sosoValueChange2()
+                        } else {
+                            var groupslist = vRoot.$children[1].groups;
+                            groupslist.forEach(function(group) {
+                                group.devices.forEach(function(device) {
+                                    device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
+                                })
+                            });
+                            this.filterData = groupslist;
+                        }
+                    }
+                    this.isShowMatchDev = true;
+                },
+                sosoValueChange: function() {
+                    var me = this;
+                    var value = this.sosoValue;
+                    this.filterMethod(this.sosoValue);
+                },
+                filterMethod: function(value) {
+                    value = value.toLowerCase();
+                    this.treeData = [];
+                    this.treeData = this.variableDeepSearch(this.groupslist, value, 0);
+                    this.checkedDevice = [];
+                    if (this.isShowMatchDev == false) {
+                        this.isShowMatchDev = true;
+                    }
+                },
+                sosoSelect: function(option) {
+                    this.deviceid = option.allDeviceIdTitle;
+                    this.isShowMatchDev = false;
+                    this.filterMethod2(this.deviceid);
+                },
+                sosoValueChange2: function() {
+                    var me = this;
+                    var value = this.deviceid;
+
+                    if (this.timeoutIns != null) {
+                        clearTimeout(this.timeoutIns);
+                    };
+
+                    this.timeoutIns = setTimeout(function() {
+                        me.filterMethod2(value);
+                        if (!me.isShowMatchDev) {
+                            me.isShowMatchDev = true;
+                        };
+                    }, 300);
+                },
+                filterMethod2: function(value) {
+                    var groupslist = vRoot.$children[1].groups;
+                    var filterData = [];
+                    value = value.toLowerCase();
+                    for (var i = 0; i < groupslist.length; i++) {
+                        var group = groupslist[i];
+                        if (
+                            group.groupname.toLowerCase().indexOf(value) !== -1 ||
+                            group.firstLetter.indexOf(value) !== -1 ||
+                            group.pinyin.indexOf(value) !== -1
+                        ) {
+                            group.devices.forEach(function(device) {
+                                device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
+                            })
+                            var copyGroup = deepClone(group);
+                            copyGroup.devices = copyGroup.devices.slice(0, 9);
+                            filterData.push(copyGroup)
+                        } else {
+                            var devices = group.devices
+                            var obj = {
+                                groupname: group.groupname,
+                                devices: []
+                            }
+                            for (var j = 0; j < devices.length; j++) {
+                                var device = devices[j]
+                                var title = device.allDeviceIdTitle
+                                device.isOnline = vstore.state.deviceInfos[device.deviceid] ? vstore.state.deviceInfos[device.deviceid].isOnline : false;
+                                if (
+                                    title.toLowerCase().indexOf(value) !== -1 ||
+                                    device.firstLetter.indexOf(value) !== -1 ||
+                                    device.pinyin.indexOf(value) !== -1
+                                ) {
+                                    obj.devices.push(device)
+                                } else {
+                                    if (device.remark) {
+                                        if (device.remark.indexOf(value) !== -1) {
+                                            obj.devices.push(device);
+                                        };
+                                    };
+                                };
+                                if (obj.devices.length >= 10) {
+                                    break;
+                                }
+                            }
+                            if (obj.devices.length) {
+                                filterData.push(obj);
+                                if (filterData.length >= 10) {
+                                    break;
+                                }
+                            };
+                        };
+                    };
+                    this.filterData = filterData;
+
+                },
+                variableDeepSearch: function(treeDataFilter, searchWord, limitcount) {
+                    var childTemp = [];
+                    var that = this;
+                    for (var i = 0; i < treeDataFilter.length; i++) {
+                        var copyItem = null;
+                        var item = treeDataFilter[i];
+                        if (item != null) {
+                            var isFound = false;
+                            if (item.title.toLowerCase().indexOf(searchWord) != -1 || (item.deviceid && item.deviceid.toLowerCase().indexOf(searchWord) != -1)) {
+                                copyItem = deepClone(item);
+                                copyItem.expand = false;
+                                isFound = true;
+                            }
+                            if (isFound == false && item.children && item.children.length > 0) {
+                                var rs = that.variableDeepSearch(item.children, searchWord, limitcount);
+                                if (rs && rs.length > 0) {
+                                    copyItem = deepClone(item);
+                                    copyItem.children = rs;
+                                    copyItem.expand = true;
+                                    isFound = true;
+                                }
+                            }
+                            if (isFound == true) {
+                                limitcount++;
+                                childTemp.push(copyItem);
+                                if (limitcount > 100) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    return childTemp;
+                },
+                handleBatchImport: function() {
+
+                    var deviceids = this.deviceids.split("\n");
+                    var devices = deviceids.filter(function(item) {
+                        if (item) {
+                            return item;
+                        }
+                    });
+                    if (devices.length > 0) {
+                        this.queryDevicesByIds(devices);
+                    }
+
+                },
+                handleChargeModal: function() {
+
+                    this.modal = true;
+
+                },
+                queryChargeDeviceList: function() {
+                    this.loading = true;
+                    this.selectionArray = [];
+                    var me = this;
+                    var url = myUrls.queryExpireDeviceList();
+                    if (this.selectType == 'user') {
+                        var overduedays = this.dayNumbers;
+                        if (this.maturityType == '0') {
+                            overduedays = -overduedays;
+                        } else if (this.maturityType == '2') {
+                            overduedays = 0;
+                        };
+                        var data = {
+                            querytype: 0,
+                            username: this.createrToUser, // 需要查询的账号
+                            isquerysubaccount: this.isIncludeSub, //true 是包含下级账号 false 不包含
+                            overduedays: overduedays //负数 代表过期多少天 正数代表还有多少天过期
+                        };
+                    } else if (this.selectType == 'device') {
+                        var deviceid = this.deviceid;
+                        if (this.deviceid.indexOf('-') != -1) {
+                            deviceid = this.deviceid.split('-')[1];
+                        }
+                        var data = {
+                            querytype: 1,
+                            keyword: deviceid
+                        };
+                    }
+                    utils.sendAjax(url, data, function(respData) {
+                        me.loading = false;
+                        var deviceTypeMap = vRoot.$store.state.deviceTypes;
+                        if (respData.status == 0) {
+                            if (respData.devices.length) {
+                                var resultArray = [];
+                                respData.devices.forEach(function(item, index) {
+                                    resultArray.push({
+                                        username: item.creater,
+                                        deviceid: item.deviceid,
+                                        devicename: item.devicename,
+                                        devicetype: deviceTypeMap[item.devicetype].typename,
+                                        devicetypeid: item.devicetype,
+                                        chargestatus: item.chargestatus,
+                                        overduedate: DateFormat.longToDateStr(item.expirenotifytime, timeDifference),
+                                        createtimeStr: DateFormat.longToDateStr(item.createtime, timeDifference),
+                                        lastactivetimeStr: DateFormat.longToDateStr(item.lastactivetime, timeDifference),
+                                        overduetime: item.expirenotifytime,
+                                        isfree: item.isfree,
+                                    });
+                                });
+                                if (me.maturityType == '0') {
+                                    resultArray.sort(function(a, b) {
+                                        return b.overduetime - a.overduetime;
+                                    });
+                                } else {
+                                    resultArray.sort(function(a, b) {
+                                        return a.overduetime - b.overduetime;
+                                    });
+                                }
+
+                                me.tableData = resultArray;
+                            } else {
+                                me.tableData = [];
+                                me.$Message.error(isZh ? "没有搜索到设备" : "No device found");
+                            }
+                        } else {
+                            me.$Message.error(isZh ? "查询失败" : "Query failed");
+                        }
+                    }, function() {
+                        me.loading = false;
+                    });
+                },
+                handleDelete: function(row) {
+                    if (this.selectionArray.length == 0) {
+                        this.$Message.error(isZh ? "请选择要删除的设备" : "Please select the device to delete");
+                    } else {
+
+                        var url = myUrls.deleteDevices(),
+                            me = this;
+                        var deviceids = this.selectionArray.map(function(item) {
+                            return item.deviceid
+                        });
+                        if (deviceids.length > 100) {
+                            this.$Message.error(isZh ? "一次性删除不能超过100个设备" : "No more than 100 devices can be deleted at one time");
+                            return;
+                        }
+                        utils.sendAjax(url, {
+                            deviceids: deviceids
+                        }, function(resp) {
+                            if (resp.status == 0) {
+                                me.queryChargeDeviceList();
+                                // var tableData = [];
+                                // me.tableData.forEach(function(item) {
+                                //     if (!deviceids.includes(item.deviceid)) {
+                                //         tableData.push(item);
+                                //     }
+                                // })
+                                // me.tableData = tableData;
+                                me.$Message.success(vRoot.$t('message.deleteSucc'));
+                            } else {
+                                me.$Message.error(vRoot.$t('message.deleteFail'));
+                            }
+                        });
+
+                    }
+
+                },
+                onSelection: function(result) {
+                    if (result.length) {
+                        var jindou = 0;
+                        result.forEach(function(item) {
+                            jindou += item.price;
+                        })
+                        this.jindou = jindou;
+                    } else {
+                        this.jindou = 0;
+                    }
+                    this.selectionArray = result;
+
+                },
+                handlerChargeDevices: function() {
+                    if (this.selectionArray.length == 0) {
+                        this.$Message.error(isZh ? "请选择要充值的设备" : "Please select the device to recharge");
+                        return;
+                    };
+                    var url = myUrls.batchOperate(),
+                        me = this;
+                    var data = {
+                        deviceids: [],
+                        showfreelife: Number(this.showfreelife),
+                        action: "modifyexpiretime",
+                        expiretime: this.expireTime.getTime()
+                    }
+
+
+
+                    this.selectionArray.forEach(function(item) {
+                        data.deviceids.push(item.deviceid);
+                    });
+
+
+                    utils.sendAjax(url, data, function(respData) {
+                        if (respData.status === 0) {
+                            me.$Message.success(vRoot.$t('device.actionSucc'));
+                            // me.updatedActionState(data.deviceids, data.expiretime, timeDifference);
+                            me.modal = false;
+                            me.queryChargeDeviceList();
+                        } else {
+                            me.$Message.error(respData.cause + 1);
+                        }
+                    });
+                },
+                updatedActionState: function(deviceids, expiretime) {
+                    console.log(deviceids, expiretime);
+                    var overduedate = DateFormat.longToDateStr(expiretime, timeDifference);
+                    for (var i = 0; i < deviceids.length; i++) {
+                        var deviceid = deviceids[i];
+                        for (var j = 0; j < this.tableData.length; j++) {
+                            var item = this.tableData[j];
+                            if (item.deviceid == deviceid) {
+                                item.overduedate = overduedate;
+                                break;
+                            }
+                        }
+                    }
+                },
+                queryUsersTree: function(callback) {
+                    var url = myUrls.queryUsersTree(),
+                        me = this;
+                    utils.sendAjax(url, {
+                        username: userName
+                    }, function(respData) {
+                        if (respData.status == 0 && respData.rootuser.user) {
+                            callback([me.castUsersTreeToDevicesTree(respData.rootuser)]);
+                        } else {
+                            me.$Message.error(me.$t('monitor.queryFail'))
+                        }
+                    });
+                },
+                cleanValue: function() {
+                    this.sosoValue = '';
+                },
+                castUsersTreeToDevicesTree: function(devicesTreeRecord) {
+                    var me = this;
+                    var iViewTree = {
+                        render: function(h, params) {
+                            var username = params.data.title;
+                            return h('span', {
+                                on: {
+                                    'click': function() {
+                                        me.createrToUser = username;
+                                        me.sosoValue = username;
+                                    }
+                                },
+                                style: {
+                                    cursor: 'pointer',
+                                    color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                }
+                            }, [
+                                h('span', [
+                                    h('Radio', {
+                                        props: {
+                                            value: username == me.createrToUser
+                                        },
+                                        style: {
+                                            marginRight: '4px',
+                                            marginLeft: '4px'
+                                        }
+                                    }),
+                                    h('span', params.data.title)
+                                ]),
+                            ])
+                        },
+                        expand: true,
+                    };
+                    if (devicesTreeRecord != null) {
+                        var username = devicesTreeRecord.user.username;
+                        var subusers = devicesTreeRecord.subusers;
+                        iViewTree.title = username;
+                        if (username != null && subusers != null && subusers.length > 0) {
+                            var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                            iViewTree.children = subDevicesTreeRecord;
+
+                        }
+                    }
+                    return iViewTree;
+                },
+                doCastUsersTreeToDevicesTree: function(usersTrees) {
+                    var devicesTreeRecord = [],
+                        me = this;
+                    if (usersTrees != null && usersTrees.length > 0) {
+                        for (var i = 0; i < usersTrees.length; ++i) {
+                            var usersTree = usersTrees[i];
+                            var username = usersTree.user.username;
+                            var subusers = usersTree.subusers;
+                            var currentsubDevicesTreeRecord = {
+                                render: function(h, params) {
+                                    var username = params.data.title;
+                                    return h('span', {
+                                        on: {
+                                            'click': function() {
+                                                me.createrToUser = username;
+                                                me.sosoValue = username;
+                                            }
+                                        },
+                                        style: {
+                                            cursor: 'pointer',
+                                            color: (me.createrToUser == username) ? '#2D8CF0' : '#000'
+                                        }
+                                    }, [
+                                        h('span', [
+                                            h('Radio', {
+                                                props: {
+                                                    value: username == me.createrToUser
+                                                },
+                                                style: {
+                                                    marginRight: '4px',
+                                                    marginLeft: '4px'
+                                                }
+                                            }),
+                                            h('span', params.data.title)
+                                        ]),
+                                    ])
+                                },
+                            };
+                            if (username != null && subusers != null && subusers.length > 0) {
+                                var subDevicesTreeRecord = this.doCastUsersTreeToDevicesTree(subusers);
+                                currentsubDevicesTreeRecord.children = subDevicesTreeRecord;
+                            }
+                            currentsubDevicesTreeRecord.title = username;
+                            devicesTreeRecord.push(currentsubDevicesTreeRecord);
+                        }
+                    }
+                    return devicesTreeRecord;
+                },
+                calcTableHeight: function() {
+                    var wHeight = window.innerHeight;
+                    this.tableHeight = wHeight - 125;
+                },
+                exportData: function() {
+                    var tableData = deepClone(this.tableData);
+                    tableData.forEach(function(item) {
+                        item.cardid = "\t" + item.cardid;
+                        item.usernamephonenum = "\t" + item.usernamephonenum;
+                        item.phonenum = "\t" + item.phonenum;
+                        item.policyno = "\t" + item.policyno;
+                        item.vinno = "\t" + item.vinno;
+                    });
+                    this.$refs.table.exportCsv({
+                        filename: vRoot.$t('reportForm.insureData'),
+                        original: false,
+                        columns: this.columns,
+                        data: tableData
+                    });
+                },
+                importTownerInfo: function() {
+                    this.importModal = true;
+                },
+                queryDevicesByIds: function(deviceids) {
+                    var me = this;
+                    var url = myUrls.queryDevicesByIds();
+                    var data = {
+                        deviceids: deviceids
+                    }
+                    utils.sendAjax(url, data, function(respData) {
+                        var devices = respData.devices;
+                        if (devices && devices.length) {
+                            var resultArray = [];
+                            var deviceTypeMap = vRoot.$store.state.deviceTypes;
+                            respData.devices.forEach(function(item, index) {
+                                resultArray.push({
+                                    username: item.creater,
+                                    deviceid: item.deviceid,
+                                    devicename: item.devicename,
+                                    devicetype: deviceTypeMap[item.devicetype].typename,
+                                    devicetypeid: item.devicetype,
+                                    chargestatus: item.chargestatus,
+                                    overduedate: DateFormat.longToDateStr(item.expirenotifytime, timeDifference),
+                                    overduetime: item.overduetime,
+                                    price: me.priceObj[item.devicetype].price
+                                });
+                            });
+
+                            resultArray.sort(function(a, b) {
+                                return a.overduetime - b.overduetime;
+                            });
+
+                            me.tableData = resultArray;
+                            me.importModal = false;
+                        }
+                    });
+                }
+            },
+            watch: {
+                deviceids: function(newVal) {
+                    var tips = '';
+                    var devices = newVal.split('\n');
+                    devices = devices.filter(function(item) {
+                        if (item) {
+                            return item;
+                        }
+                    });
+                    var groups = vRoot.$children[1].groups;
+                    devices.forEach(function(deviceid) {
+                        var isFound = false;
+                        for (var i = 0; i < groups.length; i++) {
+                            var children = groups[i].children;
+                            for (var j = 0; j < children.length; j++) {
+                                var item = children[j];
+                                if (deviceid && item.deviceid == deviceid) {
+                                    isFound = true;
+                                    break;
+                                }
+                            }
+                            if (isFound) {
+                                break;
+                            }
+                        }
+                        if (isFound === false) {
+                            if (isZh) {
+                                tips += deviceid + ': 没有该设备' + '\n';
+                            } else {
+                                tips += deviceid + ': There is no such device' + '\n';
+                            }
+
+                        }
+                    })
+
+                    this.errorTips = tips;
+
+                    if (tips.length) {
+                        this.isOk = false;
+                        $('.my-error-tips textarea').css({
+                            color: 'red'
+                        });
+                    }
+                }
+            },
+            mounted: function() {
+                var me = this;
+                me.queryUsersTree(function(usersTree) {
+                    me.groupslist = usersTree;
+                    me.treeData = usersTree;
+                });
+
+
+                this.sosoValue = userName;
+                this.calcTableHeight();
+
+            },
+        })
+    </script>
+</div>
