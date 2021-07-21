@@ -56,7 +56,7 @@
                     <i-button @click="handleBatchTransfer" style="margin:0 5px;">{{$t("bgMgr.batchTransfer")}}</i-button>
                     <i-button @click="importModal=true" style="margin:0 5px;">{{$t("bgMgr.exportDevice")}}</i-button>
                     <i-button @click="showBatchModal(1)" style="margin:0 5px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
-                    <i-button @click="showBatchModal(2)" style="margin:0 5px;">{{$t("bgMgr.batchEditDueDate")}}</i-button>
+                    <!-- <i-button @click="showBatchModal(2)" style="margin:0 5px;">{{$t("bgMgr.batchEditDueDate")}}</i-button> -->
                     <i-button @click="showBatchModal(3)" style="margin:0 5px;">{{$t("bgMgr.batchResetPwd")}}</i-button>
                     <i-button @click="showBatchModal(4)" v-if="userName == 'admin'" style="margin:0 5px;">{{$t("bgMgr.batchEditDevType")}}</i-button>
                     <i-button @click="showBatchModal(5)" style="margin:0 5px;">{{$t("bgMgr.batchIssueCmd")}}</i-button>
