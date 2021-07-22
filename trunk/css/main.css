@@ -927,7 +927,7 @@ div.report-left-wrap {
 div.collapse-wrap {
     position: absolute;
     right: 0px;
-    top: 0px;
+    top: -2px;
     height: 49px;
     width: 49px;
     text-align: center;

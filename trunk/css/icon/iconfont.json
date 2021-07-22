@@ -6,6 +6,41 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "5513911",
+      "name": "推拉图标",
+      "font_class": "tuilatubiao",
+      "unicode": "e6cb",
+      "unicode_decimal": 59083
+    },
+    {
+      "icon_id": "18462386",
+      "name": "推拉图标-01",
+      "font_class": "tuilatubiao-01",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "17029856",
+      "name": "记录 (1)",
+      "font_class": "jilu1",
+      "unicode": "e684",
+      "unicode_decimal": 59012
+    },
+    {
+      "icon_id": "1177793",
+      "name": "record",
+      "font_class": "record",
+      "unicode": "e658",
+      "unicode_decimal": 58968
+    },
+    {
+      "icon_id": "5466075",
+      "name": "records",
+      "font_class": "records",
+      "unicode": "e72a",
+      "unicode_decimal": 59178
+    },
+    {
       "icon_id": "7983631",
       "name": "摄像头",
       "font_class": "xingzhuang",

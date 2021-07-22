@@ -2352,8 +2352,10 @@
             <div class="report-left-wrap" :style="{width:isCollapse?'49px':'240px'}">
                 <div class="mar-nav">
                     <div class="collapse-wrap" @click="isCollapse=!isCollapse">
-                        <Icon v-if="isCollapse" type="md-arrow-forward" size="24" />
-                        <Icon v-else type="md-arrow-back" size="24" />
+                        <!-- <Icon v-if="isCollapse" type="md-arrow-forward" size="24" />
+                        <Icon v-else type="md-arrow-back" size="24" /> -->
+                        <i v-if="isCollapse" class="icon iconfont icon-tuilatubiao-01"></i>
+                        <i v-else class="icon iconfont icon-tuilatubiao"></i>
                     </div>
                     <div v-if="isCollapse" style="padding-top:49px">
                         <div v-for="(group,index) in reportNavList">
