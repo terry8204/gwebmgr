@@ -355,6 +355,14 @@
                     </div>
                 </i-col>
             </Row>
+            <Row v-if="showBatchModalType == 2" style="padding-top: 15px;">
+                <i-col span="20" offset="2">
+                    <Alert type="warning">
+                        {{$t("message.warningTips")}}
+                    </Alert>
+                </i-col>
+            </Row>
+
             <Row v-if="showBatchModalType == 3">
                 <i-col span="4" offset="4" style="line-height: 32px;">
                     {{$t('bgMgr.passModel')}}:

@@ -11,6 +11,7 @@
         defaultLang: 'zh',
         en: {
             message: {
+                warningTips: "Please pay attention to choose the same type of video device to avoid play failure",
                 deleteOilRecordTip: "Duration time don't over day",
                 deleteOilRecordTip2: "Cannot operate, the record is using",
                 captureFail: "Capture failed. Please check if the device is online",
@@ -1354,6 +1355,7 @@
         //简体中文
         zh: {
             message: {
+                warningTips: '请注意选择同类型视频设备，避免播放失败',
                 deleteOilRecordTip: "记录正在使用中,禁止操作",
                 deleteOilRecordTip2: "开始和结束时间不能跨天",
                 deleteUserTips: "删除失败,该用户还有设备",
