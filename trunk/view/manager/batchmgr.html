@@ -56,6 +56,8 @@
                     <i-button @click="handleBatchTransfer" style="margin:0 5px;">{{$t("bgMgr.batchTransfer")}}</i-button>
                     <i-button @click="importModal=true" style="margin:0 5px;">{{$t("bgMgr.exportDevice")}}</i-button>
                     <i-button @click="showBatchModal(1)" style="margin:0 5px;">{{$t("bgMgr.batchModifyForwardingAddress")}}</i-button>
+
+                    <i-button @click="showBatchModal(2)" style="margin:0 5px;">{{$t("bgMgr.batchSettingVideoParameters")}}</i-button>
                     <!-- <i-button @click="showBatchModal(2)" style="margin:0 5px;">{{$t("bgMgr.batchEditDueDate")}}</i-button> -->
                     <i-button @click="showBatchModal(3)" style="margin:0 5px;">{{$t("bgMgr.batchResetPwd")}}</i-button>
                     <i-button @click="showBatchModal(4)" v-if="userName == 'admin'" style="margin:0 5px;">{{$t("bgMgr.batchEditDevType")}}</i-button>
@@ -332,11 +334,25 @@
                 </Row>
             </div>
             <Row v-if="showBatchModalType == 2">
-                <i-col span="4" offset="4" style="line-height: 32px;">
-                    {{$t('monitor.expireTime')}}:
+                <i-col span="4" offset="2" style="line-height: 32px;">
+                    {{$t("reportForm.selectDev")}}:
                 </i-col>
-                <i-col span="12">
-                    <date-picker type="date" v-model="expirationDate"></date-picker>
+                <i-col span="14">
+                    <div class="search-wrapper" v-click-outside.capture="onClickOutside">
+                        <i-input v-model.trim="sosoValue" icon="ios-close-circle-outline" @on-click="cleanSelectedDev" @on-change="sosoValueChange" @on-blur="blur" @on-focus="focus" :placeholder="placeholder" @on-click="focus"></i-input>
+                        <transition name="fade">
+                            <ul class="search-item-wrapper" v-show="isShowMatchDev">
+                                <li class="demo-auto-complete-item" v-for="item in filterData">
+                                    <div class="demo-auto-complete-group" v-show="item.devices.length" @click="sosoSelectGroup(item.groupname)">
+                                        <span>{{ item.groupname }}</span>
+                                    </div>
+                                    <div v-for="option in item.devices" :value="option.groupname" :key="option.groupname" class="ivu-select-item">
+                                        <span :style="{color:option.isOnline ? '#33DAD0':'#B1BBC2'}" @click="sosoSelect(option)" class="demo-auto-complete-title">{{ option.allDeviceIdTitle }}</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </transition>
+                    </div>
                 </i-col>
             </Row>
             <Row v-if="showBatchModalType == 3">
@@ -414,7 +430,9 @@
     vueInstanse = new Vue({
         el: "#batchmgr",
         i18n: utils.getI18n(),
+        mixins: [reportMixin],
         data: {
+            groupslist: vRoot.$children[1].groups,
             isZh: isZh,
             checkAll: false,
             loading: false,
@@ -434,7 +452,6 @@
             forwardtype: '0',
             cmdContent: '',
             cmdPassword: '',
-            expirationDate: new Date(),
             resetpasswordtype: '1',
             deviceType: '',
             deviceTypeList: [],
@@ -791,8 +808,14 @@
                     data.forwardtype = Number(this.forwardtype);
                     data.forwardurl = this.forwardurl;
                 } else if (this.showBatchModalType == 2) {
-                    data.action = 'modifyexpiretime';
-                    data.expiretime = new Date(this.expirationDate).getTime();
+                    // data.action = 'modifyexpiretime';
+                    // data.expiretime = new Date(this.expirationDate).getTime();
+                    if (this.queryDeviceId == "") {
+                        this.$Message.error(this.$t("reportForm.selectDevTip"));
+                        return;
+                    }
+                    data.action = 'videosetting';
+                    data.deviceid = this.queryDeviceId;
                 } else if (this.showBatchModalType == 3) {
                     data.action = 'resetpassword';
                     if (this.resetpasswordtype == '2') {

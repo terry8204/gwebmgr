@@ -15,7 +15,7 @@
             </div>
             <div style="flex: 1;">
                 {{$t("bgMgr.selectedDeviceList")}} {{tableData.length}}
-                <i-button type="error" size="small" @click="clearTableData" style="float: right;margin: 3px 0px 0 0;">{{$t("insure.removeAll")}}</i-button>
+                <i-button type="error" size="small" @click="clearTableData" style="float: right;margin: 3px 0px 0 0;">{{$t("insure.deselectAll")}}</i-button>
             </div>
             <div style="padding: 0 20px;width:400px;">
                 <div v-show="curruntRow.deviceid">
@@ -439,7 +439,7 @@
                                 }
                             }
                         }
-                    }, vRoot.$t('insure.remove'))
+                    }, vRoot.$t('insure.deselect'))
                 }
             }, {
                 title: vRoot.$t('bgMgr.result'),
