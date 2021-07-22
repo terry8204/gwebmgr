@@ -656,14 +656,11 @@
                 exportData: function() {
                     var tableData = deepClone(this.tableData);
                     tableData.forEach(function(item) {
-                        item.cardid = "\t" + item.cardid;
-                        item.usernamephonenum = "\t" + item.usernamephonenum;
-                        item.phonenum = "\t" + item.phonenum;
-                        item.policyno = "\t" + item.policyno;
-                        item.vinno = "\t" + item.vinno;
+                        item.deviceid = "\t" + item.deviceid;
+                        item.devicename = "\t" + item.devicename;
                     });
                     this.$refs.table.exportCsv({
-                        filename: vRoot.$t('reportForm.insureData'),
+                        filename: vRoot.$t('reportForm.expireMgr'),
                         original: false,
                         columns: this.columns,
                         data: tableData

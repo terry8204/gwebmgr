@@ -897,6 +897,7 @@
                 expired: "Expired",
                 oilMarking: "Oil Mark",
                 superOilMarking: "Super Oil Mark",
+                superOilingMarking: "Super Oiling Mark",
                 weightMarking: "Weight Marking",
                 ioConfig: "IO config",
                 insureInfo: "Insure info",
@@ -1051,6 +1052,10 @@
                 drivereffectivedate: 'Driver Effective Date',
                 drivercertificatenum: 'Qualification No.',
                 drivertype: 'Drving Vehicle Model',
+                platformFuel: 'Platform Fuel',
+                realFuel: 'Real Fuel',
+                preview: 'Preview',
+                saveOilDetectorsTips: 'Sure override old markers?'
 
             },
             insure: {
@@ -2232,6 +2237,7 @@
                 expired: "已到期",
                 oilMarking: "油液标注",
                 superOilMarking: "高级油液标注",
+                superOilingMarking: "高级加油标注",
                 weightMarking: "载重标注",
                 ioConfig: "IO配置",
                 insureInfo: "保险信息",
@@ -2386,6 +2392,10 @@
                 drivereffectivedate: '资格证有效起始日期',
                 drivercertificatenum: '从业资格证号码',
                 drivertype: '准驾车型',
+                platformFuel: '平台油液',
+                realFuel: '实际油液',
+                preview: '预览',
+                saveOilDetectorsTips: '确认覆盖以前的标注?'
             },
             insure: {
                 templateDownload: '模版下载',

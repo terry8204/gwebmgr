@@ -1470,6 +1470,13 @@ function oilMonthReport() {
                     key: 'devicename',
                     width: 125,
                 },
+                { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 160, sortable: true, },
+                {
+                    title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
+                    key: 'oilper100km',
+                    width: 155,
+                    sortable: true,
+                },
                 {
                     title: vRoot.$t('reportForm.mileage') + '(Km)',
                     key: 'totaldistance',
@@ -1504,17 +1511,11 @@ function oilMonthReport() {
                     sortable: true,
 
                 },
-                { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 160, sortable: true, },
-                {
-                    title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
-                    key: 'oilper100km',
-                    width: 140,
-                    sortable: true,
-                },
+
                 {
                     title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
                     key: 'oilperhour',
-                    width: 130,
+                    width: 140,
                     sortable: true,
                 },
                 {
@@ -1541,17 +1542,17 @@ function oilMonthReport() {
                     var totaloil = item.totaloil / 100;
                     var addoil = item.addoil / 100;
                     var leakoil = item.leakoil / 100;
-                    if (item.totaldistance == 0 || totalacc == 0) {
-                        var averagespeed = 0
-                    } else {
-                        var averagespeed = (Number(item.totaldistance) / Number(totalacc)).toFixed(2);
-                    }
+                    // if (item.totaldistance == 0 || totalacc == 0) {
+                    //     var averagespeed = 0
+                    // } else {
+                    //     var averagespeed = (Number(item.totaldistance) / Number(totalacc)).toFixed(2);
+                    // }
 
                     tableDataDetail.push({
                         deviceid: '\t' + item.deviceid,
                         statisticsday: item.statisticsday,
                         devicename: devicename,
-                        averagespeed: averagespeed,
+                        averagespeed: item.avgspeed.toFixed(2),
                         idleoil: idleoil,
                         runoilper100km: runoilper100km,
                         totaldistance: totaldistance,

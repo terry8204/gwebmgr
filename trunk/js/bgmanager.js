@@ -93,7 +93,7 @@ var bgManager = {
                         // { title: me.$t("bgMgr.clearRecord"), name: "clearRecord", icon: "ios-paw" },
                         // { title: me.$t("bgMgr.setMileage"), name: "setMileage", icon: "md-paper" },
                         { title: me.$t("device.superOilMarking"), name: "oilMarking", icon: "md-paper", maxShowUserType: 99 },
-
+                        { title: me.$t("device.superOilingMarking"), name: "oilingMarking", icon: "ios-calculator-outline", maxShowUserType: 99 },
                     ]
                 },
                 {
