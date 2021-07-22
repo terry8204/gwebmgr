@@ -611,7 +611,7 @@
                         if (oilRecords.length > 0) {
                             if (oilRecords[0].records.length > 0) {
                                 var record = oilRecords[0].records[0];
-                                self.platformFuel = record.eoil - record.soil;
+                                self.platformFuel = Math.abs(record.eoil - record.soil);
                             }
                         }
 
