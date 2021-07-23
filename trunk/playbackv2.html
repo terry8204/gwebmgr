@@ -632,6 +632,7 @@
                         <Page :total="total" show-total @on-change="onPageChange" :page-size="pageSize" :current="currentIndex" />
                     </div>
                 </tab-pane>
+                <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="mileageEditorModal=true">{{$t("oil.mileageEditor")}} </i-button>
                 <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" v-show="isHasOil" @click="markerOilTableModal=true">{{$t("oil.oilRemarks")}} </i-button>
                 <i-button type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="settingModal=true">{{$t("main.setting")}}</i-button>
                 <i-button v-show="tabActive=='table'" type="primary" size="small" slot="extra" style="margin:10px 5px 0 0;" @click="getAllTracksAddress">{{$t("main.queryAddress")}}</i-button>
@@ -678,6 +679,42 @@
             </div>
             <div slot="footer">
                 <i-button type="primary" @click="setSpeedLimitColors" style="width: 100%;">{{$t("main.comfirm")}}</i-button>
+            </div>
+        </Modal>
+        <Modal v-model="mileageEditorModal" width="600">
+            <p slot="header" style="color:#2D8CF0;text-align:center">
+                <Icon type="ios-hammer-outline"></Icon>
+                <span>{{$t("oil.mileageEditorTitle")}}</span>
+            </p>
+            <div style="text-align: center;">
+                <Row style="margin: 10px 0px;">
+                    <i-col span="4" offset="2" style="line-height: 32px;">{{$t("mileage.date")}}</i-col>
+                    <i-col span="12">
+                        <Date-Picker type="date" v-model="today" style="width: 100%" :options="dateOptions"></Date-Picker>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0px;">
+                    <i-col span="4" offset="2" style="line-height: 32px;">{{$t("mileage.todayMileage")}}</i-col>
+                    <i-col span="12">
+                        <i-input v-model="totalMileage" disabled style="width: 100%"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0px;">
+                    <i-col span="4" offset="2" style="line-height: 32px;">{{$t("mileage.recalculateMileage")}}</i-col>
+                    <i-col span="12">
+                        <i-input v-model="recalculateMileage" disabled style="width: 100%"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin: 10px 0px;">
+                    <i-col span="4" offset="2" style="line-height: 32px;">{{$t("mileage.confirmMileage")}}</i-col>
+                    <i-col span="12">
+                        <i-input v-model="confirmMileage" style="width: 100%"></i-input>
+                    </i-col>
+                </Row>
+            </div>
+            <div slot="footer" style="text-align: center;">
+                <i-button type="info" @click="setSpeedLimitColors" style="width: 250px;">{{$t("mileage.recalculation")}}</i-button>
+                <i-button type="primary" @click="setSpeedLimitColors" style="width: 250px;">{{$t("mileage.submit")}}</i-button>
             </div>
         </Modal>
         <div class="demo-spin-container" v-if="queryLoading">
@@ -874,8 +911,18 @@
                     submit: 'Submit',
                     refuelingAndOilLeakage: 'Refueling and oil leakage',
                     oilRemarks: 'Oil Records',
-                }
+                    mileageEditor: 'Mileage editor',
+                    mileageEditorTitle: 'Mileage editor',
 
+                },
+                mileage: {
+                    date: '时间',
+                    todayMileage: '当日里程',
+                    recalculateMileage: '重算里程',
+                    confirmMileage: '确认里程',
+                    recalculation: '重算',
+                    submit: '提交',
+                }
             },
             zh: {
                 main: {
@@ -955,6 +1002,16 @@
                     submit: '提交',
                     refuelingAndOilLeakage: '加油漏油',
                     oilRemarks: '加漏油液体记录',
+                    mileageEditor: '里程编辑',
+                    mileageEditorTitle: '单日里程修改',
+                },
+                mileage: {
+                    date: '时间',
+                    todayMileage: '当日里程',
+                    recalculateMileage: '重算里程',
+                    confirmMileage: '确认里程',
+                    recalculation: '重算',
+                    submit: '提交',
                 }
             }
         };
@@ -1076,6 +1133,7 @@
 
                     modal: false,
                     modal1: false,
+                    mileageEditorModal: false,
                     settingModal: false,
                     sliderValue: [30, 80],
                     cause: "",
@@ -1084,6 +1142,7 @@
                     trackid: '',
                     trackStringify: "",
 
+                    today: new Date(),
                     isHasOil: isHasOil,
                     markerModal: false,
                     markerOilTableModal: false,
@@ -1166,6 +1225,11 @@
                     year: 1970,
                     month: 1,
                     date: 1,
+                    dateOptions: {
+                        disabledDate: function(date) {
+                            return (date && date.valueOf()) > Date.now();
+                        }
+                    },
                     weekList: isZh ? ["日", "一", "二", "三", "四", "五", "六"] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
                     datesArr: [],
                     timeValue: ['00:00:00', '23:59:59'],
@@ -1212,6 +1276,8 @@
                     pageSize: 10,
                     currentIndex: 1,
                     totalMileage: 0,
+                    recalculateMileage: null,
+                    confirmMileage: null,
                 },
                 methods: {
                     setSpeedLimitColors: function() {
@@ -1447,6 +1513,7 @@
                         var dateStr = this.year + '-' + this.month + '-' + this.date;
                         this.startTimeValue = new Date(dateStr + " 00:00:00");
                         this.endTimeValue = new Date(dateStr + " 23:59:59");
+                        this.today = new Date(dateStr);
                         this.queryTracks();
                     },
                     prevMonth() {

@@ -816,7 +816,7 @@
                                     <i-button type="primary" @click="addTaggingRowData2">{{$t("user.add")}}</i-button>
                                 </i-col>
                             </Row>
-                            <i-table border :columns="taggingColumns2" ref="taggingTab2" :data="taggingData2" height="200"></i-table>
+                            <i-table border :columns="taggingColumns2" ref="taggingTab2" size="small" :data="taggingData2" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
                                 <i-button type="primary" style="width:80px;" @click="importTownerInfo2">{{$t("device.importData")}}</i-button>
                                 <i-button type="info" style="width:80px;" @click="exportDevice2">{{$t("reportForm.exportData")}}</i-button>
@@ -964,7 +964,7 @@
                                     <i-button type="primary" @click="addTaggingRowData3">{{$t("user.add")}}</i-button>
                                 </i-col>
                             </Row>
-                            <i-table border :columns="taggingColumns3" ref="taggingTab3" :data="taggingData3" height="200"></i-table>
+                            <i-table border :columns="taggingColumns3" ref="taggingTab3" size="small" :data="taggingData3" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
                                 <i-button type="primary" style="width:80px;" @click="importTownerInfo3">{{$t("device.importData")}}</i-button>
                                 <i-button type="info" style="width:80px;" @click="exportDevice3">{{$t("reportForm.exportData")}}</i-button>
@@ -1112,7 +1112,7 @@
                                     <i-button type="primary" @click="addTaggingRowData4">{{$t("user.add")}}</i-button>
                                 </i-col>
                             </Row>
-                            <i-table border :columns="taggingColumns4" ref="taggingTab4" :data="taggingData4" height="200"></i-table>
+                            <i-table border :columns="taggingColumns4" ref="taggingTab4" size="small" :data="taggingData4" height="200"></i-table>
                             <div style="margin: 10px 0 0 0;text-align: right;">
                                 <i-button type="primary" style="width:80px;" @click="importTownerInfo4">{{$t("device.importData")}}</i-button>
                                 <i-button type="info" style="width:80px;" @click="exportDevice4">{{$t("reportForm.exportData")}}</i-button>
@@ -2510,7 +2510,7 @@
                     me.height1 = 0;
                     me.length1 = 0;
                     me.width1 = 0;
-                    me.maxAdValue1 = 0;
+                    me.maxAdValue1 = 65535;
                     me.taggingData1 = [];
                     me.threshold1 = 10;
                     me.capacity1 = 0;
@@ -2520,7 +2520,7 @@
                     me.height2 = 0;
                     me.length2 = 0;
                     me.width2 = 0;
-                    me.maxAdValue2 = 0;
+                    me.maxAdValue2 = 65535;
                     me.taggingData2 = [];
                     me.threshold2 = 10;
                     me.capacity2 = 0;
@@ -2530,7 +2530,7 @@
                     me.height3 = 0;
                     me.length3 = 0;
                     me.width3 = 0;
-                    me.maxAdValue3 = 0;
+                    me.maxAdValue3 = 65535;
                     me.taggingData3 = [];
                     me.threshold3 = 10;
                     me.capacity3 = 0;
@@ -2540,7 +2540,7 @@
                     me.height4 = 0;
                     me.length4 = 0;
                     me.width4 = 0;
-                    me.maxAdValue4 = 0;
+                    me.maxAdValue4 = 65535;
                     me.taggingData4 = [];
                     me.threshold4 = 10;
                     me.capacity4 = 0;
