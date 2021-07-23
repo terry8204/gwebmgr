@@ -1610,6 +1610,8 @@
                                 me.recalculateMileage = Number(distance);
                                 me.confirmMileage = Number(distance);
 
+                            } else if (resp.status == 1) {
+                                me.$Message.error(isZh ? '待日记录生成之后再编辑' : 'Edit after the daily record is generated');
                             } else {
                                 me.$Message.error(isZh ? "重算失败" : "Recalculation failed");
                             }
@@ -1633,6 +1635,8 @@
                                 }
                                 me.mileageMonthRecord[statisticsday] = Number(mileage);
                                 me.changeDatesArrMileage(statisticsday, mileage)
+                            } else if (resp.status == 1) {
+                                me.$Message.error(isZh ? '待日记录生成之后再编辑' : 'Edit after the daily record is generated');
                             } else {
                                 me.$Message.error(isZh ? '设置里程失败' : 'Failed to set mileage');
                             }
