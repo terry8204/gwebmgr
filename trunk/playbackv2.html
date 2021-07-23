@@ -1637,7 +1637,9 @@
                                 me.$Message.success(isZh ? "设置成功" : "Set successfully");
                             } else if (resp.status == 1) {
                                 me.$Message.error(isZh ? '待日记录生成之后再编辑' : 'Edit after the daily record is generated');
-                            } else {
+                            } else if (resp.status == 2) {
+                                me.$Message.error(isZh ? '没有调整权限' : 'No permission');
+                            } {
                                 me.$Message.error(isZh ? '设置里程失败' : 'Failed to set mileage');
                             }
                         });
