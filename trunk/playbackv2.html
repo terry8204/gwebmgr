@@ -689,7 +689,7 @@
                 <Row style="margin: 10px 0px;">
                     <i-col span="4" offset="2" style="line-height: 32px;">{{$t("mileage.date")}}</i-col>
                     <i-col span="12">
-                        <Date-Picker type="date" v-model="today" style="width: 100%" :options="dateOptions"></Date-Picker>
+                        <Date-Picker type="date" disabled v-model="today" style="width: 100%" :options="dateOptions"></Date-Picker>
                     </i-col>
                 </Row>
                 <Row style="margin: 10px 0px;">
@@ -1004,7 +1004,7 @@
                     submit: '提交',
                     refuelingAndOilLeakage: '加油漏油',
                     oilRemarks: '加漏油液体记录',
-                    mileageEditor: '里程编辑',
+                    mileageEditor: '里程调整',
                     mileageEditorTitle: '单日里程调整',
                 },
                 mileage: {
@@ -1604,12 +1604,11 @@
                             offset: DateFormat.getOffset()
                         }
                         utils.sendAjax(url, data, function(resp) {
-                            console.log(resp);
                             if (resp.status == 0) {
                                 var distance = (resp.totaldistance / 1000).toFixed(2);
                                 me.recalculateMileage = Number(distance);
                                 me.confirmMileage = Number(distance);
-
+                                me.$Message.success(isZh ? "重算成功" : "Recalculation succeeded");
                             } else if (resp.status == 1) {
                                 me.$Message.error(isZh ? '待日记录生成之后再编辑' : 'Edit after the daily record is generated');
                             } else {
@@ -1631,10 +1630,11 @@
                         utils.sendAjax(url, data, function(resp) {
                             if (resp.status == 0) {
                                 if (me.dateStr == statisticsday) {
-                                    me.todayMileage = Number(mileage);
+                                    me.totalMileage = Number(mileage);
                                 }
                                 me.mileageMonthRecord[statisticsday] = Number(mileage);
                                 me.changeDatesArrMileage(statisticsday, mileage)
+                                me.$Message.success(isZh ? "设置成功" : "Set successfully");
                             } else if (resp.status == 1) {
                                 me.$Message.error(isZh ? '待日记录生成之后再编辑' : 'Edit after the daily record is generated');
                             } else {
