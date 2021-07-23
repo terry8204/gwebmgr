@@ -683,7 +683,6 @@
         </Modal>
         <Modal v-model="mileageEditorModal" width="600">
             <p slot="header" style="color:#2D8CF0;text-align:center">
-                <Icon type="ios-hammer-outline"></Icon>
                 <span>{{$t("oil.mileageEditorTitle")}}</span>
             </p>
             <div style="text-align: center;">
@@ -713,8 +712,8 @@
                 </Row>
             </div>
             <div slot="footer" style="text-align: center;">
-                <i-button type="info" @click="setSpeedLimitColors" style="width: 250px;">{{$t("mileage.recalculation")}}</i-button>
-                <i-button type="primary" @click="setSpeedLimitColors" style="width: 250px;">{{$t("mileage.submit")}}</i-button>
+                <i-button type="info" @click="recalMileage" style="width: 250px;">{{$t("mileage.recalculation")}}</i-button>
+                <i-button type="primary" @click="editTotalMileage" style="width: 250px;">{{$t("mileage.submit")}}</i-button>
             </div>
         </Modal>
         <div class="demo-spin-container" v-if="queryLoading">
@@ -1587,6 +1586,21 @@
                             });
                         }
                         return datesArr;
+                    },
+                    recalMileage: function() {
+                        var url = myUrls.recalMileage();
+                        var data = {
+                            deviceid: deviceid,
+                            statisticsday: DateFormat.format(this.today, 'yyyy-MM-dd'),
+                            offset: DateFormat.getOffset()
+                        }
+                        console.log(data);
+                        utils.sendAjax(url, data, function(resp) {
+                            console.log(resp);
+                        })
+                    },
+                    editTotalMileage: function() {
+
                     },
                     onPageChange: function(index) {
                         var me = this;

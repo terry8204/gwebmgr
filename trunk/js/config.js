@@ -943,6 +943,9 @@ var myUrls = {
     queryExpireDeviceList: function() {
         return this.apihosts + 'webapi?action=queryexpiredevicelist&token=' + token;
     },
+    recalMileage: function() {
+        return this.apihosts + 'webapi?action=recalmileage&token=' + token;
+    },
 }
 
 
