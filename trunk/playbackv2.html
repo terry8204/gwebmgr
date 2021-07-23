@@ -695,20 +695,23 @@
                 <Row style="margin: 10px 0px;">
                     <i-col span="4" offset="2" style="line-height: 32px;">{{$t("mileage.todayMileage")}}</i-col>
                     <i-col span="12">
-                        <i-input v-model="totalMileage" disabled style="width: 100%"></i-input>
+                        <i-input v-model="todayMileage" disabled style="width: 100%"></i-input>
                     </i-col>
+                    <i-col span="1" style="line-height: 32px;">Km</i-col>
                 </Row>
                 <Row style="margin: 10px 0px;">
                     <i-col span="4" offset="2" style="line-height: 32px;">{{$t("mileage.recalculateMileage")}}</i-col>
                     <i-col span="12">
                         <i-input v-model="recalculateMileage" disabled style="width: 100%"></i-input>
                     </i-col>
+                    <i-col span="1" style="line-height: 32px;">Km</i-col>
                 </Row>
                 <Row style="margin: 10px 0px;">
                     <i-col span="4" offset="2" style="line-height: 32px;">{{$t("mileage.confirmMileage")}}</i-col>
                     <i-col span="12">
                         <i-input v-model="confirmMileage" style="width: 100%"></i-input>
                     </i-col>
+                    <i-col span="1" style="line-height: 32px;">Km</i-col>
                 </Row>
             </div>
             <div slot="footer" style="text-align: center;">
@@ -1002,7 +1005,7 @@
                     refuelingAndOilLeakage: '加油漏油',
                     oilRemarks: '加漏油液体记录',
                     mileageEditor: '里程编辑',
-                    mileageEditorTitle: '单日里程修改',
+                    mileageEditorTitle: '单日里程调整',
                 },
                 mileage: {
                     date: '时间',
@@ -1275,6 +1278,7 @@
                     pageSize: 10,
                     currentIndex: 1,
                     totalMileage: 0,
+                    todayMileage: 0,
                     recalculateMileage: null,
                     confirmMileage: null,
                 },
@@ -1509,10 +1513,12 @@
                     onClickDate(item) {
                         if (!item.isTheMonth) return;
                         this.date = item.day;
-                        var dateStr = this.year + '-' + this.month + '-' + this.date;
+                        var dateStr = this.year + '-' + (this.month > 9 ? this.month : '0' + this.month) + '-' + (this.date > 9 ? this.date : '0' + this.date);
                         this.startTimeValue = new Date(dateStr + " 00:00:00");
                         this.endTimeValue = new Date(dateStr + " 23:59:59");
                         this.today = new Date(dateStr);
+                        this.todayMileage = Number(this.mileageMonthRecord[dateStr]);
+                        this.totalMileage = Number(this.mileageMonthRecord[dateStr]);
                         this.queryTracks();
                     },
                     prevMonth() {
@@ -1557,12 +1563,13 @@
                                 day: prevMonthDate--,
                                 isTheMonth: false,
                                 mileage: '-',
-                                dateStr: this.year + '-' + this.month + '-' + prevMonthDate
+                                dateStr: this.year + '-' + (this.month > 9 ? this.month : '0' + this.month) + '-' + (prevMonthDate > 9 ? prevMonthDate : '0' + prevMonthDate)
                             });
                         }
-                        var d = 1
+                        var d = 1;
+                        var month = this.month > 9 ? this.month : '0' + this.month;
                         while (theDates--) {
-                            var dateStr = this.year + '-' + this.month + '-' + (d < 10 ? ('0' + d) : d);
+                            var dateStr = this.year + '-' + month + '-' + (d < 10 ? ('0' + d) : d);
                             var mileage = '-';
                             if (this.mileageMonthRecord[dateStr] != undefined) {
                                 mileage = this.mileageMonthRecord[dateStr];
@@ -1571,13 +1578,13 @@
                                 day: d,
                                 isTheMonth: true,
                                 mileage: mileage,
-                                dateStr: this.year + '-' + this.month + '-' + d
+                                dateStr: dateStr
                             });
                             d++;
                         }
                         var count = 1;
                         while (datesArr.length < 42) {
-                            var dateStr = this.year + '-' + this.month + '-' + count;
+                            var dateStr = this.year + '-' + month + '-' + (count < 10 ? ('0' + count) : count);
                             datesArr.push({
                                 day: count++,
                                 isTheMonth: false,
@@ -1588,19 +1595,57 @@
                         return datesArr;
                     },
                     recalMileage: function() {
+                        var me = this;
                         var url = myUrls.recalMileage();
+                        var statisticsday = DateFormat.format(this.today, 'yyyy-MM-dd');
                         var data = {
                             deviceid: deviceid,
-                            statisticsday: DateFormat.format(this.today, 'yyyy-MM-dd'),
+                            statisticsday: statisticsday,
                             offset: DateFormat.getOffset()
                         }
-                        console.log(data);
                         utils.sendAjax(url, data, function(resp) {
                             console.log(resp);
+                            if (resp.status == 0) {
+                                var distance = (resp.totaldistance / 1000).toFixed(2);
+                                me.recalculateMileage = Number(distance);
+                                me.confirmMileage = Number(distance);
+
+                            } else {
+                                me.$Message.error(isZh ? "重算失败" : "Recalculation failed");
+                            }
                         })
                     },
                     editTotalMileage: function() {
-
+                        var me = this;
+                        var url = myUrls.resetMileage();
+                        var statisticsday = DateFormat.format(this.today, 'yyyy-MM-dd');
+                        var mileage = this.confirmMileage;
+                        var data = {
+                            deviceid: deviceid,
+                            statisticsday: statisticsday,
+                            offset: DateFormat.getOffset(),
+                            totaldistance: Number(mileage) * 1000
+                        }
+                        utils.sendAjax(url, data, function(resp) {
+                            if (resp.status == 0) {
+                                if (me.dateStr == statisticsday) {
+                                    me.todayMileage = Number(mileage);
+                                }
+                                me.mileageMonthRecord[statisticsday] = Number(mileage);
+                                me.changeDatesArrMileage(statisticsday, mileage)
+                            } else {
+                                me.$Message.error(isZh ? '设置里程失败' : 'Failed to set mileage');
+                            }
+                        });
+                    },
+                    changeDatesArrMileage: function(dateStr, mileage) {
+                        for (var i = 0; i < this.datesArr.length; i++) {
+                            var item = this.datesArr[i];
+                            if (item.dateStr == dateStr) {
+                                item.mileage = mileage;
+                                break;
+                            }
+                        }
                     },
                     onPageChange: function(index) {
                         var me = this;
@@ -2135,6 +2180,11 @@
                                             }
                                             me.mileageMonthRecord[item.statisticsday] = (item.totaldistance / 1000).toFixed(2);
                                         }
+
+                                        if (item.statisticsday == currentDay) {
+                                            me.todayMileage = Number(me.mileageMonthRecord[item.statisticsday]);
+                                            me.totalMileage = me.todayMileage;
+                                        }
                                     }
                                 })
                             }
@@ -2148,18 +2198,11 @@
                             if (item.isTheMonth) {
                                 var day = item.day;
                                 var key = item.dateStr;
-                                var dateArr = key.split('-');
-                                var month = dateArr[1];
-                                if (day < 10) {
-                                    dateArr[2] = '0' + day;
-
-                                }
-                                if (month < 10) {
-                                    dateArr[1] = '0' + month;
-                                }
-                                key = dateArr.join('-');
                                 var mileage = this.mileageMonthRecord[key];
-                                item.mileage = mileage;
+                                if (mileage) {
+                                    item.mileage = mileage;
+                                }
+
                             }
                         }
                     },
@@ -2344,7 +2387,7 @@
 
 
 
-                        this.totalMileage = Number(((tracks[tracks.length - 1].totaldistance - tracks[0].totaldistance)).toFixed(3));
+                        // this.totalMileage = Number(((tracks[tracks.length - 1].totaldistance - tracks[0].totaldistance)).toFixed(3));
 
 
 
@@ -3512,7 +3555,7 @@
                         return this.devicename + '-' + this.deviceid;
                     },
                     dateStr: function() {
-                        return this.year + '-' + this.month + '-' + this.date;
+                        return this.year + '-' + (this.month > 9 ? this.month : '0' + this.month) + '-' + (this.date > 9 ? this.date : '0' + this.date);
                     },
                     playSpeedMillisecond: function() {
                         if (this.playSpeed == 'kuai') {

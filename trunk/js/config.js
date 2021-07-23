@@ -946,6 +946,9 @@ var myUrls = {
     recalMileage: function() {
         return this.apihosts + 'webapi?action=recalmileage&token=' + token;
     },
+    resetMileage: function() {
+        return this.apihosts + 'webapi?action=resetmileage&token=' + token;
+    },
 }
 
 
