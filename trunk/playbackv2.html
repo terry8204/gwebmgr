@@ -3655,19 +3655,16 @@
                     },
                     mapType: function(newMapType) {
                         var me = this;
-                        debugger
                         var isBMap = this.lastMapType == 'bMap';
-                        if (newMapType == 'bMap') {
+                        if (isBMap) {
                             if (me.currentTracksLenth > 0) {
                                 me.initMapView();
                             }
-                        } else if (newMapType == 'gMap') {
-                            if (isBMap && me.currentTracksLenth > 0) {
-                                me.initMapView();
-                            }
-                        } else if (newMapType == 'aMap') {
-                            if (isBMap && me.currentTracksLenth > 0) {
-                                me.initMapView();
+                        } else {
+                            if (newMapType == 'bMap') {
+                                if (me.currentTracksLenth > 0) {
+                                    me.initMapView();
+                                }
                             }
                         }
                         if (this.isShowFence) {
