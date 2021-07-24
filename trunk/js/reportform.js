@@ -1278,7 +1278,7 @@ function oilDayDetail(groupslist) {
         data: {
             loading: false,
             isSpin: false,
-            date: new Date(),
+            date: new Date(Date.now() - 60 * 60 * 24 * 1000),
             lastTableHeight: 100,
             groupslist: [],
             columns: [{
