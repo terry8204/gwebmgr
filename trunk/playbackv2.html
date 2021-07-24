@@ -1279,8 +1279,8 @@
                     currentIndex: 1,
                     totalMileage: 0,
                     todayMileage: 0,
-                    recalculateMileage: null,
-                    confirmMileage: null,
+                    recalculateMileage: 0,
+                    confirmMileage: 0,
                 },
                 methods: {
                     setSpeedLimitColors: function() {
@@ -1519,6 +1519,8 @@
                         this.today = new Date(dateStr);
                         this.todayMileage = Number(this.mileageMonthRecord[dateStr]);
                         this.totalMileage = Number(this.mileageMonthRecord[dateStr]);
+                        this.recalculateMileage = 0;
+                        this.confirmMileage = 0;
                         this.queryTracks();
                     },
                     prevMonth() {
@@ -1639,7 +1641,7 @@
                                 me.$Message.error(isZh ? '待日记录生成之后再编辑' : 'Edit after the daily record is generated');
                             } else if (resp.status == 2) {
                                 me.$Message.error(isZh ? '没有调整权限' : 'No permission');
-                            } {
+                            } else {
                                 me.$Message.error(isZh ? '设置里程失败' : 'Failed to set mileage');
                             }
                         });
@@ -3653,6 +3655,7 @@
                     },
                     mapType: function(newMapType) {
                         var me = this;
+                        debugger
                         var isBMap = this.lastMapType == 'bMap';
                         if (newMapType == 'bMap') {
                             if (me.currentTracksLenth > 0) {

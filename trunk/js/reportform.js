@@ -1270,6 +1270,221 @@ function deviceMsg(groupslist) {
 }
 
 
+function oilDayDetail(groupslist) {
+    vueInstanse = new Vue({
+        el: '#oil-day-details',
+        i18n: utils.getI18n(),
+        mixins: [treeMixin],
+        data: {
+            loading: false,
+            isSpin: false,
+            date: new Date(),
+            lastTableHeight: 100,
+            groupslist: [],
+            columns: [{
+                    title: vRoot.$t("reportForm.time"),
+                    key: 'statisticsday',
+                    width: 105,
+                },
+                {
+                    title: vRoot.$t("alarm.devName"),
+                    key: 'devicename',
+                    width: 125,
+                },
+                {
+                    title: vRoot.$t("alarm.devNum"),
+                    key: 'deviceid',
+                    width: 125,
+                },
+                {
+                    title: vRoot.$t('reportForm.mileage') + '(Km)',
+                    key: 'totaldistance',
+                    width: 110,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t("reportForm.oilConsumption") + '(L)',
+                    key: 'totaloil',
+                    width: 130,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t("reportForm.fuelVolume") + '(L)',
+                    key: 'addoil',
+                    width: 130,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t("reportForm.oilLeakage") + '(L)',
+                    key: 'leakoil',
+                    width: 130,
+                    sortable: true,
+                },
+                { title: vRoot.$t('reportForm.idleoil') + '(L)', key: 'idleoil', width: 120, sortable: true, },
+                {
+                    title: vRoot.$t("reportForm.workingHours"),
+                    key: 'totalacc',
+                    width: 140,
+                    sortable: true,
+
+                },
+                { title: vRoot.$t('reportForm.runoilper100km') + '(L)', key: 'runoilper100km', width: 160, sortable: true, },
+                {
+                    title: vRoot.$t('reportForm.fuelConsumption100km') + '(L)',
+                    key: 'oilper100km',
+                    width: 160,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t('reportForm.fuelConsumptionHour') + '(L)',
+                    key: 'oilperhour',
+                    width: 130,
+                    sortable: true,
+                },
+                {
+                    title: vRoot.$t('reportForm.averageSpeed') + '(Km/h)',
+                    key: 'averagespeed',
+                    width: 150,
+                    sortable: true,
+                },
+
+            ],
+            tableData: [],
+            currentIndex: 1,
+            dateOptions: {
+                disabledDate: function(date) {
+                    return (date && date.valueOf()) > Date.now();
+                }
+            },
+        },
+        methods: {
+            exportData: function() {
+                var tableData = deepClone(this.tableData);
+                tableData.forEach(function(item) {
+                    item.statisticsday = '\t' + item.statisticsday;
+                    item.deviceid = '\t' + item.deviceid;
+                    item.devicename = '\t' + item.devicename;
+                    item.begintimeStr = '\t' + item.begintimeStr;
+                    item.endtimeStr = '\t' + item.endtimeStr;
+                });
+                this.$refs.table.exportCsv({
+                    filename: vRoot.$t('reportForm.oilDayDetail'),
+                    original: false,
+                    columns: this.columns,
+                    data: tableData
+                });
+            },
+            nextDay: function() {
+                this.date = new Date(this.date.getTime() + 60 * 60 * 24 * 1000);
+            },
+            prevDay: function() {
+                this.date = new Date(this.date.getTime() - 60 * 60 * 24 * 1000);
+            },
+            cleanSelected: function(treeDataFilter) {
+                var that = this;
+                for (var i = 0; i < treeDataFilter.length; i++) {
+                    var item = treeDataFilter[i];
+                    if (item != null) {
+                        item.checked = false;
+                        if (item.children && item.children.length > 0) {
+                            that.cleanSelected(item.children);
+                        }
+                    }
+                }
+            },
+            changePage: function(index) {
+                var offset = index * 20;
+                var start = (index - 1) * 20;
+                this.currentIndex = index;
+                this.tableData = this.records.slice(start, offset);
+            },
+            calcTableHeight: function() {
+                var wHeight = window.innerHeight;
+                this.lastTableHeight = wHeight - 175;
+            },
+            onClickQuery: function() {
+                var deviceids = [];
+                this.checkedDevice.forEach(function(group) {
+                    if (!group.children) {
+                        if (group.deviceid != null) {
+                            deviceids.push(group.deviceid);
+                        }
+                    }
+                });
+                if (deviceids.length > 0) {
+                    var me = this;
+                    var url = myUrls.reportOilDaily();
+                    var startday = DateFormat.format(this.date, 'yyyy-MM-dd');
+                    var data = {
+                        startday: startday,
+                        endday: startday,
+                        offset: timeDifference,
+                        devices: deviceids,
+                    };
+                    me.loading = true;
+                    utils.sendAjax(url, data, function(resp) {
+                        me.loading = false;
+                        if (resp.status === 0) {
+
+                            var tableData = [];
+                            var records = resp.records;
+                            records.forEach(function(device) {
+                                var deviceid = device.deviceid;
+                                device.records.forEach(function(item) {
+                                    item.deviceid = deviceid;
+                                    item.devicename = vstore.state.deviceInfos[deviceid] ? vstore.state.deviceInfos[deviceid].devicename : deviceid;
+                                    var totalacc = (item.totalacc / 1000 / 3600).toFixed(2);
+                                    item.idleoil = item.idleoil / 100;
+                                    item.runoilper100km = item.runoilper100km;
+                                    item.totaldistance = (item.totaldistance / 1000).toFixed(2)
+                                    item.totalacc = utils.timeStamp(item.totalacc);
+                                    item.totaloil = item.totaloil / 100;
+                                    item.addoil = item.addoil / 100;
+                                    item.leakoil = item.leakoil / 100;
+                                    if (item.totaldistance == 0 || totalacc == 0) {
+                                        item.averagespeed = 0
+                                    } else {
+                                        item.averagespeed = (Number(item.totaldistance) / Number(totalacc)).toFixed(2);
+                                    }
+                                    tableData.push(item);
+                                })
+
+                            })
+
+                            me.records = tableData;
+                            me.tableData = me.records.slice(0, 20);
+                            me.total = me.records.length;
+
+                            me.currentIndex = 1;
+                        } else {
+                            me.tableData = [];
+                        }
+                    })
+                } else {
+                    this.$Message.error(this.$t("reportForm.selectDevTip"));
+                }
+            },
+            queryDevicesTree: function() {
+                var me = this;
+                this.isSpin = true;
+                GlobalOrgan.getInstance().getGlobalOrganData(function(rootuser) {
+                    me.isSpin = false;
+                    me.initZTree(rootuser);
+                })
+            },
+        },
+        mounted: function() {
+            var me = this;
+            me.records = [];
+            me.queryDevicesTree();
+            this.calcTableHeight();
+            window.onresize = function() {
+                me.calcTableHeight();
+            }
+        }
+    })
+}
+
 
 function oilMonthDetail(groupslist) {
     vueInstanse = new Vue({
@@ -1678,7 +1893,7 @@ function oilMonthReport() {
                                         var day = records[j];
                                         if (day) {
                                             var key = day.statisticsday.split('-')[2];
-                                            var distance = day.maxtotaldistance - day.mintotaldistance;
+                                            var distance = day.totaldistance;
                                             totaldistance += distance;
                                             item['day' + String(parseInt(key))] = utils.getMileage(distance);
                                             item['day' + String(parseInt(key)) + 'oil'] = day.totaloil;
@@ -14302,7 +14517,8 @@ var reportForm = {
                     icon: 'ios-speedometer-outline',
                     children: [
                         { title: me.$t("reportForm.oilMonthReport"), name: 'oilMonthReport', icon: 'ios-grid' },
-                        { title: me.$t("reportForm.oilMonthDetail"), name: 'oilMonthDetail', icon: 'ios-grid' },
+                        { title: me.$t("reportForm.oilMonthDetail"), name: 'oilMonthDetail', icon: 'md-grid' },
+                        { title: me.$t("reportForm.oilDayDetail"), name: 'oilDayDetail', icon: 'ios-grid-outline' },
                         { title: me.$t("reportForm.dayOilConsumption"), name: 'dayOil', icon: 'ios-stopwatch-outline' },
                         { title: me.$t("reportForm.oilWorkingHours"), name: 'oilWorkingHours', icon: 'ios-appstore-outline' },
                         { title: me.$t("reportForm.idleReport"), name: 'idleReport', icon: 'md-speedometer' },
@@ -14311,8 +14527,6 @@ var reportForm = {
                         { title: me.$t("reportForm.addOil"), name: 'refuelingReport', icon: 'ios-trending-up' },
                         { title: me.$t("reportForm.reduceOil"), name: 'oilLeakageReport', icon: 'ios-trending-down' },
                         // { title: me.$t("reportForm.fuelRate"), name: 'powerWaste', icon: 'ios-pulse-outline' },
-
-
                     ]
                 },
                 {
@@ -14479,6 +14693,9 @@ var reportForm = {
                         break;
                     case 'oilmonthdetail.html':
                         oilMonthDetail(groupslist);
+                        break;
+                    case 'oildaydetail.html':
+                        oilDayDetail(groupslist);
                         break;
                     case 'refuelingreport.html':
                         refuelingReport(groupslist);
