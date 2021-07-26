@@ -768,8 +768,8 @@ var monitor = {
 
         },
         openJianTing: function() {
-
             if (this.currentVideoDeviceInfo.deviceId == null) {
+                this.$t('reportForm.selectDevTip');
                 return;
             }
             var me = this;
@@ -1073,8 +1073,12 @@ var monitor = {
             });
         },
         videoBack: function() {
-            var device = this.deviceInfos[globalDeviceId];
-            window.open('videoback.html?deviceid=' + globalDeviceId + '&token=' + token + '&devicename=' + device.devicename);
+            if (globalDeviceId != "") {
+                var device = this.deviceInfos[globalDeviceId];
+                window.open('videoback.html?deviceid=' + globalDeviceId + '&token=' + token + '&devicename=' + device.devicename);
+            } else {
+                this.$Message.error(this.$t('reportForm.selectDevTip'));
+            }
         },
         openActiveSafety: function() {
             var device = this.deviceInfos[globalDeviceId];
@@ -3022,6 +3026,8 @@ var monitor = {
             }
 
 
+
+
             for (var i = 1; i <= videochannelcount; i++) {
                 var playedIndex = this.getPlayerIndexInPlayerList(device.deviceid, i);
 
@@ -3521,6 +3527,10 @@ var monitor = {
             };
             if (utils.hasFunction(functionslong, videoMask)) {
                 isShowVideoBtn = true;
+
+                var deviceInfo = this.deviceInfos[globalDeviceId];
+                this.currentVideoDeviceInfo.deviceId = globalDeviceId;
+                this.currentVideoDeviceInfo.deviceName = deviceInfo.devicename;
             };
             if (utils.hasFunction(functionslong, activeSafetyMask)) {
                 isShowActiveSafetyBtn = true;
