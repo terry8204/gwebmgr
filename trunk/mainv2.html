@@ -808,8 +808,8 @@
                             </div>
                             <div style="float:left;height:35px; line-height:35px;padding-left:15px;color:red;font-size:12px;">{{intervalTime}}{{$t("monitor.refreshAfter")}}</div>
                             <div style="float:left;height:35px; line-height:35px;padding-left:15px;">
-                                <i-button @click="videoBack" size="small" v-show="isShowVideoBtn && !isMapMode">{{$t("monitor.videoPlayback")}}</i-button>
-                                <i-button @click="isShowYunTai=true" size="small" v-show="isShowVideoBtn && !isMapMode">{{$t("monitor.intercom")}}</i-button>
+                                <i-button @click="videoBack" size="small" icon="md-refresh" v-show="isShowVideoBtn && !isMapMode">{{$t("monitor.videoPlayback")}}</i-button>
+                                <i-button @click="isShowYunTai=true" size="small" icon="ios-microphone-outline" v-show="isShowVideoBtn && !isMapMode">{{$t("monitor.intercom")}}</i-button>
                             </div>
                             <ul class="ul-manager-wraper">
                                 <li style="height:35px; line-height:35px;" v-show="isShowAreaCount">
