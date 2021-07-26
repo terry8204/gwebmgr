@@ -144,11 +144,11 @@
             <Row style="margin: 10px 0">
                 <i-col span="4" style="height: 100%;text-align:right;line-height:32px;">&nbsp;{{$t('alarm.devNum')}} : &nbsp;</i-col>
                 <i-col span="6">
-                    <i-input v-model.trim="deviceid" type="textarea" :placeholder="$t('device.copyBatchNumber')" :autosize="{minRows: 2,maxRows: 15}"></i-input>
+                    <i-input v-model.trim="deviceid" type="textarea" :placeholder="$t('device.copyBatchNumber')" :autosize="{minRows: 2,maxRows: 10}"></i-input>
                 </i-col>
 
                 <i-col span="13" :offset="1">
-                    <i-input v-model.trim="errorTips" :class="fontColor" type="textarea" disabled :autosize="{minRows: 2,maxRows: 15}"></i-input>
+                    <i-input v-model.trim="errorTips" :class="fontColor" type="textarea" disabled :autosize="{minRows: 2,maxRows: 10}"></i-input>
                 </i-col>
             </Row>
 
