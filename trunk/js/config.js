@@ -949,6 +949,9 @@ var myUrls = {
     resetMileage: function() {
         return this.apihosts + 'webapi?action=resetmileage&token=' + token;
     },
+    setVideoStreamType: function() {
+        return this.apihosts + 'webapi?action=setvideostreamtype&token=' + token;
+    },
 }
 
 

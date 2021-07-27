@@ -239,6 +239,8 @@ var monitor = {
                 videochannelcount: 4,
             },
 
+            codeStream: '1',
+
             // 音视频参数设置
             realtimebitratemode: '',
             storebitratemode: '',
@@ -888,6 +890,11 @@ var monitor = {
                 deviceid: this.currentVideoDeviceInfo.deviceId
             }, function(respData) {
                 if (respData.status == 0) {
+                    me.codeStream = String(respData.videostreamtype);
+
+                    me.videotranstype = String(me.videotranstype);
+                    me.videostreamtype = String(me.videostreamtype);
+                    me.audiochannel = me.audiochannel;
                     me.historyaudiocodec = String(respData.historyaudiocodec);
                     me.realtimeaudiocodec = String(respData.realtimeaudiocodec);
                     me.manualvideocodec = String(respData.manualvideocodec);
@@ -2524,6 +2531,8 @@ var monitor = {
             this.selectedDevObj = deviceInfo;
             this.handleClickDev(deviceid);
             this.updateRealtimeInfoList(deviceid);
+
+
         },
         updateRealtimeInfoList: function(deviceid) {
             var index = gRealtimeDeviceIdList.indexOf(deviceid);
@@ -2602,6 +2611,13 @@ var monitor = {
             if (groups) {
                 this.currentDevCreateUserGroupList = groups;
             }
+
+            var functionslong = this.deviceTypes[device.devicetype].functionslong;
+            if (utils.hasFunction(functionslong, videoMask)) {
+                this.currentVideoDeviceInfo.deviceId = deviceid;
+                this.currentVideoDeviceInfo.deviceName = device.devicename;
+                this.queryVideoPlayParameters();
+            };
         },
         querySingleAllCmdDefaultValue: function(deviceid) {
             var url = myUrls.queryDeviceSettings(),
@@ -3527,10 +3543,6 @@ var monitor = {
             };
             if (utils.hasFunction(functionslong, videoMask)) {
                 isShowVideoBtn = true;
-
-                var deviceInfo = this.deviceInfos[globalDeviceId];
-                this.currentVideoDeviceInfo.deviceId = globalDeviceId;
-                this.currentVideoDeviceInfo.deviceName = deviceInfo.devicename;
             };
             if (utils.hasFunction(functionslong, activeSafetyMask)) {
                 isShowActiveSafetyBtn = true;
@@ -3936,6 +3948,11 @@ var monitor = {
         },
     },
     watch: {
+        codeStream: function(newVal) {
+            var url = myUrls.setVideoStreamType();
+            var data = { videostreamtype: Number(newVal), deviceid: globalDeviceId };
+            utils.sendAjax(url, data, function(resp) {});
+        },
         isOpenDistance: function(newVal) {
             if (newVal) {
                 this.distanceTool.enable();
@@ -3967,6 +3984,7 @@ var monitor = {
             localStorage.setItem('app-map-type', newType)
         },
         currentDeviceType: function() {
+
             this.currentDevDirectiveList = utils.getDirectiveList(this.currentDeviceType);
             this.isShowRecordBtnByDeviceType();
         },
