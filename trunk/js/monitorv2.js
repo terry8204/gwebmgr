@@ -2620,7 +2620,7 @@ var monitor = {
             if (utils.hasFunction(functionslong, videoMask)) {
                 this.currentVideoDeviceInfo.deviceId = deviceid;
                 this.currentVideoDeviceInfo.deviceName = device.devicename;
-                this.queryVideoPlayParameters();
+                // this.queryVideoPlayParameters();
             };
         },
         querySingleAllCmdDefaultValue: function(deviceid) {
