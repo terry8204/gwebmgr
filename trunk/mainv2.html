@@ -806,17 +806,18 @@
                                     <i-button @click="switchMapMode(2)" :type="isMapMode?'':'primary'">{{$t("monitor.videoMode")}}</i-button>
                                 </ButtonGroup>
                             </div>
-                            <div style="float:left;height:35px; line-height:35px;padding-left:15px;color:red;font-size:12px;">{{intervalTime}}{{$t("monitor.refreshAfter")}}</div>
+
                             <div style="float:left;height:35px; line-height:35px;padding-left:15px;" v-show="isShowVideoBtn && !isMapMode">
                                 <i-button @click="videoBack" size="small" icon="md-refresh">{{$t("monitor.videoPlayback")}}</i-button>
                                 <i-button @click="isShowYunTai=true" size="small" icon="ios-microphone-outline">{{$t("monitor.intercom")}}</i-button>
                             </div>
-                            <div style="float:left;height:35px; line-height:35px;padding-left:5px;" v-show="isShowVideoBtn && !isMapMode">
+                            <div style="float:left;height:35px; line-height:35px;padding-left:15px;color:red;font-size:12px;">{{intervalTime}}{{$t("monitor.refreshAfter")}}</div>
+                            <!-- <div style="float:left;height:35px; line-height:35px;padding-left:5px;" v-show="isShowVideoBtn && !isMapMode">
                                 <i-select v-model="codeStream" size="small">
                                     <i-option value="0">{{$t('videoSettings.mainStream')}}</i-option>
                                     <i-option value="1">{{$t('videoSettings.subStream')}}</i-option>
                                 </i-select>
-                            </div>
+                            </div> -->
                             <ul class="ul-manager-wraper">
                                 <li style="height:35px; line-height:35px;" v-show="isShowAreaCount">
                                     <span>{{areaName.join('/')}}</span>
