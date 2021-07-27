@@ -890,7 +890,11 @@ var monitor = {
                 deviceid: this.currentVideoDeviceInfo.deviceId
             }, function(respData) {
                 if (respData.status == 0) {
-                    me.codeStream = String(respData.videostreamtype);
+
+                    me.codeStream = String(respData.videostreamtype);                 
+                    me.videotranstype  =  respData.videotranstype  +  '';                    
+                    me.videostreamtype  =  respData.videostreamtype  +  '';                    
+                    me.audiochannel  =  respData.audiochannel;
 
                     me.videotranstype = String(me.videotranstype);
                     me.videostreamtype = String(me.videostreamtype);
@@ -1913,7 +1917,7 @@ var monitor = {
                     this.currentVideoDeviceInfo.deviceName = deviceInfo.devicename;
                     this.setupVideoModal = true;
                     this.queryVideoPlayParameters();
-                    this.queryDeviceById();
+                    // this.queryDeviceById();
                     break;
                 case 'activesafety':
                     //currentVideoDeviceInfo
