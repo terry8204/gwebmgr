@@ -519,7 +519,6 @@ Vue.component('my-video', {
 
                 audioPlayer.attachMediaElement(this.$refs.audio);
                 if (!this.isMute) {
-                    console.log('播放语音');
                     audioPlayer.load(); //加载
                     audioPlayer.play();
                 }
@@ -527,8 +526,12 @@ Vue.component('my-video', {
             } else {
                 if (this.audioPlayer) {
                     this.audioPlayer.attachMediaElement(this.$refs.audio);
-                    this.audioPlayer.load(); //加载
-                    this.audioPlayer.play();
+
+                    if (!this.isMute) {
+
+                        this.audioPlayer.load(); //加载
+                        this.audioPlayer.play();
+                    }
                 }
             }
         },
